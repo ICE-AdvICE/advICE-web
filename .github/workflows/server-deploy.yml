@@ -115,7 +115,7 @@ jobs:
 
             sudo docker run -d --name $CONTAINER_NAME \
               -p 8080:8080 --restart always \
-              --env-file /home/ubuntu/backend/.env \
+              --env-file /home/ubuntu/backend/backend/.env \
               -e TZ=Asia/Seoul \
               $IMAGE_NAME
 
