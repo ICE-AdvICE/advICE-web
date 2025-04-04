@@ -18,6 +18,10 @@ public class ResponseDto<T> {
 		return new ResponseDto<>("SU", "Success.", null);
 	}
 
+	public static <T> ResponseDto<T> success(String message) {
+		return new ResponseDto<>("SU", message, null);
+	}
+
 	public static <T> ResponseDto<T> success(T data) {
 		return new ResponseDto<>("SU", "Success", data);
 	}
