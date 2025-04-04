@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.icehufs.icebreaker.domain.membership.dto.request.AuthorityRequestDto;
 import com.icehufs.icebreaker.domain.membership.dto.request.PatchUserPassRequestDto;
 import com.icehufs.icebreaker.domain.membership.dto.request.PatchUserRequestDto;
-import com.icehufs.icebreaker.domain.membership.dto.response.Authority1ExistResponseDto;
-import com.icehufs.icebreaker.domain.membership.dto.response.AuthorityResponseDto;
 import com.icehufs.icebreaker.domain.membership.dto.response.GetSignInUserResponseDto;
-import com.icehufs.icebreaker.domain.membership.dto.response.PatchUserResponseDto;
 import com.icehufs.icebreaker.domain.membership.service.UserService;
 import com.icehufs.icebreaker.global.response.ResponseDto;
 
@@ -30,22 +27,21 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("") // 특정 사용자의 정보 반환 API
-    public ResponseEntity<? super GetSignInUserResponseDto> getSignInUser (
+    public ResponseEntity<ResponseDto<GetSignInUserResponseDto>> getSignInUser(
         @AuthenticationPrincipal String email //확인하고자하는 유저의 토큰 유효성 확인 후 유저의 메일 반환
-    ) {
-        ResponseEntity<? super GetSignInUserResponseDto> response = userService.getSignInUser(email);
-        return response;
+    ){
+        return ResponseEntity.ok(ResponseDto.success(userService.getSignInUser(email)));
     }
 
-    @PatchMapping("") // 개인 정보 수정 API
+    @PatchMapping("") // 개인정보 수정 API
     public ResponseEntity<ResponseDto<String>> patchUser(
         @RequestBody @Valid PatchUserRequestDto requestBody,
         @AuthenticationPrincipal String email
     ){
-        return ResponseEntity.ok(ResponseDto.success(userService.patchUser(requestBody, email)));
+        return ResponseEntity.ok(ResponseDto.success(userService.patchUserInfo(requestBody, email)));
     }
 
-    @PatchMapping("/password") // 비밀 번호 수정 API
+    @PatchMapping("/password") // 비밀번호 수정 API
     public ResponseEntity<ResponseDto<String>> patchUserPassword(
         @RequestBody @Valid PatchUserPassRequestDto requestDto){
         return ResponseEntity.ok(ResponseDto.success(userService.patchUserPassword(requestDto)));
@@ -59,19 +55,17 @@ public class UserController {
     }
 
     @PatchMapping("/authority") //자기한테 권한 부여 API(테스트용)
-    public ResponseEntity<? super AuthorityResponseDto> giveAuthority(
+    public ResponseEntity<ResponseDto<String>> giveAuthority(
         @RequestBody @Valid AuthorityRequestDto requestBody,
         @AuthenticationPrincipal String email
     ){
-        ResponseEntity<? super AuthorityResponseDto> response = userService.giveAuthority(requestBody, email);
-        return response;
+        return ResponseEntity.ok(ResponseDto.success(userService.giveAuthority(requestBody, email)));
     }
 
     @GetMapping("/auth1-exist") // "익명게시판" 운영자 판별 API
-    public ResponseEntity<? super Authority1ExistResponseDto> auth1Exist(
+    public ResponseEntity<ResponseDto<String>> auth1Exist(
         @AuthenticationPrincipal String email
     ){
-        ResponseEntity<? super Authority1ExistResponseDto> response = userService.auth1Exist(email);
-        return response;
+        return ResponseEntity.ok(ResponseDto.success(userService.auth1Exist(email)));
     }
 }

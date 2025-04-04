@@ -1,20 +1,16 @@
 package com.icehufs.icebreaker.domain.membership.service.implement;
 
-
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.icehufs.icebreaker.common.ResponseCode;
+import com.icehufs.icebreaker.common.ResponseMessage;
 import com.icehufs.icebreaker.domain.membership.dto.request.AuthorityRequestDto;
 import com.icehufs.icebreaker.domain.membership.dto.request.PatchUserPassRequestDto;
 import com.icehufs.icebreaker.domain.membership.dto.request.PatchUserRequestDto;
-import com.icehufs.icebreaker.domain.membership.dto.response.Authority1ExistResponseDto;
-import com.icehufs.icebreaker.domain.membership.dto.response.AuthorityResponseDto;
 import com.icehufs.icebreaker.domain.membership.dto.response.GetSignInUserResponseDto;
-import com.icehufs.icebreaker.domain.membership.dto.response.PatchUserResponseDto;
-import com.icehufs.icebreaker.common.ResponseDto;
 import com.icehufs.icebreaker.domain.auth.domain.entity.Authority;
 import com.icehufs.icebreaker.domain.membership.domain.entity.User;
 import com.icehufs.icebreaker.domain.auth.repostiory.AuthorityRepository;
@@ -30,28 +26,20 @@ public class UserServiceImplement implements UserService {
 
     private final UserRepository userRepository;
     private final AuthorityRepository authorityRepository;
-
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
-    public ResponseEntity<? super GetSignInUserResponseDto> getSignInUser(String email) {
-        User userEntity = null;
+    public GetSignInUserResponseDto getSignInUser(String email) {
+        User userEntity = userRepository.findByEmail(email);
+        if (userEntity == null) throw new BusinessException(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER, HttpStatus.UNAUTHORIZED);
 
-        try {
-            userEntity = userRepository.findByEmail(email);
-            if (userEntity == null ) return GetSignInUserResponseDto.notExistUser();
-
-        } catch(Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-        return GetSignInUserResponseDto.success(userEntity);
+        return new GetSignInUserResponseDto(userEntity.getEmail(), userEntity.getStudentNum(), userEntity.getName());
     }
 
     @Override
-    public String patchUser(PatchUserRequestDto dto, String email){
+    public String patchUserInfo(PatchUserRequestDto dto, String email){
         User userEntity = userRepository.findByEmail(email);
-        if(userEntity == null) throw new BusinessException("NU", "This user does not exist.", HttpStatus.UNAUTHORIZED);
+        if (userEntity == null) throw new BusinessException(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER, HttpStatus.UNAUTHORIZED);
 
         userEntity.patchUser(dto);
         userRepository.save(userEntity);
@@ -63,7 +51,7 @@ public class UserServiceImplement implements UserService {
     public String patchUserPassword(PatchUserPassRequestDto dto) {
         User userEntity = userRepository.findByEmail(dto.getEmail());
 
-        if(userEntity == null) throw new BusinessException("NU", "This user does not exist.", HttpStatus.UNAUTHORIZED);
+        if (userEntity == null) throw new BusinessException(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER, HttpStatus.UNAUTHORIZED);
 
         String password = dto.getPassword();
         String encodedPassword = passwordEncoder.encode(password);
@@ -77,7 +65,7 @@ public class UserServiceImplement implements UserService {
     @Override
     public String deleteUser(String email) {
         User userEntity = userRepository.findByEmail(email);
-        if(userEntity == null) throw new BusinessException("NU", "This user does not exist.", HttpStatus.UNAUTHORIZED);
+        if (userEntity == null) throw new BusinessException(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER, HttpStatus.UNAUTHORIZED);
 
         authorityRepository.deleteById(email);
         userRepository.delete(userEntity);
@@ -86,56 +74,40 @@ public class UserServiceImplement implements UserService {
     }
 
     @Override
-    public ResponseEntity<? super AuthorityResponseDto> giveAuthority(AuthorityRequestDto dto, String email) {
+    public String giveAuthority(AuthorityRequestDto dto, String email) {
+        Authority authority = authorityRepository.findByEmail(email);
+        if(authority == null) throw new BusinessException(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER, HttpStatus.UNAUTHORIZED);
 
-        try{
+        if(dto.getRoleAdmin1() == 1){ //익명게시판 운영자 권한 부여
+            authority.giveAdmin1Auth();
+        }
 
-            Authority authority = authorityRepository.findByEmail(email);
-            if(authority == null) return AuthorityResponseDto.notExistUser();
- 
-            //System.out.println(admin1);
-            if(dto.getRoleAdmin1() == 1){ //익명게시판 운영자 권한 부여
-                authority.giveAdmin1Auth();
-            }
+        if(dto.getRoleAdminC1() == 1){ //코딩존 운영자 권한 부여
+            authority.giveAdminC1Auth();
+        }
 
-            if(dto.getRoleAdminC1() == 1){ //코딩존 운영자 권한 부여
-                authority.giveAdminC1Auth();
-            }
+        if(dto.getRoleAdminC2() == 1){ //코딩존 운영자 권한 부여
+            authority.giveAdminC2Auth();
+        }
 
-            if(dto.getRoleAdminC2() == 1){ //코딩존 운영자 권한 부여
-                authority.giveAdminC2Auth();
-            }
+        if(dto.getRoleAdmin() == 1){ //코딩존 운영자 권한 부여
+            authority.giveAdminAuth();
+        }
+        authorityRepository.save(authority);
 
-            if(dto.getRoleAdmin() == 1){ //코딩존 운영자 권한 부여
-                authority.giveAdminAuth();
-            }
-            authorityRepository.save(authority);
-
-        } catch (Exception exception){
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
+        return "Success";
     }
-    return AuthorityResponseDto.success();
-    }
-    
 
     @Override
-    public ResponseEntity<? super Authority1ExistResponseDto> auth1Exist(String email) {
-
-        try{
-
-            Authority authority = authorityRepository.findByEmail(email);
-            if(authority == null) return Authority1ExistResponseDto.notExistUser();
+    public String auth1Exist(String email) {
+        Authority authority = authorityRepository.findByEmail(email);
+        if(authority == null) throw new BusinessException(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER, HttpStatus.UNAUTHORIZED);
  
-            String admin1 = authority.getRoleAdmin1();
-            if("NULL".equals(admin1)){
-                return Authority1ExistResponseDto.notAdmin();
-            }
+        String admin1 = authority.getRoleAdmin1();
+        if("NULL".equals(admin1)){
+            throw new BusinessException(ResponseCode.SUCCESS_BUT_NOT, ResponseMessage.SUCCESS_BUT_NOT, HttpStatus.NOT_FOUND);
+        }
 
-        } catch (Exception exception){
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-    }
-    return Authority1ExistResponseDto.success();
+        return "Success";
     }
 }
