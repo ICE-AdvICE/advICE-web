@@ -1,5 +1,8 @@
 package com.icehufs.icebreaker.global.exception;
 
+import java.sql.SQLException;
+
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -32,11 +35,19 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
-	public ResponseEntity<ResponseDto<Void>> handleValidationException(Exception exception){
-		log.warn("[요청 HTTP BODY 검증 에러] {}", exception.getMessage());
+	public ResponseEntity<ResponseDto<Void>> handleValidationException(Exception e){
+		log.warn("[요청 HTTP BODY 검증 에러] {}", e.getMessage());
 
 		return ResponseEntity
 			.status(HttpStatus.BAD_REQUEST)
 			.body(ResponseDto.fail("VF", "Validation failed."));
+	}
+
+	@ExceptionHandler({ DataAccessException.class, SQLException.class })
+	public ResponseEntity<ResponseDto<Void>> handleDatabaseException(Exception e) {
+		log.warn("[DB 에러] {}", e.getMessage());
+		return ResponseEntity
+			.status(HttpStatus.INTERNAL_SERVER_ERROR)
+			.body(ResponseDto.fail("DBE", "Database error."));
 	}
 }
