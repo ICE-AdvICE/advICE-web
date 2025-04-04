@@ -1,6 +1,7 @@
 package com.icehufs.icebreaker.domain.membership.service.implement;
 
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,9 +12,7 @@ import com.icehufs.icebreaker.domain.membership.dto.request.PatchUserPassRequest
 import com.icehufs.icebreaker.domain.membership.dto.request.PatchUserRequestDto;
 import com.icehufs.icebreaker.domain.membership.dto.response.Authority1ExistResponseDto;
 import com.icehufs.icebreaker.domain.membership.dto.response.AuthorityResponseDto;
-import com.icehufs.icebreaker.domain.membership.dto.response.DeleteUserResponseDto;
 import com.icehufs.icebreaker.domain.membership.dto.response.GetSignInUserResponseDto;
-import com.icehufs.icebreaker.domain.membership.dto.response.PatchUserPassResponseDto;
 import com.icehufs.icebreaker.domain.membership.dto.response.PatchUserResponseDto;
 import com.icehufs.icebreaker.common.ResponseDto;
 import com.icehufs.icebreaker.domain.auth.domain.entity.Authority;
@@ -21,6 +20,7 @@ import com.icehufs.icebreaker.domain.membership.domain.entity.User;
 import com.icehufs.icebreaker.domain.auth.repostiory.AuthorityRepository;
 import com.icehufs.icebreaker.domain.membership.repository.UserRepository;
 import com.icehufs.icebreaker.domain.membership.service.UserService;
+import com.icehufs.icebreaker.global.exception.BusinessException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -67,44 +67,29 @@ public class UserServiceImplement implements UserService {
             }
 
     @Override
-    public ResponseEntity<? super PatchUserPassResponseDto> patchUserPass(PatchUserPassRequestDto dto) {
-        try{
+    public String patchUserPassword(PatchUserPassRequestDto dto) {
+        User userEntity = userRepository.findByEmail(dto.getEmail());
 
-            User userEntity = userRepository.findByEmail(dto.getEmail());
-            if(userEntity == null) return PatchUserResponseDto.notExistUser();
+        if(userEntity == null) throw new BusinessException("NU", "This user does not exist.", HttpStatus.UNAUTHORIZED);
 
-            String password = dto.getPassword();
-            String encodedPassword = passwordEncoder.encode(password);
+        String password = dto.getPassword();
+        String encodedPassword = passwordEncoder.encode(password);
 
-            dto.setPassword(encodedPassword);
-            userEntity.patchUserPass(dto);
-            userRepository.save(userEntity);
+        userEntity.patchUserPassword(encodedPassword);
+        userRepository.save(userEntity);
 
-        }catch(Exception exception){
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-        
-        return PatchUserPassResponseDto.success();
+        return "비밀번호가 성공적으로 변경되었습니다.";
     }
 
     @Override
-    public ResponseEntity<? super DeleteUserResponseDto> deleteUser(String email) {
-        try{
+    public String deleteUser(String email) {
+        User userEntity = userRepository.findByEmail(email);
+        if(userEntity == null) throw new BusinessException("NU", "This user does not exist.", HttpStatus.UNAUTHORIZED);
 
-            User userEntity = userRepository.findByEmail(email);
-            if(userEntity == null) return DeleteUserResponseDto.notExistUser();
+        authorityRepository.deleteById(email);
+        userRepository.delete(userEntity);
 
-            
-            authorityRepository.deleteById(email);
-            userRepository.delete(userEntity);
-
-        }catch(Exception exception){
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-        
-        return DeleteUserResponseDto.success();
+        return "계정이 성공적으로 삭제되었습니다.";
     }
 
     @Override

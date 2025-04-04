@@ -16,11 +16,10 @@ import com.icehufs.icebreaker.domain.membership.dto.request.PatchUserPassRequest
 import com.icehufs.icebreaker.domain.membership.dto.request.PatchUserRequestDto;
 import com.icehufs.icebreaker.domain.membership.dto.response.Authority1ExistResponseDto;
 import com.icehufs.icebreaker.domain.membership.dto.response.AuthorityResponseDto;
-import com.icehufs.icebreaker.domain.membership.dto.response.DeleteUserResponseDto;
 import com.icehufs.icebreaker.domain.membership.dto.response.GetSignInUserResponseDto;
-import com.icehufs.icebreaker.domain.membership.dto.response.PatchUserPassResponseDto;
 import com.icehufs.icebreaker.domain.membership.dto.response.PatchUserResponseDto;
 import com.icehufs.icebreaker.domain.membership.service.UserService;
+import com.icehufs.icebreaker.global.response.ResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -48,18 +47,16 @@ public class UserController {
     }
 
     @PatchMapping("/password") // 비밀 번호 수정 API
-    public ResponseEntity<? super PatchUserPassResponseDto> patchUserPass(
-        @RequestBody @Valid PatchUserPassRequestDto requestBody){
-        ResponseEntity<? super PatchUserPassResponseDto> response = userService.patchUserPass(requestBody);
-        return response;
+    public ResponseEntity<ResponseDto<String>> patchUserPassword(
+        @RequestBody @Valid PatchUserPassRequestDto requestDto){
+        return ResponseEntity.ok(ResponseDto.success(userService.patchUserPassword(requestDto)));
     }
 
     @DeleteMapping("") // 회원탈퇴 API
-    public ResponseEntity<? super DeleteUserResponseDto> deleteUser(
+    public ResponseEntity<ResponseDto<String>> deleteUser(
         @AuthenticationPrincipal String email
     ){
-        ResponseEntity<? super DeleteUserResponseDto> response = userService.deleteUser(email);
-        return response;
+        return ResponseEntity.ok(ResponseDto.success(userService.deleteUser(email)));
     }
 
     @PatchMapping("/authority") //자기한테 권한 부여 API(테스트용)
