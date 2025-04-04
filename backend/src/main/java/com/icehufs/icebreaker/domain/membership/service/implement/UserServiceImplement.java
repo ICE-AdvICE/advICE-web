@@ -49,22 +49,15 @@ public class UserServiceImplement implements UserService {
     }
 
     @Override
-    public ResponseEntity<? super PatchUserResponseDto> patchUser(PatchUserRequestDto dto, String email){
-                try{
+    public String patchUser(PatchUserRequestDto dto, String email){
+        User userEntity = userRepository.findByEmail(email);
+        if(userEntity == null) throw new BusinessException("NU", "This user does not exist.", HttpStatus.UNAUTHORIZED);
 
-                    User userEntity = userRepository.findByEmail(email);
-                    if(userEntity == null) return PatchUserResponseDto.notExistUser();
+        userEntity.patchUser(dto);
+        userRepository.save(userEntity);
 
-                    userEntity.patchUser(dto);
-                    userRepository.save(userEntity);
-        
-                }catch(Exception exception){
-                    exception.printStackTrace();
-                    return ResponseDto.databaseError();
-                }
-                
-                return PatchUserResponseDto.success();
-            }
+        return "사용자 계정이 성공적으로 수정되었습니다.";
+    }
 
     @Override
     public String patchUserPassword(PatchUserPassRequestDto dto) {

@@ -32,18 +32,17 @@ public class UserController {
     @GetMapping("") // 특정 사용자의 정보 반환 API
     public ResponseEntity<? super GetSignInUserResponseDto> getSignInUser (
         @AuthenticationPrincipal String email //확인하고자하는 유저의 토큰 유효성 확인 후 유저의 메일 반환
-    ){
+    ) {
         ResponseEntity<? super GetSignInUserResponseDto> response = userService.getSignInUser(email);
         return response;
     }
 
     @PatchMapping("") // 개인 정보 수정 API
-    public ResponseEntity<? super PatchUserResponseDto> patchUser(
+    public ResponseEntity<ResponseDto<String>> patchUser(
         @RequestBody @Valid PatchUserRequestDto requestBody,
         @AuthenticationPrincipal String email
     ){
-        ResponseEntity<? super PatchUserResponseDto> response = userService.patchUser(requestBody, email);
-        return response;
+        return ResponseEntity.ok(ResponseDto.success(userService.patchUser(requestBody, email)));
     }
 
     @PatchMapping("/password") // 비밀 번호 수정 API
@@ -75,6 +74,4 @@ public class UserController {
         ResponseEntity<? super Authority1ExistResponseDto> response = userService.auth1Exist(email);
         return response;
     }
-
-    
 }

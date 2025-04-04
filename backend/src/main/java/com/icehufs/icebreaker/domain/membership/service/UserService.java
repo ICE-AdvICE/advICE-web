@@ -13,7 +13,7 @@ import com.icehufs.icebreaker.domain.membership.dto.response.PatchUserResponseDt
 public interface UserService {
 
     ResponseEntity<? super GetSignInUserResponseDto> getSignInUser(String email);
-    ResponseEntity<? super PatchUserResponseDto> patchUser(PatchUserRequestDto dto, String email);
+    String patchUser(PatchUserRequestDto dto, String email);
     String patchUserPassword(PatchUserPassRequestDto dto);
     String deleteUser(String email);
     ResponseEntity<? super AuthorityResponseDto> giveAuthority(AuthorityRequestDto dto, String email);
