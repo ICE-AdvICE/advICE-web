@@ -2,6 +2,8 @@ package com.icehufs.icebreaker.global.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -27,5 +29,14 @@ public class GlobalExceptionHandler {
 		return ResponseEntity
 			.status(HttpStatus.INTERNAL_SERVER_ERROR) // ex.getStatus()는 HttpStatus 반환하도록 정의
 			.body(ResponseDto.fail("IE", "서버 내부 오류가 발생했습니다."));
+	}
+
+	@ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
+	public ResponseEntity<ResponseDto<Void>> handleValidationException(Exception exception){
+		log.warn("[요청 HTTP BODY 검증 에러] {}", exception.getMessage());
+
+		return ResponseEntity
+			.status(HttpStatus.BAD_REQUEST)
+			.body(ResponseDto.fail("VF", "Validation failed."));
 	}
 }
