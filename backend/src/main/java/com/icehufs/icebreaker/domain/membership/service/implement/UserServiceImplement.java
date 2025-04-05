@@ -74,31 +74,6 @@ public class UserServiceImplement implements UserService {
     }
 
     @Override
-    public String giveAuthority(AuthorityRequestDto dto, String email) {
-        Authority authority = authorityRepository.findByEmail(email);
-        if(authority == null) throw new BusinessException(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER, HttpStatus.UNAUTHORIZED);
-
-        if(dto.getRoleAdmin1() == 1){ //익명게시판 운영자 권한 부여
-            authority.giveAdmin1Auth();
-        }
-
-        if(dto.getRoleAdminC1() == 1){ //코딩존 운영자 권한 부여
-            authority.giveAdminC1Auth();
-        }
-
-        if(dto.getRoleAdminC2() == 1){ //코딩존 운영자 권한 부여
-            authority.giveAdminC2Auth();
-        }
-
-        if(dto.getRoleAdmin() == 1){ //코딩존 운영자 권한 부여
-            authority.giveAdminAuth();
-        }
-        authorityRepository.save(authority);
-
-        return "Success";
-    }
-
-    @Override
     public String auth1Exist(String email) {
         Authority authority = authorityRepository.findByEmail(email);
         if(authority == null) throw new BusinessException(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER, HttpStatus.UNAUTHORIZED);

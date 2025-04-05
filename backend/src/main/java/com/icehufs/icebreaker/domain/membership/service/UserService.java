@@ -11,7 +11,6 @@ public interface UserService {
     String patchUserInfo(PatchUserRequestDto dto, String email);
     String patchUserPassword(PatchUserPassRequestDto dto);
     String deleteUser(String email);
-    String giveAuthority(AuthorityRequestDto dto, String email);
     String auth1Exist(String email);
 }
 

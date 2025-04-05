@@ -54,14 +54,6 @@ public class UserController {
         return ResponseEntity.ok(ResponseDto.success(userService.deleteUser(email)));
     }
 
-    @PatchMapping("/authority") //자기한테 권한 부여 API(테스트용)
-    public ResponseEntity<ResponseDto<String>> giveAuthority(
-        @RequestBody @Valid AuthorityRequestDto requestBody,
-        @AuthenticationPrincipal String email
-    ){
-        return ResponseEntity.ok(ResponseDto.success(userService.giveAuthority(requestBody, email)));
-    }
-
     @GetMapping("/auth1-exist") // "익명게시판" 운영자 판별 API
     public ResponseEntity<ResponseDto<String>> auth1Exist(
         @AuthenticationPrincipal String email
