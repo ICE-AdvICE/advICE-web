@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.icehufs.icebreaker.common.ResponseCode;
 import com.icehufs.icebreaker.common.ResponseMessage;
-import com.icehufs.icebreaker.domain.membership.dto.request.AuthorityRequestDto;
 import com.icehufs.icebreaker.domain.membership.dto.request.PatchUserPassRequestDto;
 import com.icehufs.icebreaker.domain.membership.dto.request.PatchUserRequestDto;
 import com.icehufs.icebreaker.domain.membership.dto.response.GetSignInUserResponseDto;
@@ -16,7 +15,7 @@ import com.icehufs.icebreaker.domain.membership.domain.entity.User;
 import com.icehufs.icebreaker.domain.auth.repostiory.AuthorityRepository;
 import com.icehufs.icebreaker.domain.membership.repository.UserRepository;
 import com.icehufs.icebreaker.domain.membership.service.UserService;
-import com.icehufs.icebreaker.global.exception.BusinessException;
+import com.icehufs.icebreaker.exception.BusinessException;
 
 import lombok.RequiredArgsConstructor;
 

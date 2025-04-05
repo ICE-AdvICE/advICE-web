@@ -1,4 +1,4 @@
-package com.icehufs.icebreaker.global.response;
+package com.icehufs.icebreaker.util;
 
 import lombok.Getter;
 

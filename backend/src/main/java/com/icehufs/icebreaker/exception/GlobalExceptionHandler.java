@@ -1,4 +1,4 @@
-package com.icehufs.icebreaker.global.exception;
+package com.icehufs.icebreaker.exception;
 
 import java.sql.SQLException;
 
@@ -10,7 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.icehufs.icebreaker.global.response.ResponseDto;
+import com.icehufs.icebreaker.util.ResponseDto;
 
 import lombok.extern.slf4j.Slf4j;
 

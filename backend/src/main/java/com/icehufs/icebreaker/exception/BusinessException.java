@@ -1,4 +1,4 @@
-package com.icehufs.icebreaker.global.exception;
+package com.icehufs.icebreaker.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

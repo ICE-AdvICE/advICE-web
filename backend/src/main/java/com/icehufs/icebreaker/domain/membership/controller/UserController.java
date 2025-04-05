@@ -11,12 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.icehufs.icebreaker.domain.membership.dto.request.AuthorityRequestDto;
 import com.icehufs.icebreaker.domain.membership.dto.request.PatchUserPassRequestDto;
 import com.icehufs.icebreaker.domain.membership.dto.request.PatchUserRequestDto;
 import com.icehufs.icebreaker.domain.membership.dto.response.GetSignInUserResponseDto;
 import com.icehufs.icebreaker.domain.membership.service.UserService;
-import com.icehufs.icebreaker.global.response.ResponseDto;
+import com.icehufs.icebreaker.util.ResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
