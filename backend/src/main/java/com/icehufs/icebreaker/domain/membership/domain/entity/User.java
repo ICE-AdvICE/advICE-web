@@ -39,8 +39,8 @@ public class User {
         this.name = dto.getName();
     }
 
-    public void patchUserPass(PatchUserPassRequestDto dto){
-        this.password = dto.getPassword();
+    public void patchUserPassword(String password){
+        this.password = password;
     }
 
     public User(SignUpRequestDto dto) {
