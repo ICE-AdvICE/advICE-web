@@ -1,7 +1,6 @@
 package com.icehufs.icebreaker.domain.membership.service.implement;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,7 @@ public class UserServiceImplement implements UserService {
 
     private final UserRepository userRepository;
     private final AuthorityRepository authorityRepository;
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public GetSignInUserResponseDto getSignInUser(String email) {
