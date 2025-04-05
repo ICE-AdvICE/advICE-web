@@ -4,9 +4,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.icehufs.icebreaker.common.ResponseCode;
+import com.icehufs.icebreaker.common.ResponseMessage;
 import com.icehufs.icebreaker.domain.article.dto.request.PatchArticleRequestDto;
 import com.icehufs.icebreaker.domain.article.dto.request.PatchCommentRequestDto;
 import com.icehufs.icebreaker.domain.article.dto.request.PostArticleRequestDto;
@@ -38,6 +41,7 @@ import com.icehufs.icebreaker.domain.article.repository.CommentRepository;
 import com.icehufs.icebreaker.domain.article.repository.FavoriteRepository;
 import com.icehufs.icebreaker.domain.membership.repository.UserRepository;
 import com.icehufs.icebreaker.domain.article.service.ArticleService;
+import com.icehufs.icebreaker.exception.BusinessException;
 import com.icehufs.icebreaker.util.EncryptionUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -144,26 +148,22 @@ public class ArticleServiceImplement implements ArticleService {
 
 
     @Override
-    public ResponseEntity<? super PostCommentResponseDto> postComment(PostCommentRequestDto dto, Integer articleNum, String email) {
-        
-        try{
-            boolean existedArticle = articleRepository.existsByArticleNum(articleNum);
-            if (!existedArticle) return PostCommentResponseDto.noExistArticle();
+    public String postComment(PostCommentRequestDto dto, Integer articleNum, String email) {
 
-            // 사용자 계정이 존재하는지(로그인시간이 초과 됐는지) 확인하는 코드
-            boolean existedUser = userRepository.existsByEmail(email);
-            if(!existedUser) return PostArticleResponseDto.notExistUser();
+        boolean existedArticle = articleRepository.existsByArticleNum(articleNum);
+        if (!existedArticle) throw new BusinessException(ResponseCode.NOT_EXISTED_ARTICLE, ResponseMessage.NOT_EXISTED_ARTICLE, HttpStatus.BAD_REQUEST);
 
-            // 댓글 이메일 복호화 처리
-            String encryptedEmail = EncryptionUtil.encrypt(email);
-            Comment comment = new Comment(dto, articleNum, encryptedEmail);
-            commentRepository.save(comment);
+        // 사용자 계정이 존재하는지(로그인시간이 초과 됐는지) 확인하는 코드
+        boolean existedUser = userRepository.existsByEmail(email);
+        if(!existedUser) throw new BusinessException(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER, HttpStatus.UNAUTHORIZED);
 
-        } catch (Exception exception){
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-        return PostCommentResponseDto.success(); }
+        // 이메일 암호화 처리
+        String encryptedEmail = EncryptionUtil.encrypt(email);
+        Comment comment = new Comment(dto, articleNum, encryptedEmail);
+        commentRepository.save(comment);
+
+        return "성공적으로 댓글을 작성했습니다.";
+    }
 
 
     @Override

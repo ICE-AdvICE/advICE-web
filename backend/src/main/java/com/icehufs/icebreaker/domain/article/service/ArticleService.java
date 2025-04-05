@@ -37,10 +37,8 @@ public interface ArticleService {
     ResponseEntity<? super DeleteArticleAdminResponseDto> deleteArticleAdmin(Integer articleNum, String email);
     ResponseEntity<? super CheckArticleFavoriteResponseDto> checkFavorite(Integer articleNum, String email);
     ResponseEntity<? super PutResolvedArticleResponseDto> putResolv(Integer articleNum, String email);
-
     ResponseEntity<? super PutFavoriteResponseDto> putFavorite(Integer articleNum, String email);
-
-    ResponseEntity<? super PostCommentResponseDto> postComment(PostCommentRequestDto dto, Integer articleNum, String email);
+    String postComment(PostCommentRequestDto dto, Integer articleNum, String email);
     ResponseEntity<? super GetCommentListResponseDto> GetCommentList(Integer articleNum);
     ResponseEntity<? super PatchCommentResponseDto> patchComment(PatchCommentRequestDto requestBody, Integer commentNumber, String email);
     ResponseEntity<? super DeleteCommentResponseDto> deleteComment(Integer commentNumber, String email);
