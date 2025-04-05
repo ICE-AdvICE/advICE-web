@@ -26,6 +26,7 @@ import com.icehufs.icebreaker.domain.auth.dto.request.GiveUserBanRequestDto;
 import com.icehufs.icebreaker.domain.auth.dto.response.GiveUserBanResponseDto;
 import com.icehufs.icebreaker.domain.article.service.ArticleService;
 import com.icehufs.icebreaker.domain.auth.service.AuthService;
+import com.icehufs.icebreaker.util.ResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,13 +39,12 @@ public class ArticleAdminController {
     private final AuthService authService;
 
     @PostMapping("/{articleNum}/comment") // 댓글 등록 API
-    public ResponseEntity<? super PostCommentResponseDto> postComment(
+    public ResponseEntity<ResponseDto<String>> postComment(
         @RequestBody @Valid PostCommentRequestDto requestBody,
         @PathVariable Integer articleNum,
         @AuthenticationPrincipal String email
     ){
-        ResponseEntity<? super PostCommentResponseDto> response = articleService.postComment(requestBody, articleNum, email);
-        return response;
+        return ResponseEntity.ok(ResponseDto.success(articleService.postComment(requestBody, articleNum, email)));
     }
 
     @PatchMapping("/comment/{commentNumber}") // 댓글 수정 API
