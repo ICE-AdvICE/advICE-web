@@ -48,8 +48,8 @@ public class CodingZoneClass {
     @Column(name = "week_day")
     private String weekDay;
 
-    @Column(name = "grade")
-    private int grade;
+    @Column(name = "subjectId")
+    private int subjectId;
 
     public CodingZoneClass(CodingZoneClassAssignRequestDto dto) {
         this.assistantName = dto.getAssistantName();
@@ -59,7 +59,7 @@ public class CodingZoneClass {
         this.maximumNumber = dto.getMaximumNumber();
         this.className = dto.getClassName();
         this.weekDay = dto.getWeekDay();
-        this.grade = dto.getGrade();
+        this.subjectId = dto.getSubjectId();
     }
 
     public void increaseNum() {

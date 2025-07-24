@@ -11,8 +11,8 @@ import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneClass;
 @Repository
 public interface CodingZoneClassRepository extends JpaRepository<CodingZoneClass, Integer> {
     
-    CodingZoneClass findByClassNum(Integer classNum);  
-    List<CodingZoneClass> findByGrade(int grade);
-    List<CodingZoneClass> findByGradeAndClassDateBetween(Integer grade, String startDate, String endDate);
+    CodingZoneClass findByClassNum(Integer classNum);
+    List<CodingZoneClass> findBySubjectId(int subjectId);
+    List<CodingZoneClass> findBySubjectIdAndClassDateBetween(Integer subjectId, String startDate, String endDate);
 
 }

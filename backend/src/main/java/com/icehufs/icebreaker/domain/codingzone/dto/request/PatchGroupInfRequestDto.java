@@ -34,6 +34,6 @@ public class PatchGroupInfRequestDto {
     private String weekDay; //요일
 
     @NotNull
-    private Integer grade;
+    private Integer subjectId;
     
 }

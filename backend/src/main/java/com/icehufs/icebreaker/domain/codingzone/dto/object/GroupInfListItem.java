@@ -19,7 +19,7 @@ public class GroupInfListItem {
     private String weekDay; //요일
     private int maximumNumber; //최대인원
     private String className; //과목명
-    private int grade; //학년
+    private int subjectId; //학년
 
     public GroupInfListItem(GroupInf groupInfListEntity) {
         this.classNum = groupInfListEntity.getClassNum();
@@ -29,7 +29,7 @@ public class GroupInfListItem {
         this.weekDay = groupInfListEntity.getWeekDay();
         this.maximumNumber = groupInfListEntity.getMaximumNumber();
         this.className = groupInfListEntity.getClassName();
-        this.grade = groupInfListEntity.getGrade();
+        this.subjectId = groupInfListEntity.getSubjectId();
     }
 
     public static List<GroupInfListItem> getList(List<GroupInf> groupInfListEntities){
