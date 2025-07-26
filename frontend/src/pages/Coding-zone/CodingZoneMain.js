@@ -228,37 +228,37 @@ const CodingMain = () => {
   const handleToggleReservation = async (classItem) => {
     const token = cookies.accessToken;
     if (!token) {
-        alert("로그인이 필요합니다.");
-        return;
+      alert("로그인이 필요합니다.");
+      return;
     }
     try {
-        let result;
-        if (classItem.isReserved) {
-            result = await deleteCodingZoneClass(token, classItem.classNum, setCookie, navigate);
-            if (result === true) {
-                alert("예약 취소가 완료되었습니다.");
-                setUserReservedClass(null);
-                await fetchData(); 
-            }
-        } else {
-            result = await reserveCodingZoneClass(token, classItem.classNum, setCookie, navigate);
-            
-            
-            if (result === "FC") {
-                alert("예약 가능한 인원이 꽉 찼습니다.");
-                await fetchData();
-            } else if (result === true) {
-                alert("예약이 완료되었습니다.");
-                await fetchData(); 
-            } else {
-                alert("예약에 실패했습니다."); 
-            }
+      let result;
+      if (classItem.isReserved) {
+        result = await deleteCodingZoneClass(token, classItem.classNum, setCookie, navigate);
+        if (result === true) {
+          alert("예약 취소가 완료되었습니다.");
+          setUserReservedClass(null);
+          await fetchData();
         }
+      } else {
+        result = await reserveCodingZoneClass(token, classItem.classNum, setCookie, navigate);
+
+
+        if (result === "FC") {
+          alert("예약 가능한 인원이 꽉 찼습니다.");
+          await fetchData();
+        } else if (result === true) {
+          alert("예약이 완료되었습니다.");
+          await fetchData();
+        } else {
+          alert("예약에 실패했습니다.");
+        }
+      }
     } catch (error) {
-        alert("예약 처리 중 오류가 발생했습니다.");
-        await fetchData(); 
+      alert("예약 처리 중 오류가 발생했습니다.");
+      await fetchData();
     }
-};
+  };
 
 
 
@@ -358,13 +358,27 @@ const CodingMain = () => {
 
       <Slider {...sliderSettings}>
         <div className="codingzone-top-container">
-          <img src="/codingzone_main_v5.png" className="codingzonetop2-image" />
+          <picture>
+            <source srcSet="/codingzone_main_v5.webp" type="image/webp" />
+            <img
+              src="/codingzone_main_v5.png"
+              alt="코딩존 메인 이미지 1"
+              className="codingzonetop2-image"
+              loading="eager"
+            />
+          </picture>
         </div>
         <div className="codingzone-top-container">
-          <img src="/coding-zone-main2.png" className="codingzonetop2-image" />
+          <picture>
+            <source srcSet="/coding-zone-main2.webp" type="image/webp" />
+            <img src="/coding-zone-main2.png" alt="코딩존 메인 이미지 2" className="codingzonetop2-image" />
+          </picture>
         </div>
         <div className="codingzone-top-container">
-          <img src="/coding-zone-main3.png" className="codingzonetop2-image" />
+          <picture>
+            <source srcSet="/coding-zone-main3.webp" type="image/webp" />
+            <img src="/coding-zone-main3.png" alt="코딩존 메인 이미지 3" className="codingzonetop2-image" />
+          </picture>
         </div>
       </Slider>
       <div className='codingzone-body-container'>
@@ -420,25 +434,35 @@ const CodingMain = () => {
             )}
           </div>
         </div>
-
         <div className="codingzone-list">
-          {showNoClassesImage ? (
-            <div className="no-classes-image" style={{ textAlign: 'center', marginTop: '20px' }}>
-              <img src="/Codingzone-noregist.png" alt="수업이 없습니다" className="no-classes-img" />
-            </div>
-          ) : (
-            <ClassList
-              classList={classList}
-              handleCardClick={handleCardClick}
-              handleToggleReservation={handleToggleReservation}
-              isAdmin={isAdmin}
-              onDeleteClick={handleDelete}
-              userReservedClass={userReservedClass}
-              token={token}
-            />
-          )}
+  {/* 항상 렌더되도록 유지하고, show/hide는 CSS 클래스 이름으로 제어 */}
+  <picture className={`no-classes-image ${showNoClassesImage ? 'visible' : 'hidden'}`}>
+    <source srcSet="/Codingzone-noregist.webp" type="image/webp" />
+    <img
+      src="/Codingzone-noregist.png"
+      alt="수업이 없습니다"
+      className="no-classes-img"
+      width="600"
+      height="260"
+      loading="eager"
+      decoding="sync"
+    />
+  </picture>
 
-        </div>
+  {/* 수업이 있을 경우에만 ClassList 보여줌 */}
+  {!showNoClassesImage && (
+    <ClassList
+      classList={classList}
+      handleCardClick={handleCardClick}
+      handleToggleReservation={handleToggleReservation}
+      isAdmin={isAdmin}
+      onDeleteClick={handleDelete}
+      userReservedClass={userReservedClass}
+      token={token}
+    />
+  )}
+</div>
+
 
       </div>
     </div>
