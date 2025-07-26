@@ -4,17 +4,22 @@
     <meta charset="utf-8" />
     <link rel="icon" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1">
-    <meta name="theme-color" content="#000000" />
-    
-    <!-- 클라이언트(브라우저)에서 모든 HTTP 요청을 HTTPS로 업그레이드 -->
-    <!-- <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">-->
-    
-    <meta name="description" content="Web site created using create-react-app" />
+    <meta name="theme-color" content="#1e88e5" />
+
+    <!-- PWA manifest -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-   
+
+    <!-- Apple Safari 대응 -->
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/icons/icon-192x192.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <!-- 설명 및 SEO -->
+    <meta name="description" content="Web site created using create-react-app" />
+
     <title>AdvICE</title>
-    
-    <!-- 인라인 스타일 추가 -->
+
+    <!-- 인라인 스타일 -->
     <style>
       html, body {
         height: 100%;
@@ -22,7 +27,6 @@
         padding: 0;
       }
       #root {
- 
         display: flex;
         min-height: 100vh;
         flex-direction: column;
