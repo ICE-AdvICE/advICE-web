@@ -296,6 +296,7 @@ public class CodingZoneServiceImplement implements CodingZoneService {
     List<CodingZoneClass> classEntities = new ArrayList<>();
         int registedClassNum = 0;
         try {
+            System.out.println("✅ getClassList 진입 완료");
             // 사용자 계정이 존재하는지(로그인 시간이 초과됐는지) 확인하는 코드
             boolean existedUser = userRepository.existsByEmail(email);
             if (!existedUser) return GetListOfCodingZoneClassResponseDto.notExistUser();
@@ -304,19 +305,26 @@ public class CodingZoneServiceImplement implements CodingZoneService {
 
             // 현재 날짜가 수요일에서 일요일 사이인지 확인 (Asia/Seoul 시간대 적용)
             ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-            ZonedDateTime lowerBound;
 
-            // 이번 주 목요일 오후 4시를 lower bound 변수에 저장
-            // 만약 현재가 월~수요일이면, 즉 이번주 목요일 오후 4시가 아직 미래일 때 이번 주 목요일(오후 4시)를 반환 받기
-            if (now.getDayOfWeek().getValue() <= DayOfWeek.WEDNESDAY.getValue()) {
-                lowerBound = now.with(TemporalAdjusters.next(DayOfWeek.THURSDAY))
-                        .withHour(16).withMinute(0).withSecond(0).withNano(0);
-            } else {
-                // 만약 현재가 목요일(오후 4시 이후) 또는 금~일요일인 경우, 즉 이번주 목요일 오후 4시가 과거일 때 이번 주 목요일(오후 4시)를 반환 받기
-                lowerBound = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.THURSDAY))
-                        .withHour(16).withMinute(0).withSecond(0).withNano(0);
-            }
-            // upperBound는 이번 주 일요일의 마지막 순간 (예: 23:59:59.999...)로 설정
+            // 운영을 위한 조건
+            // ZonedDateTime lowerBound;
+            // // 이번 주 목요일 오후 4시를 lower bound 변수에 저장
+            // // 만약 현재가 월~수요일이면, 즉 이번주 목요일 오후 4시가 아직 미래일 때 이번 주 목요일(오후 4시)를 반환 받기
+            // if (now.getDayOfWeek().getValue() <= DayOfWeek.WEDNESDAY.getValue()) {
+            //     lowerBound = now.with(TemporalAdjusters.next(DayOfWeek.THURSDAY))
+            //             .withHour(16).withMinute(0).withSecond(0).withNano(0);
+            // } else {
+            //     // 만약 현재가 목요일(오후 4시 이후) 또는 금~일요일인 경우, 즉 이번주 목요일 오후 4시가 과거일 때 이번 주 목요일(오후 4시)를 반환 받기
+            //     lowerBound = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.THURSDAY))
+            //             .withHour(16).withMinute(0).withSecond(0).withNano(0);
+            // }
+            // // upperBound는 이번 주 일요일의 마지막 순간 (예: 23:59:59.999...)로 설정
+            // ZonedDateTime upperBound = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
+            //         .with(LocalTime.MAX);
+
+            // 개발 & 테스트 기간을 위한 조건
+            ZonedDateTime lowerBound = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+                    .with(LocalTime.MIN);
             ZonedDateTime upperBound = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
                     .with(LocalTime.MAX);
 
@@ -362,19 +370,26 @@ public class CodingZoneServiceImplement implements CodingZoneService {
 
             // 현재 날짜가 수요일에서 일요일 사이인지 확인 (Asia/Seoul 시간대 적용)
             ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-            ZonedDateTime lowerBound;
 
-            // 이번 주 목요일 오후 4시를 lower bound 변수에 저장
-            // 만약 현재가 월~수요일이면, 즉 이번주 목요일 오후 4시가 아직 미래일 때 이번 주 목요일(오후 4시)를 반환 받기
-            if (now.getDayOfWeek().getValue() <= DayOfWeek.WEDNESDAY.getValue()) {
-                lowerBound = now.with(TemporalAdjusters.next(DayOfWeek.THURSDAY))
-                        .withHour(16).withMinute(0).withSecond(0).withNano(0);
-            } else {
-                // 만약 현재가 목요일(오후 4시 이후) 또는 금~일요일인 경우, 즉 이번주 목요일 오후 4시가 과거일 때 이번 주 목요일(오후 4시)를 반환 받기
-                lowerBound = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.THURSDAY))
-                        .withHour(16).withMinute(0).withSecond(0).withNano(0);
-            }
-            // upperBound는 이번 주 일요일의 마지막 순간 (예: 23:59:59.999...)로 설정
+            // 운영을 위한 조건
+            // ZonedDateTime lowerBound;
+            // // 이번 주 목요일 오후 4시를 lower bound 변수에 저장
+            // // 만약 현재가 월~수요일이면, 즉 이번주 목요일 오후 4시가 아직 미래일 때 이번 주 목요일(오후 4시)를 반환 받기
+            // if (now.getDayOfWeek().getValue() <= DayOfWeek.WEDNESDAY.getValue()) {
+            //     lowerBound = now.with(TemporalAdjusters.next(DayOfWeek.THURSDAY))
+            //             .withHour(16).withMinute(0).withSecond(0).withNano(0);
+            // } else {
+            //     // 만약 현재가 목요일(오후 4시 이후) 또는 금~일요일인 경우, 즉 이번주 목요일 오후 4시가 과거일 때 이번 주 목요일(오후 4시)를 반환 받기
+            //     lowerBound = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.THURSDAY))
+            //             .withHour(16).withMinute(0).withSecond(0).withNano(0);
+            // }
+            // // upperBound는 이번 주 일요일의 마지막 순간 (예: 23:59:59.999...)로 설정
+            // ZonedDateTime upperBound = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
+            //         .with(LocalTime.MAX);
+
+            // 개발 & 테스트 기간을 위한 조건
+            ZonedDateTime lowerBound = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+                    .with(LocalTime.MIN);
             ZonedDateTime upperBound = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
                     .with(LocalTime.MAX);
 
