@@ -48,7 +48,7 @@ public class CodingZoneClass {
     @Column(name = "week_day")
     private String weekDay;
 
-    @Column(name = "subjectId")
+    @Column(name = "subject_id")
     private int subjectId;
 
     public CodingZoneClass(CodingZoneClassAssignRequestDto dto) {
