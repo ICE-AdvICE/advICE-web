@@ -47,7 +47,7 @@ public class GroupInf {
     private String className; //과목명
 
     @Column(name = "subjectId")
-    private int subjectId;
+    private int subjectId; 
 
     public GroupInf(GroupInfUpdateRequestDto dto) {
         this.assistantName = dto.getAssistantName();

@@ -11,7 +11,7 @@ public class IcebreakerApplication {
     public static void main( String[] args) {
         // .env 파일 로드
         Dotenv dotenv = Dotenv.configure()
-            .directory("/app") // 로칼에서 실행할때 "backend/"로 수정 -> 작업후 다시 "/app"로 돌려놓기
+            .directory("backend/") // 로칼에서 실행할때 "backend/"로 수정 -> 작업후 다시 "/app"로 돌려놓기
             .ignoreIfMissing() // 파일이 없으면 무시
             .load();
 

@@ -39,7 +39,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class CodingZoneServiceImplement2 implements CodingZoneService {
+public class CodingZoneServiceImplement implements CodingZoneService {
 
     private final CodingZoneClassRepository codingZoneClassRepository;
     private final UserRepository userRepository;
@@ -285,11 +285,12 @@ public class CodingZoneServiceImplement2 implements CodingZoneService {
         return PutAttendanceResponseDto.success();
     }
 
-    @Override
+   @Override
     public ResponseEntity<? super GetListOfCodingZoneClassResponseDto> getClassList(Integer subjectId, String email) {
     List<CodingZoneClass> classEntities = new ArrayList<>();
         int registedClassNum = 0;
         try {
+            System.out.println("✅ getClassList 진입 완료");
             // 사용자 계정이 존재하는지(로그인 시간이 초과됐는지) 확인하는 코드
             boolean existedUser = userRepository.existsByEmail(email);
             if (!existedUser) return GetListOfCodingZoneClassResponseDto.notExistUser();
@@ -298,19 +299,26 @@ public class CodingZoneServiceImplement2 implements CodingZoneService {
 
             // 현재 날짜가 수요일에서 일요일 사이인지 확인 (Asia/Seoul 시간대 적용)
             ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-            ZonedDateTime lowerBound;
 
-            // 이번 주 목요일 오후 4시를 lower bound 변수에 저장
-            // 만약 현재가 월~수요일이면, 즉 이번주 목요일 오후 4시가 아직 미래일 때 이번 주 목요일(오후 4시)를 반환 받기
-            if (now.getDayOfWeek().getValue() <= DayOfWeek.WEDNESDAY.getValue()) {
-                lowerBound = now.with(TemporalAdjusters.next(DayOfWeek.THURSDAY))
-                        .withHour(16).withMinute(0).withSecond(0).withNano(0);
-            } else {
-                // 만약 현재가 목요일(오후 4시 이후) 또는 금~일요일인 경우, 즉 이번주 목요일 오후 4시가 과거일 때 이번 주 목요일(오후 4시)를 반환 받기
-                lowerBound = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.THURSDAY))
-                        .withHour(16).withMinute(0).withSecond(0).withNano(0);
-            }
-            // upperBound는 이번 주 일요일의 마지막 순간 (예: 23:59:59.999...)로 설정
+            // 운영을 위한 조건
+            // ZonedDateTime lowerBound;
+            // // 이번 주 목요일 오후 4시를 lower bound 변수에 저장
+            // // 만약 현재가 월~수요일이면, 즉 이번주 목요일 오후 4시가 아직 미래일 때 이번 주 목요일(오후 4시)를 반환 받기
+            // if (now.getDayOfWeek().getValue() <= DayOfWeek.WEDNESDAY.getValue()) {
+            //     lowerBound = now.with(TemporalAdjusters.next(DayOfWeek.THURSDAY))
+            //             .withHour(16).withMinute(0).withSecond(0).withNano(0);
+            // } else {
+            //     // 만약 현재가 목요일(오후 4시 이후) 또는 금~일요일인 경우, 즉 이번주 목요일 오후 4시가 과거일 때 이번 주 목요일(오후 4시)를 반환 받기
+            //     lowerBound = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.THURSDAY))
+            //             .withHour(16).withMinute(0).withSecond(0).withNano(0);
+            // }
+            // // upperBound는 이번 주 일요일의 마지막 순간 (예: 23:59:59.999...)로 설정
+            // ZonedDateTime upperBound = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
+            //         .with(LocalTime.MAX);
+
+            // 개발 & 테스트 기간을 위한 조건
+            ZonedDateTime lowerBound = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+                    .with(LocalTime.MIN);
             ZonedDateTime upperBound = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
                     .with(LocalTime.MAX);
 
@@ -325,7 +333,7 @@ public class CodingZoneServiceImplement2 implements CodingZoneService {
 
             // 다음 주 월요일부터 일요일까지의 수업만 조회
             classEntities = codingZoneClassRepository.findBySubjectIdAndClassDateBetween(
-                subjectId,
+                subjectId, 
                 nextMonday.format(DateTimeFormatter.ISO_LOCAL_DATE), 
                 nextSunday.format(DateTimeFormatter.ISO_LOCAL_DATE)
             );
@@ -356,19 +364,26 @@ public class CodingZoneServiceImplement2 implements CodingZoneService {
 
             // 현재 날짜가 수요일에서 일요일 사이인지 확인 (Asia/Seoul 시간대 적용)
             ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-            ZonedDateTime lowerBound;
 
-            // 이번 주 목요일 오후 4시를 lower bound 변수에 저장
-            // 만약 현재가 월~수요일이면, 즉 이번주 목요일 오후 4시가 아직 미래일 때 이번 주 목요일(오후 4시)를 반환 받기
-            if (now.getDayOfWeek().getValue() <= DayOfWeek.WEDNESDAY.getValue()) {
-                lowerBound = now.with(TemporalAdjusters.next(DayOfWeek.THURSDAY))
-                        .withHour(16).withMinute(0).withSecond(0).withNano(0);
-            } else {
-                // 만약 현재가 목요일(오후 4시 이후) 또는 금~일요일인 경우, 즉 이번주 목요일 오후 4시가 과거일 때 이번 주 목요일(오후 4시)를 반환 받기
-                lowerBound = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.THURSDAY))
-                        .withHour(16).withMinute(0).withSecond(0).withNano(0);
-            }
-            // upperBound는 이번 주 일요일의 마지막 순간 (예: 23:59:59.999...)로 설정
+            // 운영을 위한 조건
+            // ZonedDateTime lowerBound;
+            // // 이번 주 목요일 오후 4시를 lower bound 변수에 저장
+            // // 만약 현재가 월~수요일이면, 즉 이번주 목요일 오후 4시가 아직 미래일 때 이번 주 목요일(오후 4시)를 반환 받기
+            // if (now.getDayOfWeek().getValue() <= DayOfWeek.WEDNESDAY.getValue()) {
+            //     lowerBound = now.with(TemporalAdjusters.next(DayOfWeek.THURSDAY))
+            //             .withHour(16).withMinute(0).withSecond(0).withNano(0);
+            // } else {
+            //     // 만약 현재가 목요일(오후 4시 이후) 또는 금~일요일인 경우, 즉 이번주 목요일 오후 4시가 과거일 때 이번 주 목요일(오후 4시)를 반환 받기
+            //     lowerBound = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.THURSDAY))
+            //             .withHour(16).withMinute(0).withSecond(0).withNano(0);
+            // }
+            // // upperBound는 이번 주 일요일의 마지막 순간 (예: 23:59:59.999...)로 설정
+            // ZonedDateTime upperBound = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
+            //         .with(LocalTime.MAX);
+
+            // 개발 & 테스트 기간을 위한 조건
+            ZonedDateTime lowerBound = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+                    .with(LocalTime.MIN);
             ZonedDateTime upperBound = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
                     .with(LocalTime.MAX);
 
@@ -383,7 +398,7 @@ public class CodingZoneServiceImplement2 implements CodingZoneService {
 
             // 다음 주 월요일부터 일요일까지의 수업만 조회
             classEntities = codingZoneClassRepository.findBySubjectIdAndClassDateBetween(
-                subjectId,
+                subjectId, 
                 nextMonday.format(DateTimeFormatter.ISO_LOCAL_DATE), 
                 nextSunday.format(DateTimeFormatter.ISO_LOCAL_DATE)
             );
@@ -646,14 +661,99 @@ public class CodingZoneServiceImplement2 implements CodingZoneService {
     return DepriveAuthResponseDto.success();
     }
 
-    @Override
-    public ByteArrayResource generateAttendanceExcelOfGrade1() throws IOException {
-        return null;
-    }
 
     @Override
+    public ByteArrayResource generateAttendanceExcelOfGrade1() throws IOException {
+        List<CodingZoneRegister> codingZoneRegisters;
+
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("코딩존1 출석부"); // 시트 이름 설정
+
+        // 헤더 생성 및 스타일 설정
+        Row headerRow = sheet.createRow(0);
+        String[] columns = {"학번", "이름", "수업 날짜", "수업 시간", "출/결석"};
+        CellStyle headerStyle = workbook.createCellStyle();
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerStyle.setFont(headerFont);
+
+        for (int i = 0; i < columns.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerStyle);
+        }
+
+        // 코딩존1을 들은 모든 학생들을 학번순으로 불러오기
+        codingZoneRegisters = codingZoneRegisterRepository.findBySubjectIdOrderByUserStudentNumAsc(1);
+
+        // 데이터 채우기
+        int rowNum = 1;
+        for (CodingZoneRegister register : codingZoneRegisters) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(register.getUserStudentNum());
+            row.createCell(1).setCellValue(register.getUserName());
+
+            int classNum = register.getClassNum();
+            CodingZoneClass codingZoneClass = codingZoneClassRepository.findByClassNum(classNum);
+            row.createCell(2).setCellValue(codingZoneClass.getClassDate());
+            row.createCell(3).setCellValue(codingZoneClass.getClassTime());
+            row.createCell(4).setCellValue(register.getAttendance());
+        }
+
+        // 워크북을 바이트 배열로 변환
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        workbook.write(outputStream);
+        workbook.close();
+
+        return new ByteArrayResource(outputStream.toByteArray());
+    }
+
+    
+    @Override
     public ByteArrayResource generateAttendanceExcelOfGrade2() throws IOException {
-        return null;
+        List<CodingZoneRegister> codingZoneRegisters;
+
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("코딩존1 출석부"); // 시트 이름 설정
+
+        // 헤더 생성 및 스타일 설정
+        Row headerRow = sheet.createRow(0);
+        String[] columns = {"학번", "이름", "수업 날짜", "수업 시간", "출/결석"};
+        CellStyle headerStyle = workbook.createCellStyle();
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerStyle.setFont(headerFont);
+
+        for (int i = 0; i < columns.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerStyle);
+        }
+
+        // 코딩존1을 들은 모든 학생들을 학번순으로 불러오기
+        codingZoneRegisters = codingZoneRegisterRepository.findBySubjectIdOrderByUserStudentNumAsc(2);
+
+        // 데이터 채우기
+        int rowNum = 1;
+        for (CodingZoneRegister register : codingZoneRegisters) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(register.getUserStudentNum());
+            row.createCell(1).setCellValue(register.getUserName());
+
+            int classNum = register.getClassNum();
+            CodingZoneClass codingZoneClass = codingZoneClassRepository.findByClassNum(classNum);
+            row.createCell(2).setCellValue(codingZoneClass.getClassDate());
+            row.createCell(3).setCellValue(codingZoneClass.getClassTime());
+            row.createCell(4).setCellValue(register.getAttendance());
+        }
+
+        // 워크북을 바이트 배열로 변환
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        workbook.write(outputStream);
+        workbook.close();
+
+        return new ByteArrayResource(outputStream.toByteArray());
+
     }
 
     @Override
