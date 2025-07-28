@@ -47,7 +47,6 @@ import com.icehufs.icebreaker.domain.codingzone.service.CodingZoneService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -70,22 +69,42 @@ public class CodingZoneServiceImplement implements CodingZoneService {
             // 전역 처리로 사용자 계정 오류 예외처리
             if (!existedUser) throw new BusinessException("NOT_EXIST_USER", "사용자 계정이 존재하지 않습니다.", HttpStatus.NOT_FOUND); // 전역 예외처리로 중복 이메일 예외처리
 
-            for( PostMappingInfRequestDto requestDto : dto) { //  dto의 각 subjectId 확인하여 중복 체크
-                if (mappingInfRepository.existsBySubjectId(requestDto.getSubjectId())) 
-                    throw new BusinessException("DUPLICATED_SUBJECTID","이미 존재하는 코딩존 메핑 번호입니다",HttpStatus.CONFLICT);
-            }
+                List<Integer> duplicatedIds = new ArrayList<>(); //중복 매핑 번호가 있을 경우 담길 List
+                List<String> duplicatedNames = new ArrayList<>(); // 중복 교과목 이름이 있을 경우 담길 List
 
-            for( PostMappingInfRequestDto requestDto : dto) {
-                // subjectId 중복이 없다면, DB에 저장
-                MappingInf mappingInfEntity = new MappingInf(requestDto);
-                mappingInfRepository.save(mappingInfEntity);
-            }   
+                for (PostMappingInfRequestDto requestDto : dto) {
+                    // 매핑 번호 중복 확인
+                    if (mappingInfRepository.existsBySubjectId(requestDto.getSubjectId())) {
+                        duplicatedIds.add(requestDto.getSubjectId());
+                    }
+                    // 매핑 과목명 중복 확인
+                    if (mappingInfRepository.existsBySubjectName(requestDto.getSubjectName())) {
+                        duplicatedNames.add(requestDto.getSubjectName());
+                    }
+                }
 
-        } catch (BusinessException be) {
-            throw be;
+                if (!duplicatedIds.isEmpty() && !duplicatedNames.isEmpty()) {
+                    throw new BusinessException("DUPLICATED_SUBJECTID_AND_SUBJECTNAME","이미 존재하는 코딩존 매핑 번호와 코딩존 교과목입니다: ", HttpStatus.CONFLICT);
+                }
+
+                if (!duplicatedIds.isEmpty()) {
+                    throw new BusinessException("DUPLICATED_SUBJECTID","이미 존재하는 코딩존 매핑 번호입니다: ", HttpStatus.CONFLICT);
+                }
+
+                if (!duplicatedNames.isEmpty()) {
+                    throw new BusinessException("DUPLICATED_SUBJECTNAME","이미 존재하는 코딩존 매핑 이름입니다: ", HttpStatus.CONFLICT);
+                }
+
+
+                for (PostMappingInfRequestDto requestDto : dto) {
+                    MappingInf mappingInfEntity = new MappingInf(requestDto);
+                    mappingInfRepository.save(mappingInfEntity);
+                }
             
-        } catch (Exception exception) { // 위에서 잡지 못하는 에러는 INTERNAL_SERVER_ERROR로 처리
-            log.error("[DB 저장 중 예외 발생]", exception);
+         } catch (BusinessException be) { //위 DB에 확인 후 중복 예외는 여기서 던지고
+        throw be;
+
+        } catch (Exception exception) {  // DB 중복 예외가 아닌 경우는 여기서 통합적으로 예외 던짐
             throw new BusinessException("DataBase_ERROR", "데이터 베이스 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new PostMappingInfResponseDto("SU", "코딩존 메핑에 성공했습니다!"); // DB 저장까지 안전하게 되면 성공 응답 발송

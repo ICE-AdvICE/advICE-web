@@ -6,4 +6,5 @@ import com.icehufs.icebreaker.domain.codingzone.domain.MappingInf;
 public interface MappingInfRepository extends JpaRepository<MappingInf, Integer>{
   
     boolean existsBySubjectId(Integer subjectId);
+    boolean existsBySubjectName(String subjectName);
 }
