@@ -42,10 +42,11 @@ const MypageForm = ({ closeModal, modal }) => {
             if (modal.mypage) { //modal이 props로 전달되었으므로 사용 가능
                 const userDetailsData = await getMypageRequest(cookies.accessToken, setCookie, navigate, closeModal);
                 if (userDetailsData?.code === "SU") {
+                    const userData = userDetailsData.data;  // 새로 추가된 data 필드
                     setUserDetails({
-                        email: userDetailsData.email,
-                        studentNum: userDetailsData.studentNum,
-                        name: userDetailsData.name
+                        email: userData.email,
+                        studentNum: userData.studentNum,
+                        name: userData.name
                     });
                 }
     
