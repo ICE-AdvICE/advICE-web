@@ -79,8 +79,10 @@ public class CodingZoneServiceImplement implements CodingZoneService {
                 // subjectId 중복이 없다면, DB에 저장
                 MappingInf mappingInfEntity = new MappingInf(requestDto);
                 mappingInfRepository.save(mappingInfEntity);
-            }
-            
+            }   
+
+        } catch (BusinessException be) {
+            throw be;
             
         } catch (Exception exception) { // 위에서 잡지 못하는 에러는 INTERNAL_SERVER_ERROR로 처리
             log.error("[DB 저장 중 예외 발생]", exception);
