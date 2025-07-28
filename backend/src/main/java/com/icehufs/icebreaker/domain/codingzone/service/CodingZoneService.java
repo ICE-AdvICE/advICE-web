@@ -8,6 +8,7 @@ import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassAssig
 import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.HandleAuthRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PatchGroupInfRequestDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.request.PostMappingInfRequestDto;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,6 +24,7 @@ public interface CodingZoneService {
     ResponseEntity<? super DeleteAllInfResponseDto> deleteAll(String email);
     ResponseEntity<? super GiveAuthResponseDto> giveAuth(String email, HandleAuthRequestDto dto);
     ResponseEntity<? super DepriveAuthResponseDto> depriveAuth(String email,HandleAuthRequestDto dto);
+    PostMappingInfResponseDto postMappingCodingZoneClass(List<PostMappingInfRequestDto> dto, String email);
     ByteArrayResource generateAttendanceExcelOfGrade1() throws IOException;
     ByteArrayResource generateAttendanceExcelOfGrade2() throws IOException;
 
