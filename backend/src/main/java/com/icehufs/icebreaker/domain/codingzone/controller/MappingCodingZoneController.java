@@ -1,18 +1,25 @@
 package com.icehufs.icebreaker.domain.codingzone.controller;
 
 import java.util.List;
+
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.icehufs.icebreaker.domain.codingzone.domain.entity.Subject;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PostSubjectMappingRequestDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetSubjectMappingResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.PostSubjectMappingResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.service.SubjectService;
 import com.icehufs.icebreaker.util.ResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 @RestController
 @RequestMapping("/api/admin/subject-aliases") // 코딩존 메핑 관련 controller 
@@ -30,6 +37,13 @@ public class MappingCodingZoneController {
         return ResponseEntity.ok(ResponseDto.success(subjectService.postMappingCodingZoneClass(requestDto, email)));
     }
 
-
+    // 코딩존 매핑 조회 controller
+    @GetMapping("")
+    public ResponseEntity<ResponseDto<List<Subject>>> getSubjectMapping(
+        @AuthenticationPrincipal String email
+    ){
+        return ResponseEntity.ok(subjectService.GetMappingCodingZoneClass(email));
+    }
+    
 
 }
