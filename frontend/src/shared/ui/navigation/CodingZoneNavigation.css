@@ -1,0 +1,81 @@
+.cz-nav-wrapper { 
+  padding: 10px 20px;
+  display: flex;
+  justify-content: center;
+  max-width: 800px;
+  margin: 20px auto;
+}
+
+.cz-nav-container {
+  display: flex;
+  gap: 60px;
+  align-items: center;
+  flex-wrap: wrap; /* 작은 화면에서는 버튼들이 자동으로 줄바꿈 */
+}
+
+.cz-nav-button {
+  background-color: transparent;
+  border: none;
+  font-size: 16px;
+  color: #002D56;
+  padding: 10px 20px;
+  border-radius: 9999px;
+  font-weight: 400;
+  transition: all 0.3s ease;
+  flex: 1 1 auto; /* 버튼이 작은 화면에서 자연스럽게 크기 조절됨 */
+  text-align: center;
+}
+
+.cz-nav-button:hover {
+  cursor: pointer;
+  background-color: #e1e7ec;
+}
+
+.cz-nav-button.selected {
+  background-color: #002D56;
+  color: white;
+}
+
+/* 📱 모바일 대응 */
+@media (max-width: 600px) {
+  .cz-nav-wrapper {
+    max-width: 100%;
+    padding: 8px 10px;
+  }
+
+  .cz-nav-container {
+    gap: 10px;
+  }
+
+  .cz-nav-button {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+}
+
+/* 📱 작은 태블릿 대응 */
+@media (max-width: 768px) {
+  .cz-nav-container {
+    gap: 20px;
+  }
+
+  .cz-nav-button {
+    font-size: 15px;
+    padding: 8px 14px;
+  }
+}
+
+/* 💻 데스크톱 대응 */
+@media (min-width: 1024px) {
+  .cz-nav-wrapper {
+    max-width: 900px;
+  }
+
+  .cz-nav-container {
+    gap: 80px;
+  }
+
+  .cz-nav-button {
+    font-size: 16px;
+  }
+}
