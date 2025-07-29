@@ -8,7 +8,6 @@ import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassAssig
 import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.HandleAuthRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PatchGroupInfRequestDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.request.PostMappingInfRequestDto;
 
 import java.io.IOException;
 import java.util.List;
