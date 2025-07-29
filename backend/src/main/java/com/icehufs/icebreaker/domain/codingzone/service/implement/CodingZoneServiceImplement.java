@@ -69,8 +69,8 @@ public class CodingZoneServiceImplement implements CodingZoneService {
             // 전역 처리로 사용자 계정 오류 예외처리
             if (!existedUser) throw new BusinessException("NOT_EXIST_USER", "사용자 계정이 존재하지 않습니다.", HttpStatus.NOT_FOUND); // 전역 예외처리로 중복 이메일 예외처리
 
-                List<Integer> duplicatedIds = new ArrayList<>(); //중복 매핑 번호가 있을 경우 담길 List
-                List<String> duplicatedNames = new ArrayList<>(); // 중복 교과목 이름이 있을 경우 담길 List
+                List<Integer> duplicatedIds = new ArrayList<>(); //중복 매핑 번호가 있을 경우, 중복된 매핑 번호가 담길 List
+                List<String> duplicatedNames = new ArrayList<>(); // 중복 교과목 이름이 있을 경우,중복된 과목명이 담길 List
 
                 for (PostMappingInfRequestDto requestDto : dto) {
                     // 매핑 번호 중복 확인
@@ -84,15 +84,15 @@ public class CodingZoneServiceImplement implements CodingZoneService {
                 }
 
                 if (!duplicatedIds.isEmpty() && !duplicatedNames.isEmpty()) {
-                    throw new BusinessException("DUPLICATED_SUBJECTID_AND_SUBJECTNAME","이미 존재하는 코딩존 매핑 번호와 코딩존 교과목입니다: ", HttpStatus.CONFLICT);
+                    throw new BusinessException("DUPLICATED_SUBJECTID_AND_SUBJECTNAME","이미 존재하는 코딩존 매핑 번호와 코딩존 교과목입니다. ", HttpStatus.CONFLICT);
                 }
 
                 if (!duplicatedIds.isEmpty()) {
-                    throw new BusinessException("DUPLICATED_SUBJECTID","이미 존재하는 코딩존 매핑 번호입니다: ", HttpStatus.CONFLICT);
+                    throw new BusinessException("DUPLICATED_SUBJECTID","이미 존재하는 코딩존 매핑 번호입니다. ", HttpStatus.CONFLICT);
                 }
 
                 if (!duplicatedNames.isEmpty()) {
-                    throw new BusinessException("DUPLICATED_SUBJECTNAME","이미 존재하는 코딩존 매핑 이름입니다: ", HttpStatus.CONFLICT);
+                    throw new BusinessException("DUPLICATED_SUBJECTNAME","이미 존재하는 코딩존 교과목 이름입니다. ", HttpStatus.CONFLICT);
                 }
 
 
