@@ -1,18 +1,17 @@
 package com.icehufs.icebreaker.domain.codingzone.dto.response;
 
+import java.util.List;
+
+import com.icehufs.icebreaker.util.SubjectDto;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
 
 @Getter
-@Setter
 @AllArgsConstructor
-@NoArgsConstructor
-public class GetSubjectMappingResponseDto<T> {
+public class GetSubjectMappingResponseDto {
 
-  private String code;
-  private String message;
-  private T data;
+  private List<SubjectDto> subjectList;
   
 }
