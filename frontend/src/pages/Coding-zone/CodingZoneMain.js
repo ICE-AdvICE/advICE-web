@@ -53,7 +53,7 @@ const CodingMain = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [selectedZone, setSelectedZone] = useState(1);
-  const [selectedButton, setSelectedButton] = useState('codingzone');
+
   const [userReservedClass, setUserReservedClass] = useState(null);
   const [selectedDay, setSelectedDay] = useState('');
   const [isRendered, setIsRendered] = useState(false);
@@ -151,14 +151,6 @@ const CodingMain = () => {
       setSelectedDay(day);
     }
   };
-
-  useEffect(() => {
-    if (location.pathname === '/coding-zone') {
-      setSelectedButton('codingzone');
-    } else if (location.pathname.includes('/coding-zone/Codingzone_Attendance')) {
-      setSelectedButton('attendence');
-    }
-  }, [location.pathname]);
 
   const token = cookies.accessToken;
   /// 코딩존 수업 데이터를 가져오는 useEffect
@@ -264,18 +256,7 @@ const CodingMain = () => {
 
 
 
-  const handleTabChange = (tab) => {
-    if (tab === 'attendence' && !cookies.accessToken) {
-      alert("로그인 후 이용 가능합니다.");
-      return;
-    }
-    setSelectedButton(tab);
-    if (tab === 'codingzone') {
-      navigate('/coding-zone');
-    } else if (tab === 'attendence') {
-      navigate('/coding-zone/Codingzone_Attendance');
-    }
-  };
+
 
 
   const handleCardClick = (classItem) => {
@@ -286,16 +267,6 @@ const CodingMain = () => {
       item.classNum === classNum ? { ...item, isReserved, currentNumber: newCurrentNumber } : item
     );
     setClassList(updatedList);
-  };
-
-  const [showModal, setShowModal] = useState(false);
-
-  const handleOpenModal = () => {
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
   };
 
   const sliderSettings = {
@@ -332,15 +303,7 @@ const CodingMain = () => {
 
   return (
     <div className="codingzone-container">
-
-      <CodingZoneNavigation //코딩존 네비게이션바
-        selectedButton={selectedButton}
-        handleTabChange={handleTabChange}
-        handleOpenModal={handleOpenModal}
-        showModal={showModal}
-        handleCloseModal={handleCloseModal}
-      />
-
+      <CodingZoneNavigation />
       <Slider {...sliderSettings}>
         <div className="codingzone-top-container">
           <picture>

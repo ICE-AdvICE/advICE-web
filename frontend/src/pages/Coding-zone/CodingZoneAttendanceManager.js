@@ -8,7 +8,8 @@ import '../css/codingzone/codingzone_all_attendance.css';
 import { useNavigate } from 'react-router-dom';
 import InquiryModal from './InquiryModal.js';
 import { getczauthtypetRequest } from '../../shared/api/AuthApi.js';
-import CodingZoneNavigation from '../../shared/ui/navigation/CodingZoneNavigation.js'; //코딩존 네이게이션 바 컴포넌트 
+import CodingZoneNavigation from '../../shared/ui/navigation/CodingZoneNavigation.js'; //코딩존 네이게이션 바 컴포넌트
+
 
 const CodingZoneAttendanceManager = () => {
     const [authMessage, setAuthMessage] = useState('');
@@ -21,51 +22,17 @@ const CodingZoneAttendanceManager = () => {
     const [selectedGrade, setSelectedGrade] = useState(1);
     const token = cookies.accessToken;
     const navigate = useNavigate();
-    const [showModal, setShowModal] = useState(false);
     const [selectedButton, setSelectedButton] = useState('attendence');
-
-    const handleOpenModal = () => {
-        setShowModal(true);
-    };
-
-    const handleCloseModal = () => {
-        setShowModal(false);
-    };
 
 
     const handlecodingzonemanager = () => {
         navigate(`/coding-zone/Codingzone_Manager`);
     };
 
-    const handleFullManagement = () => {
-        navigate(`/coding-zone/Codingzone_All_Attend`);
-    };
 
     const handleClassRegistration = () => {
         navigate(`/coding-zone/coding-class-regist`);
     };
-
-
-    const handlecodingzone = () => {
-        setSelectedButton('codingzone');
-        navigate('/coding-zone');
-    };
-
-    const handlecodingzoneattendence = () => {
-
-        const token = cookies.accessToken;
-        if (!token) {
-            alert("로그인 후 이용 가능합니다.");
-            return;
-        }
-        setSelectedButton('attendence');
-        navigate(`/coding-zone/Codingzone_Attendance`);
-    };
-
-    const handleInquiry = () => {
-        setSelectedButton('attendence');
-    };
-
 
 
     useEffect(() => {
@@ -159,13 +126,8 @@ const CodingZoneAttendanceManager = () => {
     return (
         <div>
             <div className="codingzone-container">
-                <CodingZoneNavigation //코딩존 네비게이션바
-                    selectedButton={selectedButton}
-                    handleTabChange={handleTabChange}
-                    handleOpenModal={handleOpenModal}
-                    showModal={showModal}
-                    handleCloseModal={handleCloseModal}
-                />
+                <CodingZoneNavigation />
+
                 <div className="banner_img_container">
                     <img src="/codingzone_attendance5.png" className="banner" />
                 </div>
@@ -173,7 +135,7 @@ const CodingZoneAttendanceManager = () => {
             <div className="cza_button_container" style={{ textAlign: 'center' }}>
                 <button
                     className={`btn-attend ${activeButton === 'check' ? 'active' : ''}`}
-                    onClick={() => { setActiveButton('check'); handlecodingzoneattendence(); }}
+                    onClick={() => { setActiveButton('check'); navigate(`/coding-zone/Codingzone_Attendance`); }}
                 >
                     출결 확인
                 </button>

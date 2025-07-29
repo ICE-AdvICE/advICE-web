@@ -18,38 +18,7 @@ const CodingZoneMyAttendance = () => {
     const [cookies, setCookie] = useCookies(['accessToken']);
     const [activeButton, setActiveButton] = useState('check');
     const token = cookies.accessToken;
-    const [selectedButton, setSelectedButton] = useState('attendence');
     const navigate = useNavigate();
-    const [showModal, setShowModal] = useState(false);
-
-    const handleOpenModal = () => {
-        setShowModal(true);
-    };
-
-    const handleCloseModal = () => {
-        setShowModal(false);
-    };
-    const handlecodingzone = () => {
-        setSelectedButton('codingzone');
-        navigate('/coding-zone');
-    };
-
-    const handlecodingzoneattendence = () => {
-
-        const token = cookies.accessToken;
-        if (!token) {
-            alert("로그인 후 이용 가능합니다.");
-            return;
-        }
-        setSelectedButton('attendence');
-        navigate(`/coding-zone/Codingzone_Attendance`);
-    };
-
-    const handleInquiry = () => {
-        setSelectedButton('attendence');
-    };
-
-
 
     const handlecodingzonemanager = () => {
         navigate(`/coding-zone/Codingzone_Manager`);
@@ -130,13 +99,7 @@ const CodingZoneMyAttendance = () => {
     return (
         <div>
             <div className="codingzone-container">
-                <CodingZoneNavigation //코딩존 네비게이션바
-                    selectedButton={selectedButton}
-                    handleTabChange={handleTabChange}
-                    handleOpenModal={handleOpenModal}
-                    showModal={showModal}
-                    handleCloseModal={handleCloseModal}
-                />
+               <CodingZoneNavigation/>
 
                 <div className="banner_img_container">
                     <img src="/codingzone_attendance2.png" className="banner" />

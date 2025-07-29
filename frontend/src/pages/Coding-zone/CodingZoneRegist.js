@@ -22,36 +22,6 @@ const CodingZoneRegist = () => {
     const token = cookies.accessToken;
     const [activeButton, setActiveButton] = useState('manage_class');
     const navigate = useNavigate();
-    const [showModal, setShowModal] = useState(false);
-    const [selectedButton, setSelectedButton] = useState('attendence');
-
-    const handleOpenModal = () => {
-        setShowModal(true);
-    };
-
-    const handleCloseModal = () => {
-        setShowModal(false);
-    };
-
-    const handlecodingzone = () => {
-        setSelectedButton('codingzone');
-        navigate('/coding-zone');
-    };
-
-    const handlecodingzoneattendence = () => {
-
-        const token = cookies.accessToken;
-        if (!token) {
-            alert("로그인 후 이용 가능합니다.");
-            return;
-        }
-        setSelectedButton('attendence');
-        navigate(`/coding-zone/Codingzone_Attendance`);
-    };
-
-    const handleInquiry = () => {
-        setSelectedButton('attendence');
-    };
 
     const handlecodingzonemanager = () => {
         navigate(`/coding-zone/Codingzone_Manager`);
@@ -498,13 +468,7 @@ const CodingZoneRegist = () => {
     return (
         <div className="class-regist-main-container">
             <div className="codingzone-container">
-                <CodingZoneNavigation //코딩존 네비게이션바
-                    selectedButton={selectedButton}
-                    handleTabChange={handleTabChange}
-                    handleOpenModal={handleOpenModal}
-                    showModal={showModal}
-                    handleCloseModal={handleCloseModal}
-                />
+                <CodingZoneNavigation/>
 
                 <div className="banner_img_container">
                     <img src="/codingzone_attendance4.png" className="banner" />
@@ -513,7 +477,7 @@ const CodingZoneRegist = () => {
                     <div className="cza_button_container" style={{ textAlign: 'center' }}>
                         <button
                             className={`btn-attend ${activeButton === 'check' ? 'active' : ''}`}
-                            onClick={() => { setActiveButton('check'); handlecodingzoneattendence(); }}
+                            onClick={() => { setActiveButton('check'); navigate(`/coding-zone/Codingzone_Attendance`); }}
                         >
                             출결 확인
                         </button>

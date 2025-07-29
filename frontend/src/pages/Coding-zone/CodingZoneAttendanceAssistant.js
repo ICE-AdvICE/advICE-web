@@ -22,31 +22,7 @@ const CodingZoneAttendanceAssistant = () => {
     const token = cookies.accessToken;
     const navigate = useNavigate();
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const [showModal, setShowModal] = useState(false);
-    const [selectedButton, setSelectedButton] = useState('attendence');
-
-    const handleOpenModal = () => {
-        setShowModal(true);
-    };
-
-    const handleCloseModal = () => {
-        setShowModal(false);
-    };
-
-    const handlecodingzone = () => {
-        setSelectedButton('codingzone');
-        navigate('/coding-zone');
-    };
-
-    const handlecodingzoneattendence = () => {
-        setSelectedButton('attendence');
-        navigate(`/coding-zone/Codingzone_Attendance`);
-    };
-
-    const handleInquiry = () => {
-        setSelectedButton('inquiry');
-    };
-
+    
 
 
     useEffect(() => {
@@ -143,13 +119,7 @@ const CodingZoneAttendanceAssistant = () => {
     return (
         <div>
             <div className="codingzone-container">
-                <CodingZoneNavigation //코딩존 네비게이션바
-                    selectedButton={selectedButton}
-                    handleTabChange={handleTabChange}
-                    handleOpenModal={handleOpenModal}
-                    showModal={showModal}
-                    handleCloseModal={handleCloseModal}
-                />
+                <CodingZoneNavigation/>
                 <div className="banner_img_container">
                     <img src="/codingzone_attendance3.png" className="banner" />
                 </div>
@@ -157,7 +127,7 @@ const CodingZoneAttendanceAssistant = () => {
             <div className="cza_button_container" style={{ textAlign: 'center' }}>
                 <button
                     className={`btn-attend ${activeButton === 'check' ? 'active' : ''}`}
-                    onClick={() => { setActiveButton('check'); handlecodingzoneattendence(); }}
+                    onClick={() => { setActiveButton('check');navigate('/coding-zone/Codingzone_Attendance') }}
                 >
                     출결 확인
                 </button>
