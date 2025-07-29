@@ -3,16 +3,19 @@ package com.icehufs.icebreaker.domain.codingzone.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.Subject;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PostSubjectMappingRequestDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetSubjectMappingResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.PostSubjectMappingResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.repository.SubjectRepository;
 import com.icehufs.icebreaker.domain.membership.repository.UserRepository;
 import com.icehufs.icebreaker.exception.BusinessException;
 import com.icehufs.icebreaker.util.ResponseDto;
+import com.icehufs.icebreaker.util.SubjectDto;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -68,7 +71,7 @@ public class SubjectService {
 
     }
 
-    public ResponseDto<List<Subject>> GetMappingCodingZoneClass(String email) {
+    public List<SubjectDto> getMappingCodingZoneClass(String email) {
 
         boolean existedUser = userRepository.existsByEmail(email);
         // 전역 처리로 사용자 계정 오류 예외처리
@@ -78,8 +81,10 @@ public class SubjectService {
         if (!subjectRepository.existsBySubjectIdIsNotNull())
             throw new BusinessException("NOT_EXIST_MAPPING", "아직 등록된 코딩존 교과목이 없습니다.", HttpStatus.NOT_FOUND);
 
-        List<Subject> subjectList = subjectRepository.findAll();
-        return ResponseDto.success("매핑 정보가 성공적으로 반환되었습니다.", subjectList);
-
+        List<Subject> subjectList = subjectRepository.findAll();//DB에서 꺼내서 Entity 리스트로 만든다음에
+        return subjectList.stream()
+            .map(subject -> new SubjectDto(subject.getSubjectId(), subject.getSubjectName())) //.map으로 Subject객체 하나를 SubjectDto로 변환
+                .toList();  // 바꾼 SubjectDto를 리스트 구조로 바꾸고
+                // 즉, 그 각각의 Subject Entity를 Dto로 바꾸는 과정임
     }
 }
