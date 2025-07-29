@@ -12,6 +12,7 @@ import com.icehufs.icebreaker.domain.codingzone.dto.response.PostSubjectMappingR
 import com.icehufs.icebreaker.domain.codingzone.repository.SubjectRepository;
 import com.icehufs.icebreaker.domain.membership.repository.UserRepository;
 import com.icehufs.icebreaker.exception.BusinessException;
+import com.icehufs.icebreaker.util.ResponseDto;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -66,5 +67,19 @@ public class SubjectService {
         
 
     }
-}
 
+    public ResponseDto<List<Subject>> GetMappingCodingZoneClass(String email) {
+
+        boolean existedUser = userRepository.existsByEmail(email);
+        // 전역 처리로 사용자 계정 오류 예외처리
+        if (!existedUser) throw new BusinessException("NOT_EXIST_USER", "사용자 계정이 존재하지 않습니다.", HttpStatus.NOT_FOUND); // 전역 예외처리로 중복 이메일 예외처리
+        
+        //아직 DB에 어떠한 매핑 정보도 없을 때, 예외 처리
+        if (!subjectRepository.existsBySubjectIdIsNotNull())
+            throw new BusinessException("NOT_EXIST_MAPPING", "아직 등록된 코딩존 교과목이 없습니다.", HttpStatus.NOT_FOUND);
+
+        List<Subject> subjectList = subjectRepository.findAll();
+        return ResponseDto.success("매핑 정보가 성공적으로 반환되었습니다.", subjectList);
+
+    }
+}
