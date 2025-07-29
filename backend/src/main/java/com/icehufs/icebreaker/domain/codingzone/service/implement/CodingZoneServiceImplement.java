@@ -4,7 +4,6 @@ import com.icehufs.icebreaker.domain.codingzone.dto.response.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -24,14 +23,12 @@ import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassAssig
 import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.HandleAuthRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PatchGroupInfRequestDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.request.PostMappingInfRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.object.CodingZoneStudentListItem;
 import com.icehufs.icebreaker.domain.codingzone.dto.object.PersAttendManagListItem;
 import com.icehufs.icebreaker.domain.codingzone.dto.object.ReservedClassListItem;
 import com.icehufs.icebreaker.common.ResponseDto;
 import com.icehufs.icebreaker.domain.article.dto.response.CheckOwnOfArticleResponseDto;
 import com.icehufs.icebreaker.domain.auth.domain.entity.Authority;
-import com.icehufs.icebreaker.domain.codingzone.domain.MappingInf;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneClass;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneRegister;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.GroupInf;
@@ -40,18 +37,16 @@ import com.icehufs.icebreaker.domain.auth.repostiory.AuthorityRepository;
 import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneClassRepository;
 import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneRegisterRepository;
 import com.icehufs.icebreaker.domain.codingzone.repository.GroupInfRepository;
-import com.icehufs.icebreaker.domain.codingzone.repository.MappingInfRepository;
 import com.icehufs.icebreaker.domain.membership.repository.UserRepository;
-import com.icehufs.icebreaker.exception.BusinessException;
 import com.icehufs.icebreaker.domain.codingzone.service.CodingZoneService;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneClassAssignResponseDto;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class CodingZoneServiceImplement implements CodingZoneService {
 
     private final CodingZoneClassRepository codingZoneClassRepository;
@@ -59,56 +54,6 @@ public class CodingZoneServiceImplement implements CodingZoneService {
     private final AuthorityRepository authorityRepository;
     private final GroupInfRepository groupInfRepository;
     private final CodingZoneRegisterRepository codingZoneRegisterRepository;
-    private final MappingInfRepository mappingInfRepository;
-
-    // 코딩존 매핑 등록 
-    @Override
-    public PostMappingInfResponseDto postMappingCodingZoneClass(List<PostMappingInfRequestDto> dto, String email){
-        try {
-            boolean existedUser = userRepository.existsByEmail(email);
-            // 전역 처리로 사용자 계정 오류 예외처리
-            if (!existedUser) throw new BusinessException("NOT_EXIST_USER", "사용자 계정이 존재하지 않습니다.", HttpStatus.NOT_FOUND); // 전역 예외처리로 중복 이메일 예외처리
-
-                List<Integer> duplicatedIds = new ArrayList<>(); //중복 매핑 번호가 있을 경우, 중복된 매핑 번호가 담길 List
-                List<String> duplicatedNames = new ArrayList<>(); // 중복 교과목 이름이 있을 경우,중복된 과목명이 담길 List
-
-                for (PostMappingInfRequestDto requestDto : dto) {
-                    // 매핑 번호 중복 확인
-                    if (mappingInfRepository.existsBySubjectId(requestDto.getSubjectId())) {
-                        duplicatedIds.add(requestDto.getSubjectId());
-                    }
-                    // 매핑 과목명 중복 확인
-                    if (mappingInfRepository.existsBySubjectName(requestDto.getSubjectName())) {
-                        duplicatedNames.add(requestDto.getSubjectName());
-                    }
-                }
-
-                if (!duplicatedIds.isEmpty() && !duplicatedNames.isEmpty()) {
-                    throw new BusinessException("DUPLICATED_SUBJECTID_AND_SUBJECTNAME","이미 존재하는 코딩존 매핑 번호와 코딩존 교과목입니다. ", HttpStatus.CONFLICT);
-                }
-
-                if (!duplicatedIds.isEmpty()) {
-                    throw new BusinessException("DUPLICATED_SUBJECTID","이미 존재하는 코딩존 매핑 번호입니다. ", HttpStatus.CONFLICT);
-                }
-
-                if (!duplicatedNames.isEmpty()) {
-                    throw new BusinessException("DUPLICATED_SUBJECTNAME","이미 존재하는 코딩존 교과목 이름입니다. ", HttpStatus.CONFLICT);
-                }
-
-
-                for (PostMappingInfRequestDto requestDto : dto) {
-                    MappingInf mappingInfEntity = new MappingInf(requestDto);
-                    mappingInfRepository.save(mappingInfEntity);
-                }
-            
-         } catch (BusinessException be) { //위 DB에 확인 후 중복 예외는 여기서 던지고
-        throw be;
-
-        } catch (Exception exception) {  // DB 중복 예외가 아닌 경우는 여기서 통합적으로 예외 던짐
-            throw new BusinessException("DataBase_ERROR", "데이터 베이스 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new PostMappingInfResponseDto("SU", "코딩존 메핑에 성공했습니다!"); // DB 저장까지 안전하게 되면 성공 응답 발송
-    }
 
     @Override
     public ResponseEntity<? super CodingZoneClassAssignResponseDto> codingzoneClassAssign(List<CodingZoneClassAssignRequestDto> dto, String email){
