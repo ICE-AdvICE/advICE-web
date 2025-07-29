@@ -6,10 +6,8 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.icehufs.icebreaker.common.ResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.Subject;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PostSubjectMappingRequestDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GetSubjectMappingResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.PostSubjectMappingResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.repository.SubjectRepository;
 import com.icehufs.icebreaker.domain.membership.repository.UserRepository;
