@@ -24,7 +24,6 @@ public interface CodingZoneService {
     ResponseEntity<? super DeleteAllInfResponseDto> deleteAll(String email);
     ResponseEntity<? super GiveAuthResponseDto> giveAuth(String email, HandleAuthRequestDto dto);
     ResponseEntity<? super DepriveAuthResponseDto> depriveAuth(String email,HandleAuthRequestDto dto);
-    PostMappingInfResponseDto postMappingCodingZoneClass(List<PostMappingInfRequestDto> dto, String email);
     ByteArrayResource generateAttendanceExcelOfGrade1() throws IOException;
     ByteArrayResource generateAttendanceExcelOfGrade2() throws IOException;
 
