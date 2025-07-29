@@ -5,9 +5,9 @@ import { useCookies } from "react-cookie";
 import InquiryModal from './InquiryModal';
 import '../css/codingzone/codingzone-main.css';
 import { resetCodingZoneData } from '../../features/api/Admin/Codingzone/ClassApi';
-import { uploadGroupData, fetchGroupClasses,uploadClassForWeek } from '../../entities/api/CodingZone/AdminApi';
+import { uploadGroupData, fetchGroupClasses, uploadClassForWeek } from '../../entities/api/CodingZone/AdminApi';
 import { getczauthtypetRequest } from '../../shared/api/AuthApi';
-
+import CodingZoneNavigation from '../../shared/ui/navigation/CodingZoneNavigation.js'; //코딩존 네이게이션 바 컴포넌트
 
 const CodingZoneRegist = () => {
     const [boxes, setBoxes] = useState([{ day: '', time: '', assistant: '', className: '', grade: '', maxPers: '' }]);
@@ -39,15 +39,15 @@ const CodingZoneRegist = () => {
     };
 
     const handlecodingzoneattendence = () => {
-   
+
         const token = cookies.accessToken;
         if (!token) {
-          alert("로그인 후 이용 가능합니다.");
-          return; 
+            alert("로그인 후 이용 가능합니다.");
+            return;
         }
         setSelectedButton('attendence');
         navigate(`/coding-zone/Codingzone_Attendance`);
-      };
+    };
 
     const handleInquiry = () => {
         setSelectedButton('attendence');
@@ -70,7 +70,7 @@ const CodingZoneRegist = () => {
 
     useEffect(() => {
         const fetchAuthType = async () => {
-            const response = await getczauthtypetRequest(token,setCookie, navigate);
+            const response = await getczauthtypetRequest(token, setCookie, navigate);
             if (response) {
                 switch (response.code) {
                     case "CA":
@@ -261,7 +261,7 @@ const CodingZoneRegist = () => {
             weekDay: box.day,
             grade: parseInt(box.grade)
         }));
-        const response = await uploadGroupData(formattedData, cookies.accessToken,setCookie, navigate);
+        const response = await uploadGroupData(formattedData, cookies.accessToken, setCookie, navigate);
         handleGroupUploadResponse(response);
     };
 
@@ -302,7 +302,7 @@ const CodingZoneRegist = () => {
                 grade: parseInt(box.grade)
             };
         });
-        const response = await uploadClassForWeek(formattedData, cookies.accessToken,setCookie, navigate);
+        const response = await uploadClassForWeek(formattedData, cookies.accessToken, setCookie, navigate);
         handleuploadClassForWeekResponse(response);
     };
 
@@ -498,34 +498,14 @@ const CodingZoneRegist = () => {
     return (
         <div className="class-regist-main-container">
             <div className="codingzone-container">
-                <div className='select-container'>
-                    <span> | </span>
-                    <button
-                        onClick={handlecodingzone}
-                        className={selectedButton === 'codingzone' ? 'selected' : ''}
-                    >
-                        코딩존 예약
-                    </button>
-                    <span> | </span>
-                    <button
-                        onClick={handlecodingzoneattendence}
-                        className={selectedButton === 'attendence' ? 'selected' : ''}
-                    >
-                        출결 관리
-                    </button>
-                    <span> | </span>
-                    <button
-                        onClick={() => {
-                            handleInquiry();
-                            handleOpenModal();
-                        }}
-                        className={selectedButton === 'inquiry' ? 'selected' : ''}
-                    >
-                        문의 하기
-                    </button>
-                    {showModal && <InquiryModal isOpen={showModal} onClose={handleCloseModal} />}
-                    <span> | </span>
-                </div>
+                <CodingZoneNavigation //코딩존 네비게이션바
+                    selectedButton={selectedButton}
+                    handleTabChange={handleTabChange}
+                    handleOpenModal={handleOpenModal}
+                    showModal={showModal}
+                    handleCloseModal={handleCloseModal}
+                />
+
                 <div className="banner_img_container">
                     <img src="/codingzone_attendance4.png" className="banner" />
                 </div>

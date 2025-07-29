@@ -8,6 +8,7 @@ import '../css/codingzone/codingzone_all_attendance.css';
 import { useNavigate } from 'react-router-dom';
 import InquiryModal from './InquiryModal.js';
 import { getczauthtypetRequest } from '../../shared/api/AuthApi.js';
+import CodingZoneNavigation from '../../shared/ui/navigation/CodingZoneNavigation.js'; //코딩존 네이게이션 바 컴포넌트 
 
 const CodingZoneAttendanceManager = () => {
     const [authMessage, setAuthMessage] = useState('');
@@ -69,7 +70,7 @@ const CodingZoneAttendanceManager = () => {
 
     useEffect(() => {
         const fetchAuthType = async () => {
-            const response = await getczauthtypetRequest(token,setCookie, navigate);
+            const response = await getczauthtypetRequest(token, setCookie, navigate);
             if (response) {
                 switch (response.code) {
                     case "CA":
@@ -102,7 +103,7 @@ const CodingZoneAttendanceManager = () => {
 
     useEffect(() => {
         const fetchAttendanceData = async () => {
-            const response = await getczallattendRequest(token,setCookie, navigate);
+            const response = await getczallattendRequest(token, setCookie, navigate);
             if (response && response.code === "SU") {
                 // Filter data based on selected grade
                 const filteredData = response.studentList.filter(student => student.grade === selectedGrade);
@@ -151,41 +152,20 @@ const CodingZoneAttendanceManager = () => {
             alert("로그인 후 이용 가능합니다.");
             return;
         }
-        await downloadAttendanceExcel(token, selectedGrade,setCookie, navigate);
+        await downloadAttendanceExcel(token, selectedGrade, setCookie, navigate);
     };
 
 
     return (
         <div>
             <div className="codingzone-container">
-                <div className='select-container'>
-                    <span> | </span>
-                    <button
-                        onClick={handlecodingzone}
-                        className={selectedButton === 'codingzone' ? 'selected' : ''}
-                    >
-                        코딩존 예약
-                    </button>
-                    <span> | </span>
-                    <button
-                        onClick={handlecodingzoneattendence}
-                        className={selectedButton === 'attendence' ? 'selected' : ''}
-                    >
-                        출결 관리
-                    </button>
-                    <span> | </span>
-                    <button
-                        onClick={() => {
-                            handleInquiry();
-                            handleOpenModal();
-                        }}
-                        className={selectedButton === 'inquiry' ? 'selected' : ''}
-                    >
-                        문의 하기
-                    </button>
-                    {showModal && <InquiryModal isOpen={showModal} onClose={handleCloseModal} />}
-                    <span> | </span>
-                </div>
+                <CodingZoneNavigation //코딩존 네비게이션바
+                    selectedButton={selectedButton}
+                    handleTabChange={handleTabChange}
+                    handleOpenModal={handleOpenModal}
+                    showModal={showModal}
+                    handleCloseModal={handleCloseModal}
+                />
                 <div className="banner_img_container">
                     <img src="/codingzone_attendance5.png" className="banner" />
                 </div>
