@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.Subject;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PostSubjectMappingRequestDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetSubjectMappingResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.PostSubjectMappingResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.service.SubjectService;
 import com.icehufs.icebreaker.util.ResponseDto;
@@ -35,10 +36,10 @@ public class MappingCodingZoneController {
 
     // 코딩존 매핑 조회 controller
     @GetMapping("")
-    public ResponseEntity<ResponseDto<List<Subject>>> getSubjectMapping(
+    public ResponseEntity<ResponseDto<GetSubjectMappingResponseDto>> getSubjectMapping(
         @AuthenticationPrincipal String email
     ){
-        return ResponseEntity.ok(subjectService.GetMappingCodingZoneClass(email));
+        return ResponseEntity.ok(new ResponseDto<>("SU", "매핑 조회 성공했습니다!", new GetSubjectMappingResponseDto(subjectService.getMappingCodingZoneClass(email))));
     }  
 }
 
