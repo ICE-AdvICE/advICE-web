@@ -5,8 +5,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class SubjectDto {
+public class SubjectResponseDto {
 
     private Integer subjectId;
     private String subjectName;
+    
 }
