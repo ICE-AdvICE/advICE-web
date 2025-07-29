@@ -19,9 +19,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
-@RequestMapping("/api/admin/subjects-aliases") // 코딩존 메핑 관련 controller 
+@RequestMapping("/api/admin/subjects") // 코딩존 메핑 관련 controller 
 @RequiredArgsConstructor
-public class MappingCodingZoneController {
+public class SubjectController {
 
     private final SubjectService subjectService;
 
