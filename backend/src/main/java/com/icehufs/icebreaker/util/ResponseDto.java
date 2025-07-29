@@ -29,7 +29,7 @@ public class ResponseDto<T> {
 	public static <T> ResponseDto<T> success(String message, T data) {
 		return new ResponseDto<>("SU", message, data);
 	}
-
+	
 	public static <T> ResponseDto<T> success(String code, String message) {
 		return new ResponseDto<>(code, message, null);
 	}
