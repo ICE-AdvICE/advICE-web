@@ -9,13 +9,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PostSubjectMappingRequestDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GetSubjectMappingResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.PostSubjectMappingResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.service.SubjectService;
 import com.icehufs.icebreaker.util.ResponseDto;
+import com.icehufs.icebreaker.util.SubjectResponseDto;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+
+
 
 @RestController
 @RequestMapping("/api/admin/subjects") // 코딩존 메핑 관련 controller 
@@ -35,10 +38,10 @@ public class SubjectController {
 
     // 코딩존 매핑 조회 controller
     @GetMapping("")
-    public ResponseEntity<ResponseDto<GetSubjectMappingResponseDto>> getSubjectMapping(
+    public ResponseEntity<ResponseDto<List<SubjectResponseDto>>> getSubjectMapping(
         @AuthenticationPrincipal String email
     ){
-        return ResponseEntity.ok(new ResponseDto<>("SU", "매핑 조회 성공했습니다!", new GetSubjectMappingResponseDto(subjectService.getMappingCodingZoneClass(email))));
+        return ResponseEntity.ok(ResponseDto.success(subjectService.getMappingCodingZoneClass(email)));
     }  
 }
 
