@@ -7,6 +7,8 @@ import '../css/codingzone/codingzone_attend.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import InquiryModal from './InquiryModal.js';
 import { getczattendlistRequest } from '../../features/api/CodingzoneApi.js';
+import CodingZoneNavigation from '../../shared/ui/navigation/CodingZoneNavigation.js'; //코딩존 네이게이션 바 컴포넌트
+
 const CodingZoneMyAttendance = () => {
     const [authMessage, setAuthMessage] = useState('');
     const [attendList, setAttendList] = useState([]);
@@ -16,38 +18,7 @@ const CodingZoneMyAttendance = () => {
     const [cookies, setCookie] = useCookies(['accessToken']);
     const [activeButton, setActiveButton] = useState('check');
     const token = cookies.accessToken;
-    const [selectedButton, setSelectedButton] = useState('attendence'); 
     const navigate = useNavigate();
-    const [showModal, setShowModal] = useState(false);
-
-    const handleOpenModal = () => {
-        setShowModal(true);
-    };
-
-    const handleCloseModal = () => {
-        setShowModal(false);
-    };
-    const handlecodingzone = () => {
-        setSelectedButton('codingzone');
-        navigate('/coding-zone');
-    };
-
-    const handlecodingzoneattendence = () => {
-   
-        const token = cookies.accessToken;
-        if (!token) {
-          alert("로그인 후 이용 가능합니다.");
-          return; 
-        }
-        setSelectedButton('attendence');
-        navigate(`/coding-zone/Codingzone_Attendance`);
-      };
-
-    const handleInquiry = () => {
-        setSelectedButton('attendence');
-    };
-
-
 
     const handlecodingzonemanager = () => {
         navigate(`/coding-zone/Codingzone_Manager`);
@@ -81,7 +52,7 @@ const CodingZoneMyAttendance = () => {
 
     useEffect(() => {
         const fetchAuthType = async () => {
-            const response = await getczauthtypetRequest(token,setCookie, navigate);
+            const response = await getczauthtypetRequest(token, setCookie, navigate);
             if (response) {
                 switch (response.code) {
                     case "CA":
@@ -111,7 +82,7 @@ const CodingZoneMyAttendance = () => {
 
     useEffect(() => {
         const fetchAttendList = async () => {
-            const response = await getczattendlistRequest(token,setCookie, navigate);
+            const response = await getczattendlistRequest(token, setCookie, navigate);
             if (response && response.code === "SU") {
                 setAttendList(response.attendList);
             } else if (response && response.code === "NU") {
@@ -128,34 +99,8 @@ const CodingZoneMyAttendance = () => {
     return (
         <div>
             <div className="codingzone-container">
-                <div className='select-container'>
-                    <span> | </span>
-                    <button
-                        onClick={handlecodingzone}
-                        className={selectedButton === 'codingzone' ? 'selected' : ''}
-                    >
-                        코딩존 예약
-                    </button>
-                    <span> | </span>
-                    <button
-                        onClick={handlecodingzoneattendence}
-                        className={selectedButton === 'attendence' ? 'selected' : ''}
-                    >
-                        출결 관리
-                    </button>
-                    <span> | </span>
-                    <button
-                        onClick={() => {
-                            handleInquiry();
-                            handleOpenModal();
-                        }}
-                        className={selectedButton === 'inquiry' ? 'selected' : ''}
-                    >
-                        문의 하기
-                    </button>
-                    {showModal && <InquiryModal isOpen={showModal} onClose={handleCloseModal} />}
-                    <span> | </span>
-                </div>
+               <CodingZoneNavigation/>
+
                 <div className="banner_img_container">
                     <img src="/codingzone_attendance2.png" className="banner" />
                 </div>

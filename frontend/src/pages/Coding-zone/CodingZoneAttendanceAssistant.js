@@ -6,12 +6,14 @@ import "react-datepicker/dist/react-datepicker.css";
 import '../css/codingzone/codingzone-main.css';
 import '../css/codingzone/codingzone_attend.css';
 import '../css/codingzone/codingzone_manager.css';
-import { getczreservedlistRequest} from '../../features/api/Admin/Codingzone/ClassApi.js';
+import { getczreservedlistRequest } from '../../features/api/Admin/Codingzone/ClassApi.js';
 import { getczauthtypetRequest } from '../../shared/api/AuthApi.js';
-import { putczattendc1Request,putczattendc2Request} from '../../features/api/Admin/Codingzone/AttendanceApi.js';
+import { putczattendc1Request, putczattendc2Request } from '../../features/api/Admin/Codingzone/AttendanceApi.js';
 import InquiryModal from './InquiryModal.js';
 import { getczattendlistRequest } from '../../features/api/CodingzoneApi.js';
-const CodingZoneAttendanceAssistant= () => {
+import CodingZoneNavigation from '../../shared/ui/navigation/CodingZoneNavigation.js'; //코딩존 네이게이션 바 컴포넌트
+
+const CodingZoneAttendanceAssistant = () => {
     const [attendList, setAttendList] = useState([]);
     const [reservedList, setReservedList] = useState([]);
     const [showAdminButton, setShowAdminButton] = useState(false);
@@ -20,31 +22,7 @@ const CodingZoneAttendanceAssistant= () => {
     const token = cookies.accessToken;
     const navigate = useNavigate();
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const [showModal, setShowModal] = useState(false);
-    const [selectedButton, setSelectedButton] = useState('attendence'); 
-
-    const handleOpenModal = () => {
-        setShowModal(true);
-    };
-
-    const handleCloseModal = () => {
-        setShowModal(false);
-    };
-
-    const handlecodingzone = () => {
-        setSelectedButton('codingzone');
-        navigate('/coding-zone');
-    };
-
-    const handlecodingzoneattendence = () => {
-        setSelectedButton('attendence');
-        navigate(`/coding-zone/Codingzone_Attendance`);
-    };
-
-    const handleInquiry = () => {
-        setSelectedButton('inquiry');
-    };
-
+    
 
 
     useEffect(() => {
@@ -53,7 +31,7 @@ const CodingZoneAttendanceAssistant= () => {
             const currentDate = new Date(selectedDate);
             console.log("Checking date:", now, currentDate); // Debugging log
 
-           
+
         }, 10000); // Check every 10 seconds for debugging
 
         return () => clearInterval(timer); // Clear the timer when the component unmounts
@@ -69,7 +47,7 @@ const CodingZoneAttendanceAssistant= () => {
     }, [token, selectedDate]);
 
     const fetchAuthType = async () => {
-        const response = await getczauthtypetRequest(token,setCookie, navigate);
+        const response = await getczauthtypetRequest(token, setCookie, navigate);
         if (response) {
             switch (response.code) {
                 case "SU":
@@ -91,7 +69,7 @@ const CodingZoneAttendanceAssistant= () => {
     };
 
     const fetchAttendList = async () => {
-        const response = await getczattendlistRequest(token,setCookie, navigate);
+        const response = await getczattendlistRequest(token, setCookie, navigate);
         if (response && response.code === "SU") {
             setAttendList(response.attendList);
         }
@@ -106,7 +84,7 @@ const CodingZoneAttendanceAssistant= () => {
 
     const fetchReservedList = async () => {
         const formattedDate = selectedDate.toISOString().split('T')[0];
-        const response = await getczreservedlistRequest(token, formattedDate,setCookie, navigate);
+        const response = await getczreservedlistRequest(token, formattedDate, setCookie, navigate);
         if (response && response.code === "SU") {
             setReservedList(response.studentList.sort((a, b) => a.classTime.localeCompare(b.classTime)));
         } else if (response && response.code === "NU") {
@@ -121,12 +99,12 @@ const CodingZoneAttendanceAssistant= () => {
 
     const handleAttendanceUpdate = async (student, newState) => {
         const method = student.grade === 1 ? putczattendc1Request : putczattendc2Request;
-        const response = await method(student.registrationId, token,setCookie, navigate);
+        const response = await method(student.registrationId, token, setCookie, navigate);
         if (response.code === "SU") {
             alert('처리가 완료되었습니다.');
             fetchReservedList(); // 새로고침 기능
         } else if (response && response.code === "NU") {
-        
+
         }
         else {
             alert('오류가 발생했습니다. 다시 시도 해 주세요.');
@@ -141,34 +119,7 @@ const CodingZoneAttendanceAssistant= () => {
     return (
         <div>
             <div className="codingzone-container">
-                <div className='select-container'>
-                    <span> | </span>
-                    <button
-                        onClick={handlecodingzone}
-                        className={selectedButton === 'codingzone' ? 'selected' : ''}
-                    >
-                        코딩존 예약
-                    </button>
-                    <span> | </span>
-                    <button
-                        onClick={handlecodingzoneattendence}
-                        className={selectedButton === 'attendence' ? 'selected' : ''}
-                    >
-                        출결 관리
-                    </button>
-                    <span> | </span>
-                    <button
-                        onClick={() => {
-                            handleInquiry();
-                            handleOpenModal();
-                        }}
-                        className={selectedButton === 'inquiry' ? 'selected' : ''}
-                    >
-                        문의 하기
-                    </button>
-                    {showModal && <InquiryModal isOpen={showModal} onClose={handleCloseModal} />}
-                    <span> | </span>
-                </div>
+                <CodingZoneNavigation/>
                 <div className="banner_img_container">
                     <img src="/codingzone_attendance3.png" className="banner" />
                 </div>
@@ -176,7 +127,7 @@ const CodingZoneAttendanceAssistant= () => {
             <div className="cza_button_container" style={{ textAlign: 'center' }}>
                 <button
                     className={`btn-attend ${activeButton === 'check' ? 'active' : ''}`}
-                    onClick={() => { setActiveButton('check'); handlecodingzoneattendence(); }}
+                    onClick={() => { setActiveButton('check');navigate('/coding-zone/Codingzone_Attendance') }}
                 >
                     출결 확인
                 </button>
@@ -196,21 +147,21 @@ const CodingZoneAttendanceAssistant= () => {
 
 
             <div className="reserved_manager-list-container">
-            <div className="czm_manager_container">
-        <DatePicker
-            selected={selectedDate}
-            onChange={(date) => {
-                const utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-                const koreaDate = new Date(utcDate.getTime() + (9 * 60 * 60 * 1000)); // Correctly adjust for Korean timezone
-                setSelectedDate(koreaDate);
-            }}
-            dateFormat="yyyy/MM/dd"
-            className="custom_manager_datepicker"
-        />
-    </div>
-    <h3 className="date_manager_title">
-        {`${selectedDate.getFullYear()}/${selectedDate.getMonth() + 1}/${selectedDate.getDate()} 예약 리스트`}
-    </h3>
+                <div className="czm_manager_container">
+                    <DatePicker
+                        selected={selectedDate}
+                        onChange={(date) => {
+                            const utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+                            const koreaDate = new Date(utcDate.getTime() + (9 * 60 * 60 * 1000)); // Correctly adjust for Korean timezone
+                            setSelectedDate(koreaDate);
+                        }}
+                        dateFormat="yyyy/MM/dd"
+                        className="custom_manager_datepicker"
+                    />
+                </div>
+                <h3 className="date_manager_title">
+                    {`${selectedDate.getFullYear()}/${selectedDate.getMonth() + 1}/${selectedDate.getDate()} 예약 리스트`}
+                </h3>
 
 
                 <div className="line-manager-container1">

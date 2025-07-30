@@ -12,6 +12,8 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from 'react-slick';
 import { getAttendanceCount, getcodingzoneListRequest } from '../../features/api/CodingzoneApi.js';
 import { deleteCodingZoneClass, reserveCodingZoneClass } from '../../entities/api/CodingZone/StudentApi.js';
+
+import CodingZoneNavigation from '../../shared/ui/navigation/CodingZoneNavigation.js'; //코딩존 네이게이션 바 컴포넌트
 const ClassList = ({ userReservedClass, onDeleteClick, classList, handleCardClick, handleToggleReservation, isAdmin }) => {
   return (
     <div className='cz-card'>
@@ -51,7 +53,7 @@ const CodingMain = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [selectedZone, setSelectedZone] = useState(1);
-  const [selectedButton, setSelectedButton] = useState('codingzone');
+
   const [userReservedClass, setUserReservedClass] = useState(null);
   const [selectedDay, setSelectedDay] = useState('');
   const [isRendered, setIsRendered] = useState(false);
@@ -149,14 +151,6 @@ const CodingMain = () => {
       setSelectedDay(day);
     }
   };
-
-  useEffect(() => {
-    if (location.pathname === '/coding-zone') {
-      setSelectedButton('codingzone');
-    } else if (location.pathname.includes('/coding-zone/Codingzone_Attendance')) {
-      setSelectedButton('attendence');
-    }
-  }, [location.pathname]);
 
   const token = cookies.accessToken;
   /// 코딩존 수업 데이터를 가져오는 useEffect
@@ -262,18 +256,7 @@ const CodingMain = () => {
 
 
 
-  const handleTabChange = (tab) => {
-    if (tab === 'attendence' && !cookies.accessToken) {
-      alert("로그인 후 이용 가능합니다.");
-      return;
-    }
-    setSelectedButton(tab);
-    if (tab === 'codingzone') {
-      navigate('/coding-zone');
-    } else if (tab === 'attendence') {
-      navigate('/coding-zone/Codingzone_Attendance');
-    }
-  };
+
 
 
   const handleCardClick = (classItem) => {
@@ -284,16 +267,6 @@ const CodingMain = () => {
       item.classNum === classNum ? { ...item, isReserved, currentNumber: newCurrentNumber } : item
     );
     setClassList(updatedList);
-  };
-
-  const [showModal, setShowModal] = useState(false);
-
-  const handleOpenModal = () => {
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
   };
 
   const sliderSettings = {
@@ -330,32 +303,7 @@ const CodingMain = () => {
 
   return (
     <div className="codingzone-container">
-      <div className='select-container'>
-        <span> | </span>
-        <button
-          onClick={() => handleTabChange('codingzone')}
-          className={selectedButton === 'codingzone' ? 'selected' : ''}
-        >
-          코딩존 예약
-        </button>
-        <span> | </span>
-        <button
-          onClick={() => handleTabChange('attendence')}
-          className={selectedButton === 'attendence' ? 'selected' : ''}
-        >
-          출결 관리
-        </button>
-        <span> | </span>
-        <button
-          onClick={handleOpenModal}
-          className={selectedButton === 'inquiry' ? 'selected' : ''}
-        >
-          문의 하기
-        </button>
-        {showModal && <InquiryModal isOpen={showModal} onClose={handleCloseModal} />}
-        <span> | </span>
-      </div>
-
+      <CodingZoneNavigation />
       <Slider {...sliderSettings}>
         <div className="codingzone-top-container">
           <picture>
@@ -435,33 +383,33 @@ const CodingMain = () => {
           </div>
         </div>
         <div className="codingzone-list">
-  {/* 항상 렌더되도록 유지하고, show/hide는 CSS 클래스 이름으로 제어 */}
-  <picture className={`no-classes-image ${showNoClassesImage ? 'visible' : 'hidden'}`}>
-    <source srcSet="/Codingzone-noregist.webp" type="image/webp" />
-    <img
-      src="/Codingzone-noregist.png"
-      alt="수업이 없습니다"
-      className="no-classes-img"
-      width="600"
-      height="260"
-      loading="eager"
-      decoding="sync"
-    />
-  </picture>
+          {/* 항상 렌더되도록 유지하고, show/hide는 CSS 클래스 이름으로 제어 */}
+          <picture className={`no-classes-image ${showNoClassesImage ? 'visible' : 'hidden'}`}>
+            <source srcSet="/Codingzone-noregist.webp" type="image/webp" />
+            <img
+              src="/Codingzone-noregist.png"
+              alt="수업이 없습니다"
+              className="no-classes-img"
+              width="600"
+              height="260"
+              loading="eager"
+              decoding="sync"
+            />
+          </picture>
 
-  {/* 수업이 있을 경우에만 ClassList 보여줌 */}
-  {!showNoClassesImage && (
-    <ClassList
-      classList={classList}
-      handleCardClick={handleCardClick}
-      handleToggleReservation={handleToggleReservation}
-      isAdmin={isAdmin}
-      onDeleteClick={handleDelete}
-      userReservedClass={userReservedClass}
-      token={token}
-    />
-  )}
-</div>
+          {/* 수업이 있을 경우에만 ClassList 보여줌 */}
+          {!showNoClassesImage && (
+            <ClassList
+              classList={classList}
+              handleCardClick={handleCardClick}
+              handleToggleReservation={handleToggleReservation}
+              isAdmin={isAdmin}
+              onDeleteClick={handleDelete}
+              userReservedClass={userReservedClass}
+              token={token}
+            />
+          )}
+        </div>
 
 
       </div>
