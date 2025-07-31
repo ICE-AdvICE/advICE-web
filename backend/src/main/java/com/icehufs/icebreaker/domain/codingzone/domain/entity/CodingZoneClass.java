@@ -54,15 +54,19 @@ public class CodingZoneClass {
     @Column(name = "subject_id")
     private int subjectId;
 
+    @Column(name = "group_id")
+    private String groupId;
+
     public CodingZoneClass(CodingZoneClassAssignRequestDto dto) {
         this.assistantName = dto.getAssistantName();
         this.classTime = dto.getClassTime();
         this.classDate = dto.getClassDate();
-        this.currentNumber = 0;
+        this.currentNumber = dto.getMaximumNumber(); //등록 시에는 아직 아무도 예약을 안 했기 때문에  maximumNumber로
         this.maximumNumber = dto.getMaximumNumber();
         this.className = dto.getClassName();
         this.weekDay = dto.getWeekDay();
         this.subjectId = dto.getSubjectId();
+        this.groupId = dto.getGroupId();
     }
 
     public void increaseNum() {
