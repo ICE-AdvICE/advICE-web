@@ -26,11 +26,11 @@ public class CodingZoneManagingController {
     private final CodingZoneManagingService codingZoneManagingService;
 
     @PostMapping("") // 코딩존 수업 등록 Controller
-    public ResponseEntity<ResponseDto<Void>> postCodingZoneClass(
+    public ResponseEntity<ResponseDto<Void>> postClassAndGroup(
             @AuthenticationPrincipal String email,
             @Valid @RequestBody List<CodingZoneClassAssignRequestDto> requestBody) {
 
-        codingZoneManagingService.postMappingCodingZoneClass(requestBody, email);
+        codingZoneManagingService.postClassAndGroup(requestBody, email);
         return ResponseEntity.ok(ResponseDto.success(ResponseMessage.SUCCESS));
     }
 }
