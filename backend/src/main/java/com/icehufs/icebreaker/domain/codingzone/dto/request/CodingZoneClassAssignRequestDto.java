@@ -33,5 +33,5 @@ public class CodingZoneClassAssignRequestDto {
     private String className;//과목 명
 
     @NotNull
-    private Integer grade;
+    private Integer subjectId;
 }
