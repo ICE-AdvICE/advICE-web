@@ -7,7 +7,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import org.springframework.http.HttpStatus;
+
 import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassAssignRequestDto;
+import com.icehufs.icebreaker.exception.BusinessException;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -68,5 +71,7 @@ public class CodingZoneClass {
 
     public void decreaseNum(){
         this.currentNumber--;
+        if(this.currentNumber < 0) this.currentNumber = 0;
+            if(this.currentNumber <= 0) throw new BusinessException("403", "현재 해당 코딩존에 남은 자리가 없습니다!", HttpStatus.FORBIDDEN);
     }
 }
