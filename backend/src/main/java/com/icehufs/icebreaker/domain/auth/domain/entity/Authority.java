@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @NoArgsConstructor
 @Getter
@@ -185,29 +186,16 @@ public class Authority {
         this.givenDateAdminC = null;
     }
 
-
-    public void setRoleAdmin1(String roleAdmin1) {
-        this.roleAdmin1 = roleAdmin1;
-    }
-
-    public void setRoleAdminC1(String roleAdminC1) {
-        this.roleAdminC1 = roleAdminC1;
-    }
-
-    public void setRoleAdminC2(String roleAdminC2) {
-        this.roleAdminC2 = roleAdminC2;
-    }
-
-    public void setRoleAdmin(String roleAdmin) {
-        this.roleAdmin = roleAdmin;
-    }
-
-
-    public void setGivenDateAdmin1(LocalDateTime givenDateAdmin1) {
-        this.givenDateAdmin1 = givenDateAdmin1;
-    }
-
-    public void setGivenDateAdminC(LocalDateTime givenDateAdminC) {
-        this.givenDateAdminC = givenDateAdminC;
+    public void autoRevokeExpiredRoles(LocalDateTime now) {
+        if (hasRole("ROLE_ADMIN1") && givenDateAdmin1 != null &&
+                ChronoUnit.MONTHS.between(givenDateAdmin1, now) >= 10) {
+            revokeRole("ROLE_ADMIN1");
+        }
+        if (givenDateAdminC != null && ChronoUnit.MONTHS.between(givenDateAdminC, now) >= 4) {
+            String[] adminCRoles = {"ROLE_ADMINC1", "ROLE_ADMINC2", "ROLE_ADMINC3", "ROLE_ADMINC4"};
+            for (String role : adminCRoles) {
+                if (hasRole(role)) revokeRole(role);
+            }
+        }
     }
 }
