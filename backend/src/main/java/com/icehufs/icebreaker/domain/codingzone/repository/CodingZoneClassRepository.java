@@ -19,6 +19,7 @@ public interface CodingZoneClassRepository extends JpaRepository<CodingZoneClass
     List<CodingZoneClass> findBySubjectId(int subjectId);
     List<CodingZoneClass> findBySubjectIdAndClassDateBetween(int subjectId, String startDate, String endDate);
 
+    // 새로운 수업 등록 시 DB에 이미 있는 수업 정보 확인 과정에서 필요
     @Query("""
         SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END
         FROM codingzoneclass c
