@@ -69,9 +69,8 @@ public class CodingZoneClass {
         this.currentNumber++;
     }
 
-    public void decreaseNum(){
+    public void decreaseNum(){ 
         this.currentNumber--;
-        if(this.currentNumber < 0) this.currentNumber = 0;
-            if(this.currentNumber <= 0) throw new BusinessException("403", "현재 해당 코딩존에 남은 자리가 없습니다!", HttpStatus.FORBIDDEN);
+        if(this.currentNumber <= 0) throw new BusinessException("403", "현재 해당 코딩존에 남은 자리가 없습니다!", HttpStatus.FORBIDDEN);
     }
 }
