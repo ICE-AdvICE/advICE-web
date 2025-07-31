@@ -32,6 +32,9 @@ public class CodingZoneClassAssignRequestDto {
     private String weekDay; //수업 요일
 
     @NotNull
+    private String groupId;  
+
+    @NotNull
     @Min(1)
     private Integer maximumNumber;//최대 인원수
 
