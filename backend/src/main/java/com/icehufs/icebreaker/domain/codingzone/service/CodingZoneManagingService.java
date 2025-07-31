@@ -32,20 +32,14 @@ public class CodingZoneManagingService {
     for(CodingZoneClassAssignRequestDto requestDto : dto) {
       if(!subjectRepository.existsBySubjectId(requestDto.getSubjectId())) 
         throw new BusinessException("400", "등록하려고 하는 교과목 중 이름 매핑 작업이 이루어지지 않은 것이 있습니다, 매핑을 먼저 해주세요!", HttpStatus.BAD_REQUEST);
-      }
+    }
       
     Set<String> dateSet = new HashSet<>(); // 들어온 Dto 객체들 중 중복 검사
-    for (CodingZoneClassAssignRequestDto requestDto : dto) {
 
-      if ((dateSet.add(requestDto.getClassTime()))&&(dateSet.add(requestDto.getClassName()))) { //특정일의 동시간대에 2개 수업이 존재할 수 없음
-        throw new BusinessException("400", "같은 날짜의 코딩존 수업 등록이 중복되었습니다.", HttpStatus.BAD_REQUEST);
-      }
-
-      //수업 등록 진행 시 모든 필드가 동일한 dto를 set과 List를 이용해서 비교
-      if (dateSet.size() < dto.size())  //set의 사이즈와 List의 사이즈가 다를 경우에 중복이 있다는 것이기 때문에 예외처리
-        throw new BusinessException("400", "전체 내용 중복 코딩존 등록이 있습니다.", HttpStatus.BAD_REQUEST);
-    }
-    
+    //수업 등록 진행 시 모든 필드가 동일한 dto를 set과 List를 이용해서 비교
+    if (dateSet.size() < dto.size())  //set의 사이즈와 List의 사이즈가 다를 경우에 중복이 있다는 것이기 때문에 예외처리
+    throw new BusinessException("400", "전체 내용 중복 코딩존 등록이 있습니다.", HttpStatus.BAD_REQUEST);
+        
     // 수업 + 조등록 가능!
     for (CodingZoneClassAssignRequestDto requestDto : dto) {
       CodingZoneClass codingZoneClassEntity = new CodingZoneClass(requestDto);
