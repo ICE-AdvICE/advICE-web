@@ -3,28 +3,26 @@ package com.icehufs.icebreaker.domain.codingzone.dto.request;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@Builder
 @NoArgsConstructor
-@EqualsAndHashCode
 public class CodingZoneClassAssignRequestDto {
 
     @NotBlank
+    @NotNull
     private String assistantName;//조교 이름
 
     @NotBlank
+    @NotNull
     private String classTime;//수업 시작 시간 (예 13:00:00)
 
     @NotBlank
+    @NotNull 
     private String classDate;// 수업 날짜 (예 2024-07-21)
 
     @NotBlank
@@ -34,9 +32,9 @@ public class CodingZoneClassAssignRequestDto {
     @Min(1)
     private Integer maximumNumber;//최대 인원수
 
-    @NotBlank
-    private String className;//과목 명
+    @NotNull // 등록 페이지에서 교과목 명을 버튼 선택으로 하고 이때 넘어오는 값이 빈칸을 포함할 수 있기 때문에 @NotBlank설정을 삭제
+    private String className; //과목 명
 
     @NotNull
-    private int subjectId;
+    private int subjectId; // 수정
 }
