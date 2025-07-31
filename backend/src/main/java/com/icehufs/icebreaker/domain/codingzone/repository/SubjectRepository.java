@@ -7,7 +7,7 @@ import com.icehufs.icebreaker.domain.codingzone.domain.entity.Subject;
 
 public interface SubjectRepository extends JpaRepository<Subject, Integer> {
 
-    boolean existsBySubjectId(Integer subjectId);
+    boolean existsBySubjectId(int subjectId);
     boolean existsBySubjectName(String subjectName);
     boolean existsBySubjectIdIsNotNull();
 

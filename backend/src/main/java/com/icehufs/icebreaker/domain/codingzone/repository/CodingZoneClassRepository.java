@@ -13,6 +13,6 @@ public interface CodingZoneClassRepository extends JpaRepository<CodingZoneClass
     
     CodingZoneClass findByClassNum(Integer classNum);  
     List<CodingZoneClass> findByGrade(int subjectId);
-    List<CodingZoneClass> findByGradeAndClassDateBetween(Integer subjectId, String startDate, String endDate);
+    List<CodingZoneClass> findByGradeAndClassDateBetween(int subjectId, String startDate, String endDate);
 
 }
