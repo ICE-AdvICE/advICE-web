@@ -34,5 +34,5 @@ public class GroupInfUpdateRequestDto {
     private String weekDay; //요일
 
     @NotNull
-    private Integer subjectId;
+    private int subjectId;
 }
