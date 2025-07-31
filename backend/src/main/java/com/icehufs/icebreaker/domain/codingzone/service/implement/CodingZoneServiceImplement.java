@@ -219,8 +219,8 @@ public class CodingZoneServiceImplement implements CodingZoneService {
             // 신청한 수업 등록
             String userName = userEntity.getName();
             String userStudentNum = userEntity.getStudentNum();
-            int grade = codingZoneClass.getGrade();
-            CodingZoneRegister newRegisterEntity = new CodingZoneRegister(grade, email, userName, userStudentNum, classNum);
+            int gsubjectId = codingZoneClass.getSubjectId();
+            CodingZoneRegister newRegisterEntity = new CodingZoneRegister(gsubjectId, email, userName, userStudentNum, classNum);
             codingZoneRegisterRepository.save(newRegisterEntity);
             codingZoneClass.increaseNum(); // 예약자 수 증가
             codingZoneClassRepository.save(codingZoneClass);
