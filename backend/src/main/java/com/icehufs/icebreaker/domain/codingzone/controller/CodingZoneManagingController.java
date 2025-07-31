@@ -18,21 +18,19 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
 @RestController
-@RequestMapping("/api/admin/codingzones") 
+@RequestMapping("/api/admin/codingzones")
 @RequiredArgsConstructor
 public class CodingZoneManagingController {
 
-  private final CodingZoneManagingService codingZoneManagingService;
+    private final CodingZoneManagingService codingZoneManagingService;
 
-  @PostMapping("") //코딩존 수업 등록 Controller
-  public ResponseEntity<ResponseDto<Void>> postCodingZoneClass(
-    @AuthenticationPrincipal String email,
-    @Valid @RequestBody List<CodingZoneClassAssignRequestDto> requestBody) {
+    @PostMapping("") // 코딩존 수업 등록 Controller
+    public ResponseEntity<ResponseDto<Void>> postCodingZoneClass(
+            @AuthenticationPrincipal String email,
+            @Valid @RequestBody List<CodingZoneClassAssignRequestDto> requestBody) {
 
-      codingZoneManagingService.postMappingCodingZoneClass(requestBody, email);
-      return ResponseEntity.ok(ResponseDto.success(ResponseMessage.SUCCESS));
-  }
+        codingZoneManagingService.postMappingCodingZoneClass(requestBody, email);
+        return ResponseEntity.ok(ResponseDto.success(ResponseMessage.SUCCESS));
+    }
 }
-

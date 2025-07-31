@@ -1,7 +1,6 @@
 package com.icehufs.icebreaker.domain.codingzone.domain.entity;
 
 import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateRequestDto;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -38,13 +37,13 @@ public class GroupInf {
     private String classTime; // 수업 시작 시간
 
     @Column(name = "week_day")
-    private String weekDay; //요일
+    private String weekDay; // 요일
 
     @Column(name = "maximum_number")
-    private int maximumNumber; //최대인원
+    private int maximumNumber; // 최대인원
 
     @Column(name = "class_name")
-    private String className; //과목명
+    private String className; // 과목명
 
     @Column(name = "subject_id")
     private int subjectId;
@@ -58,5 +57,4 @@ public class GroupInf {
         this.className = dto.getClassName();
         this.subjectId = dto.getSubjectId();
     }
-    
 }

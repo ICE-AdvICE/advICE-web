@@ -6,15 +6,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-
 import org.springframework.http.HttpStatus;
-
 import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassAssignRequestDto;
 import com.icehufs.icebreaker.exception.BusinessException;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,7 +23,7 @@ import lombok.ToString;
 @Entity(name = "codingzoneclass")
 @Table(name = "codingzoneclass")
 public class CodingZoneClass {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "class_num")
@@ -62,11 +58,11 @@ public class CodingZoneClass {
 
     public CodingZoneClass(CodingZoneClassAssignRequestDto dto) {
 
-        isDateWeekend(dto.getClassDate()); 
+        isDateWeekend(dto.getClassDate());
         this.assistantName = dto.getAssistantName();
         this.classTime = dto.getClassTime();
         this.classDate = dto.getClassDate();
-        this.currentNumber = dto.getMaximumNumber(); //등록 시에는 아직 아무도 예약을 안 했기 때문에  maximumNumber로
+        this.currentNumber = dto.getMaximumNumber(); // 등록 시에는 아직 아무도 예약을 안 했기 때문에 maximumNumber로
         this.maximumNumber = dto.getMaximumNumber();
         this.className = dto.getClassName();
         this.weekDay = dto.getWeekDay();
@@ -78,15 +74,17 @@ public class CodingZoneClass {
         this.currentNumber++;
     }
 
-    public void decreaseNum(){ 
+    public void decreaseNum() {
         this.currentNumber--;
-        if(this.currentNumber <= 0) throw new BusinessException("403", "현재 해당 코딩존에 남은 자리가 없습니다!", HttpStatus.FORBIDDEN);
+        if (this.currentNumber <= 0)
+            throw new BusinessException("403", "현재 해당 코딩존에 남은 자리가 없습니다!", HttpStatus.FORBIDDEN);
     }
 
-    //Dto로 받은 날짜가 주말이면 예외처리
-    private void isDateWeekend(String dateString) { //Entity 생성 시에만 사용되므로(외부 사용 X)private 설정
+    // Dto로 받은 날짜가 주말이면 예외처리
+    private void isDateWeekend(String dateString) { // Entity 생성 시에만 사용되므로(외부 사용 X)private 설정
         LocalDate date = LocalDate.parse(dateString);
         DayOfWeek day = date.getDayOfWeek();
-        if((day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY)) throw new BusinessException("400", "입력한 날짜는 주말입니다, 다시 입력해주세요.", HttpStatus.BAD_REQUEST);
+        if ((day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY))
+            throw new BusinessException("400", "입력한 날짜는 주말입니다, 다시 입력해주세요.", HttpStatus.BAD_REQUEST);
     }
 }
