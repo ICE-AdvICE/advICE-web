@@ -46,8 +46,8 @@ public class GroupInf {
     @Column(name = "class_name")
     private String className; //과목명
 
-    @Column(name = "grade")
-    private int grade;
+    @Column(name = "subject_id")
+    private int subjectId;
 
     public GroupInf(GroupInfUpdateRequestDto dto) {
         this.assistantName = dto.getAssistantName();
@@ -56,7 +56,7 @@ public class GroupInf {
         this.groupId = dto.getGroupId();
         this.maximumNumber = dto.getMaximumNumber();
         this.className = dto.getClassName();
-        this.grade = dto.getGrade();
+        this.subjectId = dto.getSubjectId();
     }
     
 }
