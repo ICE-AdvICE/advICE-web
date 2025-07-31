@@ -12,7 +12,7 @@ import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneClass;
 public interface CodingZoneClassRepository extends JpaRepository<CodingZoneClass, Integer> {
     
     CodingZoneClass findByClassNum(Integer classNum);  
-    List<CodingZoneClass> findByGrade(int grade);
-    List<CodingZoneClass> findByGradeAndClassDateBetween(Integer grade, String startDate, String endDate);
+    List<CodingZoneClass> findByGrade(int subjectId);
+    List<CodingZoneClass> findByGradeAndClassDateBetween(Integer subjectId, String startDate, String endDate);
 
 }
