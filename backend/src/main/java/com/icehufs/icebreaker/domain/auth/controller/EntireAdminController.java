@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassAssignRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateRequestDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.request.HandleAuthRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PatchGroupInfRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.service.CodingZoneService;
 
@@ -39,7 +38,7 @@ public class EntireAdminController {
     public ResponseEntity<? super CodingZoneClassAssignResponseDto> CodingZoneClassAssignResponse(
         @RequestBody @Valid List<CodingZoneClassAssignRequestDto> requestBody,
         @AuthenticationPrincipal String email
-    ){
+    ) {
         ResponseEntity<? super CodingZoneClassAssignResponseDto> response = codingzoneService.codingzoneClassAssign(requestBody, email);
         return response;
     }
@@ -48,7 +47,7 @@ public class EntireAdminController {
     public ResponseEntity<? super GroupInfUpdateResponseDto> uploadInf(
         @RequestBody @Valid List<GroupInfUpdateRequestDto> requestBody,
         @AuthenticationPrincipal String email
-    ){
+    ) {
         ResponseEntity<? super GroupInfUpdateResponseDto> response = codingzoneService.uploadInf(requestBody, email);
         return response;
     }
@@ -57,7 +56,7 @@ public class EntireAdminController {
     public ResponseEntity<? super GetListOfGroupInfResponseDto> getList(
         @PathVariable String groupId,
         @AuthenticationPrincipal String email
-    ){
+    ) {
         ResponseEntity<? super GetListOfGroupInfResponseDto> response = codingzoneService.getList(groupId, email);
         return response;
     }
@@ -75,8 +74,7 @@ public class EntireAdminController {
     public ResponseEntity<? super DeleteClassResponseDto> deleteClass(
         @PathVariable Integer classNum,
         @AuthenticationPrincipal String email
-
-    ){
+    ) {
         ResponseEntity<? super DeleteClassResponseDto> response = codingzoneService.deleteClass(classNum, email);
         return response;
     }
@@ -84,36 +82,16 @@ public class EntireAdminController {
     @GetMapping("/student-list") // 해당학기에 출/결한 모든 학생을 리스트로 반환 API
     public ResponseEntity<? super GetCodingZoneStudentListResponseDto> getStudentList(
         @AuthenticationPrincipal String email
-    ){
+    ) {
         ResponseEntity<? super GetCodingZoneStudentListResponseDto> response = codingzoneService.getStudentList(email);
         return response;
-    } 
+    }
 
     @DeleteMapping("/delete-allinf") // 코딩존 관련 모든 정보 초기화(코딩존 조교 권한 박할까지) API
     public ResponseEntity<? super DeleteAllInfResponseDto> deleteAll(
         @AuthenticationPrincipal String email
-
-    ){
+    ) {
         ResponseEntity<? super DeleteAllInfResponseDto> response = codingzoneService.deleteAll(email);
-        return response;
-    }
-
-
-    @PatchMapping("/give-auth") //사용자 특정 권한 부여 API
-    public ResponseEntity<? super GiveAuthResponseDto> giveAuth(
-        @RequestBody @Valid HandleAuthRequestDto requestBody,
-        @AuthenticationPrincipal String email
-    ) {
-        ResponseEntity<? super GiveAuthResponseDto> response = codingzoneService.giveAuth(email, requestBody);
-        return response;
-    }
-
-    @PatchMapping("/deprive-auth") //사용자 특정 권한 박탈 API
-    public ResponseEntity<? super DepriveAuthResponseDto> depriveAuth(
-        @RequestBody @Valid HandleAuthRequestDto requestBody,
-        @AuthenticationPrincipal String email
-    ) {
-        ResponseEntity<? super DepriveAuthResponseDto> response = codingzoneService.depriveAuth(email, requestBody);
         return response;
     }
 
