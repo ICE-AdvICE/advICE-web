@@ -1,22 +1,22 @@
 package com.icehufs.icebreaker.domain.codingzone.service;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneClass;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.GroupInf;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassAssignRequestDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneClassRepository;
 import com.icehufs.icebreaker.domain.codingzone.repository.GroupInfRepository;
 import com.icehufs.icebreaker.domain.codingzone.repository.SubjectRepository;
 import com.icehufs.icebreaker.exception.BusinessException;
 import jakarta.transaction.Transactional;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Getter
 @RequiredArgsConstructor
 public class CodingZoneManagingService {
 
@@ -49,24 +49,17 @@ public class CodingZoneManagingService {
             }
         }
 
-        // 수업 + 조등록 가능!
+        // 수업 + 조 등록
         for (CodingZoneClassAssignRequestDto assignedClass : dto) {
+
             CodingZoneClass codingZoneClassEntity = new CodingZoneClass(assignedClass);
-            codingZoneClassRepository.save(codingZoneClassEntity);
-            saveGroup(assignedClass); // 조 등록은 아래 따로 메서드 분리
+            codingZoneClassRepository.save(codingZoneClassEntity); // 먼저 수업을 등록하고
+
+            GroupInfUpdateRequestDto groupDto = new GroupInfUpdateRequestDto(assignedClass);
+            GroupInf groupInf = new GroupInf(groupDto);
+            groupInfRepository.save(groupInf); // 조 등록
+
         }
     }
 
-    public void saveGroup(CodingZoneClassAssignRequestDto dto) {
-
-        GroupInf groupInf = new GroupInf();
-        groupInf.setAssistantName(dto.getAssistantName());
-        groupInf.setGroupId(dto.getGroupId());
-        groupInf.setClassTime(dto.getClassTime());
-        groupInf.setWeekDay(dto.getWeekDay());
-        groupInf.setMaximumNumber(dto.getMaximumNumber());
-        groupInf.setClassName(dto.getClassName());
-        groupInf.setSubjectId(dto.getSubjectId());
-        groupInfRepository.save(groupInf);
-    }
 }
