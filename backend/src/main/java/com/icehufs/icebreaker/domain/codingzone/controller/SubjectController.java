@@ -25,17 +25,19 @@ public class SubjectController {
 
     // 코딩존 매핑 등록 controller
     @PostMapping("")
-    public ResponseEntity<ResponseDto<PostSubjectMappingResponseDto>> postSubjectMapping(
+    public ResponseEntity<ResponseDto<String>> postSubjectMapping(
             @AuthenticationPrincipal String email, // 확인하고자하는 유저의 토큰 유효성 확인 후 유저의 메일 반환
             @Valid @RequestBody List<PostSubjectMappingRequestDto> requestDto // 매핑이 여러개 들어올 수 있으니 List<>로
     ) {
-        return ResponseEntity.ok(ResponseDto.success(subjectService.postMappingCodingZoneClass(requestDto, email)));
+        subjectService.postMappingCodingZoneClass(requestDto, email);
+        return ResponseEntity.ok(ResponseDto.success("코딩존 매핑 성공"));
     }
 
     // 코딩존 매핑 조회 controller
     @GetMapping("")
     public ResponseEntity<ResponseDto<List<SubjectResponseDto>>> getSubjectMapping(
             @AuthenticationPrincipal String email) {
-        return ResponseEntity.ok(ResponseDto.success(subjectService.getMappingCodingZoneClass(email)));
+        return ResponseEntity
+                .ok(ResponseDto.success("코딩존 조회 성공", subjectService.getMappingCodingZoneClass(email)));
     }
 }
