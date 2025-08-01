@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
-public class AuthGrantController {
+public class AuthorityController {
     private final AuthorityService authorityService;
 
     @PatchMapping("/authority")
