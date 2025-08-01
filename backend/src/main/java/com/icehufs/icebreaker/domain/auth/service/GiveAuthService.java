@@ -23,7 +23,7 @@ public class GiveAuthService {
     public String giveAuth(String email, HandleAuthRequestDto dto) {
         Authority granteeAuthority = validateGrantorAndGranteeExist(email, dto);
         boolean hasRole = granteeAuthority.hasRole(dto.getRole());
-        if (hasRole) throw new BusinessException(ResponseCode.PERMITTED_ERROR, "이미 해당 권한을 가진 사용자.", HttpStatus.UNAUTHORIZED);
+        if (hasRole) throw new BusinessException(ResponseCode.PERMITTED_ERROR, "이미 해당 권한을 가진 사용자.", HttpStatus.CONFLICT);
         granteeAuthority.grantRole(dto.getRole());
         authorityRepository.save(granteeAuthority);
         return "권한 부여 성공.";
@@ -32,7 +32,7 @@ public class GiveAuthService {
     public String depriveAuth(String email, HandleAuthRequestDto dto) {
         Authority granteeAuthority = validateGrantorAndGranteeExist(email, dto);
         boolean hasRole = granteeAuthority.hasRole(dto.getRole());
-        if (!hasRole) throw new BusinessException(ResponseCode.PERMITTED_ERROR, "이미 권한이 없는 사용자", HttpStatus.BAD_REQUEST);
+        if (!hasRole) throw new BusinessException(ResponseCode.PERMITTED_ERROR, "이미 권한이 없는 사용자", HttpStatus.CONFLICT);
         granteeAuthority.revokeRole(dto.getRole());
         authorityRepository.save(granteeAuthority);
         return "권한 박탈 성공.";
@@ -40,10 +40,10 @@ public class GiveAuthService {
 
     private Authority validateGrantorAndGranteeExist(String email, HandleAuthRequestDto dto) {
         User grantor = userRepository.findByEmail(email);
-        if (grantor == null) throw new BusinessException(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER, HttpStatus.UNAUTHORIZED);
+        if (grantor == null) throw new BusinessException(ResponseCode.NOT_EXISTED_USER, "권한을 부여할 수  있는 사용자가 존재하지 않습니다.", HttpStatus.UNAUTHORIZED);
 
         User grantee = userRepository.findByEmail(dto.getEmail());
-        if (grantee == null) throw new BusinessException(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER, HttpStatus.UNAUTHORIZED);
+        if (grantee == null) throw new BusinessException(ResponseCode.NOT_EXISTED_USER, "권한을 부여 받을 사용자가 존재하지 않습니다.", HttpStatus.UNAUTHORIZED);
 
         return authorityRepository.findByEmail(grantee.getEmail());
     }
