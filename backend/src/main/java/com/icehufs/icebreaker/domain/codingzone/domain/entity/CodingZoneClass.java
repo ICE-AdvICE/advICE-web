@@ -74,10 +74,11 @@ public class CodingZoneClass {
         this.currentNumber++;
     }
 
-    public void decreaseNum() {
+    public void decreaseCurrentNum() {
+        if (this.currentNumber <= 0) {
+            throw new BusinessException("400", "서버에 심각한 오류 발생, 관리자에게 연락해주세요", HttpStatus.BAD_REQUEST);
+        }
         this.currentNumber--;
-        if (this.currentNumber <= 0)
-            throw new BusinessException("403", "현재 해당 코딩존에 남은 자리가 없습니다!", HttpStatus.FORBIDDEN);
     }
 
     // Dto로 받은 날짜가 주말이면 예외처리
