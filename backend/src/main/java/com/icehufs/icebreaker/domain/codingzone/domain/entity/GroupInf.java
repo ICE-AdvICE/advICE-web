@@ -25,7 +25,7 @@ public class GroupInf {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "class_num")
-    private int classNum;
+    private int classNum; // 수업 고유 번호
 
     @Column(name = "assistant_name")
     private String assistantName; // 조교 이름
@@ -46,9 +46,10 @@ public class GroupInf {
     private String className; // 과목명
 
     @Column(name = "subject_id")
-    private int subjectId;
+    private int subjectId; // 교과목 매핑 번호
 
     public GroupInf(GroupInfUpdateRequestDto dto) {
+
         this.assistantName = dto.getAssistantName();
         this.classTime = dto.getClassTime();
         this.weekDay = dto.getWeekDay();
@@ -56,5 +57,6 @@ public class GroupInf {
         this.maximumNumber = dto.getMaximumNumber();
         this.className = dto.getClassName();
         this.subjectId = dto.getSubjectId();
+
     }
 }
