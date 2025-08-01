@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/api/admin/codingzones")
+@RequestMapping("/api/admin/codingzone/classes")
 @RequiredArgsConstructor
 public class CodingZoneManagingController {
 
