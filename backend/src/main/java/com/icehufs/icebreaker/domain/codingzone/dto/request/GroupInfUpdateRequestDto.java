@@ -33,4 +33,14 @@ public class GroupInfUpdateRequestDto {
 
     @NotNull
     private int subjectId;
+
+    public GroupInfUpdateRequestDto(CodingZoneClassAssignRequestDto dto) {
+        this.assistantName = dto.getAssistantName();
+        this.groupId = dto.getGroupId();
+        this.classTime = dto.getClassTime();
+        this.weekDay = dto.getWeekDay();
+        this.maximumNumber = dto.getMaximumNumber();
+        this.className = dto.getClassName();
+        this.subjectId = dto.getSubjectId();
+    }
 }
