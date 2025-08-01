@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/admin/authorities")
 @RequiredArgsConstructor
 public class AuthorityController {
     private final AuthorityService authorityService;
 
-    @PatchMapping("/authority")
+    @PatchMapping
     public ResponseEntity<ResponseDto<String>> giveAuth(
             @RequestBody @Valid HandleAuthRequestDto requestBody,
             @AuthenticationPrincipal String email
@@ -26,7 +26,7 @@ public class AuthorityController {
         return ResponseEntity.ok(ResponseDto.success(authorityService.giveAuth(email, requestBody)));
     }
 
-    @PatchMapping("/authority/deprivation")
+    @PatchMapping("/deprivation")
     public ResponseEntity<ResponseDto<String>> depriveAuth(
             @RequestBody @Valid HandleAuthRequestDto requestBody,
             @AuthenticationPrincipal String email
