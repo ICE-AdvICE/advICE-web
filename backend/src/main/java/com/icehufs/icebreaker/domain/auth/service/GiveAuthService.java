@@ -30,11 +30,11 @@ public class GiveAuthService {
     }
 
     public String depriveAuth(String email, HandleAuthRequestDto dto) {
-        Authority grateeAuthority = validateGrantorAndGranteeExist(email, dto);
-        boolean hasRole = grateeAuthority.hasRole(dto.getRole());
+        Authority granteeAuthority = validateGrantorAndGranteeExist(email, dto);
+        boolean hasRole = granteeAuthority.hasRole(dto.getRole());
         if (!hasRole) throw new BusinessException(ResponseCode.PERMITTED_ERROR, "이미 권한이 없는 사용자", HttpStatus.BAD_REQUEST);
-        grateeAuthority.revokeRole(dto.getRole());
-        authorityRepository.save(grateeAuthority);
+        granteeAuthority.revokeRole(dto.getRole());
+        authorityRepository.save(granteeAuthority);
         return "권한 박탈 성공.";
     }
 
