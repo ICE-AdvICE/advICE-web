@@ -31,6 +31,6 @@ public class CodingZoneManagingController {
             @Valid @RequestBody List<CodingZoneClassAssignRequestDto> requestBody) {
 
         codingZoneManagingService.postClassAndGroup(requestBody, email);
-        return ResponseEntity.ok(ResponseDto.success(ResponseMessage.SUCCESS));
+        return ResponseEntity.ok(ResponseDto.success("코딩존 수업 등록 성공", ResponseMessage.SUCCESS));
     }
 }
