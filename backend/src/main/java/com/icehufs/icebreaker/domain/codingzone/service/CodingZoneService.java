@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 
 import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassAssignRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateRequestDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.request.HandleAuthRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PatchGroupInfRequestDto;
 
 import java.io.IOException;
@@ -21,8 +20,6 @@ public interface CodingZoneService {
     ResponseEntity<? super DeleteClassResponseDto> deleteClass(Integer classNum, String email);
     ResponseEntity<? super GetCodingZoneStudentListResponseDto> getStudentList(String email);
     ResponseEntity<? super DeleteAllInfResponseDto> deleteAll(String email);
-    ResponseEntity<? super GiveAuthResponseDto> giveAuth(String email, HandleAuthRequestDto dto);
-    ResponseEntity<? super DepriveAuthResponseDto> depriveAuth(String email,HandleAuthRequestDto dto);
     ByteArrayResource generateAttendanceExcelOfGrade1() throws IOException;
     ByteArrayResource generateAttendanceExcelOfGrade2() throws IOException;
 

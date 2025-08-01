@@ -37,7 +37,7 @@ import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneRegisterRep
 import com.icehufs.icebreaker.domain.codingzone.repository.GroupInfRepository;
 import com.icehufs.icebreaker.domain.membership.repository.UserRepository;
 import com.icehufs.icebreaker.domain.codingzone.service.CodingZoneService;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneClassAssignResponseDto;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -618,97 +618,16 @@ public class CodingZoneServiceImplement implements CodingZoneService {
 
     // 학기 초기화를 위한 트렌젝션 분리
     @Transactional
-    private void updateAuthorities() {
-        String C1 = "ROLE_ADMINC1";
-        String C2 = "ROLE_ADMINC2";
-        List<Authority> users = authorityRepository.findByRoleAdminC1(C1);
-        List<Authority> users2 = authorityRepository.findByRoleAdminC2(C2);
+    public void updateAuthorities() {
+        List<Authority> usersC1 = authorityRepository.findByRoleAdminC1("ROLE_ADMINC1");
+        List<Authority> usersC2 = authorityRepository.findByRoleAdminC2("ROLE_ADMINC2");
+        List<Authority> usersC3 = authorityRepository.findByRoleAdminC3("ROLE_ADMINC3");
+        List<Authority> usersC4 = authorityRepository.findByRoleAdminC4("ROLE_ADMINC4");
 
-        users.forEach(authorityEntity -> {
-            authorityEntity.setRoleAdminC1("NULL");
-            authorityEntity.setGivenDateAdminC(null);
-            authorityRepository.save(authorityEntity);
-        });
-        users2.forEach(authorityEntity -> {
-            authorityEntity.setRoleAdminC2("NULL");
-            authorityEntity.setGivenDateAdminC(null);
-            authorityRepository.save(authorityEntity);
-        });
-    }
-
-    @Override
-    public ResponseEntity<? super GiveAuthResponseDto> giveAuth(String email, HandleAuthRequestDto dto) {
-        try {
-            // 로그인된 사용자 토큰 시간 만료시 발생
-            boolean existedUser = userRepository.existsByEmail(email);
-            if (!existedUser)
-                return GiveAuthResponseDto.notExistUser();
-
-            // 권한을 주려하는 사용자가 회원가입이 안되어있을 때
-            Authority authority = authorityRepository.findByEmail(dto.getEmail());
-            if (authority == null)
-                return GiveAuthResponseDto.notSingUpUser();
-
-            if ("ROLE_ADMIN1".equals(dto.getRole())) {
-                if (authority.getRoleAdmin1().equals(dto.getRole()))
-                    return GiveAuthResponseDto.alreadyPerm(); // 특정 권한이 이미 있을 떄
-                authority.giveAdmin1Auth();
-            } else if ("ROLE_ADMINC1".equals(dto.getRole())) {
-                if (authority.getRoleAdminC1().equals("ROLE_ADMINC1")
-                        || authority.getRoleAdminC2().equals("ROLE_ADMINC2"))
-                    return GiveAuthResponseDto.alreadyPerm(); // 특정 권한이 이미 있을 떄
-                authority.giveAdminC1Auth();
-            } else if ("ROLE_ADMINC2".equals(dto.getRole())) {
-                if (authority.getRoleAdminC1().equals("ROLE_ADMINC1")
-                        || authority.getRoleAdminC2().equals("ROLE_ADMINC2"))
-                    return GiveAuthResponseDto.alreadyPerm(); // 특정 권한이 이미 있을 떄
-                authority.giveAdminC2Auth();
-            }
-            authorityRepository.save(authority);
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return GiveAuthResponseDto.databaseError();
-        }
-        return GiveAuthResponseDto.success();
-    }
-
-    @Override
-    public ResponseEntity<? super DepriveAuthResponseDto> depriveAuth(String email, HandleAuthRequestDto dto) {
-        try {
-            // 로그인된 사용자 토큰 시간 만료시 발생
-            boolean existedUser = userRepository.existsByEmail(email);
-            if (!existedUser)
-                return DepriveAuthResponseDto.notExistUser();
-
-            // 권한을 주려하는 사용자가 회원가입이 안되있을 때
-            Authority authority = authorityRepository.findByEmail(dto.getEmail());
-            if (authority == null)
-                return DepriveAuthResponseDto.notSingUpUser();
-
-            if ("ROLE_ADMIN1".equals(dto.getRole())) {
-                if (authority.getRoleAdmin1().equals("NULL"))
-                    return GiveAuthResponseDto.alreadyPerm(); // 박탈하려히는 특정 권한이 없을 때
-                authority.setRoleAdmin1("NULL");
-                authority.setGivenDateAdmin1(null);
-            } else if ("ROLE_ADMINC1".equals(dto.getRole())) {
-                if (authority.getRoleAdminC1().equals("NULL"))
-                    return GiveAuthResponseDto.alreadyPerm(); // 박탈하려히는 특정 권한이 없을 때
-                authority.setRoleAdminC1("NULL");
-                authority.setGivenDateAdminC(null);
-            } else if ("ROLE_ADMINC2".equals(dto.getRole())) {
-                if (authority.getRoleAdminC2().equals("NULL"))
-                    return GiveAuthResponseDto.alreadyPerm(); // 박탈하려히는 특정 권한이 없을 때
-                authority.setRoleAdminC2("NULL");
-                authority.setGivenDateAdminC(null);
-            }
-            authorityRepository.save(authority);
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return DepriveAuthResponseDto.databaseError();
-        }
-        return DepriveAuthResponseDto.success();
+        usersC1.forEach(authority -> authority.revokeRole("ROLE_ADMINC1"));
+        usersC2.forEach(authority -> authority.revokeRole("ROLE_ADMINC2"));
+        usersC3.forEach(authority -> authority.revokeRole("ROLE_ADMINC3"));
+        usersC4.forEach(authority -> authority.revokeRole("ROLE_ADMINC4"));
     }
 
     @Override
