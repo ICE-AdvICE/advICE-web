@@ -36,8 +36,8 @@ public class EntireAdminController {
 
     @PostMapping("/upload-codingzone") // 수업 리스트 등록 API
     public ResponseEntity<? super CodingZoneClassAssignResponseDto> CodingZoneClassAssignResponse(
-            @RequestBody @Valid List<CodingZoneClassAssignRequestDto> requestBody,
-            @AuthenticationPrincipal String email
+        @RequestBody @Valid List<CodingZoneClassAssignRequestDto> requestBody,
+        @AuthenticationPrincipal String email
     ) {
         ResponseEntity<? super CodingZoneClassAssignResponseDto> response = codingzoneService.codingzoneClassAssign(requestBody, email);
         return response;
@@ -45,8 +45,8 @@ public class EntireAdminController {
 
     @PostMapping("/upload-group") //특정 (A/B)조 정보 등록 API
     public ResponseEntity<? super GroupInfUpdateResponseDto> uploadInf(
-            @RequestBody @Valid List<GroupInfUpdateRequestDto> requestBody,
-            @AuthenticationPrincipal String email
+        @RequestBody @Valid List<GroupInfUpdateRequestDto> requestBody,
+        @AuthenticationPrincipal String email
     ) {
         ResponseEntity<? super GroupInfUpdateResponseDto> response = codingzoneService.uploadInf(requestBody, email);
         return response;
@@ -54,8 +54,8 @@ public class EntireAdminController {
 
     @GetMapping("/get-group/{groupId}") //특정 (A/B)조 정보 반환 API
     public ResponseEntity<? super GetListOfGroupInfResponseDto> getList(
-            @PathVariable String groupId,
-            @AuthenticationPrincipal String email
+        @PathVariable String groupId,
+        @AuthenticationPrincipal String email
     ) {
         ResponseEntity<? super GetListOfGroupInfResponseDto> response = codingzoneService.getList(groupId, email);
         return response;
@@ -63,8 +63,8 @@ public class EntireAdminController {
 
     @PatchMapping("/patch-group") //특정 (A/B)조 정보 수정 API
     public ResponseEntity<? super GroupInfUpdateResponseDto> patchInf(
-            @RequestBody @Valid List<PatchGroupInfRequestDto> requestBody,
-            @AuthenticationPrincipal String email
+        @RequestBody @Valid List<PatchGroupInfRequestDto> requestBody,
+        @AuthenticationPrincipal String email
     ) {
         ResponseEntity<? super GroupInfUpdateResponseDto> response = codingzoneService.patchInf(requestBody, email);
         return response;
@@ -72,9 +72,8 @@ public class EntireAdminController {
 
     @DeleteMapping("/delete-class/{classNum}") //등록된 특정 수업 삭제 API
     public ResponseEntity<? super DeleteClassResponseDto> deleteClass(
-            @PathVariable Integer classNum,
-            @AuthenticationPrincipal String email
-
+        @PathVariable Integer classNum,
+        @AuthenticationPrincipal String email
     ) {
         ResponseEntity<? super DeleteClassResponseDto> response = codingzoneService.deleteClass(classNum, email);
         return response;
@@ -82,7 +81,7 @@ public class EntireAdminController {
 
     @GetMapping("/student-list") // 해당학기에 출/결한 모든 학생을 리스트로 반환 API
     public ResponseEntity<? super GetCodingZoneStudentListResponseDto> getStudentList(
-            @AuthenticationPrincipal String email
+        @AuthenticationPrincipal String email
     ) {
         ResponseEntity<? super GetCodingZoneStudentListResponseDto> response = codingzoneService.getStudentList(email);
         return response;
@@ -90,8 +89,7 @@ public class EntireAdminController {
 
     @DeleteMapping("/delete-allinf") // 코딩존 관련 모든 정보 초기화(코딩존 조교 권한 박할까지) API
     public ResponseEntity<? super DeleteAllInfResponseDto> deleteAll(
-            @AuthenticationPrincipal String email
-
+        @AuthenticationPrincipal String email
     ) {
         ResponseEntity<? super DeleteAllInfResponseDto> response = codingzoneService.deleteAll(email);
         return response;
