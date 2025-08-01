@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PostSubjectMappingRequestDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.PostSubjectMappingResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.service.SubjectService;
 import com.icehufs.icebreaker.util.ResponseDto;
 import com.icehufs.icebreaker.util.SubjectResponseDto;
