@@ -28,7 +28,7 @@ public class SubjectService {
         boolean existedUser = userRepository.existsByEmail(email);
         // 전역 처리로 사용자 계정 오류 예외처리
         if (!existedUser)
-            throw new BusinessException("NOT_EXIST_USER", "사용자 계정이 존재하지 않습니다.", HttpStatus.NOT_FOUND); // 전역 예외처리로 중복
+            throw new BusinessException("NOT_EXIST_USER", "사용자 계정이 존재하지 않습니다.", HttpStatus.NOT_FOUND); // 전역 예외처리로 중복 //
                                                                                                        // 이메일 예외처리
 
         List<Integer> duplicatedIds = new ArrayList<>(); // 중복 매핑 번호가 있을 경우, 중복된 매핑 번호가 담길 List
@@ -81,11 +81,7 @@ public class SubjectService {
 
         List<Subject> subjectList = subjectRepository.findAll();// DB에서 꺼내서 Entity 리스트로 만든다음에
         return subjectList.stream()
-                .map(subject -> new SubjectResponseDto(subject.getSubjectId(), subject.getSubjectName())) // .map으로
-                                                                                                          // Subject객체
-                                                                                                          // 하나를
-                                                                                                          // SubjectDto로
-                                                                                                          // 변환
+                .map(subject -> new SubjectResponseDto(subject.getSubjectId(), subject.getSubjectName()))
                 .toList(); // 바꾼 SubjectDto를 리스트 구조로 바꾸고
         // 즉, 그 각각의 Subject Entity의 집합을 Dto 집합으로 바꾸는 과정임
     }
