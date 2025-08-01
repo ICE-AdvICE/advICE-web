@@ -262,7 +262,7 @@ public class CodingZoneServiceImplement implements CodingZoneService {
             }
 
             codingZoneRegisterRepository.delete(codingZoneRegister);
-            codingZoneClass.decreaseNum();
+            codingZoneClass.decreaseCurrentNum();
             codingZoneClassRepository.save(codingZoneClass);
 
         } catch (Exception exception) {
