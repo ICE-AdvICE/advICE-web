@@ -43,6 +43,8 @@ public class AuthorityService {
         User grantee = userRepository.findByEmail(dto.getEmail());
         if (grantee == null) throw new BusinessException(ResponseCode.NOT_EXISTED_USER, "권한을 부여 받을 사용자가 존재하지 않습니다.", HttpStatus.UNAUTHORIZED);
 
-        return authorityRepository.findByEmail(grantee.getEmail());
+        Authority granteeAuthority = authorityRepository.findByEmail(grantee.getEmail());
+        if (granteeAuthority == null) throw new BusinessException(ResponseCode.NOT_EXISTED_USER, "권한을 부여받을 사용자의 권한 정보가 존재하지 않습니다.", HttpStatus.NOT_FOUND);
+        return granteeAuthority;
     }
 }
