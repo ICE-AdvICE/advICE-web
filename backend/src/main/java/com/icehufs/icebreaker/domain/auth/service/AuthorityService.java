@@ -1,7 +1,6 @@
 package com.icehufs.icebreaker.domain.auth.service;
 
 import com.icehufs.icebreaker.common.ResponseCode;
-import com.icehufs.icebreaker.common.ResponseMessage;
 import com.icehufs.icebreaker.domain.auth.domain.entity.Authority;
 import com.icehufs.icebreaker.domain.auth.repostiory.AuthorityRepository;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.HandleAuthRequestDto;
@@ -9,13 +8,12 @@ import com.icehufs.icebreaker.domain.membership.domain.entity.User;
 import com.icehufs.icebreaker.domain.membership.repository.UserRepository;
 import com.icehufs.icebreaker.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class GiveAuthService {
+public class AuthorityService {
 
     private final UserRepository userRepository;
     private final AuthorityRepository authorityRepository;

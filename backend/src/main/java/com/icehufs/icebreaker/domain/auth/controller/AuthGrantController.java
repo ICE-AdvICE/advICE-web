@@ -1,7 +1,7 @@
 package com.icehufs.icebreaker.domain.auth.controller;
 
 import com.icehufs.icebreaker.domain.codingzone.dto.request.HandleAuthRequestDto;
-import com.icehufs.icebreaker.domain.auth.service.GiveAuthService;
+import com.icehufs.icebreaker.domain.auth.service.AuthorityService;
 import com.icehufs.icebreaker.util.ResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
 public class AuthGrantController {
-    private final GiveAuthService giveAuthService;
+    private final AuthorityService authorityService;
 
     @PatchMapping("/authority")
     public ResponseEntity<ResponseDto<String>> giveAuth(
             @RequestBody @Valid HandleAuthRequestDto requestBody,
             @AuthenticationPrincipal String email
     ) {
-        return ResponseEntity.ok(ResponseDto.success(giveAuthService.giveAuth(email, requestBody)));
+        return ResponseEntity.ok(ResponseDto.success(authorityService.giveAuth(email, requestBody)));
     }
 
     @PatchMapping("/authority/deprivation")
@@ -31,6 +31,6 @@ public class AuthGrantController {
             @RequestBody @Valid HandleAuthRequestDto requestBody,
             @AuthenticationPrincipal String email
     ) {
-        return ResponseEntity.ok(ResponseDto.success(giveAuthService.depriveAuth(email, requestBody)));
+        return ResponseEntity.ok(ResponseDto.success(authorityService.depriveAuth(email, requestBody)));
     }
 }
