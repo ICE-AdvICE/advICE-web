@@ -27,7 +27,8 @@ public class CodingZoneManagingService {
 
         for (CodingZoneClassAssignRequestDto assignedClass : dto) {
             if (!subjectRepository.existsBySubjectId(assignedClass.getSubjectId()))
-                throw new BusinessException("400", "등록하려고 하는 교과목 중 이름 매핑 작업이 이루어지지 않은 것이 있습니다, 매핑을 먼저 해주세요!",
+                throw new BusinessException("NOT_MAPPED_CLASS",
+                        "등록하려고 하는 교과목 중 이름 매핑 작업이 이루어지지 않은 것이 있습니다, 매핑을 먼저 해주세요!",
                         HttpStatus.BAD_REQUEST);
 
             // 등록 하려는 필드 값들이 DB에서 모두 같은 (currentNumber제외)경우가 있을 때 예외처리
@@ -43,7 +44,7 @@ public class CodingZoneManagingService {
                             assignedClass.getGroupId());
 
             if (isDuplicate) {
-                throw new BusinessException("409", "해당 수업은 이미 등록되어 있습니다.", HttpStatus.CONFLICT);
+                throw new BusinessException("DUPLICATED_CLASS", "해당 수업은 이미 등록되어 있습니다.", HttpStatus.CONFLICT);
             }
         }
 
