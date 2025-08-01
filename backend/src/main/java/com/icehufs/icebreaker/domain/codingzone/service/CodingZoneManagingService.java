@@ -12,11 +12,9 @@ import com.icehufs.icebreaker.domain.codingzone.repository.GroupInfRepository;
 import com.icehufs.icebreaker.domain.codingzone.repository.SubjectRepository;
 import com.icehufs.icebreaker.exception.BusinessException;
 import jakarta.transaction.Transactional;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@Getter
 @RequiredArgsConstructor
 public class CodingZoneManagingService {
 
