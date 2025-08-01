@@ -40,7 +40,7 @@ public class GroupInf {
     private String weekDay; // 요일
 
     @Column(name = "maximum_number")
-    private int maximumNumber; // 최대인원
+    private Integer maximumNumber; // 최대인원
 
     @Column(name = "class_name")
     private String className; // 과목명
