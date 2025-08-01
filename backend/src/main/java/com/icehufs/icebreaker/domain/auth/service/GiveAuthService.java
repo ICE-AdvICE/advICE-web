@@ -38,7 +38,6 @@ public class GiveAuthService {
         return "권한 박탈 성공.";
     }
 
-    @NotNull
     private Authority validateGrantorAndGranteeExist(String email, HandleAuthRequestDto dto) {
         User grantor = userRepository.findByEmail(email);
         if (grantor == null) throw new BusinessException(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER, HttpStatus.UNAUTHORIZED);
