@@ -227,7 +227,8 @@ public class CodingZoneServiceImplement implements CodingZoneService {
             CodingZoneRegister newRegisterEntity = new CodingZoneRegister(subjectId, email, userName, userStudentNum,
                     classNum);
             codingZoneRegisterRepository.save(newRegisterEntity);
-            codingZoneClass.increaseNum(); // 예약자 수 증가
+            Integer maximumNumberInClass = codingZoneClass.getMaximumNumber();
+            codingZoneClass.increaseNum(maximumNumberInClass); // 예약자 수 증가
             codingZoneClassRepository.save(codingZoneClass);
 
         } catch (Exception exception) {
