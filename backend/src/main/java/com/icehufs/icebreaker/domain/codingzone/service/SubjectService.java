@@ -30,8 +30,7 @@ public class SubjectService {
         boolean existedUser = userRepository.existsByEmail(email);
         // 전역 처리로 사용자 계정 오류 예외처리
         if (!existedUser)
-            throw new BusinessException(ResponseCode.NOT_EXISTED_USER, ResponseCode.NOT_EXISTED_USER,
-                    HttpStatus.NOT_FOUND);
+            throw new BusinessException(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER,HttpStatus.NOT_FOUND);
 
         List<Integer> duplicatedIds = new ArrayList<>(); // 중복 매핑 번호가 있을 경우, 중복된 매핑 번호가 담길 List
         List<String> duplicatedNames = new ArrayList<>(); // 중복 교과목 이름이 있을 경우,중복된 과목명이 담길 List
@@ -48,21 +47,15 @@ public class SubjectService {
         }
 
         if (!duplicatedIds.isEmpty() && !duplicatedNames.isEmpty()) {
-            throw new BusinessException(ResponseCode.ALREADY_EXISTED_MAPPINGSET,
-                    ResponseMessage.ALREADY_EXISTED_MAPPSET,
-                    HttpStatus.CONFLICT);
+            throw new BusinessException(ResponseCode.ALREADY_EXISTED_MAPPINGSET,ResponseMessage.ALREADY_EXISTED_MAPPSET,HttpStatus.CONFLICT);
         }
 
         else if (!duplicatedIds.isEmpty()) {
-            throw new BusinessException(ResponseCode.ALREADY_EXISTED_NUMMAPPING,
-                    ResponseMessage.ALREADY_EXISTED_NUMMAPP,
-                    HttpStatus.CONFLICT);
+            throw new BusinessException(ResponseCode.ALREADY_EXISTED_NUMMAPPING,ResponseMessage.ALREADY_EXISTED_NUMMAPP,HttpStatus.CONFLICT);
         }
 
         else if (!duplicatedNames.isEmpty()) {
-            throw new BusinessException(ResponseCode.ALREADY_EXISTED_CLASSMAPPING,
-                    ResponseMessage.ALREADY_EXISTED_CLASSMAPP,
-                    HttpStatus.CONFLICT);
+            throw new BusinessException(ResponseCode.ALREADY_EXISTED_CLASSMAPPING,ResponseMessage.ALREADY_EXISTED_CLASSMAPP,HttpStatus.CONFLICT);
         }
 
         for (PostSubjectMappingRequestDto requestDto : dto) {
@@ -79,13 +72,11 @@ public class SubjectService {
         boolean existedUser = userRepository.existsByEmail(email);
         // 전역 처리로 사용자 계정 오류 예외처리
         if (!existedUser)
-            throw new BusinessException(ResponseCode.NOT_EXISTED_USER, ResponseCode.NOT_EXISTED_USER,
-                    HttpStatus.NOT_FOUND);
+            throw new BusinessException(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER,HttpStatus.NOT_FOUND);
 
         // 아직 DB에 어떠한 매핑 정보도 없을 때, 예외 처리
         if (!subjectRepository.existsBySubjectIdIsNotNull())
-            throw new BusinessException(ResponseCode.NOT_ANY_MAPPINGSET, ResponseMessage.NOT_ANY_MAPPINGSET,
-                    HttpStatus.NOT_FOUND);
+            throw new BusinessException(ResponseCode.NOT_ANY_MAPPINGSET, ResponseMessage.NOT_ANY_MAPPINGSET,HttpStatus.NOT_FOUND);
 
         List<Subject> subjectList = subjectRepository.findAll();// DB에서 꺼내서 Entity 리스트로 만든다음에
         return subjectList.stream()
