@@ -25,6 +25,7 @@ public interface ResponseMessage {
     String ALREADY_EXISTED_NUMMAPP = "이미 매핑된 고유 번호가 포함 ";
     String ALREADY_EXISTED_MAPPSET = "이미 포함된 매핑번호와 교과목 이름 포함";
     String NOT_ANY_MAPPINGSET = "어떠한 매핑 정보도 등록 정보 없음";
+    String NOT_WEEKDAY = "입력한 날짜가 주중이 아님";
 
     // HTTP Status 401
     String SIGN_IN_FAIL = "Login information mismatch.";
