@@ -93,6 +93,6 @@ public class CodingZoneClass {
         LocalDate date = LocalDate.parse(dateString);
         DayOfWeek day = date.getDayOfWeek();
         if ((day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY))
-            throw new BusinessException("BR", "입력한 날짜는 주말입니다, 다시 입력해주세요.", HttpStatus.BAD_REQUEST);
+            throw new BusinessException(ResponseCode.NOT_WEEKDAY, ResponseMessage.NOT_WEEKDAY, HttpStatus.BAD_REQUEST);
     }
 }
