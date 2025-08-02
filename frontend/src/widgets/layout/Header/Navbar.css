@@ -1,21 +1,24 @@
-
 .header-container {
-    align-items: center; 
-    width: 1200px; 
-    min-width: 350px;
-    margin: 0 auto;
-    padding: 0 20px;
-    position: relative;
-    display: flex;
-    justify-content: space-between;
+  align-items: center;
+  width: 1600px;
+  min-width: 350px;
+  margin: 0 auto;
+  padding: 30px 0px 10px 11px;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #052940;
 }
-.header-container img{
-    margin-top:0.5vw;
-    width: 150px;
-    height: 40px;
+.header-container img {
+  margin-top: 0.5vw;
+  width: 140px;
+  height: 35px;
 }
-.navbar-nav{
-    font-size: 13px;
+.navbar-nav {
+  font-size: 13px;
 }
 
-
+/* ✅ 추가(juhui) : 익명 게시판 Navbar 배경색 수정  */
+.navbar.article-navbar {
+  background-color: #eaeaf5;
+}

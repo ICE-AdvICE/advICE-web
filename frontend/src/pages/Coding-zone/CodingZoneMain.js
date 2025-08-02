@@ -1,22 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import '../css/codingzone/codingzone-main.css';
+import React, { useState, useEffect } from "react";
+import "../css/codingzone/codingzone-main.css";
 import { useCookies } from "react-cookie";
-import CzCard from '../../widgets/layout/CzCard/czCard';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { deleteClass } from '../../entities/api/CodingZone/AdminApi.js';
-import { checkAdminType } from '../../features/api/Admin/UserApi.js';
-import { getAvailableClassesForNotLogin } from '../../features/api/Admin/Codingzone/ClassApi.js';
-import InquiryModal from './InquiryModal';
+import CzCard from "../../widgets/layout/CzCard/czCard";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import { deleteClass } from "../../entities/api/CodingZone/AdminApi.js";
+import { checkAdminType } from "../../features/api/Admin/UserApi.js";
+import { getAvailableClassesForNotLogin } from "../../features/api/Admin/Codingzone/ClassApi.js";
+import InquiryModal from "./InquiryModal";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Slider from 'react-slick';
-import { getAttendanceCount, getcodingzoneListRequest } from '../../features/api/CodingzoneApi.js';
-import { deleteCodingZoneClass, reserveCodingZoneClass } from '../../entities/api/CodingZone/StudentApi.js';
+import Slider from "react-slick";
+import {
+  getAttendanceCount,
+  getcodingzoneListRequest,
+} from "../../features/api/CodingzoneApi.js";
+import {
+  deleteCodingZoneClass,
+  reserveCodingZoneClass,
+} from "../../entities/api/CodingZone/StudentApi.js";
 
-import CodingZoneNavigation from '../../shared/ui/navigation/CodingZoneNavigation.js'; //코딩존 네이게이션 바 컴포넌트
-const ClassList = ({ userReservedClass, onDeleteClick, classList, handleCardClick, handleToggleReservation, isAdmin }) => {
+import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네이게이션 바 컴포넌트
+import BannerSlider from "../../shared/ui/Banner/BannerSlider"; // ✅ 추가(juhui): 슬라이더 컴포넌트
+
+const ClassList = ({
+  userReservedClass,
+  onDeleteClick,
+  classList,
+  handleCardClick,
+  handleToggleReservation,
+  isAdmin,
+}) => {
   return (
-    <div className='cz-card'>
+    <div className="cz-card">
       {classList.map((classItem) => (
         <CzCard
           key={classItem.classNum}
@@ -35,7 +50,8 @@ const ClassList = ({ userReservedClass, onDeleteClick, classList, handleCardClic
           isReserved={classItem.isReserved}
           disableReserveButton={
             userReservedClass &&
-            (userReservedClass.classNum !== classItem.classNum && userReservedClass.grade === classItem.grade)
+            userReservedClass.classNum !== classItem.classNum &&
+            userReservedClass.grade === classItem.grade
           }
         />
       ))}
@@ -46,7 +62,7 @@ const ClassList = ({ userReservedClass, onDeleteClick, classList, handleCardClic
 const CodingMain = () => {
   const [classList, setClassList] = useState([]);
   const [grade, setGrade] = useState(1);
-  const [cookies, setCookie] = useCookies(['accessToken']);
+  const [cookies, setCookie] = useCookies(["accessToken"]);
   const [originalClassList, setOriginalClassList] = useState([]);
   const [attendanceCount, setAttendanceCount] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -55,9 +71,9 @@ const CodingMain = () => {
   const [selectedZone, setSelectedZone] = useState(1);
 
   const [userReservedClass, setUserReservedClass] = useState(null);
-  const [selectedDay, setSelectedDay] = useState('');
+  const [selectedDay, setSelectedDay] = useState("");
   const [isRendered, setIsRendered] = useState(false);
-  const [userRole, setUserRole] = useState('');
+  const [userRole, setUserRole] = useState("");
   const [showNoClassesImage, setShowNoClassesImage] = useState(false);
 
   useEffect(() => {
@@ -76,12 +92,10 @@ const CodingMain = () => {
         const response = await checkAdminType(token, setCookie, navigate);
         if (response === "EA") {
           setIsAdmin(true);
-        }
-        else if (response === "SU") {
-          setUserRole('SU');
-        }
-        else if (response === "CA") {
-          setUserRole('CA');
+        } else if (response === "SU") {
+          setUserRole("SU");
+        } else if (response === "CA") {
+          setUserRole("CA");
         }
       }
     };
@@ -89,7 +103,7 @@ const CodingMain = () => {
   }, [cookies.accessToken]);
 
   // 요일과 슬라이더 설정을 상수로 정의
-  const daysOfWeek = ['월요일', '화요일', '수요일', '목요일', '금요일'];
+  const daysOfWeek = ["월요일", "화요일", "수요일", "목요일", "금요일"];
 
   // [과사 권한이 있는 계정] 삭제 버튼
   const handleDelete = async (classNum) => {
@@ -101,8 +115,10 @@ const CodingMain = () => {
     const result = await deleteClass(classNum, token, setCookie, navigate);
     if (result) {
       alert("수업이 삭제되었습니다.");
-      setClassList(prevClassList => {
-        const updatedList = prevClassList.filter(item => item.classNum !== classNum);
+      setClassList((prevClassList) => {
+        const updatedList = prevClassList.filter(
+          (item) => item.classNum !== classNum
+        );
         if (updatedList.length === 0) {
           setShowNoClassesImage(true);
         } else {
@@ -117,13 +133,14 @@ const CodingMain = () => {
 
   // 시간 문자열을 분 단위 숫자로 변환하여 정렬
   const timeToNumber = (timeStr) => {
-    const [hours, minutes] = timeStr.split(':').map(Number);
+    const [hours, minutes] = timeStr.split(":").map(Number);
     return hours * 60 + minutes;
   };
   // 수업 목록을 요일과 시간 순으로 정렬
   const sortClassList = (classList) => {
     return classList.sort((a, b) => {
-      const dayComparison = daysOfWeek.indexOf(a.weekDay) - daysOfWeek.indexOf(b.weekDay);
+      const dayComparison =
+        daysOfWeek.indexOf(a.weekDay) - daysOfWeek.indexOf(b.weekDay);
       if (dayComparison !== 0) {
         return dayComparison;
       }
@@ -142,9 +159,9 @@ const CodingMain = () => {
   const filterByDay = (day) => {
     if (selectedDay === day) {
       setClassList(originalClassList);
-      setSelectedDay('');
+      setSelectedDay("");
     } else {
-      const filteredData = originalClassList.filter(classItem => {
+      const filteredData = originalClassList.filter((classItem) => {
         return classItem.weekDay.toLowerCase() === day.toLowerCase();
       });
       setClassList(filteredData);
@@ -158,30 +175,37 @@ const CodingMain = () => {
     try {
       let classes = [];
       if (cookies.accessToken) {
-        const response = await getcodingzoneListRequest(cookies.accessToken, grade, setCookie, navigate);
+        const response = await getcodingzoneListRequest(
+          cookies.accessToken,
+          grade,
+          setCookie,
+          navigate
+        );
         if (response) {
           if (response.registedClassNum !== 0) {
-            classes = response.classList.map(classItem => ({
+            classes = response.classList.map((classItem) => ({
               ...classItem,
-              isReserved: classItem.classNum === response.registedClassNum
+              isReserved: classItem.classNum === response.registedClassNum,
             }));
-            const reservedClass = classes.find(classItem => classItem.isReserved);
+            const reservedClass = classes.find(
+              (classItem) => classItem.isReserved
+            );
             if (reservedClass) {
               setUserReservedClass(reservedClass);
             }
           } else {
-            classes = response.classList.map(classItem => ({
+            classes = response.classList.map((classItem) => ({
               ...classItem,
-              isReserved: false
+              isReserved: false,
             }));
           }
         }
       } else {
         const response = await getAvailableClassesForNotLogin(grade);
         if (response && response.length > 0) {
-          classes = response.map(classItem => ({
+          classes = response.map((classItem) => ({
             ...classItem,
-            isReserved: undefined
+            isReserved: undefined,
           }));
         }
       }
@@ -206,12 +230,17 @@ const CodingMain = () => {
     fetchData();
   }, [cookies.accessToken, grade]);
 
-  // 출석 횟수 
+  // 출석 횟수
   useEffect(() => {
     const fetchAttendance = async () => {
       const token = cookies.accessToken;
       if (token) {
-        const count = await getAttendanceCount(token, grade, setCookie, navigate);
+        const count = await getAttendanceCount(
+          token,
+          grade,
+          setCookie,
+          navigate
+        );
         setAttendanceCount(count);
       }
     };
@@ -228,15 +257,24 @@ const CodingMain = () => {
     try {
       let result;
       if (classItem.isReserved) {
-        result = await deleteCodingZoneClass(token, classItem.classNum, setCookie, navigate);
+        result = await deleteCodingZoneClass(
+          token,
+          classItem.classNum,
+          setCookie,
+          navigate
+        );
         if (result === true) {
           alert("예약 취소가 완료되었습니다.");
           setUserReservedClass(null);
           await fetchData();
         }
       } else {
-        result = await reserveCodingZoneClass(token, classItem.classNum, setCookie, navigate);
-
+        result = await reserveCodingZoneClass(
+          token,
+          classItem.classNum,
+          setCookie,
+          navigate
+        );
 
         if (result === "FC") {
           alert("예약 가능한 인원이 꽉 찼습니다.");
@@ -254,30 +292,15 @@ const CodingMain = () => {
     }
   };
 
-
-
-
-
-
-  const handleCardClick = (classItem) => {
-  };
+  const handleCardClick = (classItem) => {};
   // 수업 목록 업데이트
   const updateClassItem = (classNum, isReserved, newCurrentNumber) => {
-    const updatedList = classList.map(item =>
-      item.classNum === classNum ? { ...item, isReserved, currentNumber: newCurrentNumber } : item
+    const updatedList = classList.map((item) =>
+      item.classNum === classNum
+        ? { ...item, isReserved, currentNumber: newCurrentNumber }
+        : item
     );
     setClassList(updatedList);
-  };
-
-  const sliderSettings = {
-    dots: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 4000,
-    pauseOnHover: true
   };
 
   /*출석률 체크바 */
@@ -300,58 +323,40 @@ const CodingMain = () => {
     );
   };
 
-
   return (
     <div className="codingzone-container">
       <CodingZoneNavigation />
-      <Slider {...sliderSettings}>
-        <div className="codingzone-top-container">
-          <picture>
-            <source srcSet="/codingzone_main_v5.webp" type="image/webp" />
-            <img
-              src="/codingzone_main_v5.png"
-              alt="코딩존 메인 이미지 1"
-              className="codingzonetop2-image"
-              loading="eager"
-            />
-          </picture>
-        </div>
-        <div className="codingzone-top-container">
-          <picture>
-            <source srcSet="/coding-zone-main2.webp" type="image/webp" />
-            <img src="/coding-zone-main2.png" alt="코딩존 메인 이미지 2" className="codingzonetop2-image" />
-          </picture>
-        </div>
-        <div className="codingzone-top-container">
-          <picture>
-            <source srcSet="/coding-zone-main3.webp" type="image/webp" />
-            <img src="/coding-zone-main3.png" alt="코딩존 메인 이미지 3" className="codingzonetop2-image" />
-          </picture>
-        </div>
-      </Slider>
-      <div className='codingzone-body-container'>
+      <BannerSlider />
+      <div className="codingzone-body-container">
         <div className="cz-category-top">
           <div className="cz-category-date">
             <button
-              className={`cz-1 ${selectedZone === 1 ? 'selected' : ''}`}
+              className={`cz-1 ${selectedZone === 1 ? "selected" : ""}`}
               onClick={() => {
                 setGrade(1);
                 setSelectedZone(1);
-                setSelectedDay('');
+                setSelectedDay("");
                 setClassList(originalClassList);
-              }}>
+              }}
+            >
               코딩존 1
             </button>
             <button
-              className={`cz-2 ${selectedZone === 2 ? 'selected' : ''}`}
+              className={`cz-2 ${selectedZone === 2 ? "selected" : ""}`}
               onClick={() => {
-                setGrade(2); setSelectedZone(2);
-                setSelectedDay(''); setClassList(originalClassList);
-              }}>
+                setGrade(2);
+                setSelectedZone(2);
+                setSelectedDay("");
+                setClassList(originalClassList);
+              }}
+            >
               코딩존 2
             </button>
           </div>
-          <Link to="/coding-zone/Codingzone_Attendance" className='cz-count-container'>
+          <Link
+            to="/coding-zone/Codingzone_Attendance"
+            className="cz-count-container"
+          >
             {token && renderAttendanceProgress(attendanceCount)}
           </Link>
         </div>
@@ -360,7 +365,7 @@ const CodingMain = () => {
             <React.Fragment key={day.name}>
               <button
                 onClick={() => filterByDay(day.name)}
-                className={selectedDay === day.name ? 'selected' : ''}
+                className={selectedDay === day.name ? "selected" : ""}
               >
                 <p>{day.label}</p>
               </button>
@@ -368,23 +373,27 @@ const CodingMain = () => {
             </React.Fragment>
           ))}
         </div>
-        <div className='category-name-container'>
+        <div className="category-name-container">
           <div className="codingzone-title">
-            <p className='weekDay'>요일</p>
-            <p className='weekDate'>날짜</p>
-            <p className='weekTime'>시간</p>
-            <p className='card-hidden-space'></p>
-            <p className='weeksubject'>과목명</p>
-            <p className='weekperson'>조교</p>
-            <p className='weekcount'>인원</p>
+            <p className="weekDay">요일</p>
+            <p className="weekDate">날짜</p>
+            <p className="weekTime">시간</p>
+            <p className="card-hidden-space"></p>
+            <p className="weeksubject">과목명</p>
+            <p className="weekperson">조교</p>
+            <p className="weekcount">인원</p>
             {(cookies.accessToken || isAdmin) && isRendered && (
-              <p className='registerbutton'></p>
+              <p className="registerbutton"></p>
             )}
           </div>
         </div>
         <div className="codingzone-list">
           {/* 항상 렌더되도록 유지하고, show/hide는 CSS 클래스 이름으로 제어 */}
-          <picture className={`no-classes-image ${showNoClassesImage ? 'visible' : 'hidden'}`}>
+          <picture
+            className={`no-classes-image ${
+              showNoClassesImage ? "visible" : "hidden"
+            }`}
+          >
             <source srcSet="/Codingzone-noregist.webp" type="image/webp" />
             <img
               src="/Codingzone-noregist.png"
@@ -410,8 +419,6 @@ const CodingMain = () => {
             />
           )}
         </div>
-
-
       </div>
     </div>
   );
