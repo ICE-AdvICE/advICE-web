@@ -9,6 +9,9 @@ import jakarta.persistence.Table;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import org.springframework.http.HttpStatus;
+
+import com.icehufs.icebreaker.common.ResponseCode;
+import com.icehufs.icebreaker.common.ResponseMessage;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassAssignRequestDto;
 import com.icehufs.icebreaker.exception.BusinessException;
 import lombok.AllArgsConstructor;
@@ -62,7 +65,7 @@ public class CodingZoneClass {
         this.assistantName = dto.getAssistantName();
         this.classTime = dto.getClassTime();
         this.classDate = dto.getClassDate();
-        this.currentNumber = dto.getMaximumNumber(); // 등록 시에는 아직 아무도 예약을 안 했기 때문에 maximumNumber로
+        this.currentNumber = 0;
         this.maximumNumber = dto.getMaximumNumber();
         this.className = dto.getClassName();
         this.weekDay = dto.getWeekDay();
@@ -70,13 +73,17 @@ public class CodingZoneClass {
         this.groupId = dto.getGroupId();
     }
 
-    public void increaseNum() {
+    public void increaseNum(Integer maximumNumberInCLass) {
+        if (this.currentNumber > maximumNumberInCLass) {
+            throw new BusinessException(ResponseCode.FULL_CLASS, ResponseMessage.FULL_CLASS, HttpStatus.BAD_REQUEST);
+        }
         this.currentNumber++;
     }
 
     public void decreaseCurrentNum() {
-        if (this.currentNumber <= 0) {
-            throw new BusinessException("400", "서버에 심각한 오류 발생, 관리자에게 연락해주세요", HttpStatus.BAD_REQUEST);
+        if (this.currentNumber < 0) {
+            throw new BusinessException(ResponseCode.INTERNAL_SERVER_ERROR, ResponseMessage.INTERNAL_SERVER_ERROR,
+                    HttpStatus.BAD_REQUEST);
         }
         this.currentNumber--;
     }
@@ -86,6 +93,6 @@ public class CodingZoneClass {
         LocalDate date = LocalDate.parse(dateString);
         DayOfWeek day = date.getDayOfWeek();
         if ((day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY))
-            throw new BusinessException("400", "입력한 날짜는 주말입니다, 다시 입력해주세요.", HttpStatus.BAD_REQUEST);
+            throw new BusinessException("BR", "입력한 날짜는 주말입니다, 다시 입력해주세요.", HttpStatus.BAD_REQUEST);
     }
 }
