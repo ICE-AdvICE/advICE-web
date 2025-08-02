@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import com.icehufs.icebreaker.common.ResponseCode;
+import com.icehufs.icebreaker.common.ResponseMessage;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.Subject;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PostSubjectMappingRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.PostSubjectMappingResponseDto;
@@ -28,8 +30,8 @@ public class SubjectService {
         boolean existedUser = userRepository.existsByEmail(email);
         // 전역 처리로 사용자 계정 오류 예외처리
         if (!existedUser)
-            throw new BusinessException("NOT_EXIST_USER", "사용자 계정이 존재하지 않습니다.", HttpStatus.NOT_FOUND); // 전역 예외처리로 중복 //
-                                                                                                       // 이메일 예외처리
+            throw new BusinessException(ResponseCode.NOT_EXISTED_USER, ResponseCode.NOT_EXISTED_USER,
+                    HttpStatus.NOT_FOUND);
 
         List<Integer> duplicatedIds = new ArrayList<>(); // 중복 매핑 번호가 있을 경우, 중복된 매핑 번호가 담길 List
         List<String> duplicatedNames = new ArrayList<>(); // 중복 교과목 이름이 있을 경우,중복된 과목명이 담길 List
@@ -46,16 +48,21 @@ public class SubjectService {
         }
 
         if (!duplicatedIds.isEmpty() && !duplicatedNames.isEmpty()) {
-            throw new BusinessException("DUPLICATED_SUBJECTID_AND_SUBJECTNAME", "이미 존재하는 코딩존 매핑 번호와 코딩존 교과목입니다. ",
+            throw new BusinessException(ResponseCode.ALREADY_EXISTED_MAPPINGSET,
+                    ResponseMessage.ALREADY_EXISTED_MAPPSET,
                     HttpStatus.CONFLICT);
         }
 
         else if (!duplicatedIds.isEmpty()) {
-            throw new BusinessException("DUPLICATED_SUBJECTID", "이미 존재하는 코딩존 매핑 번호입니다. ", HttpStatus.CONFLICT);
+            throw new BusinessException(ResponseCode.ALREADY_EXISTED_NUMMAPPING,
+                    ResponseMessage.ALREADY_EXISTED_NUMMAPP,
+                    HttpStatus.CONFLICT);
         }
 
         else if (!duplicatedNames.isEmpty()) {
-            throw new BusinessException("DUPLICATED_SUBJECTNAME", "이미 존재하는 코딩존 교과목 이름입니다. ", HttpStatus.CONFLICT);
+            throw new BusinessException(ResponseCode.ALREADY_EXISTED_CLASSMAPPING,
+                    ResponseMessage.ALREADY_EXISTED_CLASSMAPP,
+                    HttpStatus.CONFLICT);
         }
 
         for (PostSubjectMappingRequestDto requestDto : dto) {
@@ -63,7 +70,7 @@ public class SubjectService {
             subjectRepository.save(subject);
         }
 
-        return new PostSubjectMappingResponseDto("SU", "코딩존 매핑을 성공했습니다!");
+        return new PostSubjectMappingResponseDto(ResponseCode.SUCCESS, ResponseMessage.SUCCESS_CLASS_CREATE);
 
     }
 
@@ -72,12 +79,13 @@ public class SubjectService {
         boolean existedUser = userRepository.existsByEmail(email);
         // 전역 처리로 사용자 계정 오류 예외처리
         if (!existedUser)
-            throw new BusinessException("NOT_EXIST_USER", "사용자 계정이 존재하지 않습니다.", HttpStatus.NOT_FOUND); // 전역 예외처리로 중복
-                                                                                                       // 이메일 예외처리
+            throw new BusinessException(ResponseCode.NOT_EXISTED_USER, ResponseCode.NOT_EXISTED_USER,
+                    HttpStatus.NOT_FOUND);
 
         // 아직 DB에 어떠한 매핑 정보도 없을 때, 예외 처리
         if (!subjectRepository.existsBySubjectIdIsNotNull())
-            throw new BusinessException("NOT_EXIST_MAPPING", "아직 등록된 코딩존 교과목이 없습니다.", HttpStatus.NOT_FOUND);
+            throw new BusinessException(ResponseCode.NOT_ANY_MAPPINGSET, ResponseMessage.NOT_ANY_MAPPINGSET,
+                    HttpStatus.NOT_FOUND);
 
         List<Subject> subjectList = subjectRepository.findAll();// DB에서 꺼내서 Entity 리스트로 만든다음에
         return subjectList.stream()
