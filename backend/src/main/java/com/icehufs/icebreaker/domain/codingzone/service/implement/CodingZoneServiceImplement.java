@@ -1,9 +1,12 @@
 package com.icehufs.icebreaker.domain.codingzone.service.implement;
 
+import com.icehufs.icebreaker.common.ResponseCode;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.*;
+import com.icehufs.icebreaker.exception.BusinessException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -623,6 +626,28 @@ public class CodingZoneServiceImplement implements CodingZoneService {
         }
         return GetCodingZoneAssitantListResponseDto.success(ListOfCodingZone1, ListOfCodingZone2);
     }
+
+    @Override
+    public AssistantNamesResponseDto getAssistantNamesBySubjectId(Long subjectId) {
+        List<Authority> authorityList = switch (subjectId.intValue()) {
+            case 1 -> authorityRepository.findByRoleAdminC1("ROLE_ADMINC1");
+            case 2 -> authorityRepository.findByRoleAdminC2("ROLE_ADMINC2");
+            case 3 -> authorityRepository.findByRoleAdminC3("ROLE_ADMINC3");
+            case 4 -> authorityRepository.findByRoleAdminC4("ROLE_ADMINC4");
+            default -> throw new BusinessException(ResponseCode.INVALID_SUBJECT_ID, "유효하지 않은 과목 ID 입니다.", HttpStatus.BAD_REQUEST);
+        };
+
+        if (authorityList.isEmpty()) throw new BusinessException(ResponseCode.TUTOR_NOT_FOUND, "선택한 교과목에 등록된 조교 리스트 없음", HttpStatus.BAD_REQUEST);
+
+        List<String> assistantNames = new ArrayList<>();
+        for (Authority authority : authorityList) { // 특정 권한을 가진 user를 찾아서 이름을 list에 담아 반환
+            User assistant = userRepository.findByEmail(authority.getEmail());
+            if (assistant == null) throw new BusinessException(ResponseCode.NOT_EXISTED_USER, "선택한 교과목에 등록된 조교가 존재 하지 않습니다.", HttpStatus.NOT_FOUND);
+            assistantNames.add(assistant.getName());
+        }
+        return new AssistantNamesResponseDto(assistantNames);
+    }
+
 
     @Override
     public ByteArrayResource generateAttendanceExcelOfGrade1() throws IOException {
