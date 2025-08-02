@@ -5,38 +5,37 @@
   flex-direction: column;
 }
 
-          /* ---------------------이후 요소 수정 및 통일 필요------------------*/
-.header-select-container{
+/* ---------------------이후 요소 수정 및 통일 필요------------------*/
+.header-select-container {
   display: flex;
   position: relative;
   justify-content: space-around;
   margin-bottom: 1%;
   padding-right: 8%;
   padding-left: 8%;
-  
 }
-.header-select-container button{
+.header-select-container button {
   background-color: white;
   border: none !important;
-  color: #BFBFBF;
+  color: #bfbfbf;
   font-weight: bold;
 }
-.header-select-container span{
+.header-select-container span {
   padding: 1%;
 }
-.header-select-container button:hover{
-  color: #002D56;
+.header-select-container button:hover {
+  color: #002d56;
   cursor: pointer;
 }
 
-.img-container{
+.img-container {
   width: 100%;
   display: flex;
   position: relative;
 }
 
-.codingzonetop-image{
-  width:100%;
+.codingzonetop-image {
+  width: 100%;
   position: absolute;
   height: 26vw;
   background-size: cover;
@@ -55,21 +54,21 @@
 .main-category-bar button {
   height: 80%;
   width: 50%;
-  border: 1px solid #D0D5DD;
+  border: 1px solid #d0d5dd;
   background-color: white;
   font-size: 15px;
-  color: #BFBFBF;
+  color: #bfbfbf;
 }
 .main-category-bar button:hover {
-  color: #002D56;
+  color: #002d56;
   background-color: white;
-  border-color: #002D56;
+  border-color: #002d56;
 }
-.main-span{
+.main-span {
   padding-right: 1%;
   padding-left: 1%;
 }
-          /* ---------------------여기까지 요소 수정 및 통일 필요------------------*/
+/* ---------------------여기까지 요소 수정 및 통일 필요------------------*/
 
 .main-body-container {
   width: 100%;
@@ -92,7 +91,7 @@
 
 .reset-button {
   margin-left: 5%;
-  border-radius: 5px; 
+  border-radius: 5px;
   transition: background-color 0.3s;
 }
 
@@ -102,28 +101,28 @@
 }
 
 .category-bar button {
-
   height: 100%; /* 버튼의 높이를 컨테이너의 높이에 맞춤 */
   padding: 8px 16px; /* 내부 패딩 조정 */
-  border-color: #BFBFBF;
-  border: 1px solid #D0D5DD;
+  border-color: #bfbfbf;
+  border: 1px solid #d0d5dd;
   background-color: white;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 13px;
-  color: #BFBFBF;
+  color: #bfbfbf;
   white-space: nowrap; /* 텍스트가 줄바꿈 되지 않도록 설정 */
 }
 
-.category-bar button:hover, .category-bar button.active {
+.category-bar button:hover,
+.category-bar button.active {
   color: white;
-  background-color: #002D56; /* 선택된 버튼과 호버 시 배경 색상 */
-  border-color: #002D56; /* 선택된 버튼과 호버 시 테두리 색상 */
+  background-color: #002d56; /* 선택된 버튼과 호버 시 배경 색상 */
+  border-color: #002d56; /* 선택된 버튼과 호버 시 테두리 색상 */
 }
-.main-span2{
+.main-span2 {
   padding-right: 1%;
   padding-left: 1%;
 }
-.inner-category-bar{
+.inner-category-bar {
   display: flex;
   align-items: center;
   justify-content: flex-start; /* 내용을 오른쪽으로 정렬 */
@@ -142,16 +141,14 @@
 }
 
 .separator {
-height: 1px; /* 높이를 10픽셀로 설정 */
-background-color: #A5A5A5; /* 배경색을 회색으로 설정 */
-
+  height: 1px; /* 높이를 10픽셀로 설정 */
+  background-color: #a5a5a5; /* 배경색을 회색으로 설정 */
 }
-.main-category-name-container{
+.main-category-name-container {
   position: relative;
   display: flex;
   flex-direction: column;
   height: 45px;
-
 }
 
 .element-title {
@@ -175,14 +172,16 @@ background-color: #A5A5A5; /* 배경색을 회색으로 설정 */
   white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
 }
 .part1-element-title p {
-  flex: 1;  /* 각 p 태그가 공간을 균등하게 차지하도록 설정 */
+  flex: 1; /* 각 p 태그가 공간을 균등하게 차지하도록 설정 */
   margin: 0 5px;
   text-align: center; /* 텍스트를 가운데 정렬 */
 }
 
-.weekDay, .weekTime, .assistent {
+.weekDay,
+.weekTime,
+.assistent {
   display: inline-block; /* 요소들을 inline-block으로 설정 */
- /* 오른쪽에 20px의 공간을 추가 */
+  /* 오른쪽에 20px의 공간을 추가 */
 }
 /* 마지막 요소의 경우 마진을 0으로 설정하여 여분의 공간을 제거 */
 .assistent {
@@ -201,12 +200,12 @@ background-color: #A5A5A5; /* 배경색을 회색으로 설정 */
   white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
 }
 .part2-element-title p {
-  flex: 1;  /* 각 p 태그가 공간을 균등하게 차지하도록 설정 */
+  flex: 1; /* 각 p 태그가 공간을 균등하게 차지하도록 설정 */
   margin: 0 5px;
   text-align: center; /* 텍스트를 가운데 정렬 */
 }
-.className{
- margin-right: 70%;
+.className {
+  margin-right: 70%;
 }
 
 .part3-element-title {
@@ -221,16 +220,14 @@ background-color: #A5A5A5; /* 배경색을 회색으로 설정 */
   white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
 }
 .part3-element-title p {
-  flex: 1;  /* 각 p 태그가 공간을 균등하게 차지하도록 설정 */
+  flex: 1; /* 각 p 태그가 공간을 균등하게 차지하도록 설정 */
   margin: 0 5px;
   text-align: center; /* 텍스트를 가운데 정렬 */
 }
-.grade{
+.grade {
   display: inline-block;
-
-
 }
-.maxPers{
+.maxPers {
   display: inline-block;
   padding-right: 20%;
 }
@@ -255,42 +252,42 @@ background-color: #A5A5A5; /* 배경색을 회색으로 설정 */
 .class-input-box > .Time-input,
 .class-input-box > .Date-input,
 .class-input-box > .Assistant-input {
-min-width: 0;
-white-space: nowrap;
-flex: 4; /* Day, Time, Assistent 입력필드의 비율 설정 */
+  min-width: 0;
+  white-space: nowrap;
+  flex: 4; /* Day, Time, Assistent 입력필드의 비율 설정 */
 }
 
 .class-input-box > .ClassName-input {
-min-width: 0;
-white-space: nowrap;
-flex: 10; /* ClassName 입력필드의 비율 설정 */
+  min-width: 0;
+  white-space: nowrap;
+  flex: 10; /* ClassName 입력필드의 비율 설정 */
 }
 
 .class-input-box > .Grade-input,
 .class-input-box > .MaxPers-input {
-min-width: 0;
-white-space: nowrap;
-flex: 3; /* Grade, MaxPers 입력필드의 비율 설정 */
+  min-width: 0;
+  white-space: nowrap;
+  flex: 3; /* Grade, MaxPers 입력필드의 비율 설정 */
 }
-.class-input-box input{
-margin-right: 5px;
-padding: 5px;
+.class-input-box input {
+  margin-right: 5px;
+  padding: 5px;
 }
-.MaxPers-input{
-margin-right: 0 !important;
+.MaxPers-input {
+  margin-right: 0 !important;
 }
-.class-input-box select{
-margin-right: 5px;
-padding: 7.5px;
+.class-input-box select {
+  margin-right: 5px;
+  padding: 7.5px;
 }
 
-.button-area{
-display: flex;
-align-items: center;
-position: relative;
-height: 8%;
-width: 100%;
-justify-content: space-between;
+.button-area {
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: 8%;
+  width: 100%;
+  justify-content: space-between;
 }
 .btn-5 {
   width: 50px;
@@ -298,8 +295,8 @@ justify-content: space-between;
   line-height: 42px;
   padding: 0;
   border: none;
-  background: #002D56;
-  background: linear-gradient(0deg, #002D56, #002D56 100%);
+  background: #002d56;
+  background: linear-gradient(0deg, #002d56, #002d56 100%);
   display: flex; /* flexbox 레이아웃 사용 */
   justify-content: center; /* 수평 중앙 정렬 */
   align-items: center; /* 수직 중앙 정렬 */
@@ -309,23 +306,21 @@ justify-content: space-between;
 }
 
 .btn-5:hover {
-  color: #002D56; /* 호버 시 텍스트 색 변경 */
+  color: #002d56; /* 호버 시 텍스트 색 변경 */
   background: transparent; /* 호버 시 배경 투명 */
   box-shadow: none; /* 박스 그림자 제거 */
 }
 
 .btn-5:before,
 .btn-5:after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   right: 0;
   height: 2px;
   width: 0;
-  background: #002D56;
-  box-shadow:
-    -1px -1px 5px 0px #fff,
-    7px 7px 20px 0px #0003,
+  background: #002d56;
+  box-shadow: -1px -1px 5px 0px #fff, 7px 7px 20px 0px #0003,
     4px 4px 5px 0px #0002;
   transition: 400ms ease all;
 }
@@ -349,8 +344,8 @@ justify-content: space-between;
   line-height: 42px;
   margin-left: 10px;
   border: none;
-  background: #002D56;
-  background: linear-gradient(0deg, #002D56, #002D56 100%);
+  background: #002d56;
+  background: linear-gradient(0deg, #002d56, #002d56 100%);
   display: flex; /* flexbox 레이아웃 사용 */
   justify-content: center; /* 수평 중앙 정렬 */
   align-items: center; /* 수직 중앙 정렬 */
@@ -360,23 +355,21 @@ justify-content: space-between;
 }
 
 .btn-6:hover {
-  color: #002D56; /* 호버 시 텍스트 색 변경 */
+  color: #002d56; /* 호버 시 텍스트 색 변경 */
   background: transparent; /* 호버 시 배경 투명 */
   box-shadow: none; /* 박스 그림자 제거 */
 }
 
 .btn-6:before,
 .btn-6:after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   right: 0;
   height: 2px;
   width: 0;
-  background: #002D56;
-  box-shadow:
-    -1px -1px 5px 0px #fff,
-    7px 7px 20px 0px #0003,
+  background: #002d56;
+  box-shadow: -1px -1px 5px 0px #fff, 7px 7px 20px 0px #0003,
     4px 4px 5px 0px #0002;
   transition: 400ms ease all;
 }
@@ -394,55 +387,51 @@ justify-content: space-between;
   transition: 800ms ease all;
 }
 
-.class-submit-button{
-margin-top: 1%;
-margin-bottom: 1%; /* 내부 요소가 범위를 넘어서지 않게 함 */
-height: 55px;
-margin-right: 35px;
-white-space: nowrap;
-display: flex; /* flexbox 레이아웃 사용 */
-justify-content: center; /* 수평 중앙 정렬 */
-align-items: center; /* 수직 중앙 정렬 */
-color: #fff; /* 텍스트 색상 */
-position: relative; /* 위치 조정을 위해 */
-overflow: hidden;
-
+.class-submit-button {
+  margin-top: 1%;
+  margin-bottom: 1%; /* 내부 요소가 범위를 넘어서지 않게 함 */
+  height: 55px;
+  margin-right: 35px;
+  white-space: nowrap;
+  display: flex; /* flexbox 레이아웃 사용 */
+  justify-content: center; /* 수평 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+  color: #fff; /* 텍스트 색상 */
+  position: relative; /* 위치 조정을 위해 */
+  overflow: hidden;
 }
 .class-submit-button button {
-display: flex; /* flexbox 레이아웃 사용 */
-justify-content: center; /* 수평 중앙 정렬 */
-align-items: center; /* 수직 중앙 정렬 */
-position: relative; /* 위치 조정을 위해 */
-overflow: hidden;
-width: 50px;
-height: 35px;
-border-color: #002D56; /* 회색 테두리 색상 */
-border: 1px solid #002D56;
-background-color: white;
-font-family: 'Inter', sans-serif;
-font-size: 15px;
-color: #002D56; /* 텍스트 색상 설정 */
+  display: flex; /* flexbox 레이아웃 사용 */
+  justify-content: center; /* 수평 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+  position: relative; /* 위치 조정을 위해 */
+  overflow: hidden;
+  width: 50px;
+  height: 35px;
+  border-color: #002d56; /* 회색 테두리 색상 */
+  border: 1px solid #002d56;
+  background-color: white;
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  color: #002d56; /* 텍스트 색상 설정 */
 }
 .class-submit-button button:hover {
-color: white;
-background-color: #002D56; /* 배경 색상 변경 */
-border-color: white; /* 테두리 색상 변경 */
+  color: white;
+  background-color: #002d56; /* 배경 색상 변경 */
+  border-color: white; /* 테두리 색상 변경 */
 }
-
 
 /*수업 등록 요소*/
 
 .separator2 {
-height: 1px; /* 높이를 10픽셀로 설정 */
-background-color: #A5A5A5; /* 배경색을 회색으로 설정 */
-
+  height: 1px; /* 높이를 10픽셀로 설정 */
+  background-color: #a5a5a5; /* 배경색을 회색으로 설정 */
 }
-.main-category-name-container2{
+.main-category-name-container2 {
   position: relative;
   display: flex;
   flex-direction: column;
   height: 45px;
-
 }
 
 .element-title2 {
@@ -466,11 +455,14 @@ background-color: #A5A5A5; /* 배경색을 회색으로 설정 */
   white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
 }
 .part1-element-title2 p {
-  flex: 1;  /* 각 p 태그가 공간을 균등하게 차지하도록 설정 */
+  flex: 1; /* 각 p 태그가 공간을 균등하게 차지하도록 설정 */
   margin: 0 5px;
   text-align: center; /* 텍스트를 가운데 정렬 */
 }
-.weekDay2, .weekTime2, .classDate2,.assistent2 {
+.weekDay2,
+.weekTime2,
+.classDate2,
+.assistent2 {
   display: inline-block; /* 요소들을 inline-block으로 설정 */
 }
 
@@ -486,7 +478,7 @@ background-color: #A5A5A5; /* 배경색을 회색으로 설정 */
   white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
 }
 .part2-element-title2 p {
-  flex: 1;  /* 각 p 태그가 공간을 균등하게 차지하도록 설정 */
+  flex: 1; /* 각 p 태그가 공간을 균등하게 차지하도록 설정 */
   margin: 0 5px;
   text-align: center; /* 텍스트를 가운데 정렬 */
 }
@@ -503,93 +495,90 @@ background-color: #A5A5A5; /* 배경색을 회색으로 설정 */
   white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
 }
 .part3-element-title2 p {
-  flex: 1;  /* 각 p 태그가 공간을 균등하게 차지하도록 설정 */
+  flex: 1; /* 각 p 태그가 공간을 균등하게 차지하도록 설정 */
   margin: 0 5px;
   text-align: center; /* 텍스트를 가운데 정렬 */
 }
-.grade2{
+.grade2 {
   display: inline-block;
- 
 }
 .maxPers2 {
   display: inline-block;
   margin-right: 15% !important;
 }
 
-
-.button-area2{
-display: flex;
-align-items: center;
-position: relative;
-height: 8%;
-width: 100%;
-justify-content: space-between;
+.button-area2 {
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: 8%;
+  width: 100%;
+  justify-content: space-between;
 }
 
 .add-button-container2 button {
-display: flex;
-align-items: center;
-justify-content: center;
-background-color: transparent; /* 배경색 제거 */
-border: none;
-cursor: pointer; /* 커서 스타일 변경 */
-width: 60px; /* 버튼의 너비 설정 */
-height: 60px; /* 버튼의 높이 설정 */
-padding: 10px; /* 버튼 내부 패딩 조정 */
-transition: transform 0.3s ease; /* 애니메이션 효과 추가 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent; /* 배경색 제거 */
+  border: none;
+  cursor: pointer; /* 커서 스타일 변경 */
+  width: 60px; /* 버튼의 너비 설정 */
+  height: 60px; /* 버튼의 높이 설정 */
+  padding: 10px; /* 버튼 내부 패딩 조정 */
+  transition: transform 0.3s ease; /* 애니메이션 효과 추가 */
 }
 
 .add-button-container2 button:hover {
-transform: scale(1.1); /* 버튼이 10% 커지게 설정 */
+  transform: scale(1.1); /* 버튼이 10% 커지게 설정 */
 }
 
 .add-button-container2 svg {
-width: 24px; /* SVG 아이콘의 크기 조정 */
-height: 24px;
+  width: 24px; /* SVG 아이콘의 크기 조정 */
+  height: 24px;
 }
 
-.class-submit-button2{
-margin-top: 1%;
-margin-bottom: 1%;
-display: flex;
-align-items: center;
-position: relative; 
-height: 55px;
-margin-right: 1%;
-
+.class-submit-button2 {
+  margin-top: 1%;
+  margin-bottom: 1%;
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: 55px;
+  margin-right: 1%;
 }
 .class-submit-button2 button {
-height: 45%;
-width: 100%;
-border-color: #002D56; /* 회색 테두리 색상 */
-border: 1px solid #002D56;
-background-color: white;
-font-family: 'Inter', sans-serif;
-font-size: 15px;
-color: #002D56; /* 텍스트 색상 설정 */
+  height: 45%;
+  width: 100%;
+  border-color: #002d56; /* 회색 테두리 색상 */
+  border: 1px solid #002d56;
+  background-color: white;
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  color: #002d56; /* 텍스트 색상 설정 */
 }
 .class-submit-button2 button:hover {
-color: white;
-background-color: #002D56; /* 배경 색상 변경 */
-border-color: white; /* 테두리 색상 변경 */
+  color: white;
+  background-color: #002d56; /* 배경 색상 변경 */
+  border-color: white; /* 테두리 색상 변경 */
 }
 .invalid-date {
-border: 2px solid red;
+  border: 2px solid red;
 }
 
 .remove-button {
-border: none;
-background: transparent;
-align-items: center;
-cursor: pointer;
+  border: none;
+  background: transparent;
+  align-items: center;
+  cursor: pointer;
 }
 
 .remove-button svg {
-transition: transform 0.2s ease-in-out; /* 부드러운 애니메이션을 위한 트랜지션 */
+  transition: transform 0.2s ease-in-out; /* 부드러운 애니메이션을 위한 트랜지션 */
 }
 
 .remove-button:hover svg {
-transform: scale(1.2); /* 마우스 오버 시 SVG 크기 증가 */
+  transform: scale(1.2); /* 마우스 오버 시 SVG 크기 증가 */
 }
 
 @media (max-width: 1200px) {
@@ -603,19 +592,20 @@ transform: scale(1.2); /* 마우스 오버 시 SVG 크기 증가 */
   .main-body-container {
     padding: 0 10%; /* 더 작은 padding으로 외부 공간 최소화 */
   }
-  .main-category-bar button, .category-bar button {
-      font-size: 12px; /* 모바일에서의 폰트 크기 조정 */
+  .main-category-bar button,
+  .category-bar button {
+    font-size: 12px; /* 모바일에서의 폰트 크기 조정 */
   }
-  .class-input-box > select, .class-input-box > input {
-      flex-grow: 1; /* 플렉스 아이템이 확장하여 사용 가능한 공간을 채움 */
+  .class-input-box > select,
+  .class-input-box > input {
+    flex-grow: 1; /* 플렉스 아이템이 확장하여 사용 가능한 공간을 채움 */
   }
-
 }
 
 @media (max-width: 510px) {
   .category-bar {
-      flex-direction: column; /* 카테고리 바를 세로로 배열 */
-      align-items: center;
+    flex-direction: column; /* 카테고리 바를 세로로 배열 */
+    align-items: center;
   }
   .inner-category-bar2 {
     justify-content: center;
@@ -627,12 +617,10 @@ transform: scale(1.2); /* 마우스 오버 시 SVG 크기 증가 */
     margin-bottom: 5px;
   }
 
-  .main-category-name-container2{
+  .main-category-name-container2 {
     margin-top: 45px;
   }
-  .main-category-name-container{
+  .main-category-name-container {
     margin-top: 45px;
   }
 }
-
-
