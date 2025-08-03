@@ -43,4 +43,7 @@ public class CodingZoneClassAssignRequestDto {
 
     @NotNull
     private int subjectId; // 수정
+
+    @NotNull
+    private final Integer currentNumber = 0; // 수업 등록에서는 "예약 가능한 현재 인원이 0으로 초기화 되기 때문에 상수로 선언"
 }
