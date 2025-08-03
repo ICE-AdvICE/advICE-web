@@ -43,8 +43,8 @@ public class CodingZoneClassService {
                             assignedClass.getClassName(),
                             assignedClass.getMaximumNumber(),
                             assignedClass.getWeekDay(),
-                            assignedClass.getSubjectId(),
-                            assignedClass.getGroupId());
+                            assignedClass.getSubjectId()
+                            );
 
             if (isDuplicate) { // 이미 시전에 동일한 수업을 등록한 경우
                 throw new BusinessException(ResponseCode.ALREADY_EXISTED_CLASS, ResponseMessage.ALREADY_EXISTED_CLASS,
