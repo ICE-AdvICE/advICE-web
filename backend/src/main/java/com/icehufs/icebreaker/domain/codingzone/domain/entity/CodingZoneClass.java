@@ -56,8 +56,6 @@ public class CodingZoneClass {
     @Column(name = "subject_id")
     private int subjectId;
 
-    @Column(name = "group_id")
-    private String groupId;
 
     public CodingZoneClass(CodingZoneClassAssignRequestDto dto) {
 
@@ -70,13 +68,9 @@ public class CodingZoneClass {
         this.className = dto.getClassName();
         this.weekDay = dto.getWeekDay();
         this.subjectId = dto.getSubjectId();
-        this.groupId = dto.getGroupId();
     }
 
-    public void increaseNum(Integer maximumNumberInCLass) {
-        if (this.currentNumber > maximumNumberInCLass) {
-            throw new BusinessException(ResponseCode.FULL_CLASS, ResponseMessage.FULL_CLASS, HttpStatus.BAD_REQUEST);
-        }
+    public void increaseNum() {
         this.currentNumber++;
     }
 
