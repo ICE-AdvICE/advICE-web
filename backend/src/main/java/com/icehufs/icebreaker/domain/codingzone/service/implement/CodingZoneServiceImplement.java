@@ -197,29 +197,30 @@ public class CodingZoneServiceImplement implements CodingZoneService {
     @Override
     @Transactional
     public ResponseEntity<? super CodingZoneRegisterResponseDto> classRegist(Integer classNum, String email) {
+
         try {
             // 사용자 계정이 존재하는지(로그인 시간이 초과됐는지) 확인
             User userEntity = userRepository.findByEmail(email);
             if (userEntity == null) {
                 return CodingZoneRegisterResponseDto.notExistUser();
             }
-
+        
             CodingZoneClass codingZoneClass = codingZoneClassRepository.findByClassNum(classNum);
             if (codingZoneClass == null) {
                 return CodingZoneRegisterResponseDto.validationFailed(); // 발생할 수 없는 예외로 validation으로 처리
             }
-
+        
             CodingZoneRegister codingZoneRegister = codingZoneRegisterRepository.findByClassNumAndUserEmail(classNum,
                     email);
             if (codingZoneRegister != null) {
                 return CodingZoneRegisterResponseDto.alreadyReserve(); // 해당 수업을 이미 예약했을 때
             }
-
+        
             // 인원 초과 처리
             if (codingZoneClass.getCurrentNumber() >= codingZoneClass.getMaximumNumber()) {
                 return CodingZoneRegisterResponseDto.fullClass();
             }
-
+        
             // 신청한 수업 등록
             String userName = userEntity.getName();
             String userStudentNum = userEntity.getStudentNum();
@@ -227,15 +228,15 @@ public class CodingZoneServiceImplement implements CodingZoneService {
             CodingZoneRegister newRegisterEntity = new CodingZoneRegister(subjectId, email, userName, userStudentNum,
                     classNum);
             codingZoneRegisterRepository.save(newRegisterEntity);
-            Integer maximumNumberInClass = codingZoneClass.getMaximumNumber();
-            codingZoneClass.increaseNum(maximumNumberInClass); // 예약자 수 증가
+            codingZoneClass.increaseNum(); // 예약자 수 증가
             codingZoneClassRepository.save(codingZoneClass);
-
+        
+        
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();
         }
-
+        
         return CodingZoneRegisterResponseDto.success();
     }
 
