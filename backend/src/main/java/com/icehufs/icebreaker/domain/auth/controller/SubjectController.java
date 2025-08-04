@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.icehufs.icebreaker.common.ResponseMessage;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PostSubjectMappingRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.service.SubjectService;
 import com.icehufs.icebreaker.util.ResponseDto;
@@ -29,7 +31,7 @@ public class SubjectController {
             @Valid @RequestBody List<PostSubjectMappingRequestDto> requestDto // 매핑이 여러개 들어올 수 있으니 List<>로
     ) {
         subjectService.postMappingCodingZoneClass(requestDto, email);
-        return ResponseEntity.ok(ResponseDto.success("코딩존 매핑 성공"));
+        return ResponseEntity.ok(ResponseDto.success(ResponseMessage.SUCCESS_CLASS_MAPPING));
     }
 
     // 코딩존 매핑 조회 controller
@@ -37,6 +39,6 @@ public class SubjectController {
     public ResponseEntity<ResponseDto<List<SubjectResponseDto>>> getSubjectMapping(
             @AuthenticationPrincipal String email) {
         return ResponseEntity
-                .ok(ResponseDto.success("코딩존 조회 성공", subjectService.getMappingCodingZoneClass(email)));
+                .ok(ResponseDto.success(ResponseMessage.SUCCESS_CLASS_CREATE, subjectService.getMappingCodingZoneClass(email)));
     }
 }
