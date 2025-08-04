@@ -27,6 +27,7 @@ public interface ResponseCode {
     String NOT_WEEKDAY = "NOT_WEEKDAY";
     String TUTOR_NOT_FOUND = "TNF";
     String INVALID_SUBJECT_ID = "ISI";
+    String DUPLICATE_PASSWORD = "DP";
 
 
     // HTTP Status 401
