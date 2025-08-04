@@ -75,7 +75,7 @@ public class CodingZoneClass {
     }
 
     public void decreaseCurrentNum() {
-        if (this.currentNumber < 0) {
+        if (this.currentNumber <= 0) {
             throw new BusinessException(ResponseCode.INTERNAL_SERVER_ERROR, ResponseMessage.INTERNAL_SERVER_ERROR,
                     HttpStatus.BAD_REQUEST);
         }
