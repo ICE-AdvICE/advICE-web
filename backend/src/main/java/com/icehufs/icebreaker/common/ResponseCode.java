@@ -17,6 +17,8 @@ public interface ResponseCode {
     String NOT_RESERVE_CLASS = "NR";
     String NOT_SIGNUP_USER = "NS";
     String PERMITTED_ERROR = "PE";
+    String TUTOR_NOT_FOUND = "TNF";
+    String INVALID_SUBJECT_ID = "ISI";
 
     //HTTP Status 401
     String SIGN_IN_FAIL = "SF";
