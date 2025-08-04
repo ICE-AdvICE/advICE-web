@@ -1,7 +1,5 @@
 package com.icehufs.icebreaker.domain.codingzone.domain.entity;
 
-
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -45,7 +42,7 @@ public class CodingZoneRegister {
     @Column(name = "grade")
     private int grade;
 
-    public CodingZoneRegister(int grade,String email, String name, String user_student_num, Integer classNum) {
+    public CodingZoneRegister(int grade, String email, String name, String user_student_num, Integer classNum) {
         this.classNum = classNum;
         this.userEmail = email;
         this.userName = name;
