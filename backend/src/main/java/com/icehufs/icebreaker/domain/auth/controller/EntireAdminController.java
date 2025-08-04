@@ -1,6 +1,7 @@
 package com.icehufs.icebreaker.domain.auth.controller;
 
 import com.icehufs.icebreaker.domain.codingzone.dto.response.*;
+import com.icehufs.icebreaker.util.ResponseDto;
 import jakarta.validation.Valid;
 
 import org.springframework.core.io.ByteArrayResource;
@@ -94,6 +95,15 @@ public class EntireAdminController {
         ResponseEntity<? super DeleteAllInfResponseDto> response = codingzoneService.deleteAll(email);
         return response;
     }
+
+    @GetMapping("/subjects/{subjectId}/assistants")
+    public ResponseEntity<ResponseDto<AssistantNamesResponseDto>> getAssistantsBySubject(
+            @PathVariable Long subjectId
+    ) {
+        AssistantNamesResponseDto assistantList = codingzoneService.getAssistantNamesBySubjectId(subjectId);
+        return ResponseEntity.ok(ResponseDto.success("특정 교과목에 해당하는 조교 리스트 조회 성공.", assistantList));
+    }
+
 
     @GetMapping("/excel/attendance/grade1")
     public ResponseEntity<?> downloadArticleExcel() {
