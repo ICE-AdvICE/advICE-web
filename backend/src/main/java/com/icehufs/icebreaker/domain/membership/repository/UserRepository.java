@@ -7,8 +7,6 @@ import com.icehufs.icebreaker.domain.membership.domain.entity.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
-
     boolean existsByEmail(String email);
-
     User findByEmail(String email);
 }
