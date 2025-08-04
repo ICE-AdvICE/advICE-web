@@ -25,6 +25,9 @@ public interface ResponseCode {
     String ALREADY_EXISTED_MAPPINGSET = "ALREADY_EXISTED_MAPPINGSET";
     String NOT_ANY_MAPPINGSET = "NOT_ANY_MAPPINGSET";
     String NOT_WEEKDAY = "NOT_WEEKDAY";
+    String TUTOR_NOT_FOUND = "TNF";
+    String INVALID_SUBJECT_ID = "ISI";
+
 
     // HTTP Status 401
     String SIGN_IN_FAIL = "SF";
