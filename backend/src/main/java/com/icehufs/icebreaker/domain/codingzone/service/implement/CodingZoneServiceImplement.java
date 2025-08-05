@@ -32,7 +32,6 @@ import com.icehufs.icebreaker.domain.auth.domain.entity.Authority;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneClass;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneRegister;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.GroupInf;
-import com.icehufs.icebreaker.domain.codingzone.domain.entity.Subject;
 import com.icehufs.icebreaker.domain.membership.domain.entity.User;
 import com.icehufs.icebreaker.domain.auth.repostiory.AuthorityRepository;
 import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneClassRepository;
@@ -40,7 +39,6 @@ import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneRegisterRep
 import com.icehufs.icebreaker.domain.codingzone.repository.GroupInfRepository;
 import com.icehufs.icebreaker.domain.membership.repository.UserRepository;
 import com.icehufs.icebreaker.domain.codingzone.service.CodingZoneService;
-
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -454,8 +452,10 @@ public class CodingZoneServiceImplement implements CodingZoneService {
             if (subjectId != 1 && subjectId != 2)
                 return GetCountOfAttendResponseDto.validationFailed();
 
+            // 추후 수정 요망 부분
             int classNumForCheck = codingZoneClassRepository.findClassNumBySubjectId(subjectId); // 받은 subjectId로 codingzoneclass에서 classNum 가져온 후
             registratedClassList = codingZoneRegisterRepository.findByClassNum(classNumForCheck); //가져온 classNum으로 특정 codingzoneregister 값 가지고 옴
+
             if (registratedClassList.isEmpty())
                 return GetCountOfAttendResponseDto.success(NumOfAttend);
 
@@ -569,8 +569,10 @@ public class CodingZoneServiceImplement implements CodingZoneService {
                 kindOfClass = 2;
             }
 
+            // 추후 수정 요망 부분
             int classNumForCheck = codingZoneClassRepository.findClassNumBySubjectId(kindOfClass);// 받은 subjectId로 codingzoneclass에서 classNum 가져온 후
             registratedClassList = codingZoneRegisterRepository.findByClassNum(classNumForCheck); //가져온 classNum으로 특정 codingzoneregister 값 가지고 옴
+
             // 예약한 학생이 없을 때
             if (registratedClassList.isEmpty())
                 return GetReservedClassListItemResponseDto.noExistArticle();
@@ -780,5 +782,4 @@ public class CodingZoneServiceImplement implements CodingZoneService {
         return new ByteArrayResource(outputStream.toByteArray());
 
     }
-
 }

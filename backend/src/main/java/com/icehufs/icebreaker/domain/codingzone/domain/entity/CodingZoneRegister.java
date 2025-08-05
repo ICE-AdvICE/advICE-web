@@ -2,9 +2,12 @@ package com.icehufs.icebreaker.domain.codingzone.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,16 +42,27 @@ public class CodingZoneRegister {
     @Column(name = "attendance", nullable = false)
     private String attendance;
 
-    @Column(name = "subject_id")
-    private int subjectId;
+     //subject 테이블 : codingzoneRegister 테이블 = 1 : N 관계
+    @JoinColumn(name = "subject_id")   
+    @ManyToOne(fetch = FetchType.LAZY) 
+    private CodingZoneClass codingZoneClass; 
 
-    public CodingZoneRegister(int subjectId, String email, String name, String user_student_num, Integer classNum) {
+    public CodingZoneRegister(String email, String name, String user_student_num, Integer classNum,
+            CodingZoneClass codingZoneClass) {
         this.classNum = classNum;
         this.userEmail = email;
         this.userName = name;
         this.userStudentNum = user_student_num;
         this.attendance = "0";
-        this.subjectId = subjectId;
+        this.codingZoneClass = codingZoneClass;
+    }
+    
+    public CodingZoneRegister(String email, String name, String user_student_num, Integer classNum) {
+        this.classNum = classNum;
+        this.userEmail = email;
+        this.userName = name;
+        this.userStudentNum = user_student_num;
+        this.attendance = "0";
     }
 
     public void putAttend() {
