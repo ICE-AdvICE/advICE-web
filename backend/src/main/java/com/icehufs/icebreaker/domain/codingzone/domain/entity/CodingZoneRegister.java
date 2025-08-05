@@ -27,12 +27,6 @@ public class CodingZoneRegister {
     @Column(name = "registration_id")
     private Integer registrationId;
 
-    @Column(name = "class_num")
-    private int classNum;
-
-    @Column(name = "user_email")
-    private String userEmail;
-
     @Column(name = "user_name", nullable = false)
     private String userName;
 
@@ -41,6 +35,12 @@ public class CodingZoneRegister {
 
     @Column(name = "attendance", nullable = false)
     private String attendance;
+
+    @Column(name = "user_email")
+    private String userEmail;
+
+    @Column(name = "class_num")
+    private int classNum;
 
      //subject 테이블 : codingzoneRegister 테이블 = 1 : N 관계
     @JoinColumn(name = "subject_id")   
