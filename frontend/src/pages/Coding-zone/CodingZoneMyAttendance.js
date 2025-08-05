@@ -1,37 +1,30 @@
 import React, { useEffect, useState } from "react";
-
 import { getczauthtypetRequest } from "../../shared/api/AuthApi.js";
 import { useCookies } from "react-cookie";
 import "../css/codingzone/codingzone-main.css";
 import "../css/codingzone/codingzone_attend.css";
-import { useNavigate, useLocation } from "react-router-dom";
-import InquiryModal from "./InquiryModal.js";
+import { useNavigate } from "react-router-dom";
 import { getczattendlistRequest } from "../../features/api/CodingzoneApi.js";
-import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네비게이션 바 컴포넌트
-import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js"; //코딩존 보드 바(버튼 네개) 컴포넌트
+import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js";
+import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js";
 
 const CodingZoneMyAttendance = () => {
-  const [authMessage, setAuthMessage] = useState("");
   const [attendList, setAttendList] = useState([]);
   const [showAdminButton, setShowAdminButton] = useState(false);
   const [showManageAllButton, setShowManageAllButton] = useState(false);
   const [showRegisterClassButton, setShowRegisterClassButton] = useState(false);
   const [cookies, setCookie] = useCookies(["accessToken"]);
-  const [activeButton, setActiveButton] = useState("check");
   const token = cookies.accessToken;
   const navigate = useNavigate();
 
-  const handlecodingzonemanager = () => {
+  const [hasNavigated, setHasNavigated] = useState(false); // 중복 navigate 방지
+
+  const handlecodingzonemanager = () =>
     navigate(`/coding-zone/Codingzone_Manager`);
-  };
-
-  const handleFullManagement = () => {
+  const handleFullManagement = () =>
     navigate(`/coding-zone/Codingzone_All_Attend`);
-  };
-
-  const handleClassRegistration = () => {
+  const handleClassRegistration = () =>
     navigate(`/coding-zone/coding-class-regist`);
-  };
 
   const formatTime = (timeString) => {
     const [hours, minutes] = timeString.split(":");
@@ -40,11 +33,11 @@ const CodingZoneMyAttendance = () => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    const month = date.getMonth() + 1; // getMonth()는 0부터 시작하므로 1을 더해줍니다.
+    const month = date.getMonth() + 1;
     const day = date.getDate();
     return `${month.toString().padStart(2, "0")}/${day
       .toString()
-      .padStart(2, "0")}`; // 두 자리 숫자로 유지
+      .padStart(2, "0")}`;
   };
 
   const isFutureDate = (classDate, classTime) => {
@@ -53,23 +46,26 @@ const CodingZoneMyAttendance = () => {
     return classDateTime > now;
   };
 
+  // ✅ 권한 체크
   useEffect(() => {
     const fetchAuthType = async () => {
       const response = await getczauthtypetRequest(token, setCookie, navigate);
       if (response) {
+        if (response.code === "NU") {
+          if (!hasNavigated) {
+            alert("로그인 시간이 만료되었습니다. 다시 로그인 해주세요.");
+            setHasNavigated(true);
+            navigate("/");
+          }
+          return;
+        }
         switch (response.code) {
           case "CA":
             setShowAdminButton(true);
-
             break;
           case "EA":
             setShowRegisterClassButton(true);
-            setShowManageAllButton(true); // Also show '전체 관리' for EA
-            break;
-          case "NU":
-            setShowAdminButton(false);
-            setShowManageAllButton(false);
-            setShowRegisterClassButton(false);
+            setShowManageAllButton(true);
             break;
           default:
             setShowAdminButton(false);
@@ -79,40 +75,45 @@ const CodingZoneMyAttendance = () => {
         }
       }
     };
-
     fetchAuthType();
-  }, [token, authMessage]);
+  }, [token, hasNavigated, navigate, setCookie]);
 
+  // ✅ 출결 리스트 조회
   useEffect(() => {
     const fetchAttendList = async () => {
       const response = await getczattendlistRequest(token, setCookie, navigate);
-      if (response && response.code === "SU") {
-        setAttendList(response.attendList);
-      } else if (response && response.code === "NU") {
-        alert("로그인 시간이 만료되었습니다. 다시 로그인 해주세요.");
-        navigate("/");
-      } else {
-        console.error(response.message);
+      if (response) {
+        if (response.code === "NU") {
+          if (!hasNavigated) {
+            alert("로그인 시간이 만료되었습니다. 다시 로그인 해주세요.");
+            setHasNavigated(true);
+            navigate("/");
+          }
+          return;
+        } else if (response.code === "SU") {
+          setAttendList(response.attendList);
+        } else {
+          console.error(response.message);
+        }
       }
     };
-
     fetchAttendList();
-  }, [token]);
+  }, [token, hasNavigated, navigate, setCookie]);
 
   return (
     <div>
       <div className="codingzone-container">
         <CodingZoneNavigation />
-
         <div className="banner_img_container">
           <img src="/codingzone_attendance2.png" className="banner" />
         </div>
       </div>
+
       <div className="cza_button_container" style={{ textAlign: "center" }}>
         <CodingZoneBoardbar />
       </div>
 
-      <div className="line-container1">{/* 실선 영역 */}</div>
+      <div className="line-container1"></div>
 
       <div className="info-container">
         <div className="info_inner">
@@ -124,7 +125,8 @@ const CodingZoneMyAttendance = () => {
           <div className="info_status">출결</div>
         </div>
       </div>
-      <div className="line-container2">{/* 실선 영역 */}</div>
+
+      <div className="line-container2"></div>
 
       <div className="info_data_container">
         {attendList.length > 0 ? (
@@ -148,8 +150,7 @@ const CodingZoneMyAttendance = () => {
                     : "N"}
                 </div>
               </div>
-              <div className="hr-line"></div>{" "}
-              {/* Horizontal line after each item */}
+              <div className="hr-line"></div>
             </div>
           ))
         ) : (

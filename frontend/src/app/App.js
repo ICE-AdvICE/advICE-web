@@ -21,16 +21,23 @@ function CodingZoneDefault() {
   const [authType, setAuthType] = useState(null);
   const [cookies] = useCookies(["accessToken"]);
   const token = cookies.accessToken;
+  const [loading, setLoading] = useState(true); // 로딩 상태 추가
 
   useEffect(() => {
     const fetchAuthType = async () => {
       const res = await getczauthtypetRequest(token);
       if (res) setAuthType(res.code); // 예: "EA", "CA", "ST"
+      setLoading(false);
     };
     fetchAuthType();
   }, [token]);
 
-  if (!authType) return null; // 로딩 중엔 아무것도 렌더링하지 않음
+  // 로딩 중에는 로딩 화면 표시
+  if (loading) {
+    return (
+      <div style={{ textAlign: "center", marginTop: "50px" }}>로딩 중...</div>
+    );
+  }
 
   // 과사 조교(EA) → 수업 등록 페이지
   if (authType === "EA") {
