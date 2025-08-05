@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassAssignRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PatchGroupInfRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.service.CodingZoneService;
@@ -34,15 +33,6 @@ import lombok.RequiredArgsConstructor;
 public class EntireAdminController {
 
     private final CodingZoneService codingzoneService;
-
-    @PostMapping("/upload-codingzone") // 수업 리스트 등록 API
-    public ResponseEntity<? super CodingZoneClassAssignResponseDto> CodingZoneClassAssignResponse(
-        @RequestBody @Valid List<CodingZoneClassAssignRequestDto> requestBody,
-        @AuthenticationPrincipal String email
-    ) {
-        ResponseEntity<? super CodingZoneClassAssignResponseDto> response = codingzoneService.codingzoneClassAssign(requestBody, email);
-        return response;
-    }
 
     @PostMapping("/upload-group") //특정 (A/B)조 정보 등록 API
     public ResponseEntity<? super GroupInfUpdateResponseDto> uploadInf(
