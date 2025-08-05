@@ -454,7 +454,7 @@ public class CodingZoneServiceImplement implements CodingZoneService {
             if (grade != 1 && grade != 2)
                 return GetCountOfAttendResponseDto.validationFailed();
 
-            classEntities = codingZoneRegisterRepository.findByGrade(grade);
+            classEntities = codingZoneRegisterRepository.findBySubjectId(grade);
             if (classEntities.isEmpty())
                 return GetCountOfAttendResponseDto.success(NumOfAttend);
 
@@ -568,7 +568,7 @@ public class CodingZoneServiceImplement implements CodingZoneService {
                 kindOfClass = 2;
             }
 
-            classEntities = codingZoneRegisterRepository.findByGrade(kindOfClass);
+            classEntities = codingZoneRegisterRepository.findBySubjectId(kindOfClass);
             // 예약한 학생이 없을 때
             if (classEntities.isEmpty())
                 return GetReservedClassListItemResponseDto.noExistArticle();
@@ -706,7 +706,7 @@ public class CodingZoneServiceImplement implements CodingZoneService {
         }
 
         // 코딩존1을 들은 모든 학생들을 학번순으로 불러오기
-        codingZoneRegisters = codingZoneRegisterRepository.findByGradeOrderByUserStudentNumAsc(1);
+        codingZoneRegisters = codingZoneRegisterRepository.findBySubjectIdOrderByUserStudentNumAsc(1);
 
         // 데이터 채우기
         int rowNum = 1;
@@ -753,7 +753,7 @@ public class CodingZoneServiceImplement implements CodingZoneService {
         }
 
         // 코딩존1을 들은 모든 학생들을 학번순으로 불러오기
-        codingZoneRegisters = codingZoneRegisterRepository.findByGradeOrderByUserStudentNumAsc(2);
+        codingZoneRegisters = codingZoneRegisterRepository.findBySubjectIdOrderByUserStudentNumAsc(2);
 
         // 데이터 채우기
         int rowNum = 1;
