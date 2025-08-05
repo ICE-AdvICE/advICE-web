@@ -39,7 +39,6 @@ public class ReservedClassListItem {
     public ReservedClassListItem(CodingZoneClass codingZoneClass, CodingZoneRegister codingZoneRegister){
         this.className = codingZoneClass.getClassName();
         this.registrationId = codingZoneRegister.getRegistrationId();
-        this.subjectId = codingZoneRegister.getSubjectId();
         this.classTime = codingZoneClass.getClassTime();
         this.assistantName = codingZoneClass.getAssistantName();
         this.attendance = codingZoneRegister.getAttendance();
