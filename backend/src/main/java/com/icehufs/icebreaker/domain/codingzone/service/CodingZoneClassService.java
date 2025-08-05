@@ -1,7 +1,6 @@
 package com.icehufs.icebreaker.domain.codingzone.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.Subject;
 import org.springframework.http.HttpStatus;
@@ -33,7 +32,7 @@ public class CodingZoneClassService {
 
         for (CodingZoneClassAssignRequestDto assignedClass : dto) {
             // 매핑 작업을 하지 않은 교과목에 해당하는 코딩존 수업을 등록하려고 할때
-            if (!subjectRepository.existsBySubjectId(assignedClass.getSubjectId()))
+            if (!subjectRepository.existsById(assignedClass.getSubjectId()))
                 throw new BusinessException(ResponseCode.NOT_MAPPED_CLASS, ResponseMessage.NOT_MAPPED_CLASS,
                         HttpStatus.CONFLICT);
 

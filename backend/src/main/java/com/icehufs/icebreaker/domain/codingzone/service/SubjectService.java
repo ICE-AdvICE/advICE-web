@@ -37,7 +37,7 @@ public class SubjectService {
 
         for (PostSubjectMappingRequestDto requestDto : dto) {
             // 매핑 번호 중복 확인
-            if (subjectRepository.existsBySubjectId(requestDto.getSubjectId())) {
+            if (subjectRepository.existsById(requestDto.getSubjectId())) {
                 duplicatedIds.add(requestDto.getSubjectId());
             }
             // 매핑 과목명 중복 확인
@@ -75,7 +75,7 @@ public class SubjectService {
             throw new BusinessException(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER,HttpStatus.NOT_FOUND);
 
         // 아직 DB에 어떠한 매핑 정보도 없을 때, 예외 처리
-        if (!subjectRepository.existsBySubjectIdIsNotNull())
+        if (!subjectRepository.existsByIdIsNotNull())
             throw new BusinessException(ResponseCode.NOT_ANY_MAPPINGSET, ResponseMessage.NOT_ANY_MAPPINGSET,HttpStatus.NOT_FOUND);
 
         List<Subject> subjectList = subjectRepository.findAll();// DB에서 꺼내서 Entity 리스트로 만든다음에
