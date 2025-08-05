@@ -19,14 +19,14 @@ public interface CodingZoneService {
     ResponseEntity<? super GroupInfUpdateResponseDto> patchInf(List<PatchGroupInfRequestDto> dto, String email);
     ResponseEntity<? super DeleteClassResponseDto> deleteClass(Integer classNum, String email);
     ResponseEntity<? super GetCodingZoneStudentListResponseDto> getStudentList(String email);
-    ResponseEntity<? super DeleteAllInfResponseDto> deleteAll(String email);
+    String deleteAll(String email);
     ByteArrayResource generateAttendanceExcelOfGrade1() throws IOException;
     ByteArrayResource generateAttendanceExcelOfGrade2() throws IOException;
 
     //권한이 필요없는 로직
     ResponseEntity<? super AuthorityExistResponseDto> authExist(String email);
     ResponseEntity<? super CodingZoneRegisterResponseDto> classRegist(Integer classNum, String email);
-    ResponseEntity<? super CodingZoneCanceResponseDto> classCance(Integer classNum, String email);
+    ResponseEntity<? super CodingZoneCanceResponseDto> classCancel(Integer classNum, String email);
     ResponseEntity<? super GetListOfCodingZoneClassResponseDto> getClassList(Integer grade, String email);
     ResponseEntity<? super GetListOfCodingZoneClassForNotLogInResponseDto> getClassList2(Integer grade);
     ResponseEntity<? super GetCountOfAttendResponseDto> getAttend(Integer grade,String email);
@@ -36,6 +36,4 @@ public interface CodingZoneService {
     AssistantNamesResponseDto getAssistantNamesBySubjectId(Long subjectId);
     //수업 코딩존 조교 
     ResponseEntity<? super PutAttendanceResponseDto> putAttend(Integer registNum, String email);
-
-
 }

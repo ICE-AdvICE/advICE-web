@@ -89,11 +89,10 @@ public class EntireAdminController {
     }
 
     @DeleteMapping("/delete-allinf") // 코딩존 관련 모든 정보 초기화(코딩존 조교 권한 박할까지) API
-    public ResponseEntity<? super DeleteAllInfResponseDto> deleteAll(
+    public ResponseEntity<ResponseDto<String>> deleteAll(
         @AuthenticationPrincipal String email
     ) {
-        ResponseEntity<? super DeleteAllInfResponseDto> response = codingzoneService.deleteAll(email);
-        return response;
+        return ResponseEntity.ok(ResponseDto.success(codingzoneService.deleteAll(email)));
     }
 
     @GetMapping("/subjects/{subjectId}/assistants")
