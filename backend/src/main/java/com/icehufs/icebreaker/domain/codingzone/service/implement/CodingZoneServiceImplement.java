@@ -56,27 +56,6 @@ public class CodingZoneServiceImplement implements CodingZoneService {
     private final CodingZoneRegisterRepository codingZoneRegisterRepository;
 
     @Override
-    public ResponseEntity<? super CodingZoneClassAssignResponseDto> codingzoneClassAssign(
-            List<CodingZoneClassAssignRequestDto> dto, String email) {
-        try {
-            // 사용자 계정이 존재하는지(로그인시간이 초과 됐는지) 확인하는 코드
-            boolean existedUser = userRepository.existsByEmail(email);
-            if (!existedUser)
-                return CheckOwnOfArticleResponseDto.notExistUser();
-
-            for (CodingZoneClassAssignRequestDto requestDto : dto) {
-                CodingZoneClass codingZoneClassEntity = new CodingZoneClass(requestDto);
-                codingZoneClassRepository.save(codingZoneClassEntity);
-            }
-
-            return CodingZoneClassAssignResponseDto.success();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-    }
-
-    @Override
     public ResponseEntity<? super AuthorityExistResponseDto> authExist(String email) {
         try {
 
