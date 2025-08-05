@@ -14,9 +14,7 @@ public interface CodingZoneClassRepository extends JpaRepository<CodingZoneClass
 
     CodingZoneClass findByClassNum(Integer classNum);
 
-    List<CodingZoneClass> findBySubjectId(int subjectId);
-
-    List<CodingZoneClass> findBySubjectIdAndClassDateBetween(int subjectId, String startDate, String endDate);
+    List<CodingZoneClass> findBySubjectSubjectIdAndClassDateBetween(int subjectId, String startDate, String endDate);
 
     // 새로운 수업 등록 시 DB에 이미 있는 수업 정보 확인 과정에서 필요
     // classNumber와 currentNumber 제외하고 가져와야 함
@@ -29,7 +27,7 @@ public interface CodingZoneClassRepository extends JpaRepository<CodingZoneClass
                 AND c.className = :className
                 AND c.maximumNumber = :maximumNumber
                 AND c.weekDay = :weekDay
-                AND c.subjectId = :subjectId
+                AND c.subject.subjectId = :subjectId
             """)
     boolean existsByIdentity(
             @Param("assistantName") String assistantName,
