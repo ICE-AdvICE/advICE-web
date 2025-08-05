@@ -39,16 +39,16 @@ public class CodingZoneRegister {
     @Column(name = "attendance", nullable = false)
     private String attendance;
 
-    @Column(name = "grade")
-    private int grade;
+    @Column(name = "subject_id")
+    private int subjectId;
 
-    public CodingZoneRegister(int grade, String email, String name, String user_student_num, Integer classNum) {
+    public CodingZoneRegister(int subjectId, String email, String name, String user_student_num, Integer classNum) {
         this.classNum = classNum;
         this.userEmail = email;
         this.userName = name;
         this.userStudentNum = user_student_num;
         this.attendance = "0";
-        this.grade = grade;
+        this.subjectId = subjectId;
     }
 
     public void putAttend() {
