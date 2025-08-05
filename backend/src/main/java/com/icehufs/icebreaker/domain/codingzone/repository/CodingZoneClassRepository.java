@@ -10,7 +10,7 @@ import io.lettuce.core.dynamic.annotation.Param;
 @Repository
 public interface CodingZoneClassRepository extends JpaRepository<CodingZoneClass, Integer> {
 
-    int findClassNumBySubjectId(int subjectId);
+    List<CodingZoneClass> findAllBySubjectId(int subjectId);
 
     CodingZoneClass findByClassNum(Integer classNum);
 

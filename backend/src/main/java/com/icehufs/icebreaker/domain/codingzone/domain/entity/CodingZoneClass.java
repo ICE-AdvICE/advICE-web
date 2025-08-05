@@ -30,7 +30,7 @@ public class CodingZoneClass {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "class_num")
-    private int classNum;
+    private Integer classNum;
 
     @Column(name = "assistant_name")
     private String assistantName;

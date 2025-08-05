@@ -41,11 +41,12 @@ public class CodingZoneController {
         return response;
     }
 
+    // TODO: 추후에 API 경로 변경 바람 cance -> cancel
     @DeleteMapping("/cence-class/{classNum}") // 수업 예약 취소 API
-    public ResponseEntity<? super CodingZoneCanceResponseDto> classCence(
+    public ResponseEntity<? super CodingZoneCanceResponseDto> classCancel(
             @PathVariable Integer classNum,
             @AuthenticationPrincipal String email) {
-        ResponseEntity<? super CodingZoneCanceResponseDto> response = codingzoneService.classCance(classNum, email);
+        ResponseEntity<? super CodingZoneCanceResponseDto> response = codingzoneService.classCancel(classNum, email);
         return response;
     }
 
