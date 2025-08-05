@@ -32,6 +32,7 @@ import com.icehufs.icebreaker.domain.auth.domain.entity.Authority;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneClass;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneRegister;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.GroupInf;
+import com.icehufs.icebreaker.domain.codingzone.domain.entity.Subject;
 import com.icehufs.icebreaker.domain.membership.domain.entity.User;
 import com.icehufs.icebreaker.domain.auth.repostiory.AuthorityRepository;
 import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneClassRepository;
@@ -227,9 +228,8 @@ public class CodingZoneServiceImplement implements CodingZoneService {
             // 신청한 수업 등록
             String userName = userEntity.getName();
             String userStudentNum = userEntity.getStudentNum();
-            int subjectId = codingZoneClass.getSubjectId();
-            CodingZoneRegister newRegisterEntity = new CodingZoneRegister(subjectId, email, userName, userStudentNum,
-                    classNum);
+            CodingZoneRegister newRegisterEntity = new CodingZoneRegister(email, userName, userStudentNum,
+                    classNum, codingZoneClass);
             codingZoneRegisterRepository.save(newRegisterEntity);
             codingZoneClass.increaseNum(); // 예약자 수 증가
             codingZoneClassRepository.save(codingZoneClass);
@@ -440,10 +440,10 @@ public class CodingZoneServiceImplement implements CodingZoneService {
     }
 
     @Override
-    public ResponseEntity<? super GetCountOfAttendResponseDto> getAttend(Integer grade, String email) {
+    public ResponseEntity<? super GetCountOfAttendResponseDto> getAttend(Integer subjectId, String email) {
         Integer NumOfAttend = 0;
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-        List<CodingZoneRegister> classEntities = new ArrayList<>();
+        List<CodingZoneRegister> registratedClassList = new ArrayList<>();
         try {
             // 사용자 계정이 존재하는지(로그인 시간이 초과됐는지) 확인하는 코드
             boolean existedUser = userRepository.existsByEmail(email);
@@ -451,14 +451,15 @@ public class CodingZoneServiceImplement implements CodingZoneService {
                 return GetCountOfAttendResponseDto.notExistUser();
 
             // 학년 검증
-            if (grade != 1 && grade != 2)
+            if (subjectId != 1 && subjectId != 2)
                 return GetCountOfAttendResponseDto.validationFailed();
 
-            classEntities = codingZoneRegisterRepository.findBySubjectId(grade);
-            if (classEntities.isEmpty())
+            int classNumForCheck = codingZoneClassRepository.findClassNumBySubjectId(subjectId); // 받은 subjectId로 codingzoneclass에서 classNum 가져온 후
+            registratedClassList = codingZoneRegisterRepository.findByClassNum(classNumForCheck); //가져온 classNum으로 특정 codingzoneregister 값 가지고 옴
+            if (registratedClassList.isEmpty())
                 return GetCountOfAttendResponseDto.success(NumOfAttend);
 
-            for (CodingZoneRegister entity : classEntities) {
+            for (CodingZoneRegister entity : registratedClassList) {
                 if (entity.getUserEmail().equals(email)) {
                     String attend = entity.getAttendance();
                     if (attend.equals("1")) {
@@ -552,7 +553,7 @@ public class CodingZoneServiceImplement implements CodingZoneService {
     public ResponseEntity<? super GetReservedClassListItemResponseDto> getReservedClass(String classDate,
             String email) {
         List<ReservedClassListItem> studentList = new ArrayList<>();
-        List<CodingZoneRegister> classEntities = new ArrayList<>();
+        List<CodingZoneRegister> registratedClassList = new ArrayList<>();
         int kindOfClass = 0;
         try {
             // 사용자 계정이 존재하는지(로그인 시간이 초과됐는지) 확인하는 코드
@@ -568,12 +569,13 @@ public class CodingZoneServiceImplement implements CodingZoneService {
                 kindOfClass = 2;
             }
 
-            classEntities = codingZoneRegisterRepository.findBySubjectId(kindOfClass);
+            int classNumForCheck = codingZoneClassRepository.findClassNumBySubjectId(kindOfClass);// 받은 subjectId로 codingzoneclass에서 classNum 가져온 후
+            registratedClassList = codingZoneRegisterRepository.findByClassNum(classNumForCheck); //가져온 classNum으로 특정 codingzoneregister 값 가지고 옴
             // 예약한 학생이 없을 때
-            if (classEntities.isEmpty())
+            if (registratedClassList.isEmpty())
                 return GetReservedClassListItemResponseDto.noExistArticle();
 
-            for (CodingZoneRegister codingZoneRegister : classEntities) {
+            for (CodingZoneRegister codingZoneRegister : registratedClassList) {
                 CodingZoneClass codingZoneClass = codingZoneClassRepository
                         .findByClassNum(codingZoneRegister.getClassNum());
                 if (classDate.equals(codingZoneClass.getClassDate())) {
@@ -706,7 +708,9 @@ public class CodingZoneServiceImplement implements CodingZoneService {
         }
 
         // 코딩존1을 들은 모든 학생들을 학번순으로 불러오기
-        codingZoneRegisters = codingZoneRegisterRepository.findBySubjectIdOrderByUserStudentNumAsc(1);
+        int classNumForCheck = codingZoneClassRepository.findClassNumBySubjectId(1);
+        codingZoneRegisters = codingZoneRegisterRepository.findByClassNumOrderByUserStudentNumAsc(1);
+
 
         // 데이터 채우기
         int rowNum = 1;
@@ -753,8 +757,7 @@ public class CodingZoneServiceImplement implements CodingZoneService {
         }
 
         // 코딩존1을 들은 모든 학생들을 학번순으로 불러오기
-        codingZoneRegisters = codingZoneRegisterRepository.findBySubjectIdOrderByUserStudentNumAsc(2);
-
+        codingZoneRegisters = codingZoneRegisterRepository.findByClassNumOrderByUserStudentNumAsc(1);
         // 데이터 채우기
         int rowNum = 1;
         for (CodingZoneRegister register : codingZoneRegisters) {
