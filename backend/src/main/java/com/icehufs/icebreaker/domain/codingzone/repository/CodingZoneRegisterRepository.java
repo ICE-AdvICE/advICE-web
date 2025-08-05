@@ -9,14 +9,9 @@ import java.util.List;
 public interface CodingZoneRegisterRepository extends JpaRepository<CodingZoneRegister, Integer> {
 
     CodingZoneRegister findByClassNumAndUserEmail(Integer classNum, String userEmail);
-
     CodingZoneRegister findByRegistrationId(Integer registrationId);
-
-    List<CodingZoneRegister> findByGrade(int subjectId);
-
+    List<CodingZoneRegister> findBySubjectId(int subjectId);
     List<CodingZoneRegister> findByUserEmail(String userEmail);
-
     List<CodingZoneRegister> findAllByOrderByUserStudentNumAsc();
-
-    List<CodingZoneRegister> findByGradeOrderByUserStudentNumAsc(int subjectId);
+    List<CodingZoneRegister> findBySubjectIdOrderByUserStudentNumAsc(int subjectId);
 }
