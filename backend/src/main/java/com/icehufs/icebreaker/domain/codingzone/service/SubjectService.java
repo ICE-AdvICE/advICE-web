@@ -80,7 +80,7 @@ public class SubjectService {
 
         List<Subject> subjectList = subjectRepository.findAll();// DB에서 꺼내서 Entity 리스트로 만든다음에
         return subjectList.stream()
-                .map(subject -> new SubjectResponseDto(subject.getSubjectId(), subject.getSubjectName()))
+                .map(subject -> new SubjectResponseDto(subject.getId(), subject.getSubjectName()))
                 .toList(); // 바꾼 SubjectDto를 리스트 구조로 바꾸고
         // 즉, 그 각각의 Subject Entity의 집합을 Dto 집합으로 바꾸는 과정임
     }

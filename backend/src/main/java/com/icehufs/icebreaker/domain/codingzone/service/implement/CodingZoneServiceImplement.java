@@ -328,7 +328,7 @@ public class CodingZoneServiceImplement implements CodingZoneService {
             ZonedDateTime nextSunday = nextMonday.plusDays(6);
 
             // 다음 주 월요일부터 일요일까지의 수업만 조회
-            List<CodingZoneClass> classes = codingZoneClassRepository.findBySubjectSubjectIdAndClassDateBetween(
+            List<CodingZoneClass> classes = codingZoneClassRepository.findBySubjectIdAndClassDateBetween(
                     grade,
                     nextMonday.format(DateTimeFormatter.ISO_LOCAL_DATE),
                     nextSunday.format(DateTimeFormatter.ISO_LOCAL_DATE));
@@ -394,7 +394,7 @@ public class CodingZoneServiceImplement implements CodingZoneService {
             ZonedDateTime nextSunday = nextMonday.plusDays(6);
 
             // 다음 주 월요일부터 일요일까지의 수업만 조회
-            List<CodingZoneClass> classEntities = codingZoneClassRepository.findBySubjectSubjectIdAndClassDateBetween(
+            List<CodingZoneClass> classEntities = codingZoneClassRepository.findBySubjectIdAndClassDateBetween(
                     grade,
                     nextMonday.format(DateTimeFormatter.ISO_LOCAL_DATE),
                     nextSunday.format(DateTimeFormatter.ISO_LOCAL_DATE));
