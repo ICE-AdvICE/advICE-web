@@ -1,6 +1,9 @@
 package com.icehufs.icebreaker.domain.codingzone.service;
 
 import java.util.List;
+import java.util.Optional;
+
+import com.icehufs.icebreaker.domain.codingzone.domain.entity.Subject;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -50,18 +53,18 @@ public class CodingZoneClassService {
                 throw new BusinessException(ResponseCode.ALREADY_EXISTED_CLASS, ResponseMessage.ALREADY_EXISTED_CLASS,
                         HttpStatus.CONFLICT);
             }
+
         }
 
         // 수업 + 조 등록
         for (CodingZoneClassAssignRequestDto assignedClass : dto) {
-
-            CodingZoneClass codingZoneClassEntity = new CodingZoneClass(assignedClass);
+            Subject subject = subjectRepository.findById(assignedClass.getSubjectId()).orElseThrow(() -> new BusinessException(ResponseCode.NOT_MAPPED_CLASS, ResponseMessage.NOT_MAPPED_CLASS, HttpStatus.CONFLICT));
+            CodingZoneClass codingZoneClassEntity = new CodingZoneClass(assignedClass, subject);
             codingZoneClassRepository.save(codingZoneClassEntity); // 먼저 수업을 등록하고
 
             GroupInfUpdateRequestDto groupDto = new GroupInfUpdateRequestDto(assignedClass);
             GroupInf groupInf = new GroupInf(groupDto);
             groupInfRepository.save(groupInf); // 조 등록
-
         }
     }
 
