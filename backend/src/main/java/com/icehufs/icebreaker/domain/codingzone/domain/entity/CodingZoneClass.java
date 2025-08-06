@@ -1,10 +1,8 @@
 package com.icehufs.icebreaker.domain.codingzone.domain.entity;
-
-import jakarta.persistence.*;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 
+import jakarta.persistence.*;
 import org.springframework.http.HttpStatus;
 
 import com.icehufs.icebreaker.common.ResponseCode;
@@ -14,11 +12,9 @@ import com.icehufs.icebreaker.exception.BusinessException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Getter
 @Entity(name = "codingzoneclass")
 @Table(name = "codingzoneclass")
