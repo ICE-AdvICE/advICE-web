@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import InquiryModal from "./InquiryModal.js";
 import { getczauthtypetRequest } from "../../shared/api/AuthApi.js";
 import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네이게이션 바 컴포넌트
+import Banner from "../../shared/ui/Banner/Banner"; // ✅ 추가(juhui): 공통 배너 컴포넌트 적용
 import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js"; //코딩존 보드 바(버튼 네개) 컴포넌트
 
 const CodingZoneAttendanceManager = () => {
@@ -128,10 +129,8 @@ const CodingZoneAttendanceManager = () => {
     <div>
       <div className="codingzone-container">
         <CodingZoneNavigation />
-
-        <div className="banner_img_container">
-          <img src="/codingzone_attendance5.png" className="banner" />
-        </div>
+        <Banner src="/codingzone_attendance3.png" />
+        {/* ✅ 추가(juhui) : 기존 이미지 태그를 Banner 컴포넌트로 대체하여 코드 모듈화 및 재사용성 향상 */}
       </div>
       <div className="cza_button_container" style={{ textAlign: "center" }}>
         <CodingZoneBoardbar />

@@ -1,19 +1,4 @@
-.banner_img_container {
-  width: 100%;
-  height: auto;
-  padding: 20px 10px;
-  box-sizing: border-box;
-  margin: 20px auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.banner_img_container .banner {
-  width: auto;
-  max-width: 920px;
-  max-height: 330px;
-}
+/* Article (익명게시판) 페이지 banner */
 .banner_img_container_icebreaker {
   width: 100%;
   height: auto;
@@ -75,46 +60,46 @@
 /*
 .button-container,
 .cza_button_container {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 20px;    
-    margin-bottom: 20px; 
-    padding: 0 10px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 0 10px;
 }
 
 .btn-attend {
-    padding: 0.6rem 1.2rem; 
-    border: 1px solid #838181a8;
-    background-color: rgba(255, 255, 255, 0);
-    color: #838181a8;
-    font-size: 1rem; 
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-    min-width: 80px; 
-    max-width: 100px; 
-    width: auto; 
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  padding: 0.6rem 1.2rem;
+  border: 1px solid #838181a8;
+  background-color: rgba(255, 255, 255, 0);
+  color: #838181a8;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  min-width: 80px;
+  max-width: 100px;
+  width: auto;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-attend.active,
 .btn-attend.manage,
 .btn-attend.manage_all,
 .btn-attend.manage_class {
-    background-color: rgba(255, 255, 255, 0);
-    color: #052940;
-    border-color: #052940;
-    box-shadow: 0px 0px 3px #0b4264;
-    font-weight: 530;
-    padding: 0.6rem 1.2rem; 
-    font-size: 1rem; 
-    min-width: 80px; 
-    max-width: 100px; 
-    width: auto; 
-    box-sizing: border-box;
+  background-color: rgba(255, 255, 255, 0);
+  color: #052940;
+  border-color: #052940;
+  box-shadow: 0px 0px 3px #0b4264;
+  font-weight: 530;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  min-width: 80px;
+  max-width: 100px;
+  width: auto;
+  box-sizing: border-box;
 }
 
 */
@@ -223,10 +208,10 @@
 
 /*
 .divider {
-    height: 30px;
-    width: 0.5px;
-    background-color: #052940;
-    margin: auto 5px;
+  height: 30px;
+  width: 0.5px;
+  background-color: #052940;
+  margin: auto 5px;
 }
 */
 

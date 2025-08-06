@@ -1,0 +1,16 @@
+.banner_img_container {
+  width: 100%;
+  height: auto;
+  padding: 20px 10px;
+  box-sizing: border-box;
+  margin: 20px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.banner_img_container .banner {
+  width: auto;
+  max-width: 920px;
+  max-height: 330px;
+}

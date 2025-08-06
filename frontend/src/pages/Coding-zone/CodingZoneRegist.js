@@ -11,7 +11,8 @@ import {
   uploadClassForWeek,
 } from "../../entities/api/CodingZone/AdminApi";
 import { getczauthtypetRequest } from "../../shared/api/AuthApi";
-import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네비게이션 바 컴포넌트
+import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네이게이션 바 컴포넌트
+import Banner from "../../shared/ui/Banner/Banner"; // ✅ 추가(juhui): 공통 배너 컴포넌트 적용
 import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js"; //코딩존 보드 바(버튼 네개) 컴포넌트
 
 const CodingZoneRegist = () => {
@@ -626,10 +627,8 @@ const CodingZoneRegist = () => {
     <div className="class-regist-main-container">
       <div className="codingzone-container">
         <CodingZoneNavigation />
-
-        <div className="banner_img_container">
-          <img src="/codingzone_attendance4.png" className="banner" />
-        </div>
+        <Banner src="/codingzone_attendance4.png" />
+        {/* ✅ 추가(juhui) : 기존 이미지 태그를 Banner 컴포넌트로 대체하여 코드 모듈화 및 재사용성 향상 */}
         <div className="main-body-container">
           <div className="cza_button_container" style={{ textAlign: "center" }}>
             <CodingZoneBoardbar />

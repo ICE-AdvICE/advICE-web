@@ -18,8 +18,9 @@ import {
   deleteCodingZoneClass,
   reserveCodingZoneClass,
 } from "../../entities/api/CodingZone/StudentApi.js";
+import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네이게이션 바 컴포넌트
+import BannerSlider from "../../shared/ui/Banner/BannerSlider"; // ✅ 추가(juhui): 슬라이더 컴포넌트
 
-import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네비게이션 바 컴포넌트
 const ClassList = ({
   userReservedClass,
   onDeleteClick,
@@ -67,7 +68,6 @@ const CodingMain = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [selectedZone, setSelectedZone] = useState(1);
-
   const [userReservedClass, setUserReservedClass] = useState(null);
   const [selectedDay, setSelectedDay] = useState("");
   const [isRendered, setIsRendered] = useState(false);
@@ -301,17 +301,6 @@ const CodingMain = () => {
     setClassList(updatedList);
   };
 
-  const sliderSettings = {
-    dots: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 4000,
-    pauseOnHover: true,
-  };
-
   /*출석률 체크바 */
   const renderAttendanceProgress = (count) => {
     const cappedCount = Math.min(count, 4);
@@ -335,39 +324,7 @@ const CodingMain = () => {
   return (
     <div className="codingzone-container">
       <CodingZoneNavigation />
-      <Slider {...sliderSettings}>
-        <div className="codingzone-top-container">
-          <picture>
-            <source srcSet="/codingzone_main_v5.webp" type="image/webp" />
-            <img
-              src="/codingzone_main_v5.png"
-              alt="코딩존 메인 이미지 1"
-              className="codingzonetop2-image"
-              loading="eager"
-            />
-          </picture>
-        </div>
-        <div className="codingzone-top-container">
-          <picture>
-            <source srcSet="/coding-zone-main2.webp" type="image/webp" />
-            <img
-              src="/coding-zone-main2.png"
-              alt="코딩존 메인 이미지 2"
-              className="codingzonetop2-image"
-            />
-          </picture>
-        </div>
-        <div className="codingzone-top-container">
-          <picture>
-            <source srcSet="/coding-zone-main3.webp" type="image/webp" />
-            <img
-              src="/coding-zone-main3.png"
-              alt="코딩존 메인 이미지 3"
-              className="codingzonetop2-image"
-            />
-          </picture>
-        </div>
-      </Slider>
+      <BannerSlider />
       <div className="codingzone-body-container">
         <div className="cz-category-top">
           <div className="cz-category-date">

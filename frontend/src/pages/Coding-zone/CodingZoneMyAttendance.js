@@ -3,9 +3,12 @@ import { getczauthtypetRequest } from "../../shared/api/AuthApi.js";
 import { useCookies } from "react-cookie";
 import "../css/codingzone/codingzone-main.css";
 import "../css/codingzone/codingzone_attend.css";
-import { useNavigate } from "react-router-dom";
+
+import { useNavigate, useLocation } from "react-router-dom";
+import InquiryModal from "./InquiryModal.js";
 import { getczattendlistRequest } from "../../features/api/CodingzoneApi.js";
-import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js";
+import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네이게이션 바 컴포넌트
+import Banner from "../../shared/ui/Banner/Banner"; // ✅ 추가(juhui): 공통 배너 컴포넌트 적용
 import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js";
 
 const CodingZoneMyAttendance = () => {
@@ -104,9 +107,8 @@ const CodingZoneMyAttendance = () => {
     <div>
       <div className="codingzone-container">
         <CodingZoneNavigation />
-        <div className="banner_img_container">
-          <img src="/codingzone_attendance2.png" className="banner" />
-        </div>
+        <Banner src="/codingzone_attendance2.png" />
+        {/* ✅ 추가(juhui) : 기존 이미지 태그를 Banner 컴포넌트로 대체하여 코드 모듈화 및 재사용성 향상 */}
       </div>
 
       <div className="cza_button_container" style={{ textAlign: "center" }}>
