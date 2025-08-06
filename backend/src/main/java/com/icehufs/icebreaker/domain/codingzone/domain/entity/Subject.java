@@ -10,18 +10,18 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @ToString
-@AllArgsConstructor 
+@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Entity(name = "subject")
 @Table(name = "subject") // 매핑 정보 Entity
 public class Subject {
 
-  @Id //subject_id를 pk로 설정
-  @Column(name = "subject_id")
-  private Integer subjectId;
+    @Id // subject_id를 pk로 설정
+    @Column(name = "subject_id")
+    private Integer subjectId;
 
-  @Column(name = "subject_name")
-  private String subjectName;
+    @Column(name = "subject_name")
+    private String subjectName;
 
 }

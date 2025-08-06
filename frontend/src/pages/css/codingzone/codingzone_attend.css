@@ -57,6 +57,7 @@
   padding-top: 20px;
 }
 
+/*
 .button-container,
 .cza_button_container {
   display: flex;
@@ -100,6 +101,8 @@
   width: auto;
   box-sizing: border-box;
 }
+
+*/
 
 .line-container1 {
   width: 100%;
@@ -203,12 +206,14 @@
   color: #002d56;
 }
 
+/*
 .divider {
   height: 30px;
   width: 0.5px;
   background-color: #052940;
   margin: auto 5px;
 }
+*/
 
 .info_data_container {
   width: 100%;
@@ -358,6 +363,7 @@
   }
 }
 
+/*
 @media (max-width: 768px) {
   .btn-attend {
     padding: 0.5rem 1rem;
@@ -382,13 +388,14 @@
   }
 }
 
-/* 모바일 화면 */
+
+/* 모바일 화면 
 @media (max-width: 480px) {
   .btn-attend {
     padding: 0.4rem 0.8rem;
     font-size: 0.8rem;
     min-width: 60px;
-    max-width: 80px; /* max-width을 80px으로 감소 */
+    max-width: 80px; /* max-width을 80px으로 감소 
   }
 
   .btn-attend.active,
@@ -406,3 +413,4 @@
     margin-top: 10px;
   }
 }
+*/

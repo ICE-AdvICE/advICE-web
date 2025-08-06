@@ -13,6 +13,7 @@ import {
 import { getczauthtypetRequest } from "../../shared/api/AuthApi";
 import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네이게이션 바 컴포넌트
 import Banner from "../../shared/ui/Banner/Banner"; // ✅ 추가(juhui): 공통 배너 컴포넌트 적용
+import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js"; //코딩존 보드 바(버튼 네개) 컴포넌트
 
 const CodingZoneRegist = () => {
   const [boxes, setBoxes] = useState([
@@ -628,99 +629,52 @@ const CodingZoneRegist = () => {
         <CodingZoneNavigation />
         <Banner src="/codingzone_attendance4.png" />
         {/* ✅ 추가(juhui) : 기존 이미지 태그를 Banner 컴포넌트로 대체하여 코드 모듈화 및 재사용성 향상 */}
-      </div>
-      <div className="main-body-container">
-        <div className="cza_button_container" style={{ textAlign: "center" }}>
-          <button
-            className={`btn-attend ${activeButton === "check" ? "active" : ""}`}
-            onClick={() => {
-              setActiveButton("check");
-              navigate(`/coding-zone/Codingzone_Attendance`);
-            }}
-          >
-            출결 확인
-          </button>
-          {showRegisterClassButton && (
-            <>
-              <div className="divider"></div>
+        <div className="main-body-container">
+          <div className="cza_button_container" style={{ textAlign: "center" }}>
+            <CodingZoneBoardbar />
+          </div>
+          <div className="category-bar">
+            <div className="inner-category-bar">
               <button
-                className={`btn-attend ${
-                  activeButton === "manage_class" ? "active" : ""
+                className={`category-button ${
+                  activeCategory === "registerGroupInfo" ? "active" : ""
                 }`}
-                onClick={handleClassRegistration}
+                onClick={() => handleCategoryClick("registerGroupInfo")}
+              >
+                조 정보 등록
+              </button>
+              <span className="main-span2"> | </span>
+              <button
+                className={`category-button ${
+                  activeCategory === "registerClass" ? "active" : ""
+                }`}
+                onClick={() => refreshPage()}
               >
                 수업 등록
               </button>
-            </>
-          )}
-          {showAdminButton && (
-            <>
-              <div className="divider"></div>
-              <button
-                className={`btn-attend ${
-                  activeButton === "manage" ? "active" : ""
-                }`}
-                onClick={handlecodingzonemanager}
-              >
-                출결 관리
+              <span className="main-span2"></span>
+              <button className={`reset-button`} onClick={handleResetSemester}>
+                학기 초기화
               </button>
-            </>
-          )}
-          {showManageAllButton && (
-            <>
-              <div className="divider"></div>
+            </div>
+            <div className="inner-category-bar2">
               <button
-                className={`btn-attend ${
-                  activeButton === "manage_all" ? "active" : ""
-                }`}
-                onClick={handleFullManagement}
+                className={`Agroup-button ${groupId === "A" ? "active" : ""}`}
+                onClick={() => setGroupId("A")}
               >
-                전체 관리
+                A 조
               </button>
-            </>
-          )}
-        </div>
-        <div className="category-bar">
-          <div className="inner-category-bar">
-            <button
-              className={`category-button ${
-                activeCategory === "registerGroupInfo" ? "active" : ""
-              }`}
-              onClick={() => handleCategoryClick("registerGroupInfo")}
-            >
-              조 정보 등록
-            </button>
-            <span className="main-span2"> | </span>
-            <button
-              className={`category-button ${
-                activeCategory === "registerClass" ? "active" : ""
-              }`}
-              onClick={() => refreshPage()}
-            >
-              수업 등록
-            </button>
-            <span className="main-span2"></span>
-            <button className={`reset-button`} onClick={handleResetSemester}>
-              학기 초기화
-            </button>
+              <span className="main-span2"> | </span>
+              <button
+                className={`Bgroup-button ${groupId === "B" ? "active" : ""}`}
+                onClick={() => setGroupId("B")}
+              >
+                B 조
+              </button>
+            </div>
           </div>
-          <div className="inner-category-bar2">
-            <button
-              className={`Agroup-button ${groupId === "A" ? "active" : ""}`}
-              onClick={() => setGroupId("A")}
-            >
-              A 조
-            </button>
-            <span className="main-span2"> | </span>
-            <button
-              className={`Bgroup-button ${groupId === "B" ? "active" : ""}`}
-              onClick={() => setGroupId("B")}
-            >
-              B 조
-            </button>
-          </div>
+          {renderActiveSection()}
         </div>
-        {renderActiveSection()}
       </div>
     </div>
   );

@@ -18,7 +18,6 @@ import {
   deleteCodingZoneClass,
   reserveCodingZoneClass,
 } from "../../entities/api/CodingZone/StudentApi.js";
-
 import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네이게이션 바 컴포넌트
 import BannerSlider from "../../shared/ui/Banner/BannerSlider"; // ✅ 추가(juhui): 슬라이더 컴포넌트
 
@@ -69,7 +68,6 @@ const CodingMain = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [selectedZone, setSelectedZone] = useState(1);
-
   const [userReservedClass, setUserReservedClass] = useState(null);
   const [selectedDay, setSelectedDay] = useState("");
   const [isRendered, setIsRendered] = useState(false);

@@ -1,4 +1,5 @@
 package com.icehufs.icebreaker.domain.codingzone.dto.request;
+
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,8 +11,8 @@ import lombok.Setter;
 public class HandleAuthRequestDto {
 
     @NotBlank
-    private String email; //권한을 줄 사용자 이메일
+    private String email; // 권한을 줄 사용자 이메일
 
     @NotBlank
-    private String role; //권한의 종류
+    private String role; // 권한의 종류
 }

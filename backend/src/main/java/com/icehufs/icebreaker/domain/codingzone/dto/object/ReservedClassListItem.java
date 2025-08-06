@@ -19,7 +19,7 @@ public class ReservedClassListItem {
     private String userName;
     private String userEmail;
     private String className;
-    private int grade;
+    private int subjectId;
     private String classTime;
     private String assistantName;
     private String attendance;
@@ -27,7 +27,7 @@ public class ReservedClassListItem {
     public ReservedClassListItem(ReservedClassListItem other){
         this.className = other.className;
         this.registrationId = other.registrationId;
-        this.grade = other.grade;
+        this.subjectId = other.subjectId;
         this.classTime = other.classTime;
         this.assistantName = other.assistantName;
         this.attendance = other.attendance;
@@ -39,7 +39,6 @@ public class ReservedClassListItem {
     public ReservedClassListItem(CodingZoneClass codingZoneClass, CodingZoneRegister codingZoneRegister){
         this.className = codingZoneClass.getClassName();
         this.registrationId = codingZoneRegister.getRegistrationId();
-        this.grade = codingZoneRegister.getGrade();
         this.classTime = codingZoneClass.getClassTime();
         this.assistantName = codingZoneClass.getAssistantName();
         this.attendance = codingZoneRegister.getAttendance();

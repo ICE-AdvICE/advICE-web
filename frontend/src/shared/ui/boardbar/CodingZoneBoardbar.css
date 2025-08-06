@@ -1,0 +1,112 @@
+.button-container,
+.cza_button_container {
+  display: flex;
+  width: 100%;
+  height: 60px;
+  padding: 16px 0;
+  justify-content: center;
+  align-items: center;
+
+  flex-shrink: 0;
+}
+
+.cza_button_container button + button {
+  position: relative; /* pseudo-element 위치기준 */
+  margin-left: 21px; /* 기존 gap 그대로 */
+  padding-left: 21px; /* 경계선과 텍스트 간격 확보 */
+  border-left: 1px solid #868181; /* divider 역할 */
+}
+
+.btn-attend {
+  display: flex;
+  padding: 0.6rem 1.2rem;
+  border: 1px solid #838181a8;
+  background-color: rgba(255, 255, 255, 0);
+  color: #adacac;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  min-width: 147px;
+  width: 147px;
+  height: 60px;
+
+  box-sizing: border-box;
+  border-radius: 10px;
+  border: 1.5px solid #adacac;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-attend.active,
+.btn-attend.manage,
+.btn-attend.manage_all,
+.btn-attend.manage_class {
+  background-color: #052940;
+  color: #ffffff;
+  border-radius: 10px;
+  border: 1.5px solid #052940;
+  box-shadow: 0px 0px 3px #0b4264;
+  font-weight: 530;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  min-width: 147px;
+  width: 147px;
+  width: auto;
+  box-sizing: border-box;
+}
+
+.divider {
+  width: 1px;
+  height: 40px; /* 버튼 높이에 맞춤 */
+  background-color: #868181;
+  margin: 0 12px;
+}
+
+@media (max-width: 768px) {
+  .btn-attend {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    min-width: 70px;
+    max-width: 90px;
+  }
+
+  .btn-attend.active,
+  .btn-attend.manage,
+  .btn-attend.manage_all,
+  .btn-attend.manage_class {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    min-width: 70px;
+    max-width: 90px;
+  }
+
+  .button-container,
+  .cza_button_container {
+    margin-top: 15px;
+  }
+}
+
+/* 모바일 화면 */
+@media (max-width: 480px) {
+  .btn-attend {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    min-width: 60px;
+    max-width: 80px; /* max-width을 80px으로 감소 */
+  }
+
+  .btn-attend.active,
+  .btn-attend.manage,
+  .btn-attend.manage_all,
+  .btn-attend.manage_class {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    min-width: 60px;
+    max-width: 80px;
+  }
+
+  .button-container,
+  .cza_button_container {
+    margin-top: 10px;
+  }
+}

@@ -6,12 +6,15 @@ import {
 } from "../../features/api/Admin/Codingzone/ClassApi.js";
 import { useCookies } from "react-cookie";
 import "../css/codingzone/codingzone-main.css";
+import "../css/codingzone/codingzone_attend.css";
 import "../css/codingzone/codingzone_all_attendance.css";
+import "../../shared/ui/boardbar/CodingZoneBoardbar.css";
 import { useNavigate } from "react-router-dom";
 import InquiryModal from "./InquiryModal.js";
 import { getczauthtypetRequest } from "../../shared/api/AuthApi.js";
 import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네이게이션 바 컴포넌트
 import Banner from "../../shared/ui/Banner/Banner"; // ✅ 추가(juhui): 공통 배너 컴포넌트 적용
+import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js"; //코딩존 보드 바(버튼 네개) 컴포넌트
 
 const CodingZoneAttendanceManager = () => {
   const [authMessage, setAuthMessage] = useState("");
@@ -126,58 +129,11 @@ const CodingZoneAttendanceManager = () => {
     <div>
       <div className="codingzone-container">
         <CodingZoneNavigation />
-        <Banner src="/codingzone_attendance5.png" />
+        <Banner src="/codingzone_attendance3.png" />
         {/* ✅ 추가(juhui) : 기존 이미지 태그를 Banner 컴포넌트로 대체하여 코드 모듈화 및 재사용성 향상 */}
       </div>
       <div className="cza_button_container" style={{ textAlign: "center" }}>
-        <button
-          className={`btn-attend ${activeButton === "check" ? "active" : ""}`}
-          onClick={() => {
-            setActiveButton("check");
-            navigate(`/coding-zone/Codingzone_Attendance`);
-          }}
-        >
-          출결 확인
-        </button>
-        {showRegisterClassButton && (
-          <>
-            <div className="divider"></div>
-            <button
-              className={`btn-attend ${
-                activeButton === "manage" ? "active" : ""
-              }`}
-              onClick={handleClassRegistration}
-            >
-              수업 등록
-            </button>
-          </>
-        )}
-        {showAdminButton && (
-          <>
-            <div className="divider"></div>
-            <button
-              className={`btn-attend ${
-                activeButton === "manage" ? "active" : ""
-              }`}
-              onClick={handlecodingzonemanager}
-            >
-              출결 관리
-            </button>
-          </>
-        )}
-        {showManageAllButton && (
-          <>
-            <div className="divider"></div>
-            <button
-              className={`btn-attend ${
-                activeButton === "manage_all" ? "active" : ""
-              }`}
-              onClick={() => setActiveButton("manage_all")}
-            >
-              전체 관리
-            </button>
-          </>
-        )}
+        <CodingZoneBoardbar />
       </div>
       <div className="centered-content">
         <div className="allattendance_buttons">

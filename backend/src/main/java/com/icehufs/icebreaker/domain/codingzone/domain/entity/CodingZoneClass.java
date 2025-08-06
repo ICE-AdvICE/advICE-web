@@ -6,9 +6,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import org.springframework.http.HttpStatus;
 
+import com.icehufs.icebreaker.common.ResponseCode;
+import com.icehufs.icebreaker.common.ResponseMessage;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassAssignRequestDto;
-
+import com.icehufs.icebreaker.exception.BusinessException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,11 +26,11 @@ import lombok.ToString;
 @Entity(name = "codingzoneclass")
 @Table(name = "codingzoneclass")
 public class CodingZoneClass {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "class_num")
-    private int classNum;
+    private Integer classNum;
 
     @Column(name = "assistant_name")
     private String assistantName;
@@ -48,10 +53,13 @@ public class CodingZoneClass {
     @Column(name = "week_day")
     private String weekDay;
 
-    @Column(name = "grade")
-    private int grade;
+    @Column(name = "subject_id")
+    private int subjectId;
+
 
     public CodingZoneClass(CodingZoneClassAssignRequestDto dto) {
+
+        isDateWeekend(dto.getClassDate());
         this.assistantName = dto.getAssistantName();
         this.classTime = dto.getClassTime();
         this.classDate = dto.getClassDate();
@@ -59,14 +67,26 @@ public class CodingZoneClass {
         this.maximumNumber = dto.getMaximumNumber();
         this.className = dto.getClassName();
         this.weekDay = dto.getWeekDay();
-        this.grade = dto.getGrade();
+        this.subjectId = dto.getSubjectId();
     }
 
     public void increaseNum() {
         this.currentNumber++;
     }
 
-    public void decreaseNum(){
+    public void decreaseCurrentNum() {
+        if (this.currentNumber <= 0) {
+            throw new BusinessException(ResponseCode.INTERNAL_SERVER_ERROR, ResponseMessage.INTERNAL_SERVER_ERROR,
+                    HttpStatus.BAD_REQUEST);
+        }
         this.currentNumber--;
+    }
+
+    // Dto로 받은 날짜가 주말이면 예외처리
+    private void isDateWeekend(String dateString) { // Entity 생성 시에만 사용되므로(외부 사용 X)private 설정
+        LocalDate date = LocalDate.parse(dateString);
+        DayOfWeek day = date.getDayOfWeek();
+        if ((day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY))
+            throw new BusinessException(ResponseCode.NOT_WEEKDAY, ResponseMessage.NOT_WEEKDAY, HttpStatus.BAD_REQUEST);
     }
 }
