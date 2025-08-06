@@ -22,14 +22,12 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
-import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassAssignRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PatchGroupInfRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.object.CodingZoneStudentListItem;
 import com.icehufs.icebreaker.domain.codingzone.dto.object.PersAttendManagListItem;
 import com.icehufs.icebreaker.domain.codingzone.dto.object.ReservedClassListItem;
 import com.icehufs.icebreaker.common.ResponseDto;
-import com.icehufs.icebreaker.domain.article.dto.response.CheckOwnOfArticleResponseDto;
 import com.icehufs.icebreaker.domain.auth.domain.entity.Authority;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneClass;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneRegister;
@@ -54,27 +52,6 @@ public class CodingZoneServiceImplement implements CodingZoneService {
     private final AuthorityRepository authorityRepository;
     private final GroupInfRepository groupInfRepository;
     private final CodingZoneRegisterRepository codingZoneRegisterRepository;
-
-    @Override
-    public ResponseEntity<? super CodingZoneClassAssignResponseDto> codingzoneClassAssign(
-            List<CodingZoneClassAssignRequestDto> dto, String email) {
-        try {
-            // 사용자 계정이 존재하는지(로그인시간이 초과 됐는지) 확인하는 코드
-            boolean existedUser = userRepository.existsByEmail(email);
-            if (!existedUser)
-                return CheckOwnOfArticleResponseDto.notExistUser();
-
-            for (CodingZoneClassAssignRequestDto requestDto : dto) {
-                CodingZoneClass codingZoneClassEntity = new CodingZoneClass(requestDto);
-                codingZoneClassRepository.save(codingZoneClassEntity);
-            }
-
-            return CodingZoneClassAssignResponseDto.success();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-    }
 
     @Override
     public ResponseEntity<? super AuthorityExistResponseDto> authExist(String email) {

@@ -19,7 +19,7 @@ public class Subject {
 
     @Id // subject_id를 pk로 설정
     @Column(name = "subject_id")
-    private Integer subjectId;
+    private Integer id;
 
     @Column(name = "subject_name")
     private String subjectName;

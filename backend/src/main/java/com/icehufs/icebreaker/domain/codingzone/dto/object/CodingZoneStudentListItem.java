@@ -47,7 +47,7 @@ public class CodingZoneStudentListItem {
         this.userStudentNum = codingZoneRegister.getUserStudentNum();
         this.userName = codingZoneRegister.getUserName();
         this.userEmail = codingZoneRegister.getUserEmail();
-        this.subjectId = codingZoneClass.getSubjectId();
+        this.subjectId = codingZoneClass.getSubject().getId();
     }
 
     public static List<CodingZoneStudentListItem> getList(List<CodingZoneStudentListItem> codingZoneStudentListItems) {

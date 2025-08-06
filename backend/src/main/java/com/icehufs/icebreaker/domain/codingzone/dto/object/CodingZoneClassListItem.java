@@ -31,7 +31,7 @@ public class CodingZoneClassListItem {
         this.weekDay = codingZoneClass.getWeekDay();
         this.maximumNumber = codingZoneClass.getMaximumNumber();
         this.className = codingZoneClass.getClassName();
-        this.subjectId = codingZoneClass.getSubjectId();
+        this.subjectId = codingZoneClass.getSubject().getId();
         this.classDate = codingZoneClass.getClassDate();
         this.currentNumber = codingZoneClass.getCurrentNumber();
     }

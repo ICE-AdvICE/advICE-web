@@ -1,13 +1,8 @@
 package com.icehufs.icebreaker.domain.codingzone.domain.entity;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+
+import jakarta.persistence.*;
 import org.springframework.http.HttpStatus;
 
 import com.icehufs.icebreaker.common.ResponseCode;
@@ -17,11 +12,9 @@ import com.icehufs.icebreaker.exception.BusinessException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Getter
 @Entity(name = "codingzoneclass")
 @Table(name = "codingzoneclass")
@@ -53,11 +46,11 @@ public class CodingZoneClass {
     @Column(name = "week_day")
     private String weekDay;
 
-    @Column(name = "subject_id")
-    private int subjectId;
+    @JoinColumn(name = "subject_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Subject subject;
 
-
-    public CodingZoneClass(CodingZoneClassAssignRequestDto dto) {
+    public CodingZoneClass(CodingZoneClassAssignRequestDto dto, Subject subject) {
 
         isDateWeekend(dto.getClassDate());
         this.assistantName = dto.getAssistantName();
@@ -67,7 +60,7 @@ public class CodingZoneClass {
         this.maximumNumber = dto.getMaximumNumber();
         this.className = dto.getClassName();
         this.weekDay = dto.getWeekDay();
-        this.subjectId = dto.getSubjectId();
+        this.subject = subject;
     }
 
     public void increaseNum() {
