@@ -7,7 +7,7 @@ const API_DOMAIN_ADMIN = `${DOMAIN}/api/admin`;
 // 권한 부여 API (ATE 처리 추가)
 export const grantPermission = async (email, role, token, setCookie, navigate) => {
     try {
-        const response = await axios.patch(`${API_DOMAIN_ADMIN}/give-auth`, { email, role }, {
+        const response = await axios.patch(`${API_DOMAIN_ADMIN}/authorities`, { email, role }, {
             headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -43,7 +43,7 @@ export const grantPermission = async (email, role, token, setCookie, navigate) =
 // 권한 박탈 API (ATE 처리 추가)
 export const deprivePermission = async (email, role, token, setCookie, navigate) => {
     try {
-        const response = await axios.patch(`${API_DOMAIN_ADMIN}/deprive-auth`, { email, role }, {
+        const response = await axios.patch(`${API_DOMAIN_ADMIN}/deprivation`, { email, role }, {
             headers: { Authorization: `Bearer ${token}` }
         });
 

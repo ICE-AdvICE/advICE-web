@@ -41,6 +41,7 @@ const MypageForm = ({ closeModal, modal }) => {
         const fetchUserData = async () => {
             if (modal.mypage) { //modal이 props로 전달되었으므로 사용 가능
                 const userDetailsData = await getMypageRequest(cookies.accessToken, setCookie, navigate, closeModal);
+                console.log("마이페이지 응답:", userDetailsData);
                 if (userDetailsData?.code === "SU") {
                     const userData = userDetailsData.data;  // 새로 추가된 data 필드
                     setUserDetails({

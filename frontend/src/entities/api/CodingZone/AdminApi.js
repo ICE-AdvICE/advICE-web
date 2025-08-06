@@ -76,7 +76,7 @@ export const fetchGroupClasses = async (groupId, token, setCookie, navigate) => 
 //1. 코딩존 수업 등록 API
 export const uploadClassForWeek = async (groupData, token, setCookie, navigate) => {
     try {
-        const response = await axios.post(`${API_DOMAIN_ADMIN}/upload-codingzone`, groupData, {
+        const response = await axios.post(`${API_DOMAIN_ADMIN}/codingzones/classes`, groupData, {
             headers: { Authorization: `Bearer ${token}` }
         });
 
