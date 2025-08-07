@@ -1,7 +1,6 @@
 package com.icehufs.icebreaker.exception;
 
 import java.sql.SQLException;
-
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +25,7 @@ public class GlobalExceptionHandler {
 			.body(ResponseDto.fail(e.getCode(), e.getMessage()));
 	}
 
+
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ResponseDto<Void>> handleUnexpectedException(Exception e) {
 		log.warn("[비즈니스에서 잡지 못하는 에러 발생] {}", e.getMessage());
@@ -34,7 +34,8 @@ public class GlobalExceptionHandler {
 			.body(ResponseDto.fail("IE", "서버 내부 오류가 발생했습니다."));
 	}
 
-	@ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
+
+    @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
 	public ResponseEntity<ResponseDto<Void>> handleValidationException(Exception e){
 		log.warn("[요청 HTTP BODY 검증 에러] {}", e.getMessage());
 
@@ -43,7 +44,8 @@ public class GlobalExceptionHandler {
 			.body(ResponseDto.fail("VF", "Validation failed."));
 	}
 
-	@ExceptionHandler({ DataAccessException.class, SQLException.class })
+
+    @ExceptionHandler({ DataAccessException.class, SQLException.class })
 	public ResponseEntity<ResponseDto<Void>> handleDatabaseException(Exception e) {
 		log.warn("[DB 에러] {}", e.getMessage());
 		return ResponseEntity
