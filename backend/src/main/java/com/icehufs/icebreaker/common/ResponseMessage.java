@@ -5,10 +5,13 @@ public interface ResponseMessage {
     String SUCCESS = "Success.";
     String CODING_ADMIN = "This user is coding-zone admin.";
     String ENTIRE_ADMIN = "This user is entire admin.";
-    String SUCCESS_CLASS_MAPPING = "코딩존 매핑 성공";
+    String SUCCESS_CLASS_MAPPING = "코딩존 매핑 등록 성공";
+    String SUCCESS_MAPPING_GET = "코딩존 매핑 조회 성공";
     String SUCCESS_CLASS_CREATE = "코딩존 등록 성공";
+    String SUCCESS_CLASS_UPDATE = "코딩존 정보 수정 성공";
 
     // HTTP Status 400
+    String BAD_REQUEST = "잘못된 입력 형식";
     String VALIDATION_FAILED = "Validation failed.";
     String DUPLICATE_EMAIL = "Duplicate email.";
     String NOT_EXISTED_USER = "This user does not exist.";
@@ -26,6 +29,7 @@ public interface ResponseMessage {
     String ALREADY_EXISTED_MAPPSET = "이미 포함된 매핑번호와 교과목 이름 포함";
     String NOT_ANY_MAPPINGSET = "어떠한 매핑 정보도 등록 정보 없음";
     String NOT_WEEKDAY = "입력한 날짜가 주중이 아님";
+    String NOT_FOUND_GROUP = "조 정보가 존재하지 않음";
 
     // HTTP Status 401
     String SIGN_IN_FAIL = "Login information mismatch.";

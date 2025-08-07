@@ -28,6 +28,7 @@ public interface ResponseCode {
     String TUTOR_NOT_FOUND = "TNF";
     String INVALID_SUBJECT_ID = "ISI";
     String DUPLICATE_PASSWORD = "DP";
+    String NOT_FOUND_GROUP = "NOT_FOUND_GROUP";
 
 
     // HTTP Status 401
