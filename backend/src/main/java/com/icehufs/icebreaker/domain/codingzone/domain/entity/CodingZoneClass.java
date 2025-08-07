@@ -1,7 +1,9 @@
 package com.icehufs.icebreaker.domain.codingzone.domain.entity;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.Optional;
 
+import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassUpdateRequestDto;
 import jakarta.persistence.*;
 import org.springframework.http.HttpStatus;
 
@@ -63,6 +65,20 @@ public class CodingZoneClass {
         this.subject = subject;
     }
 
+    public CodingZoneClass(CodingZoneClassUpdateRequestDto dto, Integer classNum, Subject subject) {
+        isDateWeekend(dto.getClassDate());
+        this.classNum = classNum;
+        this.assistantName = dto.getAssistantName();
+        this.classTime = dto.getClassTime();
+        this.classDate = dto.getClassDate();
+        this.currentNumber = 0;
+        this.maximumNumber = dto.getMaximumNumber();
+        this.className = dto.getClassName();
+        this.weekDay = dto.getWeekDay();
+        this.subject = subject;
+    }
+
+
     public void increaseNum() {
         this.currentNumber++;
     }
@@ -80,6 +96,7 @@ public class CodingZoneClass {
         LocalDate date = LocalDate.parse(dateString);
         DayOfWeek day = date.getDayOfWeek();
         if ((day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY))
-            throw new BusinessException(ResponseCode.NOT_WEEKDAY, ResponseMessage.NOT_WEEKDAY, HttpStatus.BAD_REQUEST);
+            throw new BusinessException(ResponseCode.NOT_WEEKDAY, ResponseMessage.
+                    NOT_WEEKDAY, HttpStatus.BAD_REQUEST);
     }
 }
