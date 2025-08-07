@@ -38,4 +38,5 @@ public interface CodingZoneClassRepository extends JpaRepository<CodingZoneClass
             @Param("weekDay") String weekDay,
             @Param("subjectId") int subjectId);
 
+    void removeCodingZoneClassByClassNum(Integer checkClassNum);
 }
