@@ -659,7 +659,7 @@ public class CodingZoneServiceImplement implements CodingZoneService {
         List<CodingZoneClassInfoResponseDto> classInfoResponseDtos = new ArrayList<>();
 
         for (CodingZoneClass codingZoneClass :codingZoneClasses){
-            String classStatus = getClassStatus(date, codingZoneClass.getClassTime());
+            String classStatus = calculateClassStatus(date, codingZoneClass.getClassTime());
 
             CodingZoneClassInfoResponseDto dto = new CodingZoneClassInfoResponseDto(
                     codingZoneClass.getClassTime(),
@@ -673,20 +673,21 @@ public class CodingZoneServiceImplement implements CodingZoneService {
         return classInfoResponseDtos;
     }
 
-    private String getClassStatus(String date, String classTime) {
+    private String calculateClassStatus(String date, String classTime) {
         LocalDate classDate = LocalDate.parse(date); // "yyyy-MM-dd"
         LocalTime startTime = LocalTime.parse(classTime); // "HH:mm:ss"
-        LocalDateTime classStartDateTime = LocalDateTime.of(classDate, startTime);
-        LocalDateTime classEndDateTime = classStartDateTime.plusHours(1);
+
+        LocalDateTime startDateTime  = LocalDateTime.of(classDate, startTime);
+        LocalDateTime endDateTime  = startDateTime.plusHours(1);
 
         LocalDateTime now = LocalDateTime.now();
 
-        if (now.isAfter(classEndDateTime)) {
-            return "진행종료";
-        } else if (!now.isBefore(classStartDateTime) && !now.isAfter(classEndDateTime)) {
-            return "진행 중";
-        } else {
+        if (now.isBefore(startDateTime)) {
             return "예약 대기";
+        } else if (now.isAfter(endDateTime)) {
+            return "진행종료";
+        } else {
+            return "진행 중";
         }
     }
 
