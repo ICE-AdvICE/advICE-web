@@ -656,7 +656,7 @@ public class CodingZoneServiceImplement implements CodingZoneService {
     @Override
     public List<CodingZoneClassInfoResponseDto> findCodingZoneClassesBySubjectAndDate(Long subjectId, String date) {
         List<CodingZoneClass> codingZoneClasses = codingZoneClassRepository.findBySubject_IdAndClassDate(subjectId.intValue(), date);
-        List<CodingZoneClassInfoResponseDto> classInfoResponseDtos = new ArrayList<>();
+        List<CodingZoneClassInfoResponseDto> classInfos = new ArrayList<>();
 
         for (CodingZoneClass codingZoneClass :codingZoneClasses){
             String classStatus = calculateClassStatus(date, codingZoneClass.getClassTime());
@@ -668,9 +668,9 @@ public class CodingZoneServiceImplement implements CodingZoneService {
                     classStatus,
                     codingZoneClass.getClassNum());
 
-            classInfoResponseDtos.add(dto);
+            classInfos.add(dto);
         }
-        return classInfoResponseDtos;
+        return classInfos;
     }
 
     private String calculateClassStatus(String date, String classTime) {
