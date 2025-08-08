@@ -13,12 +13,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.List;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.time.ZoneId;
+import java.time.LocalTime;
+import java.time.LocalDate;
+import java.util.List;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -650,6 +651,43 @@ public class CodingZoneServiceImplement implements CodingZoneService {
             assistantNames.add(assistant.getName());
         }
         return new AssistantNamesResponseDto(assistantNames);
+    }
+
+    @Override
+    public List<CodingZoneClassInfoResponseDto> findCodingZoneClassesBySubjectAndDate(Long subjectId, String date) {
+        List<CodingZoneClass> codingZoneClasses = codingZoneClassRepository.findBySubject_IdAndClassDate(subjectId.intValue(), date);
+        List<CodingZoneClassInfoResponseDto> classInfoResponseDtos = new ArrayList<>();
+
+        for (CodingZoneClass codingZoneClass :codingZoneClasses){
+            String classStatus = getClassStatus(date, codingZoneClass.getClassTime());
+
+            CodingZoneClassInfoResponseDto dto = new CodingZoneClassInfoResponseDto(
+                    codingZoneClass.getClassTime(),
+                    codingZoneClass.getAssistantName(),
+                    groupInfRepository.findByClassNum(codingZoneClass.getClassNum()).getGroupId(),
+                    classStatus,
+                    codingZoneClass.getClassNum());
+
+            classInfoResponseDtos.add(dto);
+        }
+        return classInfoResponseDtos;
+    }
+
+    private String getClassStatus(String date, String classTime) {
+        LocalDate classDate = LocalDate.parse(date); // "yyyy-MM-dd"
+        LocalTime startTime = LocalTime.parse(classTime); // "HH:mm:ss"
+        LocalDateTime classStartDateTime = LocalDateTime.of(classDate, startTime);
+        LocalDateTime classEndDateTime = classStartDateTime.plusHours(1);
+
+        LocalDateTime now = LocalDateTime.now();
+
+        if (now.isAfter(classEndDateTime)) {
+            return "진행종료";
+        } else if (!now.isBefore(classStartDateTime) && !now.isAfter(classEndDateTime)) {
+            return "진행 중";
+        } else {
+            return "예약 대기";
+        }
     }
 
 
