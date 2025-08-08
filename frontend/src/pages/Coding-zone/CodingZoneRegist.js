@@ -6,8 +6,9 @@ import InquiryModal from "./InquiryModal";
 import "../css/codingzone/codingzone-main.css";
 import { resetCodingZoneData } from "../../features/api/Admin/Codingzone/ClassApi";
 import {
-  fetchGroupClasses,
+  fetchAllSubjects,
   uploadClassForWeek,
+  fetchAssistantsBySubjectId,
 } from "../../entities/api/CodingZone/AdminApi";
 import { getczauthtypetRequest } from "../../shared/api/AuthApi";
 import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네이게이션 바 컴포넌트
@@ -29,23 +30,28 @@ const CodingZoneRegist = () => {
   const token = cookies.accessToken;
   const [activeButton, setActiveButton] = useState("manage_class");
   const navigate = useNavigate();
-
-  const handlecodingzonemanager = () => {
-    navigate(`/coding-zone/Codingzone_Manager`);
-  };
-
-  const handleFullManagement = () => {
-    navigate(`/coding-zone/Codingzone_All_Attend`);
-  };
-
-  const handleClassRegistration = () => {
-    navigate(`/coding-zone/Class_Registration`);
-  };
+  const [subjects, setSubjects] = useState([]);
 
   //조 정보 등록과 수업 등록 페이지 이동 function
   const handleCategoryClick = (category) => {
     setActiveCategory(category);
   };
+
+  useEffect(() => {
+    const loadSubjects = async () => {
+      const res = await fetchAllSubjects(
+        cookies.accessToken,
+        setCookie,
+        navigate
+      );
+      if (res?.code === "SU" && Array.isArray(res.data)) {
+        setSubjects(res.data); // [{subjectId, subjectName}, ...]
+      } else {
+        alert("과목 목록을 불러오지 못했습니다.");
+      }
+    };
+    loadSubjects();
+  }, [cookies.accessToken, setCookie, navigate]);
 
   useEffect(() => {
     const fetchAuthType = async () => {
@@ -148,9 +154,8 @@ const CodingZoneRegist = () => {
         day: "",
         date: "",
         time: "",
-        assistant: "",
         className: "",
-        grade: "",
+        assistant: "",
         maxPers: "",
       },
     ]);
@@ -190,8 +195,8 @@ const CodingZoneRegist = () => {
         classTime: box.time,
         className: box.className,
         maximumNumber: parseInt(box.maxPers),
-        weekDay: box.day,
-        grade: parseInt(box.grade),
+        subjectId: parseInt(box.subjectId), // 혜원아 꼼 넘겨
+        groupId: box.groupId,
       };
     });
     const response = await uploadClassForWeek(
@@ -236,7 +241,7 @@ const CodingZoneRegist = () => {
     return true;
   };
 
-  //조 정보 등록과 수업 등록 페이지
+  //수업 등록 페이지
   const renderActiveSection = () => {
     if (activeCategory === "registerClass") {
       return (
@@ -248,13 +253,12 @@ const CodingZoneRegist = () => {
                 <p className="weekDay2">요일</p>
                 <p className="classDate2">날짜</p>
                 <p className="weekTime2">시간</p>
-                <p className="assistent2">조교</p>
               </div>
               <div className="part2-element-title2">
                 <p className="className2">과목명</p>
               </div>
               <div className="part3-element-title2">
-                <p className="grade2">코딩존</p>
+                <p className="assistent2">조교</p>
                 <p className="maxPers2">인원</p>
               </div>
             </div>
@@ -302,6 +306,20 @@ const CodingZoneRegist = () => {
                   <option value="19:00:00">19:00</option>
                   <option value="20:00:00">20:00</option>
                 </select>
+                <select
+                  className="ClassName-input"
+                  value={box.className}
+                  onChange={(e) =>
+                    handleChange2(index, "className", e.target.value)
+                  }
+                >
+                  <option value="">과목 선택</option>
+                  {subjects.map((subject) => (
+                    <option key={subject.subjectId} value={subject.subjectName}>
+                      {subject.subjectName}
+                    </option>
+                  ))}
+                </select>
                 <input
                   className="Assistant-input"
                   placeholder="Assistant"
@@ -310,25 +328,6 @@ const CodingZoneRegist = () => {
                     handleChange2(index, "assistant", e.target.value)
                   }
                 />
-                <input
-                  className="ClassName-input"
-                  placeholder="Class Name"
-                  value={box.className}
-                  onChange={(e) =>
-                    handleChange2(index, "className", e.target.value)
-                  }
-                />
-                <select
-                  className="Grade-input"
-                  value={box.grade}
-                  onChange={(e) =>
-                    handleChange2(index, "grade", e.target.value)
-                  }
-                >
-                  <option value="">코딩존</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                </select>
                 <input
                   className="MaxPers-input"
                   type="number"
@@ -377,23 +376,6 @@ const CodingZoneRegist = () => {
           </div>
           <div className="category-bar">
             <div className="inner-category-bar">
-              <button
-                className={`category-button ${
-                  activeCategory === "registerGroupInfo" ? "active" : ""
-                }`}
-                onClick={() => handleCategoryClick("registerGroupInfo")}
-              >
-                조 정보 등록
-              </button>
-              <span className="main-span2"> | </span>
-              <button
-                className={`category-button ${
-                  activeCategory === "registerClass" ? "active" : ""
-                }`}
-                onClick={() => refreshPage()}
-              >
-                수업 등록
-              </button>
               <span className="main-span2"></span>
               <button className={`reset-button`} onClick={handleResetSemester}>
                 학기 초기화
