@@ -30,6 +30,8 @@ public interface ResponseMessage {
     String NOT_ANY_MAPPINGSET = "어떠한 매핑 정보도 등록 정보 없음";
     String NOT_WEEKDAY = "입력한 날짜가 주중이 아님";
     String NOT_FOUND_GROUP = "조 정보가 존재하지 않음";
+    String NOT_MODIFIED_INFO = "변경된 정보가 없음";
+    String ALREADY_POST_CLASS = "이미 등록된 수업";
 
     // HTTP Status 401
     String SIGN_IN_FAIL = "Login information mismatch.";
