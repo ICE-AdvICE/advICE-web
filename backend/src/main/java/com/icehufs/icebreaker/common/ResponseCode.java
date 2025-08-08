@@ -28,7 +28,8 @@ public interface ResponseCode {
     String TUTOR_NOT_FOUND = "TNF";
     String INVALID_SUBJECT_ID = "ISI";
     String DUPLICATE_PASSWORD = "DP";
-
+    String INVAIlD_DATE_WEEKEND = "INVAIlD_DATE_WEEKEND";
+    String NO_CODINGZONE_DATE = "NO_CODINGZONE_DATE";
 
     // HTTP Status 401
     String SIGN_IN_FAIL = "SF";

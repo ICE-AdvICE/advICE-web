@@ -32,6 +32,7 @@ public interface CodingZoneService {
     ResponseEntity<? super GetReservedClassListItemResponseDto> getReservedClass(String classDate, String email);
     ResponseEntity<? super GetCodingZoneAssitantListResponseDto> getAssistantList();
     AssistantNamesResponseDto getAssistantNamesBySubjectId(Long subjectId);
+    CodingZoneClassNamesResponseDto getCodingZoneClassNamesByDate(String date);
     //수업 코딩존 조교 
     ResponseEntity<? super PutAttendanceResponseDto> putAttend(Integer registNum, String email);
 }
