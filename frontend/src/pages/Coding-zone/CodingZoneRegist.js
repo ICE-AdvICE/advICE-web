@@ -6,7 +6,6 @@ import InquiryModal from "./InquiryModal";
 import "../css/codingzone/codingzone-main.css";
 import { resetCodingZoneData } from "../../features/api/Admin/Codingzone/ClassApi";
 import {
-  uploadGroupData,
   fetchGroupClasses,
   uploadClassForWeek,
 } from "../../entities/api/CodingZone/AdminApi";
@@ -31,9 +30,17 @@ const CodingZoneRegist = () => {
   const [activeButton, setActiveButton] = useState("manage_class");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    loadGroupClasses();
-  }, [groupId]);
+  const handlecodingzonemanager = () => {
+    navigate(`/coding-zone/Codingzone_Manager`);
+  };
+
+  const handleFullManagement = () => {
+    navigate(`/coding-zone/Codingzone_All_Attend`);
+  };
+
+  const handleClassRegistration = () => {
+    navigate(`/coding-zone/Class_Registration`);
+  };
 
   useEffect(() => {
     const fetchAuthType = async () => {
@@ -63,33 +70,6 @@ const CodingZoneRegist = () => {
     fetchAuthType();
   }, [token, authMessage]);
 
-  //조 정보 등록 API 응답 함수
-  const handleGroupUploadResponse = (response) => {
-    if (!response) {
-      alert("오류 발생: 네트워크 상태를 확인해주세요.");
-      return;
-    }
-    const { code, message } = response;
-    switch (code) {
-      case "SU":
-        alert("성공적으로 등록되었습니다.");
-        break;
-      case "AF":
-        alert("권한이 없습니다.");
-        break;
-      case "NU":
-        alert("로그인 시간이 만료되었습니다. 다시 로그인 해주세요.");
-        navigate("/");
-        break;
-      case "DBE":
-        alert("데이터베이스 오류입니다.");
-        break;
-      default:
-        alert("오류 발생: " + message);
-        break;
-    }
-  };
-
   //수업 등록 API 응답 함수
   const handleuploadClassForWeekResponse = (response) => {
     if (!response) {
@@ -108,62 +88,6 @@ const CodingZoneRegist = () => {
       case "NU":
         alert("로그인 시간이 만료되었습니다. 다시 로그인 해주세요.");
         navigate("/");
-        break;
-      case "DBE":
-        alert("데이터베이스 오류입니다.");
-        break;
-      default:
-        alert("오류 발생: " + message);
-        break;
-    }
-  };
-
-  //등록된 조 정보 반환 API 응답 함수
-  const loadGroupClasses = async () => {
-    const data = await fetchGroupClasses(
-      groupId,
-      cookies.accessToken,
-      setCookie,
-      navigate
-    );
-    if (!data) {
-      alert("오류 발생: 네트워크 상태를 확인해주세요.");
-      return;
-    }
-    const { code, message } = data;
-    switch (code) {
-      case "SU":
-        setBoxes2(
-          data.groupList.map((group) => ({
-            day: group.weekDay,
-            date: "",
-            time: group.classTime,
-            assistant: group.assistantName,
-            className: group.className,
-            grade: group.grade.toString(), // select에서 사용하기 위해 문자열로 변환
-            maxPers: group.maximumNumber.toString(), // select에서 사용하기 위해 문자열로 변환
-          }))
-        );
-        break;
-      case "AF":
-        alert("권한이 없습니다.");
-        break;
-      case "NU":
-        alert("로그인 시간이 만료되었습니다. 다시 로그인 해주세요.");
-        navigate("/");
-        break;
-      case "NA":
-        setBoxes2([
-          {
-            day: "",
-            date: "",
-            time: "",
-            assistant: "",
-            className: "",
-            grade: "",
-            maxPers: "",
-          },
-        ]);
         break;
       case "DBE":
         alert("데이터베이스 오류입니다.");
@@ -205,64 +129,6 @@ const CodingZoneRegist = () => {
   //새로고침 함수
   const refreshPage = () => {
     window.location.reload();
-  };
-
-  //조 정보 등록 버튼 함수(모든 필드 채워져있는지 확인 -> 열린 박스들을 닫기 위해 새로 고침)
-  const handleButtonClick = () => {
-    // 모든 필드가 채워져 있는지 검사
-    const allFilled = boxes.every((box) =>
-      Object.values(box).every((value) => value.trim() !== "")
-    );
-    if (!allFilled) {
-      alert("입력하지 않은 정보가 있습니다. 확인해 주세요.");
-      return;
-    }
-    handleSubmit();
-
-    //정상적으로 등록 됐다는 alert를 닫을 시간 제공위해 100밀리초 후에 새로고침
-    setTimeout(() => {
-      refreshPage();
-    }, 100);
-  };
-
-  //조 정보 등록을 위한 functions
-  const addBox = () => {
-    setBoxes([
-      ...boxes,
-      {
-        day: "",
-        time: "",
-        assistant: "",
-        className: "",
-        grade: "",
-        maxPers: "",
-      },
-    ]);
-  };
-
-  const handleChange = (index, field, value) => {
-    const newBoxes = [...boxes];
-    newBoxes[index][field] = value;
-    setBoxes(newBoxes);
-  };
-
-  const handleSubmit = async () => {
-    const formattedData = boxes.map((box) => ({
-      groupId: groupId,
-      assistantName: box.assistant,
-      classTime: box.time,
-      className: box.className,
-      maximumNumber: parseInt(box.maxPers),
-      weekDay: box.day,
-      grade: parseInt(box.grade),
-    }));
-    const response = await uploadGroupData(
-      formattedData,
-      cookies.accessToken,
-      setCookie,
-      navigate
-    );
-    handleGroupUploadResponse(response);
   };
 
   const removeBox = (index) => {
@@ -350,11 +216,6 @@ const CodingZoneRegist = () => {
     }
   };
 
-  //조 정보 등록과 수업 등록 페이지 이동 function
-  const handleCategoryClick = (category) => {
-    setActiveCategory(category);
-  };
-
   // 날짜 등록 칸에서 맞는 유형인지 확인 함수
   const isValidDate = (date) => {
     if (!date) return true; // 입력 값이 비어있으면 유효한 것으로 간주합니다.
@@ -372,119 +233,7 @@ const CodingZoneRegist = () => {
 
   //조 정보 등록과 수업 등록 페이지
   const renderActiveSection = () => {
-    if (activeCategory === "registerGroupInfo") {
-      return (
-        <>
-          <div className="main-category-name-container">
-            <div className="separator"></div>
-            <div className="element-title">
-              <div className="part1-element-title">
-                <p className="weekDay">요일</p>
-                <p className="weekTime">시간</p>
-                <p className="assistent">조교</p>
-              </div>
-              <div className="part2-element-title">
-                <p className="className">과목명</p>
-              </div>
-              <div className="part3-element-title">
-                <p className="grade">코딩존</p>
-                <p className="maxPers">인원</p>
-              </div>
-            </div>
-            <div className="separator"></div>
-          </div>
-          <div className="class-input-container">
-            {boxes.map((box, index) => (
-              <div key={index} className="class-input-box">
-                <select
-                  className="Day-input"
-                  value={box.day}
-                  onChange={(e) => handleChange(index, "day", e.target.value)}
-                >
-                  <option value="">Day</option>
-                  <option value="월요일">MON</option>
-                  <option value="화요일">TUE</option>
-                  <option value="수요일">WED</option>
-                  <option value="목요일">THU</option>
-                  <option value="금요일">FRI</option>
-                </select>
-                <select
-                  className="Time-input"
-                  value={box.time}
-                  onChange={(e) => handleChange(index, "time", e.target.value)}
-                >
-                  <option value="">Time</option>
-                  <option value="09:00:00">09:00</option>
-                  <option value="10:00:00">10:00</option>
-                  <option value="11:00:00">11:00</option>
-                  <option value="12:00:00">12:00</option>
-                  <option value="13:00:00">13:00</option>
-                  <option value="14:00:00">14:00</option>
-                  <option value="15:00:00">15:00</option>
-                  <option value="16:00:00">16:00</option>
-                  <option value="17:00:00">17:00</option>
-                  <option value="18:00:00">18:00</option>
-                  <option value="19:00:00">19:00</option>
-                  <option value="20:00:00">20:00</option>
-                </select>
-                <input
-                  className="Assistant-input"
-                  placeholder="Assistant"
-                  value={box.assistant}
-                  onChange={(e) =>
-                    handleChange(index, "assistant", e.target.value)
-                  }
-                />
-                <input
-                  className="ClassName-input"
-                  placeholder="Class Name"
-                  value={box.className}
-                  onChange={(e) =>
-                    handleChange(index, "className", e.target.value)
-                  }
-                />
-                <select
-                  className="Grade-input"
-                  value={box.grade}
-                  onChange={(e) => handleChange(index, "grade", e.target.value)}
-                >
-                  <option value="">코딩존</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                </select>
-                <input
-                  className="MaxPers-input"
-                  type="number"
-                  placeholder="MaxPer"
-                  min="1"
-                  step="1"
-                  value={box.maxPers}
-                  onChange={(e) =>
-                    handleChange(index, "maxPers", e.target.value)
-                  }
-                />
-                <button
-                  onClick={() => removeBox(index)}
-                  class="custom-btn btn-6"
-                >
-                  X
-                </button>
-              </div>
-            ))}
-          </div>
-          <div className="button-area">
-            <div>
-              <button onClick={addBox} class="custom-btn btn-5">
-                추가
-              </button>
-            </div>
-            <div className="class-submit-button">
-              <button onClick={handleButtonClick}>등록</button>
-            </div>
-          </div>
-        </>
-      );
-    } else if (activeCategory === "registerClass") {
+    if (activeCategory === "registerClass") {
       return (
         <>
           <div className="main-category-name-container2">
