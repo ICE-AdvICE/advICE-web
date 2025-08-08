@@ -43,6 +43,10 @@ const CodingZoneRegist = () => {
   };
 
   useEffect(() => {
+    loadGroupClasses();
+  }, [groupId]);
+
+  useEffect(() => {
     const fetchAuthType = async () => {
       const response = await getczauthtypetRequest(token, setCookie, navigate);
       if (response) {
@@ -214,6 +218,62 @@ const CodingZoneRegist = () => {
       );
       handleResetResponse(response);
     } else {
+    }
+  };
+
+  //등록된 조 정보 반환 API 응답 함수
+  const loadGroupClasses = async () => {
+    const data = await fetchGroupClasses(
+      groupId,
+      cookies.accessToken,
+      setCookie,
+      navigate
+    );
+    if (!data) {
+      alert("오류 발생: 네트워크 상태를 확인해주세요.");
+      return;
+    }
+    const { code, message } = data;
+    switch (code) {
+      case "SU":
+        setBoxes2(
+          data.groupList.map((group) => ({
+            day: group.weekDay,
+            date: "",
+            time: group.classTime,
+            assistant: group.assistantName,
+            className: group.className,
+            grade: group.grade.toString(), // select에서 사용하기 위해 문자열로 변환
+            maxPers: group.maximumNumber.toString(), // select에서 사용하기 위해 문자열로 변환
+          }))
+        );
+        break;
+      case "AF":
+        alert("권한이 없습니다.");
+        break;
+      case "NU":
+        alert("로그인 시간이 만료되었습니다. 다시 로그인 해주세요.");
+        navigate("/");
+        break;
+      case "NA":
+        setBoxes2([
+          {
+            day: "",
+            date: "",
+            time: "",
+            assistant: "",
+            className: "",
+            grade: "",
+            maxPers: "",
+          },
+        ]);
+        break;
+      case "DBE":
+        alert("데이터베이스 오류입니다.");
+        break;
+      default:
+        alert("오류 발생: " + message);
+        break;
     }
   };
 
