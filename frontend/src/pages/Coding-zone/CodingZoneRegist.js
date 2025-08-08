@@ -16,10 +16,7 @@ import Banner from "../../shared/ui/Banner/Banner"; // ✅ 추가(juhui): 공통
 import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js"; //코딩존 보드 바(버튼 네개) 컴포넌트
 
 const CodingZoneRegist = () => {
-  const [boxes, setBoxes] = useState([
-    { day: "", time: "", assistant: "", className: "", grade: "", maxPers: "" },
-  ]);
-  const [boxes2, setBoxes2] = useState([]);
+  const [boxes, setBoxes] = useState([]);
   const [groupId, setGroupId] = useState("A");
   const [cookies, setCookie] = useCookies(["accessToken"]);
   const [activeCategory, setActiveCategory] = useState("registerClass");
@@ -28,16 +25,10 @@ const CodingZoneRegist = () => {
   const [showManageAllButton, setShowManageAllButton] = useState(false);
   const [showRegisterClassButton, setShowRegisterClassButton] = useState(false);
   const token = cookies.accessToken;
-  const [activeButton, setActiveButton] = useState("manage_class");
   const navigate = useNavigate();
   const [subjects, setSubjects] = useState([]);
   const [assistantOptionsMap, setAssistantOptionsMap] = useState({});
   const [assistantLoading, setAssistantLoading] = useState({});
-
-  //조 정보 등록과 수업 등록 페이지 이동 function
-  const handleCategoryClick = (category) => {
-    setActiveCategory(category);
-  };
 
   //과목에 해당하는 조교 불러오기
   const handleSubjectChange = async (rowIndex, subjectId) => {
@@ -134,7 +125,6 @@ const CodingZoneRegist = () => {
     switch (code) {
       case "SU":
         alert("성공적으로 등록되었습니다.");
-        handleCategoryClick("registerClass");
         break;
       case "AF":
         alert("권한이 없습니다.");
@@ -185,14 +175,10 @@ const CodingZoneRegist = () => {
     window.location.reload();
   };
 
-  const removeBox = (index) => {
-    setBoxes((currentBoxes) => currentBoxes.filter((_, i) => i !== index));
-  };
-
   //수업 등록을 위한 functions
-  const addBox2 = () => {
-    setBoxes2([
-      ...boxes2,
+  const addBox = () => {
+    setBoxes([
+      ...boxes,
       {
         day: "",
         date: "",
@@ -205,13 +191,13 @@ const CodingZoneRegist = () => {
   };
 
   const handleChange2 = (index, field, value) => {
-    const newBoxes2 = [...boxes2];
-    newBoxes2[index][field] = value;
-    setBoxes2(newBoxes2);
+    const newBoxes = [...boxes];
+    newBoxes[index][field] = value;
+    setBoxes(newBoxes);
   };
 
   const handleSubmit2 = async () => {
-    const allFilled = boxes2.every((box) =>
+    const allFilled = boxes.every((box) =>
       Object.values(box).every(
         (value) =>
           value.trim() !== "" && (box.date ? isValidDate(box.date) : true)
@@ -224,7 +210,7 @@ const CodingZoneRegist = () => {
       return;
     }
     const currentYear = new Date().getFullYear();
-    const formattedData = boxes2.map((box) => {
+    const formattedData = boxes.map((box) => {
       const dateParts = box.date ? box.date.split("-") : ["01", "01"];
       const [month, day] = dateParts;
       const formattedDate = `${currentYear}-${month.padStart(
@@ -238,7 +224,7 @@ const CodingZoneRegist = () => {
         classTime: box.time,
         className: box.className,
         maximumNumber: parseInt(box.maxPers),
-        subjectId: parseInt(box.subjectId), // 혜원아 꼼 넘겨
+        subjectId: parseInt(box.subjectId),
         groupId: box.groupId,
       };
     });
@@ -252,7 +238,7 @@ const CodingZoneRegist = () => {
   };
 
   const removeBox2 = (index) => {
-    setBoxes2((currentBoxes) => currentBoxes.filter((_, i) => i !== index));
+    setBoxes((currentBoxes) => currentBoxes.filter((_, i) => i !== index));
   };
 
   //학기 초가화 버튼을 위한 function
@@ -308,7 +294,7 @@ const CodingZoneRegist = () => {
             <div className="separator"></div>
           </div>
           <div className="class-input-container">
-            {boxes2.map((box, index) => (
+            {boxes.map((box, index) => (
               <div key={index} className="class-input-box">
                 <select
                   className="Day-input"
@@ -409,7 +395,7 @@ const CodingZoneRegist = () => {
           </div>
           <div className="button-area2">
             <div>
-              <button onClick={addBox2} class="custom-btn btn-5">
+              <button onClick={addBox} class="custom-btn btn-5">
                 추가
               </button>
             </div>
