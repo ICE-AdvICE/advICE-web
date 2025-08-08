@@ -31,10 +31,53 @@ const CodingZoneRegist = () => {
   const [activeButton, setActiveButton] = useState("manage_class");
   const navigate = useNavigate();
   const [subjects, setSubjects] = useState([]);
+  const [assistantOptionsMap, setAssistantOptionsMap] = useState({});
+  const [assistantLoading, setAssistantLoading] = useState({});
 
   //조 정보 등록과 수업 등록 페이지 이동 function
   const handleCategoryClick = (category) => {
     setActiveCategory(category);
+  };
+
+  //과목에 해당하는 조교 불러오기
+  const handleSubjectChange = async (rowIndex, subjectId) => {
+    const selected = subjects.find(
+      (s) => String(s.subjectId) === String(subjectId)
+    );
+    const subjectName = selected?.subjectName || "";
+
+    handleChange2(rowIndex, "subjectId", subjectId);
+    handleChange2(rowIndex, "className", subjectName);
+    handleChange2(rowIndex, "assistant", "");
+
+    if (!subjectId) {
+      setAssistantOptionsMap((prev) => ({ ...prev, [rowIndex]: [] }));
+      return;
+    }
+
+    try {
+      setAssistantLoading((prev) => ({ ...prev, [rowIndex]: true }));
+      const res = await fetchAssistantsBySubjectId(
+        subjectId,
+        cookies.accessToken,
+        setCookie,
+        navigate
+      );
+
+      if (res?.code === "SU" && Array.isArray(res.data?.assistantNames)) {
+        setAssistantOptionsMap((prev) => ({
+          ...prev,
+          [rowIndex]: res.data.assistantNames,
+        }));
+      } else {
+        setAssistantOptionsMap((prev) => ({ ...prev, [rowIndex]: [] }));
+      }
+    } catch (err) {
+      console.error("조교 목록 불러오기 실패:", err);
+      setAssistantOptionsMap((prev) => ({ ...prev, [rowIndex]: [] }));
+    } finally {
+      setAssistantLoading((prev) => ({ ...prev, [rowIndex]: false }));
+    }
   };
 
   useEffect(() => {
@@ -308,26 +351,42 @@ const CodingZoneRegist = () => {
                 </select>
                 <select
                   className="ClassName-input"
-                  value={box.className}
-                  onChange={(e) =>
-                    handleChange2(index, "className", e.target.value)
-                  }
+                  value={box.subjectId || ""}
+                  onChange={(e) => handleSubjectChange(index, e.target.value)}
                 >
                   <option value="">과목 선택</option>
                   {subjects.map((subject) => (
-                    <option key={subject.subjectId} value={subject.subjectName}>
+                    <option key={subject.subjectId} value={subject.subjectId}>
                       {subject.subjectName}
                     </option>
                   ))}
                 </select>
-                <input
+                <select
                   className="Assistant-input"
-                  placeholder="Assistant"
-                  value={box.assistant}
+                  value={box.assistant || ""}
                   onChange={(e) =>
                     handleChange2(index, "assistant", e.target.value)
                   }
-                />
+                  disabled={!box.subjectId || assistantLoading[index]}
+                >
+                  {!box.subjectId ? (
+                    <option value="">먼저 과목을 선택하세요</option>
+                  ) : assistantLoading[index] ? (
+                    <option value="">불러오는 중...</option>
+                  ) : (assistantOptionsMap[index] || []).length === 0 ? (
+                    <option value="">해당 과목의 조교가 없습니다</option>
+                  ) : (
+                    <>
+                      <option value="">조교 선택</option>
+                      {(assistantOptionsMap[index] || []).map((name, i) => (
+                        <option key={i} value={name}>
+                          {name}
+                        </option>
+                      ))}
+                    </>
+                  )}
+                </select>
+
                 <input
                   className="MaxPers-input"
                   type="number"
@@ -369,7 +428,6 @@ const CodingZoneRegist = () => {
       <div className="codingzone-container">
         <CodingZoneNavigation />
         <Banner src="/codingzone_attendance4.png" />
-        {/* ✅ 추가(juhui) : 기존 이미지 태그를 Banner 컴포넌트로 대체하여 코드 모듈화 및 재사용성 향상 */}
         <div className="main-body-container">
           <div className="cza_button_container" style={{ textAlign: "center" }}>
             <CodingZoneBoardbar />
