@@ -659,36 +659,16 @@ public class CodingZoneServiceImplement implements CodingZoneService {
         List<CodingZoneClassInfoResponseDto> classInfos = new ArrayList<>();
 
         for (CodingZoneClass codingZoneClass :codingZoneClasses){
-            String classStatus = calculateClassStatus(date, codingZoneClass.getClassTime());
-
             CodingZoneClassInfoResponseDto dto = new CodingZoneClassInfoResponseDto(
                     codingZoneClass.getClassTime(),
                     codingZoneClass.getAssistantName(),
                     groupInfRepository.findByClassNum(codingZoneClass.getClassNum()).getGroupId(),
-                    classStatus,
+                    codingZoneClass.calculateClassStatus(date),
                     codingZoneClass.getClassNum());
 
             classInfos.add(dto);
         }
         return classInfos;
-    }
-
-    private String calculateClassStatus(String date, String classTime) {
-        LocalDate classDate = LocalDate.parse(date); // "yyyy-MM-dd"
-        LocalTime startTime = LocalTime.parse(classTime); // "HH:mm:ss"
-
-        LocalDateTime startDateTime  = LocalDateTime.of(classDate, startTime);
-        LocalDateTime endDateTime  = startDateTime.plusHours(1);
-
-        LocalDateTime now = LocalDateTime.now();
-
-        if (now.isBefore(startDateTime)) {
-            return "예약 대기";
-        } else if (now.isAfter(endDateTime)) {
-            return "진행종료";
-        } else {
-            return "진행 중";
-        }
     }
 
 
