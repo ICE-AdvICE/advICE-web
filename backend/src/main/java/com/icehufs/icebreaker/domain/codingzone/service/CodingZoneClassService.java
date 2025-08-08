@@ -4,15 +4,12 @@ import java.util.List;
 
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.Subject;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassUpdateRequestDto;
-import com.icehufs.icebreaker.domain.codingzone.exception.CodingZoneAlreadyExistsException;
-import com.icehufs.icebreaker.domain.codingzone.exception.DuplicateClassException;
+import com.icehufs.icebreaker.domain.codingzone.exception.DuplicatedClassException;
+import com.icehufs.icebreaker.domain.codingzone.exception.AlreadyExistClassException;
 import com.icehufs.icebreaker.domain.codingzone.exception.NoExistedGroupException;
 import com.icehufs.icebreaker.domain.codingzone.exception.UnmappedSubjectException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.icehufs.icebreaker.common.ResponseCode;
-import com.icehufs.icebreaker.common.ResponseMessage;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneClass;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.GroupInf;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassAssignRequestDto;
@@ -20,7 +17,6 @@ import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateReques
 import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneClassRepository;
 import com.icehufs.icebreaker.domain.codingzone.repository.GroupInfRepository;
 import com.icehufs.icebreaker.domain.codingzone.repository.SubjectRepository;
-import com.icehufs.icebreaker.exception.BusinessException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -53,12 +49,12 @@ public class CodingZoneClassService {
                             );
 
             // 이미 시전에 동일한 수업을 등록한 경우
-            if (isDuplicate) throw new DuplicateClassException();
+            if (isDuplicate) throw new AlreadyExistClassException();
         }
 
         // 수업 + 조 등록
         for (CodingZoneClassAssignRequestDto assignedClass : dto) {
-            Subject subject = subjectRepository.findById(assignedClass.getSubjectId()).orElseThrow(() -> new BusinessException(ResponseCode.NOT_MAPPED_CLASS, ResponseMessage.NOT_MAPPED_CLASS, HttpStatus.CONFLICT));
+            Subject subject = subjectRepository.findById(assignedClass.getSubjectId()).orElseThrow(() -> new UnmappedSubjectException());
             CodingZoneClass codingZoneClassEntity = new CodingZoneClass(assignedClass, subject);
             codingZoneClassRepository.save(codingZoneClassEntity); // 먼저 수업을 등록하고
 
@@ -75,10 +71,9 @@ public class CodingZoneClassService {
         // 수정한 정보가 기존의 정보와 동일할 때 예외처리
         // 수정하고자 하는 코딩존 수업의 고유번호를 가져와서 DB확인
         CodingZoneClass existingClass = codingZoneClassRepository.findByClassNum(classNum);
-        if(dto.isSameEntity(existingClass)) throw new CodingZoneAlreadyExistsException();
+        if(dto.isSameEntity(existingClass)) throw new DuplicatedClassException();
 
         // DB 저장된 원래 codingzoneclass 수업 삭제
-
         CodingZoneClass existedClass = codingZoneClassRepository.findByClassNum(classNum);
         codingZoneClassRepository.removeCodingZoneClassByClassNum(classNum);
 
@@ -87,7 +82,7 @@ public class CodingZoneClassService {
                 .orElseThrow(() -> new NoExistedGroupException());
         groupInfRepository.delete(group);
 
-        // 수정된 정보에 아직 매핑 전 교과목이 포함되었을 경우 예외처리
+        // 수정된 정보가 아직 매핑 전 교과목이 포함되었을 경우 예외처리
         if (!subjectRepository.existsById(dto.getSubjectId())) throw new UnmappedSubjectException();
 
         // 수정한 정보가 이미 DB에 저장되어 있는 경우
@@ -103,7 +98,7 @@ public class CodingZoneClassService {
                 );
 
         // 이미 시전에 동일한 수업을 등록한 경우 예외처리
-        if (isDuplicate) throw new DuplicateClassException();
+        if (isDuplicate) throw new AlreadyExistClassException();
 
         // 수정한 정보로 수업 등록
         Subject subject = subjectRepository.findById(dto.getSubjectId()) .orElseThrow(() -> new UnmappedSubjectException());
@@ -115,5 +110,4 @@ public class CodingZoneClassService {
         groupInfRepository.save(groupInf); // 조 등록
 
     }
-
 }
