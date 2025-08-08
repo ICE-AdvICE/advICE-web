@@ -42,6 +42,11 @@ const CodingZoneRegist = () => {
     navigate(`/coding-zone/Class_Registration`);
   };
 
+  //조 정보 등록과 수업 등록 페이지 이동 function
+  const handleCategoryClick = (category) => {
+    setActiveCategory(category);
+  };
+
   useEffect(() => {
     const fetchAuthType = async () => {
       const response = await getczauthtypetRequest(token, setCookie, navigate);
@@ -52,7 +57,7 @@ const CodingZoneRegist = () => {
             break;
           case "EA":
             setShowRegisterClassButton(true);
-            setShowManageAllButton(true);  
+            setShowManageAllButton(true);
             break;
           case "NU":
             alert("로그인 시간이 만료되었습니다. 다시 로그인 해주세요.");
