@@ -7,8 +7,6 @@ const API_DOMAIN_ADMIN = `${DOMAIN}/api/admin`;
 const authorization = (accessToken) => {
     return { headers: { Authorization: `Bearer ${accessToken}` } }
 };
-
-
 const GET_AVAILABLE_CLASSES_FOR_NOT_LOGIN_URL = (grade) => `${API_DOMAIN}/coding-zone/class-list/for-not-login/${grade}`;
 const GET_CZ_ALL_ATTEND = () => `${DOMAIN}/api/admin/student-list`;
 //6. 학기 초기화 API
@@ -200,3 +198,54 @@ export const downloadAttendanceExcel = async (accessToken, grade, setCookie, nav
         }
     }
 };
+
+//과목명과 코딩존 번호 매핑 API
+export const registerSubjectMapping = async (mappings, accessToken, setCookie, navigate) => {
+    try {
+      const response = await axios.post(`${API_DOMAIN_ADMIN}/subjects`,mappings,
+        authorization(accessToken)
+      );
+  
+      if (response.data.code === 'SU') {
+        return { success: true, message: response.data.message };
+      } else {
+        return { success: false, message: response.data.message };
+      }
+    } catch (error) {
+      if (!error.response || !error.response.data) {
+        return { success: false, message: '네트워크 오류 또는 서버 응답 없음' };
+      }
+  
+      const { code } = error.response.data;
+  
+      // 토큰 만료 처리
+      if (code === 'ATE') {
+        console.warn('코딩존 매핑: Access Token 만료됨. 토큰 재발급 시도 중...');
+        const newToken = await refreshTokenRequest(setCookie, accessToken, navigate);
+  
+        if (newToken?.accessToken) {
+          return registerSubjectMapping(mappings, newToken.accessToken, setCookie, navigate);
+        } else {
+          setCookie('accessToken', '', { path: '/', expires: new Date(0) });
+          navigate('/');
+          return { success: false, message: '토큰이 만료되었습니다. 다시 로그인해주세요.' };
+        }
+      }
+  
+      switch (code) {
+        case 'AF':
+          return { success: false, message: '권한이 없습니다.' };
+        case 'DBE':
+          return { success: false, message: '데이터베이스 오류가 발생했습니다.' };
+        case 'ALREADY_EXISTED_CLASSMAPPING':
+          return { success: false, message: '이미 존재하는 코딩존 매핑 번호와 교과목입니다.' };
+        case 'ALREADY_EXISTED_NUMMAPPING':
+          return { success: false, message: '이미 존재하는 subjectId입니다.' };
+        case 'ALREADY_EXISTED_MAPPINGSET':
+          return { success: false, message: '이미 존재하는 subjectName입니다.' };
+        default:
+          return { success: false, message: '예상치 못한 오류가 발생했습니다.' };
+      }
+    }
+  };
+  
