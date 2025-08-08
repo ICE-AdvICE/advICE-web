@@ -13,6 +13,7 @@ import Footer from "../widgets/layout/Footer/Footer";
 import CreatePage from "../pages/ArticlePage/Components/CreatePage";
 import ShowPage from "../pages/ArticlePage/Components/ShowPage";
 import AuthHandle from "../pages/AuthHandle";
+import CodingZoneSetting from "../pages/Coding-zone/CodingZoneSetting";
 
 import { getczauthtypetRequest } from "../shared/api/AuthApi"; // 권한 확인 API
 import { useCookies } from "react-cookie";
@@ -65,12 +66,16 @@ const App = () => {
         <Route path="/coding-zone" element={<CodingMain />} />
 
         <Route
-          path="/coding-zone/coding-class-regist"
+          path="/coding-zone/Coding-class-regist"
           element={<CodingClassRegist />}
         />
         <Route
           path="/coding-zone/Codingzone_Manager"
           element={<CodingZoneAttendanceAssistant />}
+        />
+         <Route
+          path="/coding-zone/Codingzone_Setting"
+          element={<CodingZoneSetting />}
         />
 
         {/*기본 진입 시 권한별 분기 */}

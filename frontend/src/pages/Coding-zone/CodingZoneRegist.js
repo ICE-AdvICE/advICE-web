@@ -49,11 +49,10 @@ const CodingZoneRegist = () => {
         switch (response.code) {
           case "CA":
             setShowAdminButton(true);
-
             break;
           case "EA":
             setShowRegisterClassButton(true);
-            setShowManageAllButton(true); // Also show '전체 관리' for EA
+            setShowManageAllButton(true);  
             break;
           case "NU":
             alert("로그인 시간이 만료되었습니다. 다시 로그인 해주세요.");
