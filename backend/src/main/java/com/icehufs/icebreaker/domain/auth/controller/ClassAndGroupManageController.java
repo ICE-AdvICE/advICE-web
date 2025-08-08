@@ -35,6 +35,6 @@ public class ClassAndGroupManageController {
             @PathVariable Integer classNum) {
 
         codingZoneManagingService.patchClassAndGroup(requestBody, classNum);
-        return ResponseEntity.ok(ResponseDto.success(ResponseMessage.SUCCESS_CLASS_UPDATE, null));
+        return ResponseEntity.ok(ResponseDto.success(ResponseMessage.SUCCESS_CLASS_UPDATE));
     }
 }
