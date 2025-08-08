@@ -152,59 +152,6 @@ export const uploadClassForWeek = async (
   }
 };
 
-//3. 특정 (A/B)조의 정보 반환 API
-export const fetchGroupClasses = async (
-  groupId,
-  token,
-  setCookie,
-  navigate
-) => {
-  try {
-    const response = await axios.get(
-      `${API_DOMAIN_ADMIN}/get-group/${groupId}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-
-    return response.data;
-  } catch (error) {
-    if (!error.response) {
-      return {
-        code: "NETWORK_ERROR",
-        message: "네트워크 상태를 확인해주세요.",
-      };
-    }
-
-    const { code } = error.response.data;
-
-    if (code === "ATE") {
-      console.warn(
-        "🔄 (A/B)조 정보 반환: Access Token 만료됨. 토큰 재발급 시도 중..."
-      );
-      const newToken = await refreshTokenRequest(setCookie, token, navigate);
-
-      if (newToken?.accessToken) {
-        return fetchGroupClasses(
-          groupId,
-          newToken.accessToken,
-          setCookie,
-          navigate
-        );
-      } else {
-        setCookie("accessToken", "", { path: "/", expires: new Date(0) });
-        navigate("/");
-        return {
-          code: "TOKEN_EXPIRED",
-          message: "토큰이 만료되었습니다. 다시 로그인해주세요.",
-        };
-      }
-    }
-
-    return error.response.data;
-  }
-};
-
 // 13. 등록된 특정 수업 삭제 API
 export const deleteClass = async (classNum, token, setCookie, navigate) => {
   try {
