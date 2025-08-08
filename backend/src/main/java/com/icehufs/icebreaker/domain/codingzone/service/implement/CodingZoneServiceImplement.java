@@ -621,9 +621,9 @@ public class CodingZoneServiceImplement implements CodingZoneService {
     @Override
     public CodingZoneClassNamesResponseDto getCodingZoneClassNamesByDate(String date) {
         DayOfWeek day = LocalDate.parse(date).getDayOfWeek();
-        if (day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY) throw new BusinessException("INVAIlD_DATE_WEEKEND", "입력한 날짜가 주말임", HttpStatus.BAD_REQUEST);
+        if (day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY) throw new BusinessException(ResponseCode.INVAIlD_DATE_WEEKEND, "입력한 날짜가 주말임", HttpStatus.BAD_REQUEST);
         List<CodingZoneClass> codingZoneClasses = codingZoneClassRepository.findAllByClassDate(date);
-        if (codingZoneClasses.isEmpty()) throw new BusinessException("NO_CODINGZONE_DATE", "입력한 평일에 코딩존이 없음", HttpStatus.BAD_REQUEST);
+        if (codingZoneClasses.isEmpty()) throw new BusinessException(ResponseCode.NO_CODINGZONE_DATE, "입력한 평일에 코딩존이 없음", HttpStatus.BAD_REQUEST);
         List<String> classNames = codingZoneClasses.stream()
                 .map(CodingZoneClass::getClassName)
                 .distinct()
