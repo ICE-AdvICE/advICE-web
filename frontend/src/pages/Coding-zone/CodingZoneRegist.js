@@ -31,17 +31,6 @@ const CodingZoneRegist = () => {
   const [activeButton, setActiveButton] = useState("manage_class");
   const navigate = useNavigate();
 
-  const handlecodingzonemanager = () => {
-    navigate(`/coding-zone/Codingzone_Manager`);
-  };
-
-  const handleFullManagement = () => {
-    navigate(`/coding-zone/Codingzone_All_Attend`);
-  };
-
-  const handleClassRegistration = () => {
-    navigate(`/coding-zone/Class_Registration`);
-  };
   useEffect(() => {
     loadGroupClasses();
   }, [groupId]);
@@ -53,11 +42,10 @@ const CodingZoneRegist = () => {
         switch (response.code) {
           case "CA":
             setShowAdminButton(true);
-
             break;
           case "EA":
             setShowRegisterClassButton(true);
-            setShowManageAllButton(true); // Also show '전체 관리' for EA
+            setShowManageAllButton(true);  
             break;
           case "NU":
             alert("로그인 시간이 만료되었습니다. 다시 로그인 해주세요.");
