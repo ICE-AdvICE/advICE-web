@@ -1,6 +1,14 @@
 package com.icehufs.icebreaker.domain.auth.controller;
 
-import com.icehufs.icebreaker.domain.codingzone.dto.response.*;
+
+import com.icehufs.icebreaker.domain.codingzone.dto.response.DeleteClassResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCodingZoneStudentListResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfGroupInfResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GroupInfUpdateResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneClassNamesResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.ReservationStudentDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.DownloadArticleExcelResponseDto;
+
 import com.icehufs.icebreaker.util.ResponseDto;
 import jakarta.validation.Valid;
 
@@ -93,6 +101,14 @@ public class EntireAdminController {
 
         CodingZoneClassNamesResponseDto classNames  = codingzoneService.getCodingZoneClassNamesByDate(date);
         return ResponseEntity.ok(ResponseDto.success("특정 날짜에 이루어진 코딩존 교과목 리스트 조회 성공.", classNames));
+    }
+
+    @GetMapping("/attendances/{classNum}")
+    public ResponseEntity<ResponseDto<List<ReservationStudentDto>>> getReservationStudents(
+            @PathVariable Integer classNum
+    ) {
+        List<ReservationStudentDto> studentList = codingzoneService.getReservationStudentsByClassNum(classNum);
+        return ResponseEntity.ok(ResponseDto.success("특정 일에 특정 조교의 코딩존에 참여한 학생 리스트 조회 성공.", studentList));
     }
 
     @GetMapping("/excel/attendance/grade1")
