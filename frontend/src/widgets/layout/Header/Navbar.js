@@ -66,7 +66,7 @@ const NavBar = () => {
         </Link>
         <ul className="navbar-nav">
           <li className="nav-item">
-            <div style={{ display: "flex", fontWeight: "bold" }}>
+            <div className="nav-actions">
               {isLoggedIn ? (
                 <>
                   <NavLink
@@ -74,6 +74,8 @@ const NavBar = () => {
                       isActive ? "nav-link active" : "nav-link"
                     }
                     to="#"
+                    aria-expanded={modal.mypage}
+                    data-open={modal.mypage}
                     style={{ marginRight: "20px" }}
                     onClick={() => openModal("mypage")}
                   >
@@ -96,6 +98,8 @@ const NavBar = () => {
                       isActive ? "nav-link active" : "nav-link"
                     }
                     to="#"
+                    aria-expanded={modal.login}
+                    data-open={modal.login}
                     style={{ marginRight: "20px" }}
                     onClick={() => openModal("login")}
                   >
@@ -106,6 +110,8 @@ const NavBar = () => {
                       isActive ? "nav-link active" : "nav-link"
                     }
                     to="#"
+                    aria-expanded={modal.signup}
+                    data-open={modal.signup}
                     style={{ marginRight: "20px" }}
                     onClick={() => openModal("signup")}
                   >
