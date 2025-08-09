@@ -1,6 +1,7 @@
 package com.icehufs.icebreaker.domain.codingzone.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.Subject;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassUpdateRequestDto;
@@ -73,18 +74,6 @@ public class CodingZoneClassService {
         CodingZoneClass existingClass = codingZoneClassRepository.findByClassNum(classNum);
         if(dto.isSameEntity(existingClass)) throw new DuplicatedClassException();
 
-        // DB 저장된 원래 codingzoneclass 수업 삭제
-        CodingZoneClass existedClass = codingZoneClassRepository.findByClassNum(classNum);
-        codingZoneClassRepository.removeCodingZoneClassByClassNum(classNum);
-
-        // DB 저장된 원래 groupinf 조 삭제
-        GroupInf group = groupInfRepository.findByAssistantNameAndClassTimeAndClassName(existedClass.getAssistantName(), existedClass.getClassTime(),existedClass.getClassName())
-                .orElseThrow(() -> new NoExistedGroupException());
-        groupInfRepository.delete(group);
-
-        // 수정된 정보가 아직 매핑 전 교과목이 포함되었을 경우 예외처리
-        if (!subjectRepository.existsById(dto.getSubjectId())) throw new UnmappedSubjectException();
-
         // 수정한 정보가 이미 DB에 저장되어 있는 경우
         boolean isDuplicate = codingZoneClassRepository
                 .existsByIdentity(
@@ -100,14 +89,13 @@ public class CodingZoneClassService {
         // 이미 시전에 동일한 수업을 등록한 경우 예외처리
         if (isDuplicate) throw new AlreadyExistClassException();
 
-        // 수정한 정보로 수업 등록
-        Subject subject = subjectRepository.findById(dto.getSubjectId()) .orElseThrow(() -> new UnmappedSubjectException());
-        CodingZoneClass codingZoneClassEntity = new CodingZoneClass(dto, classNum, subject);
-        codingZoneClassRepository.save(codingZoneClassEntity);
-        // 수정한 정보로 조 등록
-        GroupInfUpdateRequestDto groupDto = new GroupInfUpdateRequestDto(dto);
-        GroupInf groupInf = new GroupInf(groupDto);
-        groupInfRepository.save(groupInf); // 조 등록
+        // 수정된 필드만 반영 (Dirty Checking)
+        Optional<Subject> getSubject = Optional.ofNullable(subjectRepository.findById(dto.getSubjectId())
+                .orElseThrow(() -> new UnmappedSubjectException()));
+        existingClass.update(dto, getSubject.get());  // DTO 데이터로 엔티티 필드 업데이트
+
+        // 수정된 수업 정보 저장 (Dirty Checking)
+        codingZoneClassRepository.save(existingClass);  // JPA가 자동으로 dirty checking
 
     }
 }

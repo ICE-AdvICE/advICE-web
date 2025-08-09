@@ -99,4 +99,14 @@ public class CodingZoneClass {
             throw new BusinessException(ResponseCode.NOT_WEEKDAY, ResponseMessage.
                     NOT_WEEKDAY, HttpStatus.BAD_REQUEST);
     }
+
+    public void update(CodingZoneClassUpdateRequestDto dto, Subject subject) {
+        this.assistantName = dto.getAssistantName();
+        this.classTime = dto.getClassTime();
+        this.classDate = dto.getClassDate();
+        this.weekDay = dto.getWeekDay();
+        this.maximumNumber = dto.getMaximumNumber();
+        this.className = dto.getClassName();
+        this.subject = subject;
+    }
 }
