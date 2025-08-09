@@ -107,7 +107,7 @@ export const uploadClassForWeek = async (
 ) => {
   try {
     const response = await axios.post(
-      `${API_DOMAIN_ADMIN}/codingzones/classes`,
+      `${API_DOMAIN_ADMIN}/codingzone/classes`, // 후에 codingzones로 변경
       groupData,
       {
         headers: { Authorization: `Bearer ${token}` },
