@@ -1,12 +1,11 @@
 package com.icehufs.icebreaker.domain.auth.controller;
 
 import java.util.List;
+
+import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneClassInfoResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.service.CodingZoneService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.icehufs.icebreaker.common.ResponseMessage;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PostSubjectMappingRequestDto;
@@ -15,7 +14,13 @@ import com.icehufs.icebreaker.util.ResponseDto;
 import com.icehufs.icebreaker.util.SubjectResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/admin/subjects") // 코딩존 메핑 관련 controller
@@ -23,6 +28,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class SubjectController {
 
     private final SubjectService subjectService;
+    private final CodingZoneService codingzoneService;
 
     // 코딩존 매핑 등록 controller
     @PostMapping("")
@@ -40,5 +46,13 @@ public class SubjectController {
             @AuthenticationPrincipal String email) {
         return ResponseEntity
                 .ok(ResponseDto.success(ResponseMessage.SUCCESS_CLASS_CREATE, subjectService.getMappingCodingZoneClass(email)));
+    }
+
+    @GetMapping("/{subjectId}/codingzones")
+    public ResponseEntity<ResponseDto<List<CodingZoneClassInfoResponseDto>>> getCodingZoneClassesBySubjectAndDate(
+            @PathVariable Long subjectId,
+            @RequestParam("date") String date) {
+        List<CodingZoneClassInfoResponseDto> result = codingzoneService.findCodingZoneClassesBySubjectAndDate(subjectId, date);
+        return ResponseEntity.ok(ResponseDto.success("특정 날짜와 교과목에 해당하는 코딩존 수업 리스트 조회 성공.", result));
     }
 }
