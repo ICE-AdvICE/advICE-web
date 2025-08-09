@@ -88,14 +88,6 @@ public class EntireAdminController {
         return ResponseEntity.ok(ResponseDto.success(codingzoneService.deleteAll(email)));
     }
 
-    @GetMapping("/subjects/{subjectId}/assistants")
-    public ResponseEntity<ResponseDto<AssistantNamesResponseDto>> getAssistantsBySubject(
-            @PathVariable Long subjectId
-    ) {
-        AssistantNamesResponseDto assistantList = codingzoneService.getAssistantNamesBySubjectId(subjectId);
-        return ResponseEntity.ok(ResponseDto.success("특정 교과목에 해당하는 조교 리스트 조회 성공.", assistantList));
-    }
-
     @GetMapping("/codingzones")
     public ResponseEntity<ResponseDto<CodingZoneClassNamesResponseDto>> getCodingZonesByDate(@RequestParam("date") String date) {
 
