@@ -49,7 +49,7 @@ export function getColorByName(subjectName, defaultColor = "#A0A0A0") {
   return (id && idColor?.[String(id)]) || defaultColor;
 }
 
-// (편의) 현재 ID의 색(저장된 값 없으면 기본값) 가져오기
+// 현재 ID의 색(저장된 값 없으면 기본값) 가져오기
 export function getCodingZoneColor(id) {
   return getColorById(id);
 }

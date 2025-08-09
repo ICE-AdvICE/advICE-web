@@ -45,7 +45,7 @@ const ClassSetting = () => {
       alert("과목명이 입력된 항목이 없습니다.");
       return;
     }
-    // ★ ID→COLOR만 저장
+    // ID→COLOR만 저장
     const idColor = loadIdColorMap();
     cleaned.forEach((r) => {
       const id = String(parseInt(r.codingZone, 10));
@@ -54,7 +54,7 @@ const ClassSetting = () => {
     });
     saveIdColorMap(idColor);
 
-    // ★ CHANGED: 백엔드로 보낼 payload 생성(색상 제외)
+    // 백엔드로 보낼 payload 생성(색상 제외)
     const payload = cleaned.map((r) => ({
       subjectId: parseInt(r.codingZone, 10),
       subjectName: r.subjectName,
