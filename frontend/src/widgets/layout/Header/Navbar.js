@@ -86,6 +86,7 @@ const NavBar = () => {
                       isActive ? "nav-link active" : "nav-link"
                     }
                     to="#"
+                    style={{ marginRight: "20px" }} // 스타일 동일하게 추가
                     onClick={handleLogout}
                   >
                     Log Out
