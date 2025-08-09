@@ -7,10 +7,8 @@ import com.icehufs.icebreaker.domain.codingzone.domain.entity.Subject;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassUpdateRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.exception.DuplicatedClassException;
 import com.icehufs.icebreaker.domain.codingzone.exception.AlreadyExistClassException;
-import com.icehufs.icebreaker.domain.codingzone.exception.NoExistedGroupException;
 import com.icehufs.icebreaker.domain.codingzone.exception.UnmappedSubjectException;
 import org.springframework.stereotype.Service;
-
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneClass;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.GroupInf;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassAssignRequestDto;
@@ -90,12 +88,14 @@ public class CodingZoneClassService {
         if (isDuplicate) throw new AlreadyExistClassException();
 
         // 수정된 필드만 반영 (Dirty Checking)
-        Optional<Subject> getSubject = Optional.ofNullable(subjectRepository.findById(dto.getSubjectId())
-                .orElseThrow(() -> new UnmappedSubjectException()));
-        existingClass.update(dto, getSubject.get());  // DTO 데이터로 엔티티 필드 업데이트
+        Subject subject = subjectRepository.findById(dto.getSubjectId())
+                .orElseThrow(() -> new UnmappedSubjectException()); // Optional 처리
+
+        existingClass.update(dto, subject); // DTO 데이터로 엔티티 필드 업데이트
 
         // 수정된 수업 정보 저장 (Dirty Checking)
         codingZoneClassRepository.save(existingClass);  // JPA가 자동으로 dirty checking
+
 
     }
 }
