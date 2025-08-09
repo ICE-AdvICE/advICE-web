@@ -37,9 +37,9 @@ const CodingZoneRegist = () => {
     );
     const subjectName = selected?.subjectName || "";
 
-    handleChange2(rowIndex, "subjectId", subjectId);
-    handleChange2(rowIndex, "className", subjectName);
-    handleChange2(rowIndex, "assistant", "");
+    handleChange(rowIndex, "subjectId", subjectId);
+    handleChange(rowIndex, "className", subjectName);
+    handleChange(rowIndex, "assistant", "");
 
     if (!subjectId) {
       setAssistantOptionsMap((prev) => ({ ...prev, [rowIndex]: [] }));
@@ -195,13 +195,13 @@ const CodingZoneRegist = () => {
     ]);
   };
 
-  const handleChange2 = (index, field, value) => {
+  const handleChange = (index, field, value) => {
     const newBoxes = [...boxes];
     newBoxes[index][field] = value;
     setBoxes(newBoxes);
   };
 
-  const handleSubmit2 = async () => {
+  const handleSubmit = async () => {
     const allFilled = boxes.every((box) =>
       Object.values(box).every(
         (value) =>
@@ -305,9 +305,9 @@ const CodingZoneRegist = () => {
                 <select
                   className="Day-input"
                   value={box.day}
-                  onChange={(e) => handleChange2(index, "day", e.target.value)}
+                  onChange={(e) => handleChange(index, "day", e.target.value)}
                 >
-                  <option value="">Day</option>
+                  <option value="">MON</option>
                   <option value="월요일">MON</option>
                   <option value="화요일">TUE</option>
                   <option value="수요일">WED</option>
@@ -320,12 +320,12 @@ const CodingZoneRegist = () => {
                   }`}
                   placeholder="ex) 03-17"
                   value={box.date}
-                  onChange={(e) => handleChange2(index, "date", e.target.value)}
+                  onChange={(e) => handleChange(index, "date", e.target.value)}
                 />
                 <select
                   className="Time-input"
                   value={box.time}
-                  onChange={(e) => handleChange2(index, "time", e.target.value)}
+                  onChange={(e) => handleChange(index, "time", e.target.value)}
                 >
                   <option value="">Time</option>
                   <option value="09:00:00">09:00</option>
@@ -357,7 +357,7 @@ const CodingZoneRegist = () => {
                   className="Assistant-input"
                   value={box.assistant || ""}
                   onChange={(e) =>
-                    handleChange2(index, "assistant", e.target.value)
+                    handleChange(index, "assistant", e.target.value)
                   }
                   disabled={!box.subjectId || assistantLoading[index]}
                 >
@@ -387,7 +387,7 @@ const CodingZoneRegist = () => {
                   step="1"
                   value={box.maxPers}
                   onChange={(e) =>
-                    handleChange2(index, "maxPers", e.target.value)
+                    handleChange(index, "maxPers", e.target.value)
                   }
                 />
                 <button
@@ -406,7 +406,7 @@ const CodingZoneRegist = () => {
               </button>
             </div>
             <div className="class-submit-button">
-              <button onClick={handleSubmit2}>등록</button>
+              <button onClick={handleSubmit}>등록</button>
             </div>
           </div>
         </>
