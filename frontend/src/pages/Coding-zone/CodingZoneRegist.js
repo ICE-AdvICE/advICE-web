@@ -307,7 +307,7 @@ const CodingZoneRegist = () => {
                   value={box.day}
                   onChange={(e) => handleChange(index, "day", e.target.value)}
                 >
-                  <option value="">MON</option>
+                  <option value="">요일 선택</option>
                   <option value="월요일">MON</option>
                   <option value="화요일">TUE</option>
                   <option value="수요일">WED</option>
@@ -327,7 +327,7 @@ const CodingZoneRegist = () => {
                   value={box.time}
                   onChange={(e) => handleChange(index, "time", e.target.value)}
                 >
-                  <option value="">Time</option>
+                  <option value="">시간 선택</option>
                   <option value="09:00:00">09:00</option>
                   <option value="10:00:00">10:00</option>
                   <option value="11:00:00">11:00</option>
