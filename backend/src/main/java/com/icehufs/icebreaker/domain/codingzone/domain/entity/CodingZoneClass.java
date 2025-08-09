@@ -116,4 +116,15 @@ public class CodingZoneClass {
             return "진행 중";
         }
     }
+
+    public void update(CodingZoneClassUpdateRequestDto dto, Subject subject) {
+
+        this.assistantName = dto.getAssistantName();
+        this.classTime = dto.getClassTime();
+        this.classDate = dto.getClassDate();
+        this.weekDay = dto.getWeekDay();
+        this.maximumNumber =dto.getMaximumNumber();
+        this.className = dto.getClassName();
+        this.subject = subject;
+    }
 }
