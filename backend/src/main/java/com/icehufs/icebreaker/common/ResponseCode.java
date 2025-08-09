@@ -30,6 +30,8 @@ public interface ResponseCode {
     String DUPLICATE_PASSWORD = "DP";
     String INVAIlD_DATE_WEEKEND = "INVAIlD_DATE_WEEKEND";
     String NO_CODINGZONE_DATE = "NO_CODINGZONE_DATE";
+    String NOT_FOUND_GROUP = "NOT_FOUND_GROUP";
+    String NOT_MODIFIED_INFO = "NOT_MODIFIED_INFO";
 
     // HTTP Status 401
     String SIGN_IN_FAIL = "SF";

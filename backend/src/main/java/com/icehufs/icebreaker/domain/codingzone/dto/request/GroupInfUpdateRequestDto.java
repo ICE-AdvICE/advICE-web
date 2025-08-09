@@ -43,4 +43,15 @@ public class GroupInfUpdateRequestDto {
         this.className = dto.getClassName();
         this.subjectId = dto.getSubjectId();
     }
+
+    public GroupInfUpdateRequestDto(CodingZoneClassUpdateRequestDto dto) {
+        this.assistantName = dto.getAssistantName();
+        this.groupId = dto.getGroupId();
+        this.classTime = dto.getClassTime();
+        this.weekDay = dto.getWeekDay();
+        this.maximumNumber = dto.getMaximumNumber();
+        this.className = dto.getClassName();
+        this.weekDay = dto.getWeekDay();
+        this.subjectId = dto.getSubjectId();
+    }
 }
