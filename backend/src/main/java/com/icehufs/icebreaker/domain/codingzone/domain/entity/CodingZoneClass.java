@@ -1,6 +1,8 @@
 package com.icehufs.icebreaker.domain.codingzone.domain.entity;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import jakarta.persistence.*;
 import org.springframework.http.HttpStatus;
@@ -81,5 +83,23 @@ public class CodingZoneClass {
         DayOfWeek day = date.getDayOfWeek();
         if ((day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY))
             throw new BusinessException(ResponseCode.NOT_WEEKDAY, ResponseMessage.NOT_WEEKDAY, HttpStatus.BAD_REQUEST);
+    }
+
+    public String calculateClassStatus(String date) {
+        LocalDate classDate = LocalDate.parse(date); // "yyyy-MM-dd"
+        LocalTime startTime = LocalTime.parse(classTime); // "HH:mm:ss"
+
+        LocalDateTime startDateTime  = LocalDateTime.of(classDate, startTime);
+        LocalDateTime endDateTime  = startDateTime.plusHours(1);
+
+        LocalDateTime now = LocalDateTime.now();
+
+        if (now.isBefore(startDateTime)) {
+            return "예약 대기";
+        } else if (now.isAfter(endDateTime)) {
+            return "진행종료";
+        } else {
+            return "진행 중";
+        }
     }
 }

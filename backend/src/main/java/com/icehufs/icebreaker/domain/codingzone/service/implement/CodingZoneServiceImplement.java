@@ -13,12 +13,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.List;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.time.ZoneId;
+import java.time.LocalTime;
+import java.time.LocalDate;
+import java.util.List;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -650,6 +651,24 @@ public class CodingZoneServiceImplement implements CodingZoneService {
             assistantNames.add(assistant.getName());
         }
         return new AssistantNamesResponseDto(assistantNames);
+    }
+
+    @Override
+    public List<CodingZoneClassInfoResponseDto> findCodingZoneClassesBySubjectAndDate(Long subjectId, String date) {
+        List<CodingZoneClass> codingZoneClasses = codingZoneClassRepository.findBySubject_IdAndClassDate(subjectId.intValue(), date);
+        List<CodingZoneClassInfoResponseDto> classInfos = new ArrayList<>();
+
+        for (CodingZoneClass codingZoneClass :codingZoneClasses){
+            CodingZoneClassInfoResponseDto dto = new CodingZoneClassInfoResponseDto(
+                    codingZoneClass.getClassTime(),
+                    codingZoneClass.getAssistantName(),
+                    groupInfRepository.findByClassNum(codingZoneClass.getClassNum()).getGroupId(),
+                    codingZoneClass.calculateClassStatus(date),
+                    codingZoneClass.getClassNum());
+
+            classInfos.add(dto);
+        }
+        return classInfos;
     }
 
 
