@@ -6,7 +6,6 @@ import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneClassInfo
 import com.icehufs.icebreaker.domain.codingzone.service.CodingZoneService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
 
 import com.icehufs.icebreaker.common.ResponseMessage;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PostSubjectMappingRequestDto;
@@ -15,6 +14,13 @@ import com.icehufs.icebreaker.util.ResponseDto;
 import com.icehufs.icebreaker.util.SubjectResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/admin/subjects") // 코딩존 메핑 관련 controller
