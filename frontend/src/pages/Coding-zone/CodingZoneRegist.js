@@ -186,6 +186,7 @@ const CodingZoneRegist = () => {
         className: "",
         assistant: "",
         maxPers: "",
+        subjectId: "",
       },
     ]);
   };
@@ -205,7 +206,7 @@ const CodingZoneRegist = () => {
     );
     if (!allFilled) {
       alert(
-        "입력하지 않은 정보가 있거나, 정보 형식이 잘못되었습니다. 다시 확인해 주세요."
+        "입력하지 않은 정보가 있거나, 입력 형식이 잘못되었습니다. 다시 확인해 주세요."
       );
       return;
     }
@@ -224,8 +225,9 @@ const CodingZoneRegist = () => {
         classTime: box.time,
         className: box.className,
         maximumNumber: parseInt(box.maxPers),
+        weekDay: box.day,
         subjectId: parseInt(box.subjectId),
-        groupId: box.groupId,
+        groupId: groupId,
       };
     });
     const response = await uploadClassForWeek(
