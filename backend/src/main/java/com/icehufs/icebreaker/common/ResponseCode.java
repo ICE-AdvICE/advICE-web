@@ -5,6 +5,7 @@ public interface ResponseCode {
     String SUCCESS = "SU";
     String CODING_ADMIN = "CA";
     String ENTIRE_ADMIN = "EA";
+    String SUCCESS_UPDATE_MAPPING = "SUCCESS_UPDATE_MAPPING";
 
     // HTTP Status 400
     String VALIDATION_FAILED = "VF";
