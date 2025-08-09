@@ -7,7 +7,7 @@ import MypageForm from "../../../features/auth/components/Modal/Mypage.js";
 import MyModal from "../../../shared/components/BaseModal.js";
 import { useCookies } from "react-cookie";
 import { logoutRequest } from "../../../entities/api/UserApi.js";
-import { useLocation } from "react-router-dom"; // ✅ 추가(juhui): 현재 경로 파악용 (익명게시판 페이지 여부 판단)
+import { useLocation } from "react-router-dom"; // 현재 경로 파악용 (익명게시판 페이지 여부 판단)
 
 const NavBar = () => {
   const [modal, setModal] = useState({
@@ -18,7 +18,7 @@ const NavBar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies(["accessToken"]);
   const navigate = useNavigate();
-  // ✅ 추가(juhui): 경로가 '/article-main'으로 시작하면 익명게시판 페이지로 간주
+  // 경로가 '/article-main'으로 시작하면 익명게시판 페이지로 간주
   const location = useLocation();
   const isArticlePage = location.pathname.startsWith("/article-main");
 
@@ -58,7 +58,7 @@ const NavBar = () => {
   };
 
   return (
-    // ✅ 추가(juhui): 게시판 페이지일 때만 별도 스타일 클래스 적용
+    // 게시판 페이지일 때만 별도 스타일 클래스 적용
     <nav className={`navbar ${isArticlePage ? "article-navbar" : ""}`}>
       <div className="header-container">
         <Link className="header-school" to="/">
