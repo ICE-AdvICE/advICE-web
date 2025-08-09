@@ -1,7 +1,25 @@
 package com.icehufs.icebreaker.domain.codingzone.service.implement;
 
 import com.icehufs.icebreaker.common.ResponseCode;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.*;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.ReservationStudentDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.AuthorityExistResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GroupInfUpdateResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfGroupInfResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.DeleteClassResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneRegisterResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneCanceResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.PutAttendanceResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfCodingZoneClassResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfCodingZoneClassForNotLogInResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCountOfAttendResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetPersAttendListItemResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCodingZoneStudentListResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetReservedClassListItemResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCodingZoneAssitantListResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneClassNamesResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.AssistantNamesResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneClassInfoResponseDto;
+
 import com.icehufs.icebreaker.domain.membership.domain.exception.UserNotFoundException;
 import com.icehufs.icebreaker.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +32,6 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.ZoneId;
 import java.time.LocalTime;
@@ -23,6 +40,8 @@ import java.util.List;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PatchGroupInfRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.object.CodingZoneStudentListItem;
@@ -671,6 +690,17 @@ public class CodingZoneServiceImplement implements CodingZoneService {
         return classInfos;
     }
 
+    @Override
+    public List<ReservationStudentDto> getReservationStudentsByClassNum (Integer classNum) {
+        List<CodingZoneRegister> reservations = codingZoneRegisterRepository.findByCodingZoneClass_ClassNum(classNum);
+        return reservations.stream()
+                .map(reservation -> new ReservationStudentDto(
+                        reservation.getUserName(),
+                        reservation.getUserStudentNum(),
+                        reservation.getCodingZoneClass().getClassNum()
+                ))
+                .collect(Collectors.toList());
+    }
 
     @Override
     public ByteArrayResource generateAttendanceExcelOfGrade1() throws IOException {
