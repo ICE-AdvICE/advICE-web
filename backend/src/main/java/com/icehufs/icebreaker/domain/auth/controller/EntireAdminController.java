@@ -103,14 +103,6 @@ public class EntireAdminController {
         return ResponseEntity.ok(ResponseDto.success("특정 날짜에 이루어진 코딩존 교과목 리스트 조회 성공.", classNames));
     }
 
-    @GetMapping("/subjects/{subjectId}/codingzones")
-    public ResponseEntity<ResponseDto<List<CodingZoneClassInfoResponseDto>>> getCodingZoneClassesBySubjectAndDate(
-        @PathVariable Long subjectId,
-        @RequestParam("date") String date) {
-        List<CodingZoneClassInfoResponseDto> result = codingzoneService.findCodingZoneClassesBySubjectAndDate(subjectId, date);
-        return ResponseEntity.ok(ResponseDto.success("특정 날짜와 교과목에 해당하는 코딩존 수업 리스트 조회 성공.", result));
-    }
-
     @GetMapping("/excel/attendance/grade1")
     public ResponseEntity<?> downloadArticleExcel() {
         try {
