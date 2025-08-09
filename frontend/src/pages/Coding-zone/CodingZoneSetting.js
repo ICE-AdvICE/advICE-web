@@ -1,25 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/codingzone/Codingzone_setting.css";
 import "../css/codingzone/codingzone-main.css";
-import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js";  
-import Banner from "../../shared/ui/Banner/Banner";  
-import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js"; 
-import { useCookies } from 'react-cookie';
-import { registerSubjectMapping } from '../../features/api/Admin/Codingzone/ClassApi.js';
-
-
+import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js";
+import Banner from "../../shared/ui/Banner/Banner";
+import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js";
+import { useCookies } from "react-cookie";
+import { registerSubjectMapping } from "../../features/api/Admin/Codingzone/ClassApi.js";
+import {
+  loadIdColorMap,
+  saveIdColorMap,
+  getCodingZoneColor,
+} from "./subjectColors";
 
 const ClassSetting = () => {
-  const [cookies, setCookie] = useCookies(['accessToken']); // ✅ 정의됨
+  const [cookies, setCookie] = useCookies(["accessToken"]); // ✅ 정의됨
   const accessToken = cookies.accessToken;
   const navigate = useNavigate(); // ✅ 정의됨
+
   const [rows, setRows] = useState([
-    { id: Date.now(), codingZone: '1', subjectName: '' },
+    { id: Date.now(), codingZone: "1", subjectName: "" },
   ]);
 
   const handleAddRow = () => {
-    setRows([...rows, { id: Date.now(), codingZone: '1', subjectName: '' }]);
+    setRows([...rows, { id: Date.now(), codingZone: "1", subjectName: "" }]);
   };
 
   const handleRemoveRow = (id) => {
@@ -33,23 +37,39 @@ const ClassSetting = () => {
   };
 
   const handleSubmit = async () => {
-    const payload = rows
-      .filter(row => row.subjectName.trim() !== '')
-      .map(row => ({
-        subjectId: parseInt(row.codingZone),   // select로 고른 값
-        subjectName: row.subjectName.trim()    // input으로 입력한 텍스트
-      }));
-  
-    if (payload.length === 0) {
-      alert('과목명이 입력된 항목이 없습니다.');
+    const cleaned = rows
+      .map((r) => ({ ...r, subjectName: r.subjectName.trim() }))
+      .filter((r) => r.subjectName !== "");
+
+    if (cleaned.length === 0) {
+      alert("과목명이 입력된 항목이 없습니다.");
       return;
     }
-  
-    const result = await registerSubjectMapping(payload, accessToken, setCookie, navigate);
-  
+    // ★ ID→COLOR만 저장
+    const idColor = loadIdColorMap();
+    cleaned.forEach((r) => {
+      const id = String(parseInt(r.codingZone, 10));
+      const color = getCodingZoneColor(id);
+      idColor[id] = color;
+    });
+    saveIdColorMap(idColor);
+
+    // ★ CHANGED: 백엔드로 보낼 payload 생성(색상 제외)
+    const payload = cleaned.map((r) => ({
+      subjectId: parseInt(r.codingZone, 10),
+      subjectName: r.subjectName,
+    }));
+
+    const result = await registerSubjectMapping(
+      payload,
+      accessToken,
+      setCookie,
+      navigate
+    );
+
     if (result.success) {
-      alert('등록 완료!');
-      setRows([{ id: Date.now(), codingZone: '1', subjectName: '' }]); // 초기화
+      alert("등록 완료!");
+      setRows([{ id: Date.now(), codingZone: "1", subjectName: "" }]); // 초기화
     } else {
       alert(`등록 실패: ${result.message}`);
     }
@@ -79,7 +99,7 @@ const ClassSetting = () => {
                       <select
                         value={row.codingZone}
                         onChange={(e) =>
-                          handleChange(row.id, 'codingZone', e.target.value)
+                          handleChange(row.id, "codingZone", e.target.value)
                         }
                       >
                         <option value="1">1</option>
@@ -94,7 +114,7 @@ const ClassSetting = () => {
                         placeholder="과목명을 입력해주세요.."
                         value={row.subjectName}
                         onChange={(e) =>
-                          handleChange(row.id, 'subjectName', e.target.value)
+                          handleChange(row.id, "subjectName", e.target.value)
                         }
                       />
                       <button
@@ -108,7 +128,7 @@ const ClassSetting = () => {
                 ))}
               </tbody>
             </table>
-  
+
             <div className="button-group">
               <button className="add-btn" onClick={handleAddRow}>
                 추가
