@@ -53,6 +53,6 @@ public class SubjectController {
             @PathVariable Long subjectId,
             @RequestParam("date") String date) {
         List<CodingZoneClassInfoResponseDto> result = codingzoneService.findCodingZoneClassesBySubjectAndDate(subjectId, date);
-        return ResponseEntity.ok(ResponseDto.success("특정 날짜와 교과목에 해당하는 코딩존 수업 리스트 조회 성공.", result));
+        return ResponseEntity.ok(ResponseDto.success(ResponseMessage.SUCCESS_MAPPING_GET, result));
     }
 }
