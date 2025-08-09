@@ -1,6 +1,7 @@
 package com.icehufs.icebreaker.domain.auth.controller;
 
 
+import com.icehufs.icebreaker.domain.codingzone.service.AttendanceService;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.DeleteClassResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCodingZoneStudentListResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfGroupInfResponseDto;
@@ -44,6 +45,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class EntireAdminController {
 
     private final CodingZoneService codingzoneService;
+    private final AttendanceService attendanceService;
 
     @PostMapping("/upload-group") //특정 (A/B)조 정보 등록 API
     public ResponseEntity<? super GroupInfUpdateResponseDto> uploadInf(
@@ -107,7 +109,7 @@ public class EntireAdminController {
     public ResponseEntity<ResponseDto<List<ReservationStudentDto>>> getReservationStudents(
             @PathVariable Integer classNum
     ) {
-        List<ReservationStudentDto> studentList = codingzoneService.getReservationStudentsByClassNum(classNum);
+        List<ReservationStudentDto> studentList = attendanceService.getReservationStudentsByClassNum(classNum);
         return ResponseEntity.ok(ResponseDto.success("특정 일에 특정 조교의 코딩존에 참여한 학생 리스트 조회 성공.", studentList));
     }
 

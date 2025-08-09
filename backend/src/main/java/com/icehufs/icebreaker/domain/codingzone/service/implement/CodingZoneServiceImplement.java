@@ -1,7 +1,6 @@
 package com.icehufs.icebreaker.domain.codingzone.service.implement;
 
 import com.icehufs.icebreaker.common.ResponseCode;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.ReservationStudentDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.AuthorityExistResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GroupInfUpdateResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfGroupInfResponseDto;
@@ -688,18 +687,6 @@ public class CodingZoneServiceImplement implements CodingZoneService {
             classInfos.add(dto);
         }
         return classInfos;
-    }
-
-    @Override
-    public List<ReservationStudentDto> getReservationStudentsByClassNum (Integer classNum) {
-        List<CodingZoneRegister> reservations = codingZoneRegisterRepository.findByCodingZoneClass_ClassNum(classNum);
-        return reservations.stream()
-                .map(reservation -> new ReservationStudentDto(
-                        reservation.getUserName(),
-                        reservation.getUserStudentNum(),
-                        reservation.getCodingZoneClass().getClassNum()
-                ))
-                .collect(Collectors.toList());
     }
 
     @Override
