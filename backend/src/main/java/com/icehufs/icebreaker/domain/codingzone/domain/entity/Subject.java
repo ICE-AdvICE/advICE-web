@@ -1,5 +1,6 @@
 package com.icehufs.icebreaker.domain.codingzone.domain.entity;
 
+import com.icehufs.icebreaker.domain.codingzone.dto.request.PostSubjectMappingRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -24,4 +25,7 @@ public class Subject {
     @Column(name = "subject_name")
     private String subjectName;
 
+    public void update(PostSubjectMappingRequestDto requestDto) {
+        this.subjectName = requestDto.getSubjectName();
+    }
 }

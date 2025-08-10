@@ -7,9 +7,10 @@ import lombok.AllArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostSubjectMappingResponseDto {
+public class PostSubjectMappingResponseDto<T> {
 
     private String code;
     private String message;
+    private T data;
 
 }
