@@ -232,6 +232,7 @@ const CodingZoneRegist = () => {
         weekDay: box.day,
         subjectId: parseInt(box.subjectId),
         groupId: groupId,
+        currentNumber: 0,
       };
     });
     const response = await uploadClassForWeek(
