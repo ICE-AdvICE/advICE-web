@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/codingzone/Codingzone_setting.css";
 import "../css/codingzone/codingzone-main.css";
@@ -7,6 +7,10 @@ import Banner from "../../shared/ui/Banner/Banner";
 import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js";
 import { useCookies } from "react-cookie";
 import { registerSubjectMapping } from "../../features/api/Admin/Codingzone/ClassApi.js";
+import {
+  fetchAllSubjects,
+  deleteSubjectMappingBySubjectId,
+} from "../../entities/api/CodingZone/AdminApi";
 import {
   loadIdColorMap,
   saveIdColorMap,
@@ -17,10 +21,58 @@ const ClassSetting = () => {
   const [cookies, setCookie] = useCookies(["accessToken"]); // ✅ 정의됨
   const accessToken = cookies.accessToken;
   const navigate = useNavigate(); // ✅ 정의됨
+  const [deletingId, setDeletingId] = useState(null);
+
+  // 삭제 핸들러
+  const handleDeleteExisting = async (m) => {
+    const ok = window.confirm(
+      `정말 삭제하시겠습니까?\n[${m.subjectId}] ${m.subjectName}\n\n` +
+        "※ 안내: 과목-코딩존 매핑뿐 아니라 관련(코딩존과목-조교명 등)도 함께 삭제됩니다."
+    );
+    if (!ok) return;
+
+    setDeletingId(m.subjectId);
+    const result = await deleteSubjectMappingBySubjectId(
+      m.subjectId,
+      accessToken,
+      setCookie,
+      navigate
+    );
+    setDeletingId(null);
+
+    if (result?.success) {
+      await loadMappings(); // 최신 리스트로 새로고침
+    } else {
+      alert(`삭제 실패: ${result?.message || "알 수 없는 오류"}`);
+    }
+  };
+
+  // ✅ 기존(서버 저장된) 매핑 리스트
+  const [existingMappings, setExistingMappings] = useState([]); // [{subjectId, subjectName}]
+  const [loading, setLoading] = useState(false);
 
   const [rows, setRows] = useState([
     { id: Date.now(), codingZone: "1", subjectName: "" },
   ]);
+
+  // ✅ 매핑 리스트 불러오기
+  const loadMappings = async () => {
+    try {
+      setLoading(true);
+      const res = await fetchAllSubjects(accessToken, setCookie, navigate);
+      // 응답 형태에 맞춰 파싱 (배열이거나 {data:[...]}일 수 있음)
+      const list = Array.isArray(res) ? res : res?.data ?? [];
+      setExistingMappings(list);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ✅ 최초 진입시 1회 호출
+  useEffect(() => {
+    loadMappings();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleAddRow = () => {
     setRows([...rows, { id: Date.now(), codingZone: "1", subjectName: "" }]);
@@ -45,6 +97,7 @@ const ClassSetting = () => {
       alert("과목명이 입력된 항목이 없습니다.");
       return;
     }
+
     // ID→COLOR만 저장
     const idColor = loadIdColorMap();
     cleaned.forEach((r) => {
@@ -84,15 +137,42 @@ const ClassSetting = () => {
           <div className="cza_button_container" style={{ textAlign: "center" }}>
             <CodingZoneBoardbar />
           </div>
-          <div className="setting-category-bar">
-            <div className="setting-label">
-              <span className="column-label1">코딩존</span>
-              <span className="column-label2">과목명</span>
-            </div>
+          <div className="setting-label">
+            <span className="column-label1">코딩존</span>
+            <span className="column-label2">과목명</span>
           </div>
           <div className="setting-table-container">
             <table className="form-table">
               <tbody>
+                {/* 이미 등록된 매핑: 항상 리스트에 남김(읽기 전용) */}
+                {loading ? (
+                  <tr>
+                    <td colSpan={2} style={{ textAlign: "center" }}>
+                      불러오는 중…
+                    </td>
+                  </tr>
+                ) : (
+                  existingMappings.map((m) => (
+                    <tr
+                      key={`existing-${m.subjectId}`}
+                      className="registered-row"
+                    >
+                      <td>
+                        <input value={m.subjectId} disabled />
+                      </td>
+                      <td className="subject-cell">
+                        <input value={m.subjectName} disabled />
+                        <button
+                          className="delete-btn"
+                          onClick={() => handleDeleteExisting(m)}
+                          disabled={deletingId === m.subjectId}
+                        >
+                          {deletingId === m.subjectId ? "삭제중…" : "X"}
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
                 {rows.map((row) => (
                   <tr key={row.id}>
                     <td>

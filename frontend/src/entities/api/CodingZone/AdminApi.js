@@ -152,6 +152,75 @@ export const uploadClassForWeek = async (
   }
 };
 
+// 매핑 삭제 (과목,코딩존 매핑뿐 아니라 관련 종속(코딩존과목-조교명 등)도 삭제됨)
+export const deleteSubjectMappingBySubjectId = async (
+  subjectId,
+  token,
+  setCookie,
+  navigate
+) => {
+  try {
+    const response = await axios.delete(
+      `${API_DOMAIN_ADMIN}/subjects/${subjectId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    const { code } = response.data || {};
+    if (code === "SU") {
+      return true;
+    }
+    return response.data;
+  } catch (error) {
+    if (!error.response) {
+      return {
+        code: "NETWORK_ERROR",
+        message: "네트워크 상태를 확인해주세요.",
+      };
+    }
+
+    const { code } = error.response.data || {};
+
+    if (code === "ATE") {
+      console.warn("🔄 매핑 삭제: Access Token 만료됨. 토큰 재발급 시도 중...");
+      const newToken = await refreshTokenRequest(setCookie, token, navigate);
+
+      if (newToken?.accessToken) {
+        return deleteSubjectMappingBySubjectId(
+          subjectId,
+          newToken.accessToken,
+          setCookie,
+          navigate
+        );
+      } else {
+        setCookie("accessToken", "", { path: "/", expires: new Date(0) });
+        navigate("/");
+        return {
+          code: "TOKEN_EXPIRED",
+          message: "토큰이 만료되었습니다. 다시 로그인해주세요.",
+        };
+      }
+    }
+
+    switch (code) {
+      case "AF":
+        alert("권한이 없습니다.");
+        break;
+      case "NU":
+        alert("로그인이 필요합니다.");
+        break;
+      case "DBE":
+        console.log("데이터베이스에 문제가 발생했습니다.");
+        break;
+      default:
+        console.log("예상치 못한 문제가 발생하였습니다.");
+        break;
+    }
+    return false;
+  }
+};
+
 // 13. 등록된 특정 수업 삭제 API
 export const deleteClass = async (classNum, token, setCookie, navigate) => {
   try {
