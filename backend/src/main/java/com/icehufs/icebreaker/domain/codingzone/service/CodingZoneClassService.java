@@ -55,11 +55,11 @@ public class CodingZoneClassService {
         for (CodingZoneClassAssignRequestDto assignedClass : dto) {
             Subject subject = subjectRepository.findById(assignedClass.getSubjectId()).orElseThrow(() -> new UnmappedSubjectException());
             CodingZoneClass codingZoneClassEntity = new CodingZoneClass(assignedClass, subject);
-            codingZoneClassRepository.save(codingZoneClassEntity); // 먼저 수업을 등록하고
+            codingZoneClassRepository.save(codingZoneClassEntity);
 
             GroupInfUpdateRequestDto groupDto = new GroupInfUpdateRequestDto(assignedClass);
             GroupInf groupInf = new GroupInf(groupDto);
-            groupInfRepository.save(groupInf); // 조 등록
+            groupInfRepository.save(groupInf);
         }
     }
 
@@ -89,12 +89,11 @@ public class CodingZoneClassService {
 
         // 수정된 필드만 반영 (Dirty Checking)
         Subject subject = subjectRepository.findById(dto.getSubjectId())
-                .orElseThrow(() -> new UnmappedSubjectException()); // Optional 처리
+                .orElseThrow(() -> new UnmappedSubjectException());
 
-        existingClass.update(dto, subject); // DTO 데이터로 엔티티 필드 업데이트
+        existingClass.update(dto, subject);
 
-        // 수정된 수업 정보 저장 (Dirty Checking)
-        codingZoneClassRepository.save(existingClass);  // JPA가 자동으로 dirty checking
+
 
 
     }
