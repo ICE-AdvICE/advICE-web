@@ -10,8 +10,6 @@ public interface ResponseMessage {
     String SUCCESS_CLASS_CREATE = "코딩존 등록 성공";
     String SUCCESS_CLASS_UPDATE = "코딩존 정보 수정 성공";
     String SUCCESS_POST_MAPPING = "신규 매핑 정보로 등록 성공";
-    String SUCCESS_UPDATE_MAPPING = "덮어씌운 매핑 정보로 등록 성공";
-    String SUCCESS_MIX_UPDATE = "신규와 덮어씌운 매핑 정보로 등록 성공";
 
     // HTTP Status 400
     String BAD_REQUEST = "잘못된 입력 형식";
@@ -30,7 +28,6 @@ public interface ResponseMessage {
     String DUPLICATED_MAPPING_SET = "등록 리스트 중 중복된 번호, 교과목명 포함";
     String DUPLICATED_MAPPING_CLASSNAME = "등록 리스트 중 중복된 교과목명 포함";
     String DUPLICATED_MAPPING_NUMBER= "등록 리스트 중 중복된 매핑 번호 포함";
-    String ALREADY_EXISTED_MAPPSET = "이미 포함된 매핑번호와 교과목 이름 포함";
     String NOT_ANY_MAPPINGSET = "어떠한 매핑 정보도 등록 정보 없음";
     String NOT_WEEKDAY = "입력한 날짜가 주중이 아님";
     String NOT_FOUND_GROUP = "조 정보가 존재하지 않음";
