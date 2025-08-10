@@ -52,32 +52,32 @@ public class SubjectService {
             throw new BusinessException(ResponseCode.DUPLICATED_MAPPING_CLASSNAME,ResponseMessage.DUPLICATED_MAPPING_CLASSNAME,HttpStatus.CONFLICT);
         }
 
-        // 리스트 중 DB에 이미 등록된 정보가 있는지 확인
+        // DB 신규 등록 + DB 덮어씌우기
         Map<Integer, Subject> existingById = subjectRepository.findAllById(seenIds).stream()
                 .collect(Collectors.toMap(Subject::getId, s -> s));
 
-        int updated = 0;
-        int created = 0;
+        int updatedMapping = 0;
+        int createdMapping = 0;
 
         for (PostSubjectMappingRequestDto requestDto : dto) {
             Subject exist = existingById.get(requestDto.getSubjectId());
             // DB에 중복된 매핑 번호가 있을 때, 새로운 정보로 덮어쓰기
             if(exist != null) {
                 exist.update(requestDto);
-                updated++;
+                updatedMapping++;
             }
             // DB에 중복된 매핑 번호가 없을 때, 모두 새로운 정보로 저장
             else {
                 Subject subject = new Subject(requestDto.getSubjectId(), requestDto.getSubjectName());
                 subjectRepository.save(subject);
-                created++;
+                createdMapping++;
             }
         }
 
-        if(updated > 0 && created == 0) { // DB에 덮어씌운 경우만
+        if(updatedMapping > 0 && createdMapping == 0) { // DB에 덮어씌운 경우만
             return new PostSubjectMappingResponseDto(ResponseCode.SUCCESS_UPDATE_MAPPING, ResponseMessage.SUCCESS_UPDATE_MAPPING);
         }
-        else if(updated == 0 && created > 0) { // 모두 신규 등록일 때
+        else if(updatedMapping == 0 && createdMapping > 0) { // 모두 신규 등록일 때
             return new PostSubjectMappingResponseDto(ResponseCode.SUCCESS_UPDATE_MAPPING, ResponseMessage.SUCCESS_POST_MAPPING);
         } else { // 신규등록과 DB에 덮어씌운 경우 혼합
             return new PostSubjectMappingResponseDto(ResponseCode.SUCCESS_UPDATE_MAPPING, ResponseMessage.SUCCESS_MIX_UPDATE);
