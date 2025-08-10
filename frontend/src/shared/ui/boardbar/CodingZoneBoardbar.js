@@ -15,36 +15,60 @@ const CodingZoneBoardbar = () => {
   const [showRegisterClassButton, setShowRegisterClassButton] = useState(false);
   const [showSettingCodingZone, setShowSettingCodingZone] = useState(false);
   const [showCheckButton, setShowCheckButton] = useState(true);
+  const [ready, setReady] = useState(false); // 로딩 완료 여부 (깜빡임 방지)
+
+  // 권한 코드에 따라 버튼 상태 일괄 세팅
+  const applyFlags = (code) => {
+    // 초기화
+    setShowAdminButton(false);
+    setShowManageAllButton(false);
+    setShowRegisterClassButton(false);
+    setShowSettingCodingZone(false);
+    setShowCheckButton(true);
+
+    switch (code) {
+      case "CA":
+        setShowAdminButton(true);
+        break;
+      case "EA":
+        setShowRegisterClassButton(true);
+        setShowManageAllButton(true);
+        setShowCheckButton(false);
+        setShowSettingCodingZone(true);
+        setShowAdminButton(true);
+        break;
+      default:
+        break;
+    }
+  };
 
   useEffect(() => {
-    const fetchAuthType = async () => {
+    // 1) 캐시 먼저 반영(깜빡임 방지)
+    const cached = sessionStorage.getItem("czAuthCode");
+    if (cached) applyFlags(cached);
+
+    // 2) 서버에서 최신 권한코드 갱신
+    (async () => {
       const response = await getczauthtypetRequest(token, setCookie, navigate);
-      if (response) {
-        switch (response.code) {
-          case "CA":
-            setShowAdminButton(true);
-            break;
-          case "EA":
-            setShowRegisterClassButton(true);
-            setShowManageAllButton(true);
-            setShowCheckButton(false);
-            setShowSettingCodingZone(true);
-            setShowAdminButton(true);
-            break;
-          case "NU":
-            alert("로그인이 필요합니다.");
-            navigate("/");
-            break;
-          default:
-            setShowAdminButton(false);
-            setShowManageAllButton(false);
-            setShowRegisterClassButton(false);
-            break;
-        }
+
+      if (response?.code === "NU") {
+        alert("로그인이 필요합니다.");
+        navigate("/");
+        return;
       }
-    };
-    fetchAuthType();
-  }, [token, navigate, setCookie]);
+
+      if (response?.code) {
+        sessionStorage.setItem("czAuthCode", response.code);
+        applyFlags(response.code);
+      }
+
+      setReady(true);
+    })();
+  }, [token]); // navigate, setCookid deps제거 -> 불필요한 재실행 방지
+
+  if (!ready && !sessionStorage.getItem("czAuthCode")) {
+    return null;
+  } // 로딩
 
   // URL 경로로부터 activeButton 상태 자동 설정
   const getActiveButtonFromPath = () => {
@@ -65,10 +89,17 @@ const CodingZoneBoardbar = () => {
 
   return (
     <div className="main-body-container">
-      <div className="cza_button_container" style={{ textAlign: "center" }}>
+      <div
+        className={`cza_button_container ${
+          !showAdminButton && !showRegisterClassButton ? "student" : ""
+        }`}
+        style={{ textAlign: "center" }}
+      >
         {showCheckButton && (
           <button
-            className={`btn-attend ${activeButton === "check" ? "active" : ""}`}
+            className={`btn-attend ${
+              !showAdminButton && !showRegisterClassButton ? "student" : ""
+            } ${activeButton === "check" ? "active" : ""}`}
             onClick={() =>
               handleNavigation("/coding-zone/Codingzone_Attendance")
             }

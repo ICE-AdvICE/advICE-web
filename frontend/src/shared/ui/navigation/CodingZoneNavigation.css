@@ -1,4 +1,4 @@
-.cz-nav-wrapper { 
+.cz-nav-wrapper {
   padding: 10px 20px;
   display: flex;
   justify-content: center;
@@ -17,7 +17,7 @@
   background-color: transparent;
   border: none;
   font-size: 16px;
-  color: #002D56;
+  color: #002d56;
   padding: 10px 20px;
   border-radius: 9999px;
   font-weight: 400;
@@ -32,7 +32,7 @@
 }
 
 .cz-nav-button.selected {
-  background-color: #002D56;
+  background-color: #002d56;
   color: white;
 }
 
