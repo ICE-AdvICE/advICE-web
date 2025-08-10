@@ -52,8 +52,8 @@ public class SubjectController {
     public ResponseEntity<ResponseDto<AssistantNamesResponseDto>> getAssistantsName(
             @PathVariable Long subjectId
     ) {
-        AssistantNamesResponseDto assistantList = codingzoneService.getAssistantNamesBySubjectId(subjectId);
-        return ResponseEntity.ok(ResponseDto.success("특정 교과목에 해당하는 조교 리스트 조회 성공.", assistantList));
+        AssistantNamesResponseDto assistantNamesResponse = codingzoneService.getAssistantNamesBySubjectId(subjectId);
+        return ResponseEntity.ok(ResponseDto.success("특정 교과목에 해당하는 조교 리스트 조회 성공.", assistantNamesResponse ));
     }
 
     @GetMapping("/{subjectId}/codingzones")
