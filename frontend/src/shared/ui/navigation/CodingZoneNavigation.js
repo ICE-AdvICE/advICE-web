@@ -1,35 +1,56 @@
 import InquiryModal from "../../../pages/Coding-zone/InquiryModal"; // 경로는 실제 구조에 따라 조정
-import "../../../pages/css/codingzone/codingzone-main.css";
+import "../../../shared/ui/navigation/CodingZoneNavigation.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
+
+const ROUTES = {
+  codingzone: "/coding-zone",
+  attendenceEntry: "/coding-zone/Codingzone_Attendance", // 분기용(필요시)
+  attendenceReal: "/coding-zone/Codingzone_Attendance_Real", // 학생용
+  manager: "/coding-zone/Codingzone_Manager", // 조교용
+  allAttend: "/coding-zone/Codingzone_All_Attend", // 과사 조교(EA)용
+  classRegist: "/coding-zone/Coding-class-regist", // 보드바-수업 등록 ㅇ
+  setting: "/coding-zone/Codingzone_Setting", // 보드바-코딩존 설정
+};
 
 const CodingZoneNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [selectedButton, setSelectedButton] = useState("codingzone");
+  // 초기 값을 경로 기반으로 계산
+  const computeSelected = (path) => {
+    const p = path.replace(/\/+$/, "").toLowerCase();
+    const isAttendance =
+      p.startsWith(ROUTES.attendenceEntry.toLowerCase()) ||
+      p.startsWith(ROUTES.attendenceReal.toLowerCase()) ||
+      p.startsWith(ROUTES.manager.toLowerCase()) ||
+      p.startsWith(ROUTES.allAttend.toLowerCase()) ||
+      p.startsWith(ROUTES.classRegist.toLowerCase()) ||
+      p.startsWith(ROUTES.setting.toLowerCase());
+    return isAttendance ? "attendence" : "codingzone";
+  };
+
+  const [selectedButton, setSelectedButton] = useState(() =>
+    computeSelected(location.pathname)
+  );
+
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    if (location.pathname === "/coding-zone") {
-      setSelectedButton("codingzone");
-    } else if (
-      location.pathname.includes("/coding-zone/Codingzone_Attendance")
-    ) {
-      setSelectedButton("attendence");
-    }
-  }, [location.pathname]);
+    if (showModal) return; // 모달 열려있으면 '문의하기' 유지
+    setSelectedButton(computeSelected(location.pathname));
+  }, [location.pathname, showModal]);
 
   const handleTabChange = (tab) => {
-    if (tab === "attendence" && !document.cookie.includes("accessToken")) {
-      alert("로그인 후 이용 가능합니다.");
-      return;
-    }
-    setSelectedButton(tab);
-    if (tab === "codingzone") {
-      navigate("/coding-zone");
-    } else if (tab === "attendence") {
-      navigate("/coding-zone/Codingzone_Attendance");
+    if (tab === "attendence") {
+      // 로그인 체크를 계속 쓰고 싶으면 아래 3줄 유지 (아니면 통째로 삭제)
+      if (!document.cookie.includes("accessToken")) {
+        alert("로그인 후 이용 가능합니다.");
+        return;
+      }
+      navigate(ROUTES.attendenceEntry); // 권한 분기는 라우터에서 처리
+    } else {
+      navigate(ROUTES.codingzone);
     }
   };
 
@@ -44,31 +65,35 @@ const CodingZoneNavigation = () => {
 
   return (
     <div className="select-container">
-      <span> | </span>
       <button
         onClick={() => handleTabChange("codingzone")}
-        className={selectedButton === "codingzone" ? "selected" : ""}
+        className={`cz-nav-btn btn-codingzone ${
+          selectedButton === "codingzone" ? "selected" : ""
+        }`}
       >
         코딩존 예약
       </button>
-      <span> | </span>
+
       <button
         onClick={() => handleTabChange("attendence")}
-        className={selectedButton === "attendence" ? "selected" : ""}
+        className={`cz-nav-btn btn-attendence ${
+          selectedButton === "attendence" ? "selected" : ""
+        }`}
       >
         출결 관리
       </button>
-      <span> | </span>
+
       <button
         onClick={handleOpenModal}
-        className={selectedButton === "inquiry" ? "selected" : ""}
+        className={`cz-nav-btn btn-inquiry ${
+          selectedButton === "inquiry" ? "selected" : ""
+        }`}
       >
         문의 하기
       </button>
       {showModal && (
         <InquiryModal isOpen={showModal} onClose={handleCloseModal} />
       )}
-      <span> | </span>
     </div>
   );
 };
