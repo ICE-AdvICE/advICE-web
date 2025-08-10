@@ -75,12 +75,12 @@ public class SubjectService {
         }
 
         if(updatedMapping > 0 && createdMapping == 0) { // DB에 덮어씌운 경우만
-            return new PostSubjectMappingResponseDto(ResponseCode.SUCCESS_UPDATE_MAPPING, ResponseMessage.SUCCESS_UPDATE_MAPPING);
+            return new PostSubjectMappingResponseDto(ResponseCode.SUCCESS_UPDATE_MAPPING, ResponseMessage.SUCCESS_UPDATE_MAPPING,null);
         }
         else if(updatedMapping == 0 && createdMapping > 0) { // 모두 신규 등록일 때
-            return new PostSubjectMappingResponseDto(ResponseCode.SUCCESS_UPDATE_MAPPING, ResponseMessage.SUCCESS_POST_MAPPING);
+            return new PostSubjectMappingResponseDto(ResponseCode.SUCCESS_POST_MAPPING, ResponseMessage.SUCCESS_POST_MAPPING, null);
         } else { // 신규등록과 DB에 덮어씌운 경우 혼합
-            return new PostSubjectMappingResponseDto(ResponseCode.SUCCESS_UPDATE_MAPPING, ResponseMessage.SUCCESS_MIX_UPDATE);
+            return new PostSubjectMappingResponseDto(ResponseCode.SUCCESS_MIX_UPDATE, ResponseMessage.SUCCESS_MIX_UPDATE, null);
         }
     }
 
