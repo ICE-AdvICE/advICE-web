@@ -28,8 +28,8 @@ public interface ResponseMessage {
     String ALREADY_EXISTED_CLASS = "이미 등록된 코딩존 수업";
     String NOT_MAPPED_CLASS = "매핑되지 않은 교과목 정보 포함";
     String DUPLICATED_MAPPING_SET = "등록 리스트 중 중복된 번호, 교과목명 포함";
-    String DUPLICATED_MAPPING_CLASSNAME = "등록 리스트 중 중복된 번호 포함";
-    String DUPLICATED_MAPPING_NUMBER= "등록 리스트 중 중복된 교과목명 포함";
+    String DUPLICATED_MAPPING_CLASSNAME = "등록 리스트 중 중복된 교과목명 포함";
+    String DUPLICATED_MAPPING_NUMBER= "등록 리스트 중 중복된 매핑 번호 포함";
     String ALREADY_EXISTED_MAPPSET = "이미 포함된 매핑번호와 교과목 이름 포함";
     String NOT_ANY_MAPPINGSET = "어떠한 매핑 정보도 등록 정보 없음";
     String NOT_WEEKDAY = "입력한 날짜가 주중이 아님";
