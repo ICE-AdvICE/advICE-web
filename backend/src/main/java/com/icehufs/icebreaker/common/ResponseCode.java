@@ -6,6 +6,8 @@ public interface ResponseCode {
     String CODING_ADMIN = "CA";
     String ENTIRE_ADMIN = "EA";
     String SUCCESS_UPDATE_MAPPING = "SUCCESS_UPDATE_MAPPING";
+    String SUCCESS_POST_MAPPING = "SUCCESS_POST_MAPPING";
+    String SUCCESS_MIX_UPDATE = "SUCCESS_MIX_UPDATE";
 
     // HTTP Status 400
     String VALIDATION_FAILED = "VF";
