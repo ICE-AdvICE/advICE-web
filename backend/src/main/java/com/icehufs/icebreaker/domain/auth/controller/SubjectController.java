@@ -48,7 +48,7 @@ public class SubjectController {
         return ResponseEntity
                 .ok(ResponseDto.success(ResponseMessage.SUCCESS_CLASS_CREATE, subjectService.getMappingCodingZoneClass(email)));
     }
-    @GetMapping("/subjects/{subjectId}/assistants")
+    @GetMapping("/{subjectId}/assistants")
     public ResponseEntity<ResponseDto<AssistantNamesResponseDto>> getAssistantsBySubject(
             @PathVariable Long subjectId
     ) {
