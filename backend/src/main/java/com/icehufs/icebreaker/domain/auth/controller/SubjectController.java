@@ -3,6 +3,7 @@ package com.icehufs.icebreaker.domain.auth.controller;
 import java.util.List;
 
 import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneClassInfoResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.PostSubjectMappingResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.service.CodingZoneService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,17 +32,17 @@ public class SubjectController {
     private final CodingZoneService codingzoneService;
 
     // 코딩존 매핑 등록 controller
-    @PostMapping("")
-    public ResponseEntity<ResponseDto<String>> postSubjectMapping(
+    @PostMapping
+    public ResponseEntity<PostSubjectMappingResponseDto> postSubjectMapping(
             @AuthenticationPrincipal String email, // 확인하고자하는 유저의 토큰 유효성 확인 후 유저의 메일 반환
             @Valid @RequestBody List<PostSubjectMappingRequestDto> requestDto // 매핑이 여러개 들어올 수 있으니 List<>로
     ) {
-        subjectService.postMappingCodingZoneClass(requestDto, email);
-        return ResponseEntity.ok(ResponseDto.success(ResponseMessage.SUCCESS_CLASS_MAPPING));
+        PostSubjectMappingResponseDto postSubjectMappingResponseDto = subjectService.postMappingCodingZoneClass(requestDto, email);
+        return ResponseEntity.ok(postSubjectMappingResponseDto);
     }
 
     // 코딩존 매핑 조회 controller
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity<ResponseDto<List<SubjectResponseDto>>> getSubjectMapping(
             @AuthenticationPrincipal String email) {
         return ResponseEntity
