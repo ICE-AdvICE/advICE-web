@@ -9,7 +9,9 @@ public interface ResponseMessage {
     String SUCCESS_MAPPING_GET = "코딩존 매핑 조회 성공";
     String SUCCESS_CLASS_CREATE = "코딩존 등록 성공";
     String SUCCESS_CLASS_UPDATE = "코딩존 정보 수정 성공";
-    String SUCCESS_UPDATE_MAPPING = "일부 매핑 번호가 중복되어 기존 정보를 새 정보로 업데이트";
+    String SUCCESS_POST_MAPPING = "신규 매핑 정보로 등록 성공";
+    String SUCCESS_UPDATE_MAPPING = "덮어씌운 매핑 정보로 등록 성공";
+    String SUCCESS_MIX_UPDATE = "신규와 덮어씌운 매핑 정보로 등록 성공";
 
     // HTTP Status 400
     String BAD_REQUEST = "잘못된 입력 형식";
@@ -23,10 +25,11 @@ public interface ResponseMessage {
     String NOT_RESERVE_CLASS = "Not reserve class.";
     String NOT_SIGNUP_USER = "Not signUp user.";
     String PERMITTED_ERROR = "Permission error.";
-    String ALREADY_EXISTED_CLASS = "Already reserved class";
+    String ALREADY_EXISTED_CLASS = "이미 등록된 코딩존 수업";
     String NOT_MAPPED_CLASS = "매핑되지 않은 교과목 정보 포함";
-    String ALREADY_EXISTED_CLASSMAPP = "이미 매핑된 교과목 이름이 포함";
-    String ALREADY_EXISTED_NUMMAPP = "이미 매핑된 고유 번호가 포함 ";
+    String DUPLICATED_MAPPING_SET = "등록 리스트 중 중복된 번호, 교과목명 포함";
+    String DUPLICATED_MAPPING_CLASSNAME = "등록 리스트 중 중복된 번호 포함";
+    String DUPLICATED_MAPPING_NUMBER= "등록 리스트 중 중복된 교과목명 포함";
     String ALREADY_EXISTED_MAPPSET = "이미 포함된 매핑번호와 교과목 이름 포함";
     String NOT_ANY_MAPPINGSET = "어떠한 매핑 정보도 등록 정보 없음";
     String NOT_WEEKDAY = "입력한 날짜가 주중이 아님";
