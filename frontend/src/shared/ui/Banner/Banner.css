@@ -4,7 +4,7 @@
   height: auto;
   padding: 0px 10px;
   box-sizing: border-box;
-  margin: 45px 0 0 0;
+  margin: 28px 0 0 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -13,7 +13,7 @@
 .banner_img_container .banner {
   width: auto;
   max-width: auto;
-  max-height: 370px;
+  max-height: 395px;
 }
 
 /* 슬라이더 배너 전용 */
@@ -25,66 +25,66 @@
 
 .codingzonetop2-image {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1100px;
   height: auto;
   max-height: 400px;
   object-fit: cover;
-  margin: -5px auto 0 auto;
+  margin: -20px auto 0 auto;
 }
 
 /* 반응형 */
 /* ≤ 1280px 반응형 */
 @media (max-width: 1280px) {
   .banner_img_container {
-    margin: 38px 0;
+    margin: 28px 0 95px 0;
   }
   .banner_img_container .banner {
-    max-height: 296px;
+    max-height: 346px;
   }
   .codingzonetop2-image {
     max-width: 960px;
-    margin: -6px auto -10px auto;
+    margin: -16px auto -10px auto;
   }
 }
 
 /* ≤ 1024px 반응형 */
 @media (max-width: 1024px) {
   .banner_img_container {
-    margin: 35px 0;
+    margin: 25px 0 85px 0;
   }
   .banner_img_container .banner {
-    max-height: 237px;
+    max-height: 288px;
   }
   .codingzonetop2-image {
-    max-width: 768px;
-    margin: -5px auto -13px auto;
+    max-width: 795px;
+    margin: -15px auto -13px auto;
   }
 }
 
 /* ≤ 768px 반응형 */
 @media (max-width: 768px) {
   .banner_img_container {
-    margin: 35px 0;
+    margin: 23px 0 58px 0;
   }
   .banner_img_container .banner {
     max-height: 240px;
   }
   .codingzonetop2-image {
     max-width: 671px;
-    margin: -5px auto -10px auto;
+    margin: -14px auto -10px auto;
   }
 }
 
 /* ≤ 480px 반응형 */
 @media (max-width: 480px) {
   .banner_img_container {
-    margin: 25px 0;
+    margin: 20px 0 38px 0;
   }
   .banner_img_container .banner {
     max-height: 150px;
   }
   .codingzonetop2-image {
     max-width: 423px;
-    margin: 3px auto 1px auto;
+    margin: -4.5px auto 1px auto;
   }
 }

@@ -1,7 +1,7 @@
 .navbar {
   width: 100%;
   padding: 0 110px;
-  margin: 0 0 35px 0;
+  margin: 0 0 66px 0;
 }
 
 .header-container {
@@ -9,7 +9,7 @@
   width: 100%;
   max-width: 1600px;
   margin: 0 auto;
-  padding: 55px 0 13px 11px;
+  padding: 70px 0 13px 11px;
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid #052940;
@@ -17,11 +17,11 @@
 
 .header-container img {
   margin: 0;
-  width: 140px;
+  width: 165px;
   height: auto;
 }
 .navbar-nav {
-  font-size: 13px;
+  font-size: 0.85rem;
 }
 
 .nav-actions {
@@ -51,16 +51,16 @@ nav.navbar .nav-link[data-open="true"] {
 @media (max-width: 1280px) {
   .navbar {
     padding: 0 80px;
-    margin: 0 0 31px 0;
+    margin: 0 0 54px 0;
   }
   .header-container {
-    padding: 42px 0 11px 12px;
+    padding: 89px 0 12px 12px;
   }
   .header-container img {
-    width: 115px;
+    width: 165px;
   }
   .navbar-nav {
-    font-size: 11px;
+    font-size: 0.8rem;
   }
 }
 
@@ -68,16 +68,16 @@ nav.navbar .nav-link[data-open="true"] {
 @media (max-width: 1024px) {
   .navbar {
     padding: 0 60px;
-    margin: 0 0 28px 0;
+    margin: 0 0 45px 0;
   }
   .header-container {
-    padding: 35px 0 9px 13px;
+    padding: 70px 0 12px 13px;
   }
   .header-container img {
-    width: 105px;
+    width: 165px;
   }
   .navbar-nav {
-    font-size: 10px;
+    font-size: 0.8rem;
   }
 }
 
@@ -85,16 +85,16 @@ nav.navbar .nav-link[data-open="true"] {
 @media (max-width: 768px) {
   .navbar {
     padding: 0 40px;
-    margin: 0 0 24px 0;
+    margin: 0 0 33px 0;
   }
   .header-container {
-    padding: 25px 0 7px 14px;
+    padding: 48px 0 8px 14px;
   }
   .header-container img {
-    width: 95px;
+    width: 125px;
   }
   .navbar-nav {
-    font-size: 9px;
+    font-size: 0.65rem;
   }
 }
 
@@ -102,16 +102,16 @@ nav.navbar .nav-link[data-open="true"] {
 @media (max-width: 480px) {
   .navbar {
     padding: 0 20px;
-    margin: 0 0 21px 0;
+    margin: 0 0 25px 0;
   }
   .header-container {
-    padding: 17px 0 5px 15px;
+    padding: 28px 0 7px 15px;
   }
   .header-container img {
-    width: 75px;
+    width: 92px;
   }
   .navbar-nav {
-    font-size: 6px;
+    font-size: 0.53rem;
   }
 }
 
