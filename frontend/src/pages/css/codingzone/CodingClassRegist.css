@@ -282,7 +282,7 @@
 .class-input-box > .Assistant-input {
   min-width: 0;
   white-space: nowrap;
-  flex: 4; /* Day, Time, Assistent 입력필드의 비율 설정 */
+  flex: 3.63; /* Day, Time, Assistent 입력필드의 비율 설정 */
 }
 
 .class-input-box > .ClassName-input {
@@ -318,25 +318,26 @@
   justify-content: space-between;
 }
 .btn-5 {
-  width: 50px;
-  height: 35px;
-  line-height: 42px;
-  padding: 0;
-  border: none;
-  background: #002d56;
-  background: linear-gradient(0deg, #002d56, #002d56 100%);
-  display: flex; /* flexbox 레이아웃 사용 */
-  justify-content: center; /* 수평 중앙 정렬 */
-  align-items: center; /* 수직 중앙 정렬 */
-  color: #fff; /* 텍스트 색상 */
-  position: relative; /* 위치 조정을 위해 */
-  overflow: hidden; /* 내부 요소가 범위를 넘어서지 않게 함 */
+  display: inline-flex;
+  padding: 16px 20px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  background: #409b9d;
+  color: #fff;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 51%; /* 10.2px */
+  letter-spacing: -0.4px;
 }
 
 .btn-5:hover {
-  color: #002d56; /* 호버 시 텍스트 색 변경 */
-  background: transparent; /* 호버 시 배경 투명 */
-  box-shadow: none; /* 박스 그림자 제거 */
+  border-radius: 10px;
+  background: rgba(64, 155, 157, 0.75);
 }
 
 .btn-5:before,
@@ -367,24 +368,20 @@
 }
 
 .btn-6 {
-  width: 25px;
-  height: 25px;
-  line-height: 42px;
-  margin-left: 10px;
-  border: none;
-  background: #002d56;
-  background: linear-gradient(0deg, #002d56, #002d56 100%);
-  display: flex; /* flexbox 레이아웃 사용 */
-  justify-content: center; /* 수평 중앙 정렬 */
-  align-items: center; /* 수직 중앙 정렬 */
-  color: #fff; /* 텍스트 색상 */
-  position: relative; /* 위치 조정을 위해 */
-  overflow: hidden; /* 내부 요소가 범위를 넘어서지 않게 함 */
+  margin: 0 0 0 5px;
+  width: px;
+  height: 35px;
+  flex-shrink: 0;
+  aspect-ratio: 1/1;
+  border: 1px solid #a8a8a8bf; /* 버튼 외곽선 색 */
+  color: #a8a8a8bf;
+  background: transparent; /* 기본 배경 투명 */
+  position: relative; /* before/after 절대 위치를 위해 필요 */
 }
 
 .btn-6:hover {
-  color: #002d56; /* 호버 시 텍스트 색 변경 */
-  background: transparent; /* 호버 시 배경 투명 */
+  color: #ffffff; /* 호버 시 텍스트 색 변경 */
+  background: #052940; /* 호버 시 배경 투명 */
   box-shadow: none; /* 박스 그림자 제거 */
 }
 
@@ -394,8 +391,6 @@
   position: absolute;
   top: 0;
   right: 0;
-  height: 2px;
-  width: 0;
   background: #002d56;
   box-shadow: -1px -1px 5px 0px #fff, 7px 7px 20px 0px #0003,
     4px 4px 5px 0px #0002;
@@ -486,13 +481,13 @@
 }
 
 .part1-element-title2 {
-  display: flex; /* 플렉스 컨테이너로 설정 */
+  display: flex;
+  width: 30rem;
+  height: 20px;
   align-items: center;
-  justify-content: center;
-  position: relative;
-  height: 90%;
-  width: 100%;
-  flex: 10; /* 40% */
+  gap: 10px;
+  flex-shrink: 0;
+  flex: 6; /* 30% */
   flex-direction: row; /* 플렉스 아이템들을 가로로 배치 */
   white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
 }
@@ -509,15 +504,16 @@
 }
 
 .part2-element-title2 {
-  display: flex; /* 플렉스 컨테이너로 설정 */
-  align-items: center;
+  display: flex;
+  width: 25rem;
+  height: 20px;
+  padding: 10px;
   justify-content: center;
-  position: relative;
-  height: 90%;
-  width: 100%;
-  flex: 6; /* 30% */
+  align-items: center;
+  flex-shrink: 0;
+  flex: 5; /* 30% */
   flex-direction: row; /* 플렉스 아이템들을 가로로 배치 */
-  white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
+  white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */ /* 텍스트가 줄 바꿈되지 않도록 설정 */
 }
 .part2-element-title2 p {
   flex: 2; /* 각 p 태그가 공간을 균등하게 차지하도록 설정 */
@@ -526,13 +522,13 @@
 }
 
 .part3-element-title2 {
-  display: flex; /* 플렉스 컨테이너로 설정 */
+  display: flex;
+  width: 30rem;
+  height: 20px;
   align-items: center;
-  justify-content: center;
-  position: relative;
-  height: 90%;
-  width: 100%;
-  flex: 5; /* 30% */
+  gap: 15px;
+  flex-shrink: 0;
+  flex: 4; /* 30% */
   flex-direction: row; /* 플렉스 아이템들을 가로로 배치 */
   white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
 }
@@ -546,7 +542,7 @@
 }
 .maxPers2 {
   display: inline-block;
-  margin-right: 15% !important;
+  margin-right: 10% !important;
 }
 
 .button-area2 {
