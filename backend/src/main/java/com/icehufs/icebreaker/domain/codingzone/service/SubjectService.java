@@ -2,6 +2,9 @@ package com.icehufs.icebreaker.domain.codingzone.service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import com.icehufs.icebreaker.domain.auth.domain.entity.Authority;
+import com.icehufs.icebreaker.domain.auth.repostiory.AuthorityRepository;
 import com.icehufs.icebreaker.domain.codingzone.exception.UnmappedSubjectException;
 import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneClassRepository;
 import org.springframework.http.HttpStatus;
@@ -25,6 +28,7 @@ public class SubjectService {
     private final SubjectRepository subjectRepository;
     private final UserRepository userRepository;
     private final CodingZoneClassRepository codingzoneclassRepository;
+    private final AuthorityRepository authorityRepository;
 
     @Transactional
     public PostSubjectMappingResponseDto postMappingCodingZoneClass(List<PostSubjectMappingRequestDto> dto,
@@ -116,7 +120,14 @@ public class SubjectService {
             throw new BusinessException(ResponseCode.BEFORE_DELETE_CLASS, ResponseMessage.BEFORE_DELETE_CLASS, HttpStatus.BAD_REQUEST);
         }
         SubjectResponseDto dto = new SubjectResponseDto(subjectId,subjectName);
+        // 수업 삭제
         subjectRepository.deleteAllById(subjectId);
+
+        // 조교 권한 박탈
+        String role = "ROLE_ADMINC" + subjectId;
+        List<Authority> users = authorityRepository.findAllByRoleValue(role);
+        users.forEach(a -> a.revokeRole(role));
+
         return List.of(dto);
     }
 }
