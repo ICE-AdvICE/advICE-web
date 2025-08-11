@@ -2,6 +2,8 @@ package com.icehufs.icebreaker.domain.codingzone.service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import com.icehufs.icebreaker.domain.codingzone.exception.UnmappedSubjectException;
+import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneClassRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.icehufs.icebreaker.common.ResponseCode;
@@ -22,6 +24,7 @@ public class SubjectService {
 
     private final SubjectRepository subjectRepository;
     private final UserRepository userRepository;
+    private final CodingZoneClassRepository codingzoneclassRepository;
 
     @Transactional
     public PostSubjectMappingResponseDto postMappingCodingZoneClass(List<PostSubjectMappingRequestDto> dto,
@@ -101,4 +104,21 @@ public class SubjectService {
                 .map(subject -> new SubjectResponseDto(subject.getId(), subject.getSubjectName()))
                 .toList();
     }
+
+    @Transactional
+    public List<SubjectResponseDto> deleteMappingCodingzoneClass(Integer subjectId) {
+
+        String subjectName = subjectRepository.findById(subjectId)
+                .map(Subject::getSubjectName)
+                .orElseThrow(UnmappedSubjectException::new);
+
+        if(codingzoneclassRepository.existsBySubjectId(subjectId)) {
+            throw new BusinessException(ResponseCode.BEFORE_DELETE_CLASS, ResponseMessage.BEFORE_DELETE_CLASS, HttpStatus.BAD_REQUEST);
+        }
+        SubjectResponseDto dto = new SubjectResponseDto(subjectId,subjectName);
+        subjectRepository.deleteAllById(subjectId);
+        return List.of(dto);
+    }
 }
+
+
