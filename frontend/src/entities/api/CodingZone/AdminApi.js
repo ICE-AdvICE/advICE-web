@@ -164,12 +164,10 @@ export const deleteSubjectMappingBySubjectId = async (
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
-    // ✅ 변경: 항상 { ok, code, message } 형태로 반환
     const { code, message } = response.data || {};
     return { ok: code === "SU", code, message };
   } catch (error) {
     if (!error.response) {
-      // ✅ 변경: 네트워크 에러도 동일 포맷
       return {
         ok: false,
         code: "NETWORK_ERROR",
@@ -192,7 +190,6 @@ export const deleteSubjectMappingBySubjectId = async (
       } else {
         setCookie("accessToken", "", { path: "/", expires: new Date(0) });
         navigate("/");
-        // ✅ 변경: 토큰 만료도 동일 포맷
         return {
           ok: false,
           code: "TOKEN_EXPIRED",
@@ -201,7 +198,6 @@ export const deleteSubjectMappingBySubjectId = async (
       }
     }
 
-    // ✅ 변경: 에러도 호출부에서 일괄 처리할 수 있게 그대로 전달
     return { ok: false, code, message };
   }
 };
