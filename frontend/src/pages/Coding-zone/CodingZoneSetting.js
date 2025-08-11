@@ -20,14 +20,14 @@ import {
 const ClassSetting = () => {
   const [cookies, setCookie] = useCookies(["accessToken"]);
   const accessToken = cookies.accessToken;
-  const navigate = useNavigate(); // ✅ 정의됨
+  const navigate = useNavigate();
   const [deletingId, setDeletingId] = useState(null);
 
   // 삭제 핸들러
   const handleDeleteExisting = async (m) => {
     const ok = window.confirm(
-      `정말 삭제하시겠습니까?\n[${m.subjectId}] ${m.subjectName}\n\n` +
-        "※ 안내: 과목-코딩존 매핑뿐 아니라 관련(코딩존과목-조교명 등)도 함께 삭제됩니다."
+      `[${m.subjectId}] [${m.subjectName}]를 정말 삭제하시겠습니까?\n\n` +
+        "※ 안내: 삭제시 해당과목에 등록된 조교도 함께 삭제됩니다.\n조교 등록을 다시 해주세요."
     );
     if (!ok) return;
 
@@ -44,7 +44,7 @@ const ClassSetting = () => {
     setDeletingId(null);
 
     if (result?.ok) {
-      // ✅ 즉시 UI 반영 (새로고침 필요 없음)
+      // 즉시 UI 반영 (새로고침 필요 없음)
       setExistingMappings((prev) =>
         prev.filter((x) => String(x.subjectId) !== String(m.subjectId))
       );
@@ -52,7 +52,7 @@ const ClassSetting = () => {
       // await loadMappings();
     } else if (result) {
       if (result.code === "DELETE_NOT_ALLOW") {
-        alert("연결된 수업이 있어 먼저 해당 수업을 삭제해야 합니다.");
+        alert(result.message);
       } else {
         alert(`삭제 실패: ${result.message || "알 수 없는 오류"}`);
       }
@@ -61,7 +61,7 @@ const ClassSetting = () => {
     }
   };
 
-  // ✅ 기존(서버 저장된) 매핑 리스트
+  // 기존(서버 저장된) 매핑 리스트
   const [existingMappings, setExistingMappings] = useState([]); // [{subjectId, subjectName}]
   const [loading, setLoading] = useState(false);
 
@@ -69,7 +69,7 @@ const ClassSetting = () => {
     { id: Date.now(), codingZone: "1", subjectName: "" },
   ]);
 
-  // ✅ 매핑 리스트 불러오기
+  // 매핑 리스트 불러오기
   const loadMappings = async () => {
     try {
       setLoading(true);
@@ -82,10 +82,8 @@ const ClassSetting = () => {
     }
   };
 
-  // ✅ 최초 진입시 1회 호출
   useEffect(() => {
     loadMappings();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleAddRow = () => {
