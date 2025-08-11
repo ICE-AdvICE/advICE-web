@@ -110,7 +110,7 @@ public class SubjectService {
     }
 
     @Transactional
-    public List<SubjectResponseDto> deleteMappingCodingzoneClass(Integer subjectId) {
+    public void deleteMappingCodingZoneClass(Integer subjectId) {
 
         String subjectName = subjectRepository.findById(subjectId)
                 .map(Subject::getSubjectName)
@@ -126,9 +126,8 @@ public class SubjectService {
         // 조교 권한 박탈
         String role = "ROLE_ADMINC" + subjectId;
         List<Authority> users = authorityRepository.findAllByRoleValue(role);
-        users.forEach(a -> a.revokeRole(role));
+        users.forEach(user -> user.revokeRole(role));
 
-        return List.of(dto);
     }
 }
 

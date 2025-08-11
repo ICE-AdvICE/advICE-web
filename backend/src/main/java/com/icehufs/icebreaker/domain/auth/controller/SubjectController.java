@@ -49,10 +49,10 @@ public class SubjectController {
     }
 
     @DeleteMapping("/{subjectId}")
-    public ResponseEntity<ResponseDto<List<SubjectResponseDto>>> deleteSubjectMapping(
+    public ResponseEntity<ResponseDto<String>> deleteSubjectMapping(
             @PathVariable Integer subjectId) {
-        List<SubjectResponseDto> deleteSubject = subjectService.deleteMappingCodingzoneClass(subjectId);
-        return ResponseEntity.ok(ResponseDto.success(ResponseMessage.SUCCESS_DELETE_MAPPING, deleteSubject));
+        subjectService.deleteMappingCodingZoneClass(subjectId);
+        return ResponseEntity.ok(ResponseDto.success(ResponseMessage.SUCCESS_DELETE_MAPPING));
     }
 
     @GetMapping("/{subjectId}/codingzones")
