@@ -152,7 +152,6 @@ export const uploadClassForWeek = async (
   }
 };
 
-// 매핑 삭제 (과목,코딩존 매핑뿐 아니라 관련 종속(코딩존과목-조교명 등)도 삭제됨)
 export const deleteSubjectMappingBySubjectId = async (
   subjectId,
   token,
@@ -162,30 +161,27 @@ export const deleteSubjectMappingBySubjectId = async (
   try {
     const response = await axios.delete(
       `${API_DOMAIN_ADMIN}/subjects/${subjectId}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
+      { headers: { Authorization: `Bearer ${token}` } }
     );
 
-    const { code } = response.data || {};
-    if (code === "SU") {
-      return true;
-    }
-    return response.data;
+    // ✅ 변경: 항상 { ok, code, message } 형태로 반환
+    const { code, message } = response.data || {};
+    return { ok: code === "SU", code, message };
   } catch (error) {
     if (!error.response) {
+      // ✅ 변경: 네트워크 에러도 동일 포맷
       return {
+        ok: false,
         code: "NETWORK_ERROR",
         message: "네트워크 상태를 확인해주세요.",
       };
     }
 
-    const { code } = error.response.data || {};
+    const { code, message } = error.response.data || {};
 
     if (code === "ATE") {
       console.warn("🔄 매핑 삭제: Access Token 만료됨. 토큰 재발급 시도 중...");
       const newToken = await refreshTokenRequest(setCookie, token, navigate);
-
       if (newToken?.accessToken) {
         return deleteSubjectMappingBySubjectId(
           subjectId,
@@ -196,28 +192,17 @@ export const deleteSubjectMappingBySubjectId = async (
       } else {
         setCookie("accessToken", "", { path: "/", expires: new Date(0) });
         navigate("/");
+        // ✅ 변경: 토큰 만료도 동일 포맷
         return {
+          ok: false,
           code: "TOKEN_EXPIRED",
           message: "토큰이 만료되었습니다. 다시 로그인해주세요.",
         };
       }
     }
 
-    switch (code) {
-      case "AF":
-        alert("권한이 없습니다.");
-        break;
-      case "NU":
-        alert("로그인이 필요합니다.");
-        break;
-      case "DBE":
-        console.log("데이터베이스에 문제가 발생했습니다.");
-        break;
-      default:
-        console.log("예상치 못한 문제가 발생하였습니다.");
-        break;
-    }
-    return false;
+    // ✅ 변경: 에러도 호출부에서 일괄 처리할 수 있게 그대로 전달
+    return { ok: false, code, message };
   }
 };
 

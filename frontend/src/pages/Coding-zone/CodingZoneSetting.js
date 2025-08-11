@@ -31,19 +31,33 @@ const ClassSetting = () => {
     );
     if (!ok) return;
 
-    setDeletingId(m.subjectId);
+    // 타입 혼선 방지
+    setDeletingId(String(m.subjectId));
+
     const result = await deleteSubjectMappingBySubjectId(
-      m.subjectId,
+      Number(m.subjectId), // path param이면 숫자로
       accessToken,
       setCookie,
       navigate
     );
+
     setDeletingId(null);
 
-    if (result?.success) {
-      await loadMappings(); // 최신 리스트로 새로고침
+    if (result?.ok) {
+      // ✅ 즉시 UI 반영 (새로고침 필요 없음)
+      setExistingMappings((prev) =>
+        prev.filter((x) => String(x.subjectId) !== String(m.subjectId))
+      );
+      // 선택: 서버와 재동기화하고 싶으면 주석 해제
+      // await loadMappings();
+    } else if (result) {
+      if (result.code === "DELETE_NOT_ALLOW") {
+        alert("연결된 수업이 있어 먼저 해당 수업을 삭제해야 합니다.");
+      } else {
+        alert(`삭제 실패: ${result.message || "알 수 없는 오류"}`);
+      }
     } else {
-      alert(`삭제 실패: ${result?.message || "알 수 없는 오류"}`);
+      alert("삭제 실패: 알 수 없는 오류");
     }
   };
 
@@ -122,6 +136,7 @@ const ClassSetting = () => {
 
     if (result.success) {
       alert("등록 완료!");
+      setExistingMappings((prev) => [...prev, ...payload]);
       setRows([{ id: Date.now(), codingZone: "1", subjectName: "" }]); // 초기화
     } else {
       alert(`등록 실패: ${result.message}`);
@@ -165,7 +180,7 @@ const ClassSetting = () => {
                         <button
                           className="delete-btn"
                           onClick={() => handleDeleteExisting(m)}
-                          disabled={deletingId === m.subjectId}
+                          disabled={String(deletingId) === String(m.subjectId)}
                         >
                           {deletingId === m.subjectId ? "삭제중…" : "X"}
                         </button>
