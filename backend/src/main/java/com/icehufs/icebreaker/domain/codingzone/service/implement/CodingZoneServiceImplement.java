@@ -2,8 +2,6 @@ package com.icehufs.icebreaker.domain.codingzone.service.implement;
 
 import com.icehufs.icebreaker.common.ResponseCode;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.*;
-import com.icehufs.icebreaker.domain.codingzone.exception.CodingZoneClassNotFoundException;
-import com.icehufs.icebreaker.domain.codingzone.exception.ExistCodingZoneRegisterExcpetion;
 import com.icehufs.icebreaker.domain.membership.domain.exception.UserNotFoundException;
 import com.icehufs.icebreaker.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;

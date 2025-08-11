@@ -1,14 +1,11 @@
 package com.icehufs.icebreaker.domain.codingzone.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.Subject;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassUpdateRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.exception.*;
 import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneRegisterRepository;
-import com.icehufs.icebreaker.util.ResponseDto;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneClass;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.GroupInf;
@@ -19,8 +16,6 @@ import com.icehufs.icebreaker.domain.codingzone.repository.GroupInfRepository;
 import com.icehufs.icebreaker.domain.codingzone.repository.SubjectRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @Service
 @RequiredArgsConstructor
@@ -105,10 +100,9 @@ public class CodingZoneClassService {
                 .orElseThrow(() -> new CodingZoneClassNotFoundException());
 
         if(codingZoneRegisterRepository.existsByCodingZoneClassClassNum(classNum)) {
-            throw new ExistCodingZoneRegisterExcpetion();
+            throw new ExistCodingZoneRegisterException();
         }
         codingZoneClassRepository.delete(codingZoneClass);
-        }
-
     }
 
+}
