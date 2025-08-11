@@ -2,6 +2,8 @@ package com.icehufs.icebreaker.domain.codingzone.service.implement;
 
 import com.icehufs.icebreaker.common.ResponseCode;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.*;
+import com.icehufs.icebreaker.domain.codingzone.exception.CodingZoneClassNotFoundException;
+import com.icehufs.icebreaker.domain.codingzone.exception.ExistCodingZoneRegisterExcpetion;
 import com.icehufs.icebreaker.domain.membership.domain.exception.UserNotFoundException;
 import com.icehufs.icebreaker.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.ZoneId;
 import java.time.LocalTime;
@@ -156,24 +157,19 @@ public class CodingZoneServiceImplement implements CodingZoneService {
     }
 
     @Override
-    public ResponseEntity<? super DeleteClassResponseDto> deleteClass(Integer classNum, String email) {
-        try {
-            // 사용자 계정이 존재하는지(로그인 시간이 초과됐는지) 확인하는 코드
-            boolean existedUser = userRepository.existsByEmail(email);
-            if (!existedUser)
-                return DeleteClassResponseDto.notExistUser();
+    @Transactional
+    public void deleteClass(Integer classNum) {
 
             CodingZoneClass codingZoneClass = codingZoneClassRepository.findByClassNum(classNum);
-            if (codingZoneClass == null)
-                return DeleteClassResponseDto.noExistArticle();
+            if (codingZoneClass == null) throw new CodingZoneClassNotFoundException();
 
-            codingZoneClassRepository.delete(codingZoneClass);
+            if(codingZoneRegisterRepository.existsByCodingZoneClassClassNum(classNum)) {
+                throw new ExistCodingZoneRegisterExcpetion();
+            } else {
+                codingZoneClassRepository.delete(codingZoneClass);
+            }
 
-            return DeleteClassResponseDto.success();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
+
     }
 
     @Override
