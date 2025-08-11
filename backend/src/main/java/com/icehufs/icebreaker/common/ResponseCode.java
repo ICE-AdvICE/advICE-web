@@ -32,7 +32,7 @@ public interface ResponseCode {
     String INVAIlD_DATE_WEEKEND = "INVAIlD_DATE_WEEKEND";
     String NO_CODINGZONE_DATE = "NO_CODINGZONE_DATE";
     String NOT_MODIFIED_INFO = "NOT_MODIFIED_INFO";
-    String BEFORE_DELETE_CLASS = "BEFORE_DELETE_CLASS";
+    String DELETE_NOT_ALLOW = "DELETE_NOT_ALLOW";
 
     // HTTP Status 401
     String SIGN_IN_FAIL = "SF";

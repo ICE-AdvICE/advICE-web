@@ -117,7 +117,7 @@ public class SubjectService {
                 .orElseThrow(UnmappedSubjectException::new);
 
         if(codingzoneclassRepository.existsBySubjectId(subjectId)) {
-            throw new BusinessException(ResponseCode.BEFORE_DELETE_CLASS, ResponseMessage.BEFORE_DELETE_CLASS, HttpStatus.BAD_REQUEST);
+            throw new BusinessException(ResponseCode.DELETE_NOT_ALLOW, ResponseMessage.DELETE_NOT_ALLOW, HttpStatus.BAD_REQUEST);
         }
         SubjectResponseDto dto = new SubjectResponseDto(subjectId,subjectName);
         // 수업 삭제

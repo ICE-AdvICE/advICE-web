@@ -32,7 +32,7 @@ public interface ResponseMessage {
     String NOT_ANY_MAPPINGSET = "어떠한 매핑 정보도 등록 정보 없음";
     String NOT_WEEKDAY = "입력한 날짜가 주중이 아님";
     String NOT_MODIFIED_INFO = "변경된 정보가 없음";
-    String BEFORE_DELETE_CLASS = "해당 매핑 번호의 코딩존 수업 먼저 삭제 필요";
+    String DELETE_NOT_ALLOW = "해당 코딩존 번호를 사용하는 수업이 등록되어 있습니다. 먼저 해당 수업을 삭제해주세요.";
 
 
     // HTTP Status 401
