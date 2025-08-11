@@ -16,6 +16,7 @@ import com.icehufs.icebreaker.util.SubjectResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,7 +32,6 @@ public class SubjectController {
     private final SubjectService subjectService;
     private final CodingZoneService codingzoneService;
 
-    // 코딩존 매핑 등록 controller
     @PostMapping
     public ResponseEntity<PostSubjectMappingResponseDto> postSubjectMapping(
             @AuthenticationPrincipal String email, // 확인하고자하는 유저의 토큰 유효성 확인 후 유저의 메일 반환
@@ -41,12 +41,18 @@ public class SubjectController {
         return ResponseEntity.ok(postSubjectMappingResponseDto);
     }
 
-    // 코딩존 매핑 조회 controller
     @GetMapping
     public ResponseEntity<ResponseDto<List<SubjectResponseDto>>> getSubjectMapping(
             @AuthenticationPrincipal String email) {
         return ResponseEntity
                 .ok(ResponseDto.success(ResponseMessage.SUCCESS_CLASS_CREATE, subjectService.getMappingCodingZoneClass(email)));
+    }
+
+    @DeleteMapping("/{subjectId}")
+    public ResponseEntity<ResponseDto<String>> deleteSubjectMapping(
+            @PathVariable Integer subjectId) {
+        subjectService.deleteMappingCodingZoneClass(subjectId);
+        return ResponseEntity.ok(ResponseDto.success(ResponseMessage.SUCCESS_DELETE_MAPPING));
     }
 
     @GetMapping("/{subjectId}/codingzones")

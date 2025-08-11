@@ -2,6 +2,11 @@ package com.icehufs.icebreaker.domain.codingzone.service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import com.icehufs.icebreaker.domain.auth.domain.entity.Authority;
+import com.icehufs.icebreaker.domain.auth.repostiory.AuthorityRepository;
+import com.icehufs.icebreaker.domain.codingzone.exception.UnmappedSubjectException;
+import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneClassRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.icehufs.icebreaker.common.ResponseCode;
@@ -22,6 +27,8 @@ public class SubjectService {
 
     private final SubjectRepository subjectRepository;
     private final UserRepository userRepository;
+    private final CodingZoneClassRepository codingzoneclassRepository;
+    private final AuthorityRepository authorityRepository;
 
     @Transactional
     public PostSubjectMappingResponseDto postMappingCodingZoneClass(List<PostSubjectMappingRequestDto> dto,
@@ -101,4 +108,27 @@ public class SubjectService {
                 .map(subject -> new SubjectResponseDto(subject.getId(), subject.getSubjectName()))
                 .toList();
     }
+
+    @Transactional
+    public void deleteMappingCodingZoneClass(Integer subjectId) {
+
+        String subjectName = subjectRepository.findById(subjectId)
+                .map(Subject::getSubjectName)
+                .orElseThrow(UnmappedSubjectException::new);
+
+        if(codingzoneclassRepository.existsBySubjectId(subjectId)) {
+            throw new BusinessException(ResponseCode.DELETE_NOT_ALLOW, ResponseMessage.DELETE_NOT_ALLOW, HttpStatus.BAD_REQUEST);
+        }
+        SubjectResponseDto dto = new SubjectResponseDto(subjectId,subjectName);
+        // 수업 삭제
+        subjectRepository.deleteAllById(subjectId);
+
+        // 조교 권한 박탈
+        String role = "ROLE_ADMINC" + subjectId;
+        List<Authority> users = authorityRepository.findAllByRoleValue(role);
+        users.forEach(user -> user.revokeRole(role));
+
+    }
 }
+
+
