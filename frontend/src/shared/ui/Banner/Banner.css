@@ -4,7 +4,7 @@
   height: auto;
   padding: 0px 10px;
   box-sizing: border-box;
-  margin: 28px 0 0 0;
+  margin: 39px 0 0 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -29,28 +29,28 @@
   height: auto;
   max-height: 400px;
   object-fit: cover;
-  margin: -20px auto 0 auto;
+  margin: -7px auto 0 auto;
 }
 
 /* 반응형 */
 /* ≤ 1280px 반응형 */
 @media (max-width: 1280px) {
   .banner_img_container {
-    margin: 28px 0 95px 0;
+    margin: 33px 0 0px 0; /*여기 수정 */
   }
   .banner_img_container .banner {
     max-height: 346px;
   }
   .codingzonetop2-image {
     max-width: 960px;
-    margin: -16px auto -10px auto;
+    margin: -9px auto -10px auto;
   }
 }
 
 /* ≤ 1024px 반응형 */
 @media (max-width: 1024px) {
   .banner_img_container {
-    margin: 25px 0 85px 0;
+    margin: 31px 0 0px 0;
   }
   .banner_img_container .banner {
     max-height: 288px;
@@ -64,7 +64,7 @@
 /* ≤ 768px 반응형 */
 @media (max-width: 768px) {
   .banner_img_container {
-    margin: 23px 0 58px 0;
+    margin: 27px 0 0px 0;
   }
   .banner_img_container .banner {
     max-height: 240px;
@@ -78,7 +78,7 @@
 /* ≤ 480px 반응형 */
 @media (max-width: 480px) {
   .banner_img_container {
-    margin: 20px 0 38px 0;
+    margin: 23px 0 0px 0;
   }
   .banner_img_container .banner {
     max-height: 150px;
