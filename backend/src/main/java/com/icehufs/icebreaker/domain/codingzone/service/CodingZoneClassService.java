@@ -101,15 +101,14 @@ public class CodingZoneClassService {
     @Transactional
     public void deleteClass(Integer classNum) {
 
-        CodingZoneClass codingZoneClass = codingZoneClassRepository.findByClassNum(classNum);
-        if (codingZoneClass == null) throw new CodingZoneClassNotFoundException();
+        CodingZoneClass codingZoneClass = codingZoneClassRepository.findById(classNum)
+                .orElseThrow(() -> new CodingZoneClassNotFoundException());
 
         if(codingZoneRegisterRepository.existsByCodingZoneClassClassNum(classNum)) {
             throw new ExistCodingZoneRegisterExcpetion();
-        } else {
-            codingZoneClassRepository.delete(codingZoneClass);
+        }
+        codingZoneClassRepository.delete(codingZoneClass);
         }
 
-
     }
-}
+
