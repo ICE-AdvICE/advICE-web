@@ -4,6 +4,15 @@ import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { getczauthtypetRequest } from "../../api/AuthApi";
 
+const ROUTES = {
+  attendanceEntry: "/coding-zone/Codingzone_Attendance",
+  attendanceReal: "/coding-zone/Codingzone_Attendance_Real",
+  classRegist: "/coding-zone/Coding-class-regist", // ← App 라우터와 대소문자 동일
+  setting: "/coding-zone/Codingzone_Setting",
+  manager: "/coding-zone/Codingzone_Manager",
+  allAttend: "/coding-zone/Codingzone_All_Attend",
+};
+
 const CodingZoneBoardbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -15,45 +24,72 @@ const CodingZoneBoardbar = () => {
   const [showRegisterClassButton, setShowRegisterClassButton] = useState(false);
   const [showSettingCodingZone, setShowSettingCodingZone] = useState(false);
   const [showCheckButton, setShowCheckButton] = useState(true);
+  const [ready, setReady] = useState(false); // 로딩 완료 여부 (깜빡임 방지)
+
+  // 권한 코드에 따라 버튼 상태 일괄 세팅
+  const applyFlags = (code) => {
+    // 초기화
+    setShowAdminButton(false);
+    setShowManageAllButton(false);
+    setShowRegisterClassButton(false);
+    setShowSettingCodingZone(false);
+    setShowCheckButton(true);
+
+    switch (code) {
+      case "CA":
+        setShowAdminButton(true);
+        break;
+      case "EA":
+        setShowRegisterClassButton(true);
+        setShowManageAllButton(true);
+        setShowCheckButton(false);
+        setShowSettingCodingZone(true);
+        setShowAdminButton(true);
+        break;
+      default:
+        break;
+    }
+  };
 
   useEffect(() => {
-    const fetchAuthType = async () => {
-      const response = await getczauthtypetRequest(token, setCookie, navigate);
-      if (response) {
-        switch (response.code) {
-          case "CA":
-            setShowAdminButton(true);
-            break;
-          case "EA":
-            setShowRegisterClassButton(true);
-            setShowManageAllButton(true);
-            setShowCheckButton(false);
-            setShowSettingCodingZone(true);
-            setShowAdminButton(true);
-            break;
-          case "NU":
-            alert("로그인이 필요합니다.");
-            navigate("/");
-            break;
-          default:
-            setShowAdminButton(false);
-            setShowManageAllButton(false);
-            setShowRegisterClassButton(false);
-            break;
-        }
-      }
-    };
-    fetchAuthType();
-  }, [token, navigate, setCookie]);
+    // 1) 캐시 먼저 반영(깜빡임 방지)
+    const cached = sessionStorage.getItem("czAuthCode");
+    if (cached) applyFlags(cached);
 
-  // URL 경로로부터 activeButton 상태 자동 설정
+    // 2) 서버에서 최신 권한코드 갱신
+    (async () => {
+      const response = await getczauthtypetRequest(token, setCookie, navigate);
+
+      if (response?.code === "NU") {
+        alert("로그인이 필요합니다.");
+        navigate("/");
+        return;
+      }
+
+      if (response?.code) {
+        sessionStorage.setItem("czAuthCode", response.code);
+        applyFlags(response.code);
+      }
+
+      setReady(true);
+    })();
+  }, [token]); // navigate, setCookid deps제거 -> 불필요한 재실행 방지
+
+  if (!ready && !sessionStorage.getItem("czAuthCode")) {
+    return null;
+  } // 로딩
+
   const getActiveButtonFromPath = () => {
-    const path = location.pathname;
-    if (path.includes("coding-class-regist")) return "manage_class";
-    if (path.includes("Codingzone_Setting")) return "setting";
-    if (path.includes("Codingzone_Manager")) return "manage";
-    if (path.includes("Codingzone_All_Attend")) return "manage_all";
-    if (path.includes("Codingzone_Attendance")) return "check";
+    const p = location.pathname.toLowerCase();
+    if (p.startsWith(ROUTES.classRegist.toLowerCase())) return "manage_class";
+    if (p.startsWith(ROUTES.setting.toLowerCase())) return "setting";
+    if (p.startsWith(ROUTES.manager.toLowerCase())) return "manage";
+    if (p.startsWith(ROUTES.allAttend.toLowerCase())) return "manage_all";
+    if (
+      p.startsWith(ROUTES.attendanceEntry.toLowerCase()) ||
+      p.startsWith(ROUTES.attendanceReal.toLowerCase())
+    )
+      return "check";
     return "";
   };
 
@@ -65,13 +101,18 @@ const CodingZoneBoardbar = () => {
 
   return (
     <div className="main-body-container">
-      <div className="cza_button_container" style={{ textAlign: "center" }}>
+      <div
+        className={`cza_button_container ${
+          !showAdminButton && !showRegisterClassButton ? "student" : ""
+        }`}
+        style={{ textAlign: "center" }}
+      >
         {showCheckButton && (
           <button
-            className={`btn-attend ${activeButton === "check" ? "active" : ""}`}
-            onClick={() =>
-              handleNavigation("/coding-zone/Codingzone_Attendance")
-            }
+            className={`btn-attend ${
+              !showAdminButton && !showRegisterClassButton ? "student" : ""
+            } ${activeButton === "check" ? "active" : ""}`}
+            onClick={() => handleNavigation(ROUTES.attendanceEntry)}
           >
             출결 확인
           </button>
@@ -86,7 +127,7 @@ const CodingZoneBoardbar = () => {
             className={`btn-attend ${
               activeButton === "manage_class" ? "active" : ""
             }`}
-            onClick={() => handleNavigation("/coding-zone/coding-class-regist")}
+            onClick={() => handleNavigation(ROUTES.classRegist)}
           >
             수업 등록
           </button>
@@ -98,9 +139,7 @@ const CodingZoneBoardbar = () => {
               className={`btn-attend ${
                 activeButton === "setting" ? "active" : ""
               }`}
-              onClick={() =>
-                handleNavigation("/coding-zone/Codingzone_Setting")
-              }
+              onClick={() => handleNavigation(ROUTES.setting)}
             >
               코딩존 설정
             </button>
@@ -116,7 +155,7 @@ const CodingZoneBoardbar = () => {
             className={`btn-attend ${
               activeButton === "manage" ? "active" : ""
             }`}
-            onClick={() => handleNavigation("/coding-zone/Codingzone_Manager")}
+            onClick={() => handleNavigation(ROUTES.manager)}
           >
             출결 관리
           </button>
@@ -127,9 +166,7 @@ const CodingZoneBoardbar = () => {
             className={`btn-attend ${
               activeButton === "manage_all" ? "active" : ""
             }`}
-            onClick={() =>
-              handleNavigation("/coding-zone/Codingzone_All_Attend")
-            }
+            onClick={() => handleNavigation(ROUTES.allAttend)}
           >
             전체 관리
           </button>
