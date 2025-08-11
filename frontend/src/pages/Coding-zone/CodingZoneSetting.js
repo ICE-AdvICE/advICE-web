@@ -18,7 +18,7 @@ import {
 } from "./subjectColors";
 
 const ClassSetting = () => {
-  const [cookies, setCookie] = useCookies(["accessToken"]); // ✅ 정의됨
+  const [cookies, setCookie] = useCookies(["accessToken"]);
   const accessToken = cookies.accessToken;
   const navigate = useNavigate(); // ✅ 정의됨
   const [deletingId, setDeletingId] = useState(null);
@@ -94,7 +94,7 @@ const ClassSetting = () => {
       .filter((r) => r.subjectName !== "");
 
     if (cleaned.length === 0) {
-      alert("과목명이 입력된 항목이 없습니다.");
+      alert("과목명이 입력되지 않았습니다.");
       return;
     }
 

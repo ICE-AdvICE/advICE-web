@@ -10,6 +10,7 @@ public interface ResponseMessage {
     String SUCCESS_CLASS_CREATE = "코딩존 등록 성공";
     String SUCCESS_CLASS_UPDATE = "코딩존 정보 수정 성공";
     String SUCCESS_POST_MAPPING = "신규 매핑 정보로 등록 성공";
+    String SUCCESS_DELETE_MAPPING = "코딩존 매핑 삭제 성공 ";
 
     // HTTP Status 400
     String BAD_REQUEST = "잘못된 입력 형식";
@@ -30,8 +31,9 @@ public interface ResponseMessage {
     String DUPLICATED_MAPPING_NUMBER= "등록 리스트 중 중복된 매핑 번호 포함";
     String NOT_ANY_MAPPINGSET = "어떠한 매핑 정보도 등록 정보 없음";
     String NOT_WEEKDAY = "입력한 날짜가 주중이 아님";
-    String NOT_FOUND_GROUP = "조 정보가 존재하지 않음";
     String NOT_MODIFIED_INFO = "변경된 정보가 없음";
+    String DELETE_NOT_ALLOW = "해당 코딩존 번호를 사용하는 수업이 등록되어 있습니다. 먼저 해당 수업을 삭제해주세요.";
+
 
     // HTTP Status 401
     String SIGN_IN_FAIL = "Login information mismatch.";
