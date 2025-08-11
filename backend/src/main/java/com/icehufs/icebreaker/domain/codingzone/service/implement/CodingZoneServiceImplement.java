@@ -158,22 +158,6 @@ public class CodingZoneServiceImplement implements CodingZoneService {
 
     @Override
     @Transactional
-    public void deleteClass(Integer classNum) {
-
-            CodingZoneClass codingZoneClass = codingZoneClassRepository.findByClassNum(classNum);
-            if (codingZoneClass == null) throw new CodingZoneClassNotFoundException();
-
-            if(codingZoneRegisterRepository.existsByCodingZoneClassClassNum(classNum)) {
-                throw new ExistCodingZoneRegisterExcpetion();
-            } else {
-                codingZoneClassRepository.delete(codingZoneClass);
-            }
-
-
-    }
-
-    @Override
-    @Transactional
     public ResponseEntity<? super CodingZoneRegisterResponseDto> classRegist(Integer classNum, String email) {
 
         try {
