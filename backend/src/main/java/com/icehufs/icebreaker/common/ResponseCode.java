@@ -33,6 +33,8 @@ public interface ResponseCode {
     String NO_CODINGZONE_DATE = "NO_CODINGZONE_DATE";
     String NOT_MODIFIED_INFO = "NOT_MODIFIED_INFO";
     String DELETE_NOT_ALLOW = "DELETE_NOT_ALLOW";
+    String ALREADY_RESERVED_CLASS = "ALREADY_RESERVED_CLASS";
+    String NOT_FOUND_CLASS = "NOT_FOUND_CLASS";
 
     // HTTP Status 401
     String SIGN_IN_FAIL = "SF";
