@@ -15,7 +15,7 @@ public class AttendanceService {
     private final CodingZoneRegisterRepository codingZoneRegisterRepository;
 
     public List<ReservationStudentDto> getReservationStudentsByClassNum (Integer classNum) {
-        List<CodingZoneRegister> reservations = codingZoneRegisterRepository.findByCodingZoneClass_ClassNum(classNum);
+        List<CodingZoneRegister> reservations = codingZoneRegisterRepository.findByCodingZoneClassClassNum(classNum);
         return reservations.stream()
                 .map(reservation -> new ReservationStudentDto(
                         reservation.getUserName(),
