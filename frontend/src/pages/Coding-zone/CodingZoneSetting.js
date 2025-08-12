@@ -48,8 +48,9 @@ const ClassSetting = () => {
       setExistingMappings((prev) =>
         prev.filter((x) => String(x.subjectId) !== String(m.subjectId))
       );
-      // 선택: 서버와 재동기화하고 싶으면 주석 해제
-      // await loadMappings();
+      setExistingOrig((prev) =>
+        prev.filter((x) => String(x.subjectId) !== String(m.subjectId))
+      );
     } else if (result) {
       if (result.code === "DELETE_NOT_ALLOW") {
         alert(result.message);
@@ -63,11 +64,26 @@ const ClassSetting = () => {
 
   // 기존(서버 저장된) 매핑 리스트
   const [existingMappings, setExistingMappings] = useState([]); // [{subjectId, subjectName}]
+  const [existingOrig, setExistingOrig] = useState([]); // ✅ 원본 스냅샷
   const [loading, setLoading] = useState(false);
 
-  const [rows, setRows] = useState([
-    { id: Date.now(), codingZone: "1", subjectName: "" },
-  ]);
+  const [rows, setRows] = useState([]);
+  const [mappingsLoaded, setMappingsLoaded] = useState(false);
+
+  useEffect(() => {
+    // ✅ 기본값 선정은 '유지 없음(strict)'으로 해서 1이 자동으로 안 남도록
+    setRows((prev) =>
+      prev.map((r) => {
+        const keepList = getAvailableZones(r.id, r.codingZone); // UI 렌더용
+        const strictList = getAvailableZonesStrict(r.id); // 기본값 계산용
+        const shouldKeep =
+          r.codingZone && keepList.includes(String(r.codingZone));
+        const next = shouldKeep ? r.codingZone : strictList[0] ?? "";
+        return next === r.codingZone ? r : { ...r, codingZone: next };
+      })
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [existingMappings]);
 
   // 매핑 리스트 불러오기
   const loadMappings = async () => {
@@ -77,6 +93,8 @@ const ClassSetting = () => {
       // 응답 형태에 맞춰 파싱 (배열이거나 {data:[...]}일 수 있음)
       const list = Array.isArray(res) ? res : res?.data ?? [];
       setExistingMappings(list);
+      setExistingOrig(list);
+      setMappingsLoaded(true);
     } finally {
       setLoading(false);
     }
@@ -87,7 +105,13 @@ const ClassSetting = () => {
   }, []);
 
   const handleAddRow = () => {
-    setRows([...rows, { id: Date.now(), codingZone: "1", subjectName: "" }]);
+    const id = Date.now();
+    const strict = getAvailableZonesStrict(id);
+    const defaultZone = strict[0] ?? "";
+    setRows((prev) => [
+      ...prev,
+      { id, codingZone: defaultZone, subjectName: "" },
+    ]);
   };
 
   const handleRemoveRow = (id) => {
@@ -100,15 +124,70 @@ const ClassSetting = () => {
     );
   };
 
+  const handleExistingChange = (subjectId, nextName) => {
+    setExistingMappings((prev) =>
+      prev.map((m) =>
+        String(m.subjectId) === String(subjectId)
+          ? { ...m, subjectName: nextName }
+          : m
+      )
+    );
+  };
+
+  const ALL_ZONES = ["1", "2", "3", "4"];
+
+  // ✅ 현재 선택값을 '유지'하지 않는 버전 (기본값 계산용)
+  const getAvailableZonesStrict = (rowId) => {
+    const usedByExisting = new Set(
+      existingMappings.map((m) => String(m.subjectId))
+    );
+    const usedByOtherNewRows = new Set(
+      rows.filter((r) => r.id !== rowId).map((r) => String(r.codingZone))
+    );
+    return ALL_ZONES.filter(
+      (z) => !(usedByExisting.has(z) || usedByOtherNewRows.has(z))
+    );
+  };
+
+  // (기존 유지 버전은 그대로 사용: 옵션 렌더링용)
+  const getAvailableZones = (rowId, currentValue) => {
+    const usedByExisting = new Set(
+      existingMappings.map((m) => String(m.subjectId))
+    );
+    const usedByOtherNewRows = new Set(
+      rows.filter((r) => r.id !== rowId).map((r) => String(r.codingZone))
+    );
+    return ALL_ZONES.filter(
+      (z) =>
+        !(usedByExisting.has(z) || usedByOtherNewRows.has(z)) ||
+        z === String(currentValue)
+    );
+  };
+
+  //신규 없어도 제출 허용
+  const getEditedPayload = () => {
+    const origMap = new Map(
+      (existingOrig ?? []).map((o) => [
+        String(o.subjectId),
+        (o.subjectName ?? "").trim(),
+      ])
+    );
+    return existingMappings
+      .map((m) => ({
+        subjectId: Number(m.subjectId),
+        subjectName: (m.subjectName ?? "").trim(),
+      }))
+      .filter((m) => {
+        const orig = origMap.get(String(m.subjectId));
+        return typeof orig === "string" && orig !== m.subjectName; // 내용이 바뀐 것만
+      });
+  };
+
   const handleSubmit = async () => {
+    // 신규(추가)만 추려냄: 과목명 있고, 코딩존 선택돼 있어야 함
     const cleaned = rows
       .map((r) => ({ ...r, subjectName: r.subjectName.trim() }))
-      .filter((r) => r.subjectName !== "");
-
-    if (cleaned.length === 0) {
-      alert("과목명이 입력되지 않았습니다.");
-      return;
-    }
+      .filter((r) => r.subjectName !== "" && r.codingZone);
 
     // ID→COLOR만 저장
     const idColor = loadIdColorMap();
@@ -120,13 +199,29 @@ const ClassSetting = () => {
     saveIdColorMap(idColor);
 
     // 백엔드로 보낼 payload 생성(색상 제외)
-    const payload = cleaned.map((r) => ({
+    const createPayload = cleaned.map((r) => ({
       subjectId: parseInt(r.codingZone, 10),
       subjectName: r.subjectName,
     }));
 
+    const editPayload = getEditedPayload();
+
+    if (createPayload.length === 0 && editPayload.length === 0) {
+      alert("추가/변경된 내용이 없습니다.");
+      return;
+    }
+
+    // subjectId 기준 병합(동일 ID가 양쪽에 있으면 마지막 값으로)
+    const merged = (() => {
+      const map = new Map();
+      [...createPayload, ...editPayload].forEach((p) => {
+        map.set(String(p.subjectId), p);
+      });
+      return Array.from(map.values());
+    })();
+
     const result = await registerSubjectMapping(
-      payload,
+      merged,
       accessToken,
       setCookie,
       navigate
@@ -134,12 +229,40 @@ const ClassSetting = () => {
 
     if (result.success) {
       alert("등록 완료!");
-      setExistingMappings((prev) => [...prev, ...payload]);
-      setRows([{ id: Date.now(), codingZone: "1", subjectName: "" }]); // 초기화
+      // 기존 리스트/원본 모두 병합 갱신
+      setExistingMappings((prev) => {
+        const map = new Map(prev.map((x) => [String(x.subjectId), x]));
+        merged.forEach((p) =>
+          map.set(String(p.subjectId), {
+            subjectId: p.subjectId,
+            subjectName: p.subjectName,
+          })
+        );
+        return Array.from(map.values());
+      });
+      setExistingOrig((prev) => {
+        // 같은 subjectId가 있으면 덮어쓰기(업데이트), 없으면 추가
+        const map = new Map(prev.map((x) => [String(x.subjectId), x]));
+        merged.forEach((p) =>
+          map.set(String(p.subjectId), {
+            subjectId: p.subjectId,
+            subjectName: p.subjectName,
+          })
+        );
+        return Array.from(map.values());
+      });
+      const newId = Date.now();
+      const strict = getAvailableZonesStrict(newId);
+      if (strict.length === 0) {
+        // 전부 사용 중이면 새 입력줄 만들지 않음
+        setRows([]);
+      }
     } else {
       alert(`등록 실패: ${result.message}`);
     }
   };
+
+  const noZoneAvailable = getAvailableZonesStrict("new").length === 0;
 
   return (
     <div className="class-regist-main-container">
@@ -156,51 +279,68 @@ const ClassSetting = () => {
           </div>
           <div className="setting-table-container">
             <table className="form-table">
-              <tbody>
-                {/* 이미 등록된 매핑: 항상 리스트에 남김(읽기 전용) */}
-                {loading ? (
-                  <tr>
-                    <td colSpan={2} style={{ textAlign: "center" }}>
-                      불러오는 중…
+              {/* 이미 등록된 매핑: 항상 리스트에 남김(읽기 전용) */}
+              {loading ? (
+                <tr>
+                  <td colSpan={2} style={{ textAlign: "center" }}>
+                    불러오는 중…
+                  </td>
+                </tr>
+              ) : (
+                existingMappings.map((m) => (
+                  <tr
+                    key={`existing-${m.subjectId}`}
+                    className="registered-row"
+                  >
+                    <td>
+                      <input value={m.subjectId} disabled />
+                    </td>
+                    <td className="subject-cell">
+                      <input
+                        type="text"
+                        value={m.subjectName}
+                        onChange={(e) =>
+                          handleExistingChange(m.subjectId, e.target.value)
+                        }
+                      />
+                      <button
+                        className="delete-btn"
+                        onClick={() => handleDeleteExisting(m)}
+                        disabled={String(deletingId) === String(m.subjectId)}
+                      >
+                        {deletingId === m.subjectId ? "삭제중…" : "X"}
+                      </button>
                     </td>
                   </tr>
-                ) : (
-                  existingMappings.map((m) => (
-                    <tr
-                      key={`existing-${m.subjectId}`}
-                      className="registered-row"
-                    >
-                      <td>
-                        <input value={m.subjectId} disabled />
-                      </td>
-                      <td className="subject-cell">
-                        <input value={m.subjectName} disabled />
-                        <button
-                          className="delete-btn"
-                          onClick={() => handleDeleteExisting(m)}
-                          disabled={String(deletingId) === String(m.subjectId)}
-                        >
-                          {deletingId === m.subjectId ? "삭제중…" : "X"}
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-                {rows.map((row) => (
+                ))
+              )}
+              {rows.map((row) => {
+                const opts = getAvailableZones(row.id, row.codingZone); // ← 사용 가능한 코딩존
+
+                const noOpts = opts.length === 0;
+
+                return (
                   <tr key={row.id}>
                     <td>
                       <select
-                        value={row.codingZone}
+                        value={noOpts ? "" : row.codingZone} // 옵션 없으면 빈 값
                         onChange={(e) =>
                           handleChange(row.id, "codingZone", e.target.value)
                         }
+                        disabled={noOpts} // 옵션 없으면 비활성
                       >
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
+                        {noOpts ? (
+                          <option value="">사용 가능한 코딩존 없음</option>
+                        ) : (
+                          opts.map((z) => (
+                            <option key={z} value={z}>
+                              {z}
+                            </option>
+                          ))
+                        )}
                       </select>
                     </td>
+
                     <td className="subject-cell">
                       <input
                         type="text"
@@ -218,12 +358,16 @@ const ClassSetting = () => {
                       </button>
                     </td>
                   </tr>
-                ))}
-              </tbody>
+                );
+              })}
             </table>
 
             <div className="button-group">
-              <button className="add-btn" onClick={handleAddRow}>
+              <button
+                className="add-btn"
+                onClick={handleAddRow}
+                disabled={getAvailableZonesStrict("new").length === 0}
+              >
                 추가
               </button>
               <button className="submit-btn" onClick={handleSubmit}>
