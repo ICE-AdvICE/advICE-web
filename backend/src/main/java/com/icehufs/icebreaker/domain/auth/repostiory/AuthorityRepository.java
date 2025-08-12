@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
 import com.icehufs.icebreaker.domain.auth.domain.entity.Authority;
 import java.util.List;
 
@@ -39,4 +38,5 @@ public interface AuthorityRepository extends JpaRepository<Authority, String> {
                a.roleAdminC4 = NULL
     """)
     void clearAllClassAssistantAuthority();
+
 }

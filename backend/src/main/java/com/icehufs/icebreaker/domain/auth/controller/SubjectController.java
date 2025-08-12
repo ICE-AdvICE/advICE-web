@@ -2,6 +2,7 @@ package com.icehufs.icebreaker.domain.auth.controller;
 
 import java.util.List;
 
+import com.icehufs.icebreaker.domain.codingzone.dto.response.AssistantNamesResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneClassInfoResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.PostSubjectMappingResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.service.CodingZoneService;
@@ -46,6 +47,13 @@ public class SubjectController {
             @AuthenticationPrincipal String email) {
         return ResponseEntity
                 .ok(ResponseDto.success(ResponseMessage.SUCCESS_CLASS_CREATE, subjectService.getMappingCodingZoneClass(email)));
+    }
+    @GetMapping("/{subjectId}/assistants")
+    public ResponseEntity<ResponseDto<AssistantNamesResponseDto>> getAssistantsName(
+            @PathVariable Long subjectId
+    ) {
+        AssistantNamesResponseDto assistantNamesResponse = codingzoneService.getAssistantNamesBySubjectId(subjectId);
+        return ResponseEntity.ok(ResponseDto.success("특정 교과목에 해당하는 조교 리스트 조회 성공.", assistantNamesResponse ));
     }
 
     @DeleteMapping("/{subjectId}")
