@@ -427,7 +427,6 @@ const CodingZoneRegist = () => {
           </div>
           <div className="category-bar">
             <div className="inner-category-bar">
-              <span className="main-span2"></span>
               <button className={`reset-button`} onClick={handleResetSemester}>
                 학기 초기화
               </button>
@@ -439,7 +438,6 @@ const CodingZoneRegist = () => {
               >
                 A 조
               </button>
-              <span className="main-span2"> | </span>
               <button
                 className={`Bgroup-button ${groupId === "B" ? "active" : ""}`}
                 onClick={() => setGroupId("B")}
