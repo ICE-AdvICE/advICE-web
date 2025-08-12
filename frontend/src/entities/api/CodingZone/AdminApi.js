@@ -152,6 +152,56 @@ export const uploadClassForWeek = async (
   }
 };
 
+export const deleteSubjectMappingBySubjectId = async (
+  subjectId,
+  token,
+  setCookie,
+  navigate
+) => {
+  try {
+    const response = await axios.delete(
+      `${API_DOMAIN_ADMIN}/subjects/${subjectId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    const { code, message } = response.data || {};
+    return { ok: code === "SU", code, message };
+  } catch (error) {
+    if (!error.response) {
+      return {
+        ok: false,
+        code: "NETWORK_ERROR",
+        message: "네트워크 상태를 확인해주세요.",
+      };
+    }
+
+    const { code, message } = error.response.data || {};
+
+    if (code === "ATE") {
+      console.warn("🔄 매핑 삭제: Access Token 만료됨. 토큰 재발급 시도 중...");
+      const newToken = await refreshTokenRequest(setCookie, token, navigate);
+      if (newToken?.accessToken) {
+        return deleteSubjectMappingBySubjectId(
+          subjectId,
+          newToken.accessToken,
+          setCookie,
+          navigate
+        );
+      } else {
+        setCookie("accessToken", "", { path: "/", expires: new Date(0) });
+        navigate("/");
+        return {
+          ok: false,
+          code: "TOKEN_EXPIRED",
+          message: "토큰이 만료되었습니다. 다시 로그인해주세요.",
+        };
+      }
+    }
+
+    return { ok: false, code, message };
+  }
+};
+
 // 13. 등록된 특정 수업 삭제 API
 export const deleteClass = async (classNum, token, setCookie, navigate) => {
   try {

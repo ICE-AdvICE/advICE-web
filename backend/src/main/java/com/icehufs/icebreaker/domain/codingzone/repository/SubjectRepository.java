@@ -1,6 +1,6 @@
 package com.icehufs.icebreaker.domain.codingzone.repository;
 
-import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.Subject;
 
@@ -8,10 +8,10 @@ public interface SubjectRepository extends JpaRepository<Subject, Integer> {
 
     boolean existsById(int subjectId);
 
-    boolean existsBySubjectName(String subjectName);
-
     boolean existsByIdIsNotNull();
 
-    // subjectId 오름차순 정렬 조회
-    List<Subject> findAllByOrderByIdAsc();
+    Optional<Subject> findById(int subjectId);
+
+    void deleteAllById(Integer id);
+
 }

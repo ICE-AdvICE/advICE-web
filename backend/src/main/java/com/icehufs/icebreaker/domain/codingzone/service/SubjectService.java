@@ -1,7 +1,12 @@
 package com.icehufs.icebreaker.domain.codingzone.service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import com.icehufs.icebreaker.domain.auth.domain.entity.Authority;
+import com.icehufs.icebreaker.domain.auth.repostiory.AuthorityRepository;
+import com.icehufs.icebreaker.domain.codingzone.exception.UnmappedSubjectException;
+import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneClassRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.icehufs.icebreaker.common.ResponseCode;
@@ -13,8 +18,8 @@ import com.icehufs.icebreaker.domain.codingzone.repository.SubjectRepository;
 import com.icehufs.icebreaker.domain.membership.repository.UserRepository;
 import com.icehufs.icebreaker.exception.BusinessException;
 import com.icehufs.icebreaker.util.SubjectResponseDto;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,50 +27,70 @@ public class SubjectService {
 
     private final SubjectRepository subjectRepository;
     private final UserRepository userRepository;
+    private final CodingZoneClassRepository codingzoneclassRepository;
+    private final AuthorityRepository authorityRepository;
 
     @Transactional
     public PostSubjectMappingResponseDto postMappingCodingZoneClass(List<PostSubjectMappingRequestDto> dto,
             String email) {
 
         boolean existedUser = userRepository.existsByEmail(email);
-        // 전역 처리로 사용자 계정 오류 예외처리
         if (!existedUser)
             throw new BusinessException(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER,HttpStatus.NOT_FOUND);
 
-        List<Integer> duplicatedIds = new ArrayList<>(); // 중복 매핑 번호가 있을 경우, 중복된 매핑 번호가 담길 List
-        List<String> duplicatedNames = new ArrayList<>(); // 중복 교과목 이름이 있을 경우,중복된 과목명이 담길 List
+        Set<Integer> seenIds = new HashSet<>();
+        Set<String>  seenNames = new HashSet<>();
+        List<Integer> duplicatedIds = new ArrayList<>();
+        List<String> duplicatedNames = new ArrayList<>();
 
-        for (PostSubjectMappingRequestDto requestDto : dto) {
-            // 매핑 번호 중복 확인
-            if (subjectRepository.existsById(requestDto.getSubjectId())) {
-                duplicatedIds.add(requestDto.getSubjectId());
-            }
-            // 매핑 과목명 중복 확인
-            if (subjectRepository.existsBySubjectName(requestDto.getSubjectName())) {
-                duplicatedNames.add(requestDto.getSubjectName());
-            }
+        // 입력 리스트 중에서 중복 값 확인
+        for (PostSubjectMappingRequestDto d : dto) {
+            if (!seenIds.add(d.getSubjectId()))   duplicatedIds.add(d.getSubjectId());
+            if (!seenNames.add(d.getSubjectName())) duplicatedNames.add(d.getSubjectName());
         }
 
         if (!duplicatedIds.isEmpty() && !duplicatedNames.isEmpty()) {
-            throw new BusinessException(ResponseCode.ALREADY_EXISTED_MAPPINGSET,ResponseMessage.ALREADY_EXISTED_MAPPSET,HttpStatus.CONFLICT);
+            throw new BusinessException(ResponseCode.DUPLICATED_MAPPING_SET,ResponseMessage.DUPLICATED_MAPPING_SET,HttpStatus.CONFLICT);
         }
-
         else if (!duplicatedIds.isEmpty()) {
-            throw new BusinessException(ResponseCode.ALREADY_EXISTED_NUMMAPPING,ResponseMessage.ALREADY_EXISTED_NUMMAPP,HttpStatus.CONFLICT);
+            throw new BusinessException(ResponseCode.DUPLICATED_MAPPING_NUMBER,ResponseMessage.DUPLICATED_MAPPING_NUMBER,HttpStatus.CONFLICT);
+        }
+        else if (!duplicatedNames.isEmpty()) {
+            throw new BusinessException(ResponseCode.DUPLICATED_MAPPING_CLASSNAME,ResponseMessage.DUPLICATED_MAPPING_CLASSNAME,HttpStatus.CONFLICT);
         }
 
-        else if (!duplicatedNames.isEmpty()) {
-            throw new BusinessException(ResponseCode.ALREADY_EXISTED_CLASSMAPPING,ResponseMessage.ALREADY_EXISTED_CLASSMAPP,HttpStatus.CONFLICT);
-        }
+        // DB 신규 등록 + DB 덮어씌우기
+        Map<Integer, Subject> existingById = subjectRepository.findAllById(seenIds).stream()
+                .collect(Collectors.toMap(Subject::getId, s -> s));
+
+        int updatedMapping = 0;
+        int createdMapping = 0;
 
         for (PostSubjectMappingRequestDto requestDto : dto) {
-            Subject subject = new Subject(requestDto.getSubjectId(), requestDto.getSubjectName());
-            subjectRepository.save(subject);
+            Subject exist = existingById.get(requestDto.getSubjectId());
+            // DB에 중복된 매핑 번호가 있을 때, 새로운 정보로 덮어쓰기
+            if(exist != null) {
+                exist.update(requestDto);
+                updatedMapping++;
+            }
+            // DB에 중복된 매핑 번호가 없을 때, 모두 새로운 정보로 저장
+            else {
+                Subject subject = new Subject(requestDto.getSubjectId(), requestDto.getSubjectName());
+                subjectRepository.save(subject);
+                createdMapping++;
+            }
         }
 
-        return new PostSubjectMappingResponseDto(ResponseCode.SUCCESS, ResponseMessage.SUCCESS_CLASS_CREATE);
-
+        if(updatedMapping > 0 && createdMapping == 0) { // DB에 덮어씌운 경우만
+            return new PostSubjectMappingResponseDto(ResponseCode.SUCCESS_POST_MAPPING, ResponseMessage.SUCCESS_POST_MAPPING,null);
+        }
+        else if(updatedMapping == 0 && createdMapping > 0) { // 모두 신규 등록일 때
+            return new PostSubjectMappingResponseDto(ResponseCode.SUCCESS_POST_MAPPING, ResponseMessage.SUCCESS_POST_MAPPING, null);
+        } else { // 신규등록과 DB에 덮어씌운 경우 혼합
+            return new PostSubjectMappingResponseDto(ResponseCode.SUCCESS_POST_MAPPING, ResponseMessage.SUCCESS_POST_MAPPING, null);
+        }
     }
+
 
     public List<SubjectResponseDto> getMappingCodingZoneClass(String email) {
 
@@ -78,10 +103,32 @@ public class SubjectService {
         if (!subjectRepository.existsByIdIsNotNull())
             throw new BusinessException(ResponseCode.NOT_ANY_MAPPINGSET, ResponseMessage.NOT_ANY_MAPPINGSET,HttpStatus.NOT_FOUND);
 
-        List<Subject> subjectList = subjectRepository.findAll();// DB에서 꺼내서 Entity 리스트로 만든다음에
+        List<Subject> subjectList = subjectRepository.findAll();
         return subjectList.stream()
                 .map(subject -> new SubjectResponseDto(subject.getId(), subject.getSubjectName()))
-                .toList(); // 바꾼 SubjectDto를 리스트 구조로 바꾸고
-        // 즉, 그 각각의 Subject Entity의 집합을 Dto 집합으로 바꾸는 과정임
+                .toList();
+    }
+
+    @Transactional
+    public void deleteMappingCodingZoneClass(Integer subjectId) {
+
+        String subjectName = subjectRepository.findById(subjectId)
+                .map(Subject::getSubjectName)
+                .orElseThrow(UnmappedSubjectException::new);
+
+        if(codingzoneclassRepository.existsBySubjectId(subjectId)) {
+            throw new BusinessException(ResponseCode.DELETE_NOT_ALLOW, ResponseMessage.DELETE_NOT_ALLOW, HttpStatus.BAD_REQUEST);
+        }
+        SubjectResponseDto dto = new SubjectResponseDto(subjectId,subjectName);
+        // 수업 삭제
+        subjectRepository.deleteAllById(subjectId);
+
+        // 조교 권한 박탈
+        String role = "ROLE_ADMINC" + subjectId;
+        List<Authority> users = authorityRepository.findAllByRoleValue(role);
+        users.forEach(user -> user.revokeRole(role));
+
     }
 }
+
+

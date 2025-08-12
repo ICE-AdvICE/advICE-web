@@ -3,10 +3,9 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-
+import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassUpdateRequestDto;
 import jakarta.persistence.*;
 import org.springframework.http.HttpStatus;
-
 import com.icehufs.icebreaker.common.ResponseCode;
 import com.icehufs.icebreaker.common.ResponseMessage;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassAssignRequestDto;
@@ -65,6 +64,20 @@ public class CodingZoneClass {
         this.subject = subject;
     }
 
+    public CodingZoneClass(CodingZoneClassUpdateRequestDto dto, Integer classNum, Subject subject) {
+        isDateWeekend(dto.getClassDate());
+        this.classNum = classNum;
+        this.assistantName = dto.getAssistantName();
+        this.classTime = dto.getClassTime();
+        this.classDate = dto.getClassDate();
+        this.currentNumber = 0;
+        this.maximumNumber = dto.getMaximumNumber();
+        this.className = dto.getClassName();
+        this.weekDay = dto.getWeekDay();
+        this.subject = subject;
+    }
+
+
     public void increaseNum() {
         this.currentNumber++;
     }
@@ -82,7 +95,8 @@ public class CodingZoneClass {
         LocalDate date = LocalDate.parse(dateString);
         DayOfWeek day = date.getDayOfWeek();
         if ((day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY))
-            throw new BusinessException(ResponseCode.NOT_WEEKDAY, ResponseMessage.NOT_WEEKDAY, HttpStatus.BAD_REQUEST);
+            throw new BusinessException(ResponseCode.NOT_WEEKDAY, ResponseMessage.
+                    NOT_WEEKDAY, HttpStatus.BAD_REQUEST);
     }
 
     public String calculateClassStatus(String date) {
@@ -101,5 +115,16 @@ public class CodingZoneClass {
         } else {
             return "진행 중";
         }
+    }
+
+    public void update(CodingZoneClassUpdateRequestDto dto, Subject subject) {
+
+        this.assistantName = dto.getAssistantName();
+        this.classTime = dto.getClassTime();
+        this.classDate = dto.getClassDate();
+        this.weekDay = dto.getWeekDay();
+        this.maximumNumber =dto.getMaximumNumber();
+        this.className = dto.getClassName();
+        this.subject = subject;
     }
 }

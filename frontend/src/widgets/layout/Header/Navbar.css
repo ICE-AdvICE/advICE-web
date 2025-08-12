@@ -1,24 +1,122 @@
+.navbar {
+  width: 100%;
+  padding: 0 110px;
+  margin: 0 0 30px 0;
+}
+
 .header-container {
   align-items: center;
-  width: 1600px;
-  min-width: 350px;
+  width: 100%;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 30px 0px 10px 11px;
-  position: relative;
+  padding: 70px 0 13px 11px;
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid #052940;
 }
+
 .header-container img {
-  margin-top: 0.5vw;
-  width: 140px;
-  height: 35px;
+  margin: 0;
+  width: 165px;
+  height: auto;
 }
 .navbar-nav {
-  font-size: 13px;
+  font-size: 0.85rem;
 }
 
-/* ✅ 추가(juhui) : 익명 게시판 Navbar 배경색 수정  */
+.nav-actions {
+  display: flex;
+  flex-direction: row;
+  font-weight: bold;
+}
+
+nav.navbar .nav-link {
+  color: #052940 !important;
+  transition: opacity 0.2s ease;
+}
+
+/* hover : 클릭 순간 */
+nav.navbar .nav-link:hover,
+nav.navbar .nav-link:active {
+  opacity: 0.5;
+}
+
+/* 모달 열린 동안 해당 링크만 계속 0.5 유지 */
+nav.navbar .nav-link[aria-expanded="true"],
+nav.navbar .nav-link[data-open="true"] {
+  opacity: 0.5;
+}
+
+/* ≤ 1280px 반응형 */
+@media (max-width: 1280px) {
+  .navbar {
+    padding: 0 80px;
+    margin: 0 0 25px 0;
+  }
+  .header-container {
+    padding: 89px 0 12px 12px;
+  }
+  .header-container img {
+    width: 165px;
+  }
+  .navbar-nav {
+    font-size: 0.8rem;
+  }
+}
+
+/* ≤ 1024px 반응형 */
+@media (max-width: 1024px) {
+  .navbar {
+    padding: 0 60px;
+    margin: 0 0 24px 0;
+  }
+  .header-container {
+    padding: 70px 0 12px 13px;
+  }
+  .header-container img {
+    width: 165px;
+  }
+  .navbar-nav {
+    font-size: 0.8rem;
+  }
+}
+
+/* ≤ 768px 반응형 */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 40px;
+    margin: 0 0 19px 0;
+  }
+  .header-container {
+    padding: 48px 0 8px 14px;
+  }
+  .header-container img {
+    width: 125px;
+  }
+  .navbar-nav {
+    font-size: 0.65rem;
+  }
+}
+
+/* ≤ 480px 반응형 */
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0 20px;
+    margin: 0 0 14px 0;
+  }
+  .header-container {
+    padding: 28px 0 7px 15px;
+  }
+  .header-container img {
+    width: 92px;
+  }
+  .navbar-nav {
+    font-size: 0.53rem;
+  }
+}
+
+/* 익명 게시판 Navbar 배경색 수정 및 margin 수정 */
 .navbar.article-navbar {
   background-color: #eaeaf5;
+  margin: 0;
 }

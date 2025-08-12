@@ -16,6 +16,8 @@ public interface CodingZoneClassRepository extends JpaRepository<CodingZoneClass
 
     List<CodingZoneClass> findBySubjectIdAndClassDateBetween(int subjectId, String startDate, String endDate);
 
+    boolean existsBySubjectId(Integer subjectId);
+
     List<CodingZoneClass> findAllByClassDate(String classDate);
 
     List<CodingZoneClass> findBySubject_IdAndClassDate(int subjectId, String classDate);

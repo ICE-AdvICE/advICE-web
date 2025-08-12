@@ -8,12 +8,23 @@ import {
   grantPermission,
 } from "../features/api/Admin/Codingzone/AuthApi";
 
+import { getSubjectMappingList } from "../features/api/Admin/Codingzone/ClassApi";
+
 const AuthHandle = () => {
   const [cookies, setCookie] = useCookies(["accessToken"]);
   const [activeCategory, setActiveCategory] = useState("giveAuth");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
   const navigate = useNavigate();
+  const [mappedSubjects, setMappedSubjects] = useState([]);
+
+ 
+  const handleResponse = (response) => {
+    alert(response.message);
+    if (response.code === "ATE" || response.code === "TOKEN_EXPIRED") {
+      navigate("/");
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,8 +32,7 @@ const AuthHandle = () => {
       alert("모든 필드의 값을 입력해주세요.");
       return;
     }
-    const confirmMessage = `정말 ${email} 사용자에게 선택하신 권한을 부여하시겠습니까?`;
-    if (window.confirm(confirmMessage)) {
+    if (window.confirm(`정말 ${email} 사용자에게 선택하신 권한을 부여하시겠습니까?`)) {
       try {
         const response = await grantPermission(
           email,
@@ -32,20 +42,20 @@ const AuthHandle = () => {
           navigate
         );
         handleResponse(response);
-      } catch (error) {
+      } catch {
         alert("네트워크 상태를 확인해주세요.");
       }
     }
   };
 
+  /** 권한 박탈 */
   const handleSubmit2 = async (e) => {
     e.preventDefault();
     if (!email || !role) {
       alert("모든 필드의 값을 입력해주세요.");
       return;
     }
-    const confirmMessage = `정말 ${email} 사용자에게 선택하신 권한을 박탈하시겠습니까?`;
-    if (window.confirm(confirmMessage)) {
+    if (window.confirm(`정말 ${email} 사용자에게 선택하신 권한을 박탈하시겠습니까?`)) {
       try {
         const response = await deprivePermission(
           email,
@@ -54,67 +64,29 @@ const AuthHandle = () => {
           setCookie,
           navigate
         );
-        handleResponse2(response);
-      } catch (error) {
+        handleResponse(response);
+      } catch {
         alert("네트워크 상태를 확인해주세요.");
       }
     }
   };
 
-  const handleResponse = (response) => {
-    const { code, message } = response;
-    switch (code) {
-      case "SU":
-        alert("성공적으로 권한이 부여되었습니다.");
-        break;
-      case "NU":
-        alert("로그인 시간이 만료되었습니다. 다시 로그인 해주세요.");
-        navigate("/");
-        break;
-      case "AF":
-        alert("권한이 없습니다.");
-        break;
-      case "NS":
-        alert("회원가입이 안된 사용자입니다.");
-        break;
-      case "PE":
-        alert("해당 사용자가 이미 부여받은 권한입니다.");
-        break;
-      case "DBE":
-        alert("데이터베이스 오류입니다.");
-        break;
-      default:
-        alert("오류 발생: " + message);
-        break;
-    }
-  };
-  const handleResponse2 = (response) => {
-    const { code, message } = response;
-    switch (code) {
-      case "SU":
-        alert("성공적으로 권한이 박탈되었습니다.");
-        break;
-      case "NU":
-        alert("로그인 시간이 만료되었습니다. 다시 로그인 해주세요.");
-        navigate("/");
-        break;
-      case "AF":
-        alert("권한이 없습니다.");
-        break;
-      case "NS":
-        alert("회원가입이 안된 사용자입니다.");
-        break;
-      case "PE":
-        alert("해당 사용자가 이미 박탈된 권한입니다.");
-        break;
-      case "DBE":
-        alert("데이터베이스 오류입니다.");
-        break;
-      default:
-        alert("오류 발생: " + message);
-        break;
-    }
-  };
+  /** 과목 목록 불러오기 */
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      const result = await getSubjectMappingList(
+        cookies.accessToken,
+        setCookie,
+        navigate
+      );
+      if (result.success) {
+        setMappedSubjects(result.subjectList);
+      } else {
+        console.warn("매핑된 과목 조회 실패:", result.message);
+      }
+    };
+    fetchSubjects();
+  }, [cookies.accessToken, setCookie, navigate]);
 
   return (
     <div className="main-container-AHpage">
@@ -154,6 +126,7 @@ const AuthHandle = () => {
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
+
           <div className="input-auth-AHpage">
             <label htmlFor="category-of-auth" className="categori-label">
               권한 종류
@@ -163,14 +136,19 @@ const AuthHandle = () => {
               value={role}
               onChange={(e) => setRole(e.target.value)}
             >
-              <option value=""></option>
+              <option value="">-- 권한을 선택하세요 --</option>
               <option value="ROLE_ADMIN1">익명게시판 관리자 권한</option>
-              <option value="ROLE_ADMINC1">코딩존1 조교 권한</option>
-              <option value="ROLE_ADMINC2">코딩존2 조교 권한</option>
-              <option value="ROLE_ADMINC3">코딩존3 조교 권한</option>
-              <option value="ROLE_ADMINC4">코딩존4 조교 권한</option>
+              {mappedSubjects.map((subject) => (
+                <option
+                  key={subject.subjectId}
+                  value={`ROLE_ADMINC${subject.subjectId}`}
+                >
+                  {subject.subjectName} 조교 권한
+                </option>
+              ))}
             </select>
           </div>
+
           <button type="submit" className="button-right-AHpage">
             등록
           </button>

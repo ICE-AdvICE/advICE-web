@@ -1,25 +1,22 @@
 package com.icehufs.icebreaker.provider;
 
-
 import java.security.Key;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.UUID;
 
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
-
 import com.icehufs.icebreaker.domain.auth.dto.object.JwtToken;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtProvider {
-    
+
     private Key key;
 
     public JwtProvider() {
@@ -43,7 +40,7 @@ public class JwtProvider {
         return new JwtToken(accessToken, refreshToken);
     }
 
-    public String validate(String jwt) { 
+    public String validate(String jwt) {
 
         String claims = null;
 

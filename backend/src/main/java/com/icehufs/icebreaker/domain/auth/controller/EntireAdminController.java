@@ -1,6 +1,15 @@
 package com.icehufs.icebreaker.domain.auth.controller;
 
-import com.icehufs.icebreaker.domain.codingzone.dto.response.*;
+
+import com.icehufs.icebreaker.domain.codingzone.service.AttendanceService;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.DeleteClassResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCodingZoneStudentListResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfGroupInfResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GroupInfUpdateResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneClassNamesResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.ReservationStudentDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.DownloadArticleExcelResponseDto;
+
 import com.icehufs.icebreaker.util.ResponseDto;
 import jakarta.validation.Valid;
 
@@ -36,6 +45,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class EntireAdminController {
 
     private final CodingZoneService codingzoneService;
+    private final AttendanceService attendanceService;
 
     @PostMapping("/upload-group") //특정 (A/B)조 정보 등록 API
     public ResponseEntity<? super GroupInfUpdateResponseDto> uploadInf(
@@ -64,15 +74,6 @@ public class EntireAdminController {
         return response;
     }
 
-    @DeleteMapping("/delete-class/{classNum}") //등록된 특정 수업 삭제 API
-    public ResponseEntity<? super DeleteClassResponseDto> deleteClass(
-        @PathVariable Integer classNum,
-        @AuthenticationPrincipal String email
-    ) {
-        ResponseEntity<? super DeleteClassResponseDto> response = codingzoneService.deleteClass(classNum, email);
-        return response;
-    }
-
     @GetMapping("/student-list") // 해당학기에 출/결한 모든 학생을 리스트로 반환 API
     public ResponseEntity<? super GetCodingZoneStudentListResponseDto> getStudentList(
         @AuthenticationPrincipal String email
@@ -81,12 +82,6 @@ public class EntireAdminController {
         return response;
     }
 
-    @DeleteMapping("/delete-allinf") // 코딩존 관련 모든 정보 초기화(코딩존 조교 권한 박할까지) API
-    public ResponseEntity<ResponseDto<String>> deleteAll(
-        @AuthenticationPrincipal String email
-    ) {
-        return ResponseEntity.ok(ResponseDto.success(codingzoneService.deleteAll(email)));
-    }
 
     @GetMapping("/subjects/{subjectId}/assistants")
     public ResponseEntity<ResponseDto<AssistantNamesResponseDto>> getAssistantsBySubject(
@@ -101,6 +96,14 @@ public class EntireAdminController {
 
         SubjectMappingInfoResponseDto subjectIdNameMap = codingzoneService.getClassNamesWithSubjectIdsByDate(date);
         return ResponseEntity.ok(ResponseDto.success("특정 날짜에 이루어진 코딩존 교과목 리스트 조회 성공.", subjectIdNameMap));
+    }
+
+    @GetMapping("/attendances/{classNum}")
+    public ResponseEntity<ResponseDto<List<ReservationStudentDto>>> getReservationStudents(
+            @PathVariable Integer classNum
+    ) {
+        List<ReservationStudentDto> studentList = attendanceService.getReservationStudentsByClassNum(classNum);
+        return ResponseEntity.ok(ResponseDto.success("특정 일에 특정 조교의 코딩존에 참여한 학생 리스트 조회 성공.", studentList));
     }
 
     @GetMapping("/excel/attendance/grade1")
