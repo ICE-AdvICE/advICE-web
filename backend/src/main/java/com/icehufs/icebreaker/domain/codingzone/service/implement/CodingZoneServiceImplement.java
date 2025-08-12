@@ -4,7 +4,6 @@ import com.icehufs.icebreaker.common.ResponseCode;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.AuthorityExistResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GroupInfUpdateResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfGroupInfResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.DeleteClassResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneRegisterResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneCanceResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.PutAttendanceResponseDto;
@@ -15,11 +14,10 @@ import com.icehufs.icebreaker.domain.codingzone.dto.response.GetPersAttendListIt
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCodingZoneStudentListResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetReservedClassListItemResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCodingZoneAssitantListResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneClassNamesResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.SubjectMappingInfoResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.AssistantNamesResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneClassInfoResponseDto;
 
-import com.icehufs.icebreaker.domain.membership.domain.exception.UserNotFoundException;
 import com.icehufs.icebreaker.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;

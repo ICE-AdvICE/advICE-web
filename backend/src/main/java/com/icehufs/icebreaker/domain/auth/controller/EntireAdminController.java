@@ -2,11 +2,10 @@ package com.icehufs.icebreaker.domain.auth.controller;
 
 
 import com.icehufs.icebreaker.domain.codingzone.service.AttendanceService;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.DeleteClassResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCodingZoneStudentListResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfGroupInfResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GroupInfUpdateResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneClassNamesResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.SubjectMappingInfoResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.ReservationStudentDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.DownloadArticleExcelResponseDto;
 
@@ -80,15 +79,6 @@ public class EntireAdminController {
     ) {
         ResponseEntity<? super GetCodingZoneStudentListResponseDto> response = codingzoneService.getStudentList(email);
         return response;
-    }
-
-
-    @GetMapping("/subjects/{subjectId}/assistants")
-    public ResponseEntity<ResponseDto<AssistantNamesResponseDto>> getAssistantsBySubject(
-            @PathVariable Long subjectId
-    ) {
-        AssistantNamesResponseDto assistantList = codingzoneService.getAssistantNamesBySubjectId(subjectId);
-        return ResponseEntity.ok(ResponseDto.success("특정 교과목에 해당하는 조교 리스트 조회 성공.", assistantList));
     }
 
     @GetMapping("/codingzones")
