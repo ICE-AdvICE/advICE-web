@@ -2,7 +2,7 @@
 .cza_button_container {
   display: flex; /* 기본값 : row */
   width: 100%;
-  margin: 3.4rem 0 1.0625rem 0;
+  margin: 1.7rem 0 1.0625rem 0;
   justify-content: center;
   align-items: center;
   gap: 1.875rem;
@@ -52,7 +52,7 @@
 
 /* 일반 학생 전용 버튼 컨테이너 */
 .cza_button_container.student {
-  margin: 2.5rem 0 1.5rem 0;
+  margin: 2rem 0 1.5rem 0;
   margin-inline: auto;
 }
 
@@ -60,7 +60,10 @@
 .btn-attend.student {
   padding: 0.85em 1.6em;
   margin-inline: auto;
+  position: relative;
+  left: 9.5px;
 }
+
 /* 학생 전용일 땐 구분선 제거 */
 .cza_button_container.student .divider {
   display: none;
@@ -70,39 +73,45 @@
 /* ≤ 1280px 반응형 */
 @media (max-width: 1280px) {
   .cza_button_container {
-    margin: 0 0 0.84rem 0;
+    margin: 1.7 0 0.84rem 0;
   }
   .btn-attend {
     font-size: 0.9rem;
   }
   .cza_button_container.student {
-    margin: 0rem 0 1.7rem 0;
+    margin: 1.5rem 0 1.7rem 0;
+    position: relative;
+    right: 0.2px;
   }
 }
 
 /* ≤ 1024px 반응형 */
 @media (max-width: 1024px) {
   .cza_button_container {
-    margin: 0.4rem 0 0.7rem 0;
+    margin: 1.95rem 0 0.7rem 0;
   }
   .btn-attend {
     font-size: 0.74rem;
   }
   .cza_button_container.student {
-    margin: 0.1rem 0 1.6rem 0;
+    margin: 1.3rem 0 1.6rem 0;
+    position: relative;
+    right: 0.1rem;
   }
 }
 
 /* ≤ 768px 반응형 */
 @media (max-width: 768px) {
   .cza_button_container {
-    margin: 0.7rem 0 0.7rem 0;
+    margin: 1.85rem 0 0.7rem 0;
   }
   .btn-attend {
     font-size: 0.7rem;
   }
   .cza_button_container.student {
-    margin: 0.1rem 0 1.6rem 0;
+    margin: 1.3rem 0 1.6rem 0;
+    position: relative;
+    right: 0.28rem;
   }
 }
 
@@ -112,7 +121,7 @@
     flex-wrap: wrap; /* 줄바꿈 허용 */
     justify-content: center;
     gap: 0.75rem;
-    margin: 0.7rem 0 0.35rem 0;
+    margin: 1.4rem 0 0.35rem 0;
   }
 
   /* 세로 구분선 숨김 */
@@ -128,12 +137,14 @@
     font-size: 0.55rem;
   }
   .cza_button_container.student {
-    margin: 0.35rem 0 1.5rem 0;
+    margin: 1.2rem 0 1.5rem 0;
+    position: relative;
+    right: 0.315rem;
   }
 
   .cza_button_container.student .btn-attend.student {
     flex: 0 0 auto;
     width: auto;
-    padding: 0.6rem 1.2rem !important;
+    padding: 0.5rem 1rem !important;
   }
 }

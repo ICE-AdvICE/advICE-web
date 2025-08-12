@@ -1,13 +1,11 @@
 package com.icehufs.icebreaker.domain.codingzone.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.Subject;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassUpdateRequestDto;
-import com.icehufs.icebreaker.domain.codingzone.exception.DuplicatedClassException;
-import com.icehufs.icebreaker.domain.codingzone.exception.AlreadyExistClassException;
-import com.icehufs.icebreaker.domain.codingzone.exception.UnmappedSubjectException;
+import com.icehufs.icebreaker.domain.codingzone.exception.*;
+import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneRegisterRepository;
 import org.springframework.stereotype.Service;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneClass;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.GroupInf;
@@ -24,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class CodingZoneClassService {
 
     private final CodingZoneClassRepository codingZoneClassRepository;
+    private final CodingZoneRegisterRepository codingZoneRegisterRepository;
     private final GroupInfRepository groupInfRepository;
     private final SubjectRepository subjectRepository;
 
@@ -92,9 +91,18 @@ public class CodingZoneClassService {
                 .orElseThrow(() -> new UnmappedSubjectException());
 
         existingClass.update(dto, subject);
-
-
-
-
     }
+
+    @Transactional
+    public void deleteClass(Integer classNum) {
+
+        CodingZoneClass codingZoneClass = codingZoneClassRepository.findById(classNum)
+                .orElseThrow(() -> new CodingZoneClassNotFoundException());
+
+        if(codingZoneRegisterRepository.existsByCodingZoneClassClassNum(classNum)) {
+            throw new ExistCodingZoneRegisterException();
+        }
+        codingZoneClassRepository.delete(codingZoneClass);
+    }
+
 }

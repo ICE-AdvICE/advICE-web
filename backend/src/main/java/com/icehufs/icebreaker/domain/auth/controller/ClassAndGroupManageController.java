@@ -19,7 +19,7 @@ public class ClassAndGroupManageController {
 
     private final CodingZoneClassService codingZoneManagingService;
 
-    @PostMapping("") // 코딩존 수업 등록 Controller
+    @PostMapping("")
     public ResponseEntity<ResponseDto<String>> postClassAndGroup(
             @AuthenticationPrincipal String email,
             @RequestBody @Valid List<CodingZoneClassAssignRequestDto> requestBody) {
@@ -28,7 +28,7 @@ public class ClassAndGroupManageController {
         return ResponseEntity.ok(ResponseDto.success(ResponseMessage.SUCCESS_CLASS_CREATE));
     }
 
-    @PatchMapping("/{classNum}") // 특정 코딩존 수업 정보 수정 Controller
+    @PatchMapping("/{classNum}")
     public ResponseEntity<ResponseDto<String>> patchClassAndGroup(
             @AuthenticationPrincipal String email,
             @Valid @RequestBody CodingZoneClassUpdateRequestDto requestBody,
@@ -36,5 +36,13 @@ public class ClassAndGroupManageController {
 
         codingZoneManagingService.patchClassAndGroup(requestBody, classNum);
         return ResponseEntity.ok(ResponseDto.success(ResponseMessage.SUCCESS_CLASS_UPDATE));
+    }
+
+    @DeleteMapping("/{classNum}")
+    public ResponseEntity<ResponseDto<String>> deleteClass(
+            @PathVariable("classNum") Integer classNum
+    ) {
+        codingZoneManagingService.deleteClass(classNum);
+        return ResponseEntity.ok(ResponseDto.success(ResponseMessage.SUCCESS_CLASS_DELETE));
     }
 }

@@ -64,15 +64,6 @@ public class EntireAdminController {
         return response;
     }
 
-    @DeleteMapping("/delete-class/{classNum}") //등록된 특정 수업 삭제 API
-    public ResponseEntity<? super DeleteClassResponseDto> deleteClass(
-        @PathVariable Integer classNum,
-        @AuthenticationPrincipal String email
-    ) {
-        ResponseEntity<? super DeleteClassResponseDto> response = codingzoneService.deleteClass(classNum, email);
-        return response;
-    }
-
     @GetMapping("/student-list") // 해당학기에 출/결한 모든 학생을 리스트로 반환 API
     public ResponseEntity<? super GetCodingZoneStudentListResponseDto> getStudentList(
         @AuthenticationPrincipal String email
