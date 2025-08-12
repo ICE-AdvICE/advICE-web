@@ -15,7 +15,6 @@ public interface CodingZoneService {
     ResponseEntity<? super GroupInfUpdateResponseDto> uploadInf(List<GroupInfUpdateRequestDto> dto, String email);
     ResponseEntity<? super GetListOfGroupInfResponseDto> getList(String groupId, String email);
     ResponseEntity<? super GroupInfUpdateResponseDto> patchInf(List<PatchGroupInfRequestDto> dto, String email);
-    ResponseEntity<? super DeleteClassResponseDto> deleteClass(Integer classNum, String email);
     ResponseEntity<? super GetCodingZoneStudentListResponseDto> getStudentList(String email);
     String deleteAll(String email);
     ByteArrayResource generateAttendanceExcelOfGrade1() throws IOException;
