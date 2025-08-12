@@ -174,27 +174,6 @@ public class CodingZoneServiceImplement implements CodingZoneService {
     }
 
     @Override
-    public ResponseEntity<? super DeleteClassResponseDto> deleteClass(Integer classNum, String email) {
-        try {
-            // 사용자 계정이 존재하는지(로그인 시간이 초과됐는지) 확인하는 코드
-            boolean existedUser = userRepository.existsByEmail(email);
-            if (!existedUser)
-                return DeleteClassResponseDto.notExistUser();
-
-            CodingZoneClass codingZoneClass = codingZoneClassRepository.findByClassNum(classNum);
-            if (codingZoneClass == null)
-                return DeleteClassResponseDto.noExistArticle();
-
-            codingZoneClassRepository.delete(codingZoneClass);
-
-            return DeleteClassResponseDto.success();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-    }
-
-    @Override
     @Transactional
     public ResponseEntity<? super CodingZoneRegisterResponseDto> classRegist(Integer classNum, String email) {
 
