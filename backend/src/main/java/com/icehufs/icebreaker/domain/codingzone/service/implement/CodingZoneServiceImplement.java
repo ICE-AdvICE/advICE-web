@@ -538,38 +538,6 @@ public class CodingZoneServiceImplement implements CodingZoneService {
     }
 
     @Override
-    @Transactional
-    public String deleteAll(String email) {
-        boolean existedUser = userRepository.existsByEmail(email);
-        if (!existedUser) {
-            throw new UserNotFoundException("사용자를 찾을 수 없습니다.");
-        }
-
-        // 코딩존 관련 모든 테이블 초기화
-        codingZoneRegisterRepository.deleteAll();
-        groupInfRepository.deleteAll();
-        codingZoneClassRepository.deleteAll();
-
-        // 코딩존 조교 권한 취소
-        updateAuthorities();
-        return "조교 권한을 취소하는데 성공했습니다.";
-    }
-
-    // 학기 초기화를 위한 트렌젝션 분리
-    @Transactional
-    public void updateAuthorities() {
-        List<Authority> usersC1 = authorityRepository.findByRoleAdminC1("ROLE_ADMINC1");
-        List<Authority> usersC2 = authorityRepository.findByRoleAdminC2("ROLE_ADMINC2");
-        List<Authority> usersC3 = authorityRepository.findByRoleAdminC3("ROLE_ADMINC3");
-        List<Authority> usersC4 = authorityRepository.findByRoleAdminC4("ROLE_ADMINC4");
-
-        usersC1.forEach(authority -> authority.revokeRole("ROLE_ADMINC1"));
-        usersC2.forEach(authority -> authority.revokeRole("ROLE_ADMINC2"));
-        usersC3.forEach(authority -> authority.revokeRole("ROLE_ADMINC3"));
-        usersC4.forEach(authority -> authority.revokeRole("ROLE_ADMINC4"));
-    }
-
-    @Override
     public ResponseEntity<? super GetCodingZoneAssitantListResponseDto> getAssistantList() {
         List<User> ListOfCodingZone1 = new ArrayList<>();
         List<User> ListOfCodingZone2 = new ArrayList<>();

@@ -1,6 +1,8 @@
 package com.icehufs.icebreaker.domain.auth.repostiory;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -26,4 +28,19 @@ public interface AuthorityRepository extends JpaRepository<Authority, String> {
            or a.roleAdminC4 = :role
     """)
     List<Authority> findAllByRoleValue(@Param("role") String role);
+
+
+    @Modifying
+    @Transactional
+    @Query("""
+        UPDATE authority a
+           SET a.roleAdminC1 = NULL,
+               a.roleAdminC2 = NULL,
+               a.roleAdminC3 = NULL,
+               a.roleAdminC4 = NULL
+    """)
+    void clearAllClassAssistantAuthority();
+
+
+
 }
