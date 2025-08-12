@@ -156,70 +156,68 @@ const ClassSetting = () => {
           </div>
           <div className="setting-table-container">
             <table className="form-table">
-              <tbody>
-                {/* 이미 등록된 매핑: 항상 리스트에 남김(읽기 전용) */}
-                {loading ? (
-                  <tr>
-                    <td colSpan={2} style={{ textAlign: "center" }}>
-                      불러오는 중…
-                    </td>
-                  </tr>
-                ) : (
-                  existingMappings.map((m) => (
-                    <tr
-                      key={`existing-${m.subjectId}`}
-                      className="registered-row"
-                    >
-                      <td>
-                        <input value={m.subjectId} disabled />
-                      </td>
-                      <td className="subject-cell">
-                        <input value={m.subjectName} disabled />
-                        <button
-                          className="delete-btn"
-                          onClick={() => handleDeleteExisting(m)}
-                          disabled={String(deletingId) === String(m.subjectId)}
-                        >
-                          {deletingId === m.subjectId ? "삭제중…" : "X"}
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-                {rows.map((row) => (
-                  <tr key={row.id}>
+              {/* 이미 등록된 매핑: 항상 리스트에 남김(읽기 전용) */}
+              {loading ? (
+                <tr>
+                  <td colSpan={2} style={{ textAlign: "center" }}>
+                    불러오는 중…
+                  </td>
+                </tr>
+              ) : (
+                existingMappings.map((m) => (
+                  <tr
+                    key={`existing-${m.subjectId}`}
+                    className="registered-row"
+                  >
                     <td>
-                      <select
-                        value={row.codingZone}
-                        onChange={(e) =>
-                          handleChange(row.id, "codingZone", e.target.value)
-                        }
-                      >
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                      </select>
+                      <input value={m.subjectId} disabled />
                     </td>
                     <td className="subject-cell">
-                      <input
-                        type="text"
-                        placeholder="과목명을 입력해주세요.."
-                        value={row.subjectName}
-                        onChange={(e) =>
-                          handleChange(row.id, "subjectName", e.target.value)
-                        }
-                      />
+                      <input value={m.subjectName} disabled />
                       <button
                         className="delete-btn"
-                        onClick={() => handleRemoveRow(row.id)}
+                        onClick={() => handleDeleteExisting(m)}
+                        disabled={String(deletingId) === String(m.subjectId)}
                       >
-                        X
+                        {deletingId === m.subjectId ? "삭제중…" : "X"}
                       </button>
                     </td>
                   </tr>
-                ))}
-              </tbody>
+                ))
+              )}
+              {rows.map((row) => (
+                <tr key={row.id}>
+                  <td>
+                    <select
+                      value={row.codingZone}
+                      onChange={(e) =>
+                        handleChange(row.id, "codingZone", e.target.value)
+                      }
+                    >
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                    </select>
+                  </td>
+                  <td className="subject-cell">
+                    <input
+                      type="text"
+                      placeholder="과목명을 입력해주세요.."
+                      value={row.subjectName}
+                      onChange={(e) =>
+                        handleChange(row.id, "subjectName", e.target.value)
+                      }
+                    />
+                    <button
+                      className="delete-btn"
+                      onClick={() => handleRemoveRow(row.id)}
+                    >
+                      X
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </table>
 
             <div className="button-group">

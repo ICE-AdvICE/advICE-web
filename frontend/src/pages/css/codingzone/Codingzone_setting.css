@@ -7,9 +7,9 @@
 .setting-label {
   display: flex;
   height: 60px;
-  padding: 20px 100px;
+  padding: 20px 7.7rem;
   align-items: center;
-  gap: 100px;
+  gap: 11.7rem;
   align-self: stretch;
   border-radius: 10px;
   background: #052940;
@@ -55,6 +55,45 @@
   width: 100%;
 }
 
+/* 2) 표 안의 모든 input/select 높이·패딩·테두리 통일  */
+.form-table select {
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #000;
+  border-radius: 0;
+  box-sizing: border-box;
+  font: 16px/1.2 "Pretendard", sans-serif;
+}
+
+.form-table input[type="text"] {
+  height: 40px;
+  padding: 0 12px 0 0;
+  border: 1px solid #000;
+  border-radius: 0;
+  box-sizing: border-box;
+  font: 16px/1.2 "Pretendard", sans-serif;
+}
+
+.form-table input[disabled],
+.form-table input[readonly] {
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #f5f5f5;
+  border-radius: 0;
+  box-sizing: border-box;
+  background: #f5f5f5; /* 회색 배경만 */
+  color: #555;
+  width: 100%;
+  text-align: center;
+}
+
+.form-table .delete-btn,
+.form-table td:last-child > button {
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 4px;
+}
+
 .subject-cell {
   display: flex;
   align-items: center;
@@ -81,6 +120,21 @@
 
 .subject-cell input[type="text"] {
   flex: 1 1 auto; /* 남은 공간을 채움 */
+  padding-left: 1px; /* 필요시 0~6px 정도로 조절 */
+}
+
+.subject-cell input[type="text"]::placeholder {
+  text-indent: 0;
+}
+
+.form-table .subject-cell input[type="text"] {
+  padding-left: 0 !important;
+  padding-inline-start: 0 !important;
+  text-indent: 0 !important; /* 혹시 indent가 걸려있을 경우 */
+}
+
+.form-table .subject-cell input[type="text"]::placeholder {
+  text-indent: 0 !important;
 }
 
 select {
