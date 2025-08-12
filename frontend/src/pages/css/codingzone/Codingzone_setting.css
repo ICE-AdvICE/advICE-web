@@ -100,41 +100,19 @@
   gap: 8px;
 }
 
-.subject-cell input[type="text"],
-.subject-cell select {
+.subject-cell input[type="text"] {
   height: 40px; /* ← 같은 높이로 고정 */
   padding: 0 12px; /* 상하 0, 좌우만 */
   border: 1px solid #000;
   border-radius: 0; /* 각진 모서리 */
   box-sizing: border-box; /* 패딩 포함 크기계산 */
   font: 16px/1.2 "Pretendard", sans-serif; /* 폰트/라인하이트 통일 */
-}
-
-.subject-cell select {
-  flex: 0 0 140px; /* 드롭다운 폭 */
-  width: 140px; /* 전역 select 규칙 무력화 */
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-}
-
-.subject-cell input[type="text"] {
   flex: 1 1 auto; /* 남은 공간을 채움 */
-  padding-left: 1px; /* 필요시 0~6px 정도로 조절 */
+  padding-left: 10px; /* 필요시 0~6px 정도로 조절 */
 }
 
 .subject-cell input[type="text"]::placeholder {
   text-indent: 0;
-}
-
-.form-table .subject-cell input[type="text"] {
-  padding-left: 0 !important;
-  padding-inline-start: 0 !important;
-  text-indent: 0 !important; /* 혹시 indent가 걸려있을 경우 */
-}
-
-.form-table .subject-cell input[type="text"]::placeholder {
-  text-indent: 0 !important;
 }
 
 select {
@@ -216,4 +194,13 @@ select {
   border-radius: 10px;
   background: #052940;
   opacity: 0.75;
+}
+
+.add-btn:disabled,
+.add-btn:disabled:hover,
+.add-btn:disabled:active {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+  background: rgba(64, 155, 157, 0.6); /* 취향껏 */
 }
