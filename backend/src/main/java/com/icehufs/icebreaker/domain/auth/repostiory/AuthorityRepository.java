@@ -39,7 +39,7 @@ public interface AuthorityRepository extends JpaRepository<Authority, String> {
                a.roleAdminC3 = NULL,
                a.roleAdminC4 = NULL
     """)
-    void clearAllRoles();
+    void clearAllClassAssistantAuthority();
 
 
 

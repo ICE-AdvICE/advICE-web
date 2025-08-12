@@ -27,7 +27,7 @@ public class SemesterMaintenanceService {
         codingZoneRegisterRepository.deleteAll();
         groupInfRepository.deleteAll();
         codingZoneClassRepository.deleteAll();
-        authorityRepository.clearAllRoles();
+        authorityRepository.clearAllClassAssistantAuthority();
         subjectRepository.deleteAll();
 
     }
