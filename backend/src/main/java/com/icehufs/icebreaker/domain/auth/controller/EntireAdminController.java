@@ -92,10 +92,10 @@ public class EntireAdminController {
     }
 
     @GetMapping("/codingzones")
-    public ResponseEntity<ResponseDto<CodingZoneClassNamesResponseDto>> getCodingZonesByDate(@RequestParam("date") String date) {
+    public ResponseEntity<ResponseDto<SubjectMappingInfoResponseDto>> getCodingZonesByDate(@RequestParam("date") String date) {
 
-        CodingZoneClassNamesResponseDto classNames  = codingzoneService.getCodingZoneClassNamesByDate(date);
-        return ResponseEntity.ok(ResponseDto.success("특정 날짜에 이루어진 코딩존 교과목 리스트 조회 성공.", classNames));
+        SubjectMappingInfoResponseDto subjectIdNameMap = codingzoneService.getClassNamesWithSubjectIdsByDate(date);
+        return ResponseEntity.ok(ResponseDto.success("특정 날짜에 이루어진 코딩존 교과목 리스트 조회 성공.", subjectIdNameMap));
     }
 
     @GetMapping("/attendances/{classNum}")
