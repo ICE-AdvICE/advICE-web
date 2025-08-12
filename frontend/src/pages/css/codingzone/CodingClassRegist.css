@@ -108,13 +108,15 @@
 .category-bar button {
   height: 100%; /* 버튼의 높이를 컨테이너의 높이에 맞춤 */
   padding: 8px 16px; /* 내부 패딩 조정 */
-  border-color: #bfbfbf;
-  border: 1px solid #d0d5dd;
-  background-color: white;
+  border: 1px solid #efefef;
+  background-color: #efefef;
   font-family: "Inter", sans-serif;
   font-size: 13px;
   color: #bfbfbf;
   white-space: nowrap; /* 텍스트가 줄바꿈 되지 않도록 설정 */
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 18px;
 }
 
 .category-bar button:hover,
@@ -142,7 +144,7 @@
   height: 50px;
   width: 100%;
   margin: 0 0 2.5px 0;
-  gap: 8px;
+  gap: 10px;
 }
 
 .Agroup-button,
