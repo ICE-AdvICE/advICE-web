@@ -82,11 +82,13 @@ public class EntireAdminController {
         return response;
     }
 
-    @DeleteMapping("/delete-allinf") // 코딩존 관련 모든 정보 초기화(코딩존 조교 권한 박할까지) API
-    public ResponseEntity<ResponseDto<String>> deleteAll(
-        @AuthenticationPrincipal String email
+
+    @GetMapping("/subjects/{subjectId}/assistants")
+    public ResponseEntity<ResponseDto<AssistantNamesResponseDto>> getAssistantsBySubject(
+            @PathVariable Long subjectId
     ) {
-        return ResponseEntity.ok(ResponseDto.success(codingzoneService.deleteAll(email)));
+        AssistantNamesResponseDto assistantList = codingzoneService.getAssistantNamesBySubjectId(subjectId);
+        return ResponseEntity.ok(ResponseDto.success("특정 교과목에 해당하는 조교 리스트 조회 성공.", assistantList));
     }
 
     @GetMapping("/codingzones")
