@@ -1,7 +1,6 @@
 package com.icehufs.icebreaker.domain.codingzone.service.implement;
 
 import com.icehufs.icebreaker.common.ResponseCode;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.AuthorityExistResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GroupInfUpdateResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfGroupInfResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneRegisterResponseDto;
@@ -70,32 +69,6 @@ public class CodingZoneServiceImplement implements CodingZoneService {
     private final AuthorityRepository authorityRepository;
     private final GroupInfRepository groupInfRepository;
     private final CodingZoneRegisterRepository codingZoneRegisterRepository;
-
-    @Override
-    public ResponseEntity<? super AuthorityExistResponseDto> authExist(String email) {
-        try {
-
-            Authority authority = authorityRepository.findByEmail(email);
-            if (authority == null)
-                return AuthorityExistResponseDto.notExistUser();
-
-            String entireAdmin = authority.getRoleAdmin();
-            String codingC1Admin = authority.getRoleAdminC1();
-            String codingC2Admin = authority.getRoleAdminC2();
-
-            if (!"NULL".equals(entireAdmin)) {
-                return AuthorityExistResponseDto.entireAdmin();
-            }
-            if (!"NULL".equals(codingC1Admin) || !"NULL".equals(codingC2Admin)) {
-                return AuthorityExistResponseDto.codingAdmin();
-            }
-
-            return AuthorityExistResponseDto.success();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-    }
 
     @Transactional
     public ResponseEntity<? super GroupInfUpdateResponseDto> uploadInf(List<GroupInfUpdateRequestDto> requestBody,

@@ -1,5 +1,7 @@
 package com.icehufs.icebreaker.domain.codingzone.controller;
 
+import com.icehufs.icebreaker.common.ResponseDto;
+import com.icehufs.icebreaker.domain.auth.service.AuthorityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,12 +27,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CodingZoneController {
     private final CodingZoneService codingzoneService;
+    private final AuthorityService authorityService;
 
     @GetMapping("/auth-type") // 사용자의 권한 반환 API
-    public ResponseEntity<? super AuthorityExistResponseDto> authExist(
-            @AuthenticationPrincipal String email) {
-        ResponseEntity<? super AuthorityExistResponseDto> response = codingzoneService.authExist(email);
-        return response;
+    public ResponseEntity<ResponseDto> authExist(@AuthenticationPrincipal String email) {
+        ResponseDto response = authorityService.authExist(email);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/reserve-class/{classNum}") // 수업 예약 API

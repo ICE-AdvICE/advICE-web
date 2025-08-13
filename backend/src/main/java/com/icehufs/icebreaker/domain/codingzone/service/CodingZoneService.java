@@ -20,7 +20,6 @@ public interface CodingZoneService {
     ByteArrayResource generateAttendanceExcelOfGrade2() throws IOException;
 
     //권한이 필요없는 로직
-    ResponseEntity<? super AuthorityExistResponseDto> authExist(String email);
     ResponseEntity<? super CodingZoneRegisterResponseDto> classRegist(Integer classNum, String email);
     ResponseEntity<? super CodingZoneCanceResponseDto> classCancel(Integer classNum, String email);
     ResponseEntity<? super GetListOfCodingZoneClassResponseDto> getClassList(Integer grade, String email);
