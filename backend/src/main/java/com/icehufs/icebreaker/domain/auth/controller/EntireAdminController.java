@@ -2,11 +2,10 @@ package com.icehufs.icebreaker.domain.auth.controller;
 
 
 import com.icehufs.icebreaker.domain.codingzone.service.AttendanceService;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.DeleteClassResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCodingZoneStudentListResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfGroupInfResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GroupInfUpdateResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneClassNamesResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.SubjectMappingInfoResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.ReservationStudentDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.DownloadArticleExcelResponseDto;
 
@@ -35,7 +34,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -82,20 +80,11 @@ public class EntireAdminController {
         return response;
     }
 
-
-    @GetMapping("/subjects/{subjectId}/assistants")
-    public ResponseEntity<ResponseDto<AssistantNamesResponseDto>> getAssistantsBySubject(
-            @PathVariable Long subjectId
-    ) {
-        AssistantNamesResponseDto assistantList = codingzoneService.getAssistantNamesBySubjectId(subjectId);
-        return ResponseEntity.ok(ResponseDto.success("특정 교과목에 해당하는 조교 리스트 조회 성공.", assistantList));
-    }
-
     @GetMapping("/codingzones")
-    public ResponseEntity<ResponseDto<CodingZoneClassNamesResponseDto>> getCodingZonesByDate(@RequestParam("date") String date) {
+    public ResponseEntity<ResponseDto<SubjectMappingInfoResponseDto>> getCodingZonesByDate(@RequestParam("date") String date) {
 
-        CodingZoneClassNamesResponseDto classNames  = codingzoneService.getCodingZoneClassNamesByDate(date);
-        return ResponseEntity.ok(ResponseDto.success("특정 날짜에 이루어진 코딩존 교과목 리스트 조회 성공.", classNames));
+        SubjectMappingInfoResponseDto subjectIdNameMap = codingzoneService.getClassNamesWithSubjectIdsByDate(date);
+        return ResponseEntity.ok(ResponseDto.success("특정 날짜에 이루어진 코딩존 교과목 리스트 조회 성공.", subjectIdNameMap));
     }
 
     @GetMapping("/attendances/{classNum}")

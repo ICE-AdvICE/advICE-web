@@ -29,7 +29,7 @@ public interface CodingZoneService {
     ResponseEntity<? super GetReservedClassListItemResponseDto> getReservedClass(String classDate, String email);
     ResponseEntity<? super GetCodingZoneAssitantListResponseDto> getAssistantList();
     AssistantNamesResponseDto getAssistantNamesBySubjectId(Long subjectId);
-    CodingZoneClassNamesResponseDto getCodingZoneClassNamesByDate(String date);
+    SubjectMappingInfoResponseDto getClassNamesWithSubjectIdsByDate(String date);
     List<CodingZoneClassInfoResponseDto> findCodingZoneClassesBySubjectAndDate(Long subjectId, String date);
     //수업 코딩존 조교
 

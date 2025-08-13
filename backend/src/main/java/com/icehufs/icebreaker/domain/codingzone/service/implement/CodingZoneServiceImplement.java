@@ -13,11 +13,11 @@ import com.icehufs.icebreaker.domain.codingzone.dto.response.GetPersAttendListIt
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCodingZoneStudentListResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetReservedClassListItemResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCodingZoneAssitantListResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneClassNamesResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.SubjectMappingInfoResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.AssistantNamesResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneClassInfoResponseDto;
-import com.icehufs.icebreaker.exception.BusinessException;
 
+import com.icehufs.icebreaker.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -36,6 +36,8 @@ import java.util.List;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PatchGroupInfRequestDto;
@@ -555,16 +557,19 @@ public class CodingZoneServiceImplement implements CodingZoneService {
     }
 
     @Override
-    public CodingZoneClassNamesResponseDto getCodingZoneClassNamesByDate(String date) {
+    public SubjectMappingInfoResponseDto getClassNamesWithSubjectIdsByDate(String date) {
         DayOfWeek day = LocalDate.parse(date).getDayOfWeek();
         if (day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY) throw new BusinessException(ResponseCode.INVAIlD_DATE_WEEKEND, "입력한 날짜가 주말임", HttpStatus.BAD_REQUEST);
         List<CodingZoneClass> codingZoneClasses = codingZoneClassRepository.findAllByClassDate(date);
         if (codingZoneClasses.isEmpty()) throw new BusinessException(ResponseCode.NO_CODINGZONE_DATE, "입력한 평일에 코딩존이 없음", HttpStatus.BAD_REQUEST);
-        List<String> classNames = codingZoneClasses.stream()
-                .map(CodingZoneClass::getClassName)
-                .distinct()
-                .toList();
-        return new CodingZoneClassNamesResponseDto(classNames);
+
+        Map<Integer, String> subjectIdToClassNameMap  = codingZoneClasses.stream()
+                .collect(Collectors.toMap(
+                        c -> c.getSubject().getId(),
+                        CodingZoneClass::getClassName,
+                        (existing, replacement) -> existing
+                ));
+        return new SubjectMappingInfoResponseDto(subjectIdToClassNameMap );
     }
 
     @Override

@@ -426,10 +426,6 @@
 
 /*수업 등록 요소*/
 
-.separator2 {
-  height: 1px; /* 높이를 10픽셀로 설정 */
-  background-color: #a5a5a5; /* 배경색을 회색으로 설정 */
-}
 .main-category-name-container2 {
   position: relative;
   display: flex;
