@@ -20,6 +20,8 @@ import {
 } from "../../entities/api/CodingZone/StudentApi.js";
 import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네이게이션 바 컴포넌트
 import BannerSlider from "../../shared/ui/Banner/BannerSlider"; // ✅ 추가(juhui): 슬라이더 컴포넌트
+import CalendarInput from "../../widgets/Calendar/CalendarInput"; // 달력
+import { isWeekendYMD } from "../../shared/lib/date"; // 달력
 
 const ClassList = ({
   userReservedClass,
@@ -73,6 +75,7 @@ const CodingMain = () => {
   const [isRendered, setIsRendered] = useState(false);
   const [userRole, setUserRole] = useState("");
   const [showNoClassesImage, setShowNoClassesImage] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null); // 달력
 
   useEffect(() => {
     if (cookies.accessToken) {
@@ -327,30 +330,43 @@ const CodingMain = () => {
       <BannerSlider />
       <div className="codingzone-body-container">
         <div className="cz-category-top">
-          <div className="cz-category-date">
-            <button
-              className={`cz-1 ${selectedZone === 1 ? "selected" : ""}`}
-              onClick={() => {
-                setGrade(1);
-                setSelectedZone(1);
-                setSelectedDay("");
-                setClassList(originalClassList);
-              }}
-            >
-              코딩존 1
-            </button>
-            <button
-              className={`cz-2 ${selectedZone === 2 ? "selected" : ""}`}
-              onClick={() => {
-                setGrade(2);
-                setSelectedZone(2);
-                setSelectedDay("");
-                setClassList(originalClassList);
-              }}
-            >
-              코딩존 2
-            </button>
-          </div>
+          {isAdmin ? (
+            // 과사 조교(EA)에게만 달력 표시
+            <div className="cz-date-picker">
+              <CalendarInput
+                value={selectedDate}
+                onChange={setSelectedDate}
+                disabledDates={isWeekendYMD} // 주말 비활성
+                placeholder="조회할 날짜를 선택하세요"
+              />
+            </div>
+          ) : (
+            // 학생 조교/일반 학생에게는 기존 버튼 표시
+            <div className="cz-category-date">
+              <button
+                className={`cz-1 ${selectedZone === 1 ? "selected" : ""}`}
+                onClick={() => {
+                  setGrade(1);
+                  setSelectedZone(1);
+                  setSelectedDay("");
+                  setClassList(originalClassList);
+                }}
+              >
+                코딩존 1
+              </button>
+              <button
+                className={`cz-2 ${selectedZone === 2 ? "selected" : ""}`}
+                onClick={() => {
+                  setGrade(2);
+                  setSelectedZone(2);
+                  setSelectedDay("");
+                  setClassList(originalClassList);
+                }}
+              >
+                코딩존 2
+              </button>
+            </div>
+          )}
           <Link
             to="/coding-zone/Codingzone_Attendance"
             className="cz-count-container"

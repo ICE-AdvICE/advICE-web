@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import "../css/codingzone/codingzone-main.css";
 import "../css/codingzone/codingzone_manager.css";
 import "../css/codingzone/codingzone_attend.css";
-import "../css/codingzone/codingzone_manager.css";
 import "../css/codingzone/CodingClassRegist.css";
 import "../../shared/ui/boardbar/CodingZoneBoardbar.css";
 import { getczreservedlistRequest } from "../../features/api/Admin/Codingzone/ClassApi.js";
@@ -20,6 +17,8 @@ import { getczattendlistRequest } from "../../features/api/CodingzoneApi.js";
 import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네이게이션 바 컴포넌트
 import Banner from "../../shared/ui/Banner/Banner"; // ✅ 추가(juhui): 공통 배너 컴포넌트 적용
 import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js"; //코딩존 보드 바(버튼 네개) 컴포넌트
+import CalendarInput from "../../widgets/Calendar/CalendarInput";
+import { isWeekendYMD } from "../../shared/lib/date";
 
 const CodingZoneAttendanceAssistant = () => {
   const [attendList, setAttendList] = useState([]);
@@ -29,17 +28,14 @@ const CodingZoneAttendanceAssistant = () => {
   const [activeButton, setActiveButton] = useState("manage");
   const token = cookies.accessToken;
   const navigate = useNavigate();
-  const [selectedDate, setSelectedDate] = useState(new Date());
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const now = new Date();
-      const currentDate = new Date(selectedDate);
-      console.log("Checking date:", now, currentDate); // Debugging log
-    }, 10000); // Check every 10 seconds for debugging
-
-    return () => clearInterval(timer); // Clear the timer when the component unmounts
-  }, [selectedDate]);
+  const dateToYMD = (d) => {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  };
+  const [selectedDateYMD, setSelectedDateYMD] = useState(dateToYMD(new Date()));
 
   useEffect(() => {
     fetchAuthType();
@@ -48,7 +44,7 @@ const CodingZoneAttendanceAssistant = () => {
 
   useEffect(() => {
     fetchReservedList();
-  }, [token, selectedDate]);
+  }, [token, selectedDateYMD]);
 
   const fetchAuthType = async () => {
     const response = await getczauthtypetRequest(token, setCookie, navigate);
@@ -91,7 +87,7 @@ const CodingZoneAttendanceAssistant = () => {
   };
 
   const fetchReservedList = async () => {
-    const formattedDate = selectedDate.toISOString().split("T")[0];
+    const formattedDate = selectedDateYMD || dateToYMD(new Date());
     const response = await getczreservedlistRequest(
       token,
       formattedDate,
@@ -147,26 +143,14 @@ const CodingZoneAttendanceAssistant = () => {
 
       <div className="reserved_manager-list-container">
         <div className="czm_manager_container">
-          <DatePicker
-            selected={selectedDate}
-            onChange={(date) => {
-              const utcDate = new Date(
-                Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-              );
-              const koreaDate = new Date(
-                utcDate.getTime() + 9 * 60 * 60 * 1000
-              ); // Correctly adjust for Korean timezone
-              setSelectedDate(koreaDate);
-            }}
-            dateFormat="yyyy/MM/dd"
-            className="custom_manager_datepicker"
+          <CalendarInput
+            value={selectedDateYMD}
+            onChange={setSelectedDateYMD} // 같은 날짜 다시 클릭하면 null로 해제됨
+            disabledDates={isWeekendYMD} // 주말 비활성
+            placeholder="날짜를 선택하세요"
+            className="custom_manager_datepicker" // 기존 클래스 재사용 가능
           />
         </div>
-        <h3 className="date_manager_title">
-          {`${selectedDate.getFullYear()}/${
-            selectedDate.getMonth() + 1
-          }/${selectedDate.getDate()} 예약 리스트`}
-        </h3>
 
         <div className="line-manager-container1">{/* 실선 영역 */}</div>
 
