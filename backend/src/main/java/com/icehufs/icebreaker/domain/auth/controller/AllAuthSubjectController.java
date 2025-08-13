@@ -20,6 +20,6 @@ public class AllAuthSubjectController {
     @GetMapping
     public ResponseEntity<ResponseDto<SubjectListResponseDto>> getSubjectMapping() {
         return ResponseEntity
-                .ok(ResponseDto.success(ResponseMessage.SUCCESS_CLASS_CREATE, subjectService.getMappingCodingZoneClass()));
+                .ok(ResponseDto.success(ResponseMessage.SUCCESS_MAPPING_GET, subjectService.getMappingCodingZoneClass()));
     }
 }
