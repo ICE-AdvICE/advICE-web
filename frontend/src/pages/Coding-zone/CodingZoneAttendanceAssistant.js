@@ -211,32 +211,33 @@ const CodingZoneAttendanceAssistant = () => {
           />
         </div>
 
-        {/* 날짜가 선택된 경우에만 회색 박스 노출 */}
-        {selectedDateYMD && (
-          <div className="panel-gray">
-            {isSubjectsLoading ? (
-              <div className="panel-empty">과목을 불러오는 중…</div>
-            ) : subjects.length === 0 ? (
-              //  과목 없음 → 회색 박스 안 메시지
-              <div className="panel-empty">
-                현재 날짜에 등록된 코딩존이 없습니다.
+        <div className="panel-gray">
+          {!selectedDateYMD ? (
+            <div className="panel-empty">
+              조회하고자 하는 날짜를 입력해주세요.
+            </div>
+          ) : isSubjectsLoading ? (
+            // 로딩 중
+            <div className="panel-empty">과목을 불러오는 중…</div>
+          ) : subjects.length === 0 ? (
+            <div className="panel-empty">
+              현재 날짜에 등록된 코딩존이 없습니다.
+            </div>
+          ) : (
+            <div className={`panel-inner ${gridClass}`}>
+              <div className="subject-grid-inner">
+                {subjects.slice(0, 4).map((s) => (
+                  <SubjectCard
+                    key={s.id}
+                    title={s.name}
+                    color={getColorById(s.id)}
+                    onClick={() => setSelectedSubjectId(s.id)}
+                  />
+                ))}
               </div>
-            ) : (
-              <div className={`panel-inner ${gridClass}`}>
-                <div className="subject-grid-inner">
-                  {subjects.slice(0, 4).map((s) => (
-                    <SubjectCard
-                      key={s.id}
-                      title={s.name}
-                      color={getColorById(s.id)}
-                      onClick={() => setSelectedSubjectId(s.id)}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
+            </div>
+          )}
+        </div>
 
         {/* ▼▼▼ 이 표는 날짜 선택 -> 과목 버튼 출력 -> 과목 선택 -> 조교 출력 -> 조교 리스트 선택 -> 학생 리스트 출력에서 
         "학생 리스트 출력에만 사용!! ▼▼▼ */}
