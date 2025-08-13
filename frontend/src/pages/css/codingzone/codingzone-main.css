@@ -295,7 +295,7 @@ body {
 /* 달력 입력칸 가운데 정렬 */
 .cz-date-picker {
   position: absolute;
-  z-index: 9999;
+  z-index: 1000;
   left: 50%;
   transform: translateX(-50%);
 }
