@@ -1,0 +1,80 @@
+.cal-input {
+  position: relative; /* ✅ 기준점 */
+  display: inline-block; /* 버튼 크기만큼만 차지 */
+}
+
+.cal-box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}
+
+.cal-input__field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 300px;
+  padding: 6px 23px;
+  border: 1.2px solid #a8a8a8;
+  border-radius: 15px;
+  background: #fff;
+  color: #a8a8a8;
+}
+.cal-input__field:hover {
+  color: #052940;
+  border: 1.2px solid #052940;
+}
+.cal-input__field {
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.cal-input__text.-ph {
+  color: #8a97a6;
+}
+.cal-input__icon {
+  font-size: 0.85rem;
+}
+
+.cal-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 6px 6px 6px rgba(0, 0, 0, 0.4);
+  padding: 10px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.cal-input__left-icon img {
+  width: 25px;
+}
+
+.cal-input__icon-right img {
+  width: 20px;
+}
+
+.cal-input__text-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  text-align: left;
+}
+
+.cal-input__label {
+  font-size: 14px;
+}
+
+.cal-input__date {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.cal-input__field.open {
+  color: #052940; /* 남색 글씨 */
+  border-color: #052940; /* 남색 테두리 */
+}
