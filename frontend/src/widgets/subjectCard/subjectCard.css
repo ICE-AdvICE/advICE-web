@@ -58,7 +58,7 @@
   width: 100%;
 }
 .subject-top {
-  font-size: 15px;
+  font-size: 16px;
   color: #244455;
   opacity: 0.9;
 }
@@ -88,7 +88,6 @@
   height: 20px;
 }
 
-/* hover/active 상태 — 배경 전체 색, 글자/뱃지 흰색 */
 .subject-card:hover,
 .subject-card:active,
 .subject-card.is-active {
@@ -129,9 +128,6 @@
     min-width: 370px;
     min-height: 160px;
   }
-  .subject-title {
-    font-size: 20px;
-  }
 }
 
 @media (max-width: 1024px) {
@@ -147,36 +143,39 @@
     min-width: 320px;
     min-height: 150px;
   }
-  .subject-title {
-    font-size: 20px;
-  }
 }
 
 @media (max-width: 768px) {
   :root {
-    --col-min: 350px; /* 카드 최소 너비 */
+    --col-min: 340px; /* 카드 최소 너비 */
     --gap: 25px; /* 카드 간격 */
-    --card-min-h: 140px; /* 카드 최소 높이 */
+    --card-min-h: 130px; /* 카드 최소 높이 */
   }
   .subject-card {
-    min-width: 330px;
+    min-width: 320px;
     min-height: 130px;
   }
+  .subject-top {
+    font-size: 15px;
+  }
   .subject-title {
-    font-size: 20px;
+    font-size: 17px;
   }
 }
 @media (max-width: 480px) {
   :root {
     --col-min: 330px; /* 카드 최소 너비 */
     --gap: 25px; /* 카드 간격 */
-    --card-min-h: 130px; /* 카드 최소 높이 */
+    --card-min-h: 120px; /* 카드 최소 높이 */
   }
 
   .subject-card {
     min-width: 270px;
   }
+  .subject-top {
+    font-size: 14px;
+  }
   .subject-title {
-    font-size: 20px;
+    font-size: 16px;
   }
 }
