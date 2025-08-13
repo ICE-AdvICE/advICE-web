@@ -21,6 +21,11 @@ public class ResponseDto { //모든 response에 대한 code와 message 구현
         this.message = ResponseMessage.SUCCESS;
     }
 
+    public ResponseDto(String response) {
+        this.code = ResponseCode.SUCCESS;
+        this.message = response;
+    }
+
     public static ResponseEntity<ResponseDto> databaseError(){
     ResponseDto responseBody = new  ResponseDto(ResponseCode.DATABASE_ERROR, ResponseMessage.DATABASE_ERROR);
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);

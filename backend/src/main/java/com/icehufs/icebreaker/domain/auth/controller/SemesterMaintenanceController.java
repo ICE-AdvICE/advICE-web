@@ -1,6 +1,5 @@
 package com.icehufs.icebreaker.domain.auth.controller;
 
-
 import com.icehufs.icebreaker.common.ResponseMessage;
 import com.icehufs.icebreaker.domain.codingzone.service.SemesterMaintenanceService;
 import com.icehufs.icebreaker.util.ResponseDto;

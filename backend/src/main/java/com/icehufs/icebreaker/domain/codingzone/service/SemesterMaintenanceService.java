@@ -31,4 +31,8 @@ public class SemesterMaintenanceService {
         subjectRepository.deleteAll();
 
     }
+
 }
+
+
+
