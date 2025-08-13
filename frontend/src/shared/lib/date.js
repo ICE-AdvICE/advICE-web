@@ -53,10 +53,8 @@ export function buildMonthCells(year, monthIndex) {
 }
 
 // 6. 요일 이름 배열 생성 (영어로 고정)
-export function weekLabels(locale = "ko", weekStart = "mon") {
-  const en = ["S", "M", "T", "W", "T", "F", "S"];
-  if (weekStart === "mon") return [...en.slice(1), en[0]];
-  return en;
+export function weekLabels() {
+  return ["S", "M", "T", "W", "T", "F", "S"];
 }
 
 // 7. 주말인지 판별

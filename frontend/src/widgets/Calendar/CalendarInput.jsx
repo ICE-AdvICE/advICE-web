@@ -27,7 +27,7 @@ export default function CalendarInput({
   // 1. controlled/uncontrolled (우리는 controlled 인듯)
   /* - 부모가 value -> 그대로 표시
      - 그렇지 않으면 내부 상태로 직접 보관해 표시 */
-  const isControlled = value != null;
+  const isControlled = value !== undefined; // null이어도 controlled 유지
   const [inner, setInner] = useState(defaultValue ?? null);
   const selected = isControlled ? value : inner;
 
@@ -35,27 +35,30 @@ export default function CalendarInput({
   /* - 버튼을 누르면 open 토글
      - 바뀐 상태를 부모에게 onOpenChange로 알려줌  */
   const [open, setOpen] = useState(false);
+  const [hover, setHover] = useState(false);
   const ref = useRef(null);
 
   // 3. 보기(view) 월/연도 상태: 선택된 날짜가 있으면 그 달, 없으면 오늘
-  const initialView = useMemo(
-    () => parseYMD(selected) || new Date(),
-    [selected]
-  );
-  const [view, setView] = useState(initialView);
+  //    - 컴포넌트 마운트 시 한 번만: 선택이 있으면 그 달, 없으면 오늘
+  //    - 이후에는 선택 "발생" 시(=selected가 유효한 날짜가 될 때)만 해당 달로 스냅
+  const [view, setView] = useState(() => parseYMD(selected) || new Date());
   useEffect(() => {
-    setView(initialView);
-  }, [initialView]);
+    if (!selected) return; // 선택 해제 시에는 그대로 유지
+    const d = parseYMD(selected);
+    if (!d) return;
+    const next = new Date(d.getFullYear(), d.getMonth(), 1);
+    setView(next); // 선택이 "변경"된 경우에만 스냅
+  }, [selected]);
 
   // 4. 외부 클릭/ESC로 닫기
   // 팝오버가 열렸을 때만 이벤트를 달고, 닫히면 깔끔히 제거
   useEffect(() => {
     if (!open) return;
     const onDoc = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+      if (ref.current && !ref.current.contains(e.target)) setOpenSafe(false);
     };
     const onEsc = (e) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") setOpenSafe(false);
     };
     document.addEventListener("mousedown", onDoc);
     document.addEventListener("keydown", onEsc);
@@ -89,70 +92,81 @@ export default function CalendarInput({
   /* - controlled이면 부모에게만 알림
      - uncontrolled이면 내부값 갱신 + 부모에게 알림 
      - 선택 후 팝오버 닫기 */
-  const handleSelect = (ymd) => {
-    if (isControlled) onChange?.(ymd);
+  const handleSelect = (next) => {
+    if (isControlled) onChange?.(next);
     else {
-      setInner(ymd);
-      onChange?.(ymd);
+      setInner(next);
+      onChange?.(next);
     }
   };
 
   const displayText = selected ? selected.replaceAll("-", " / ") : "";
-  // 왼쪽 달력 아이콘
-  const leftIconSrc = open
-    ? `${process.env.PUBLIC_URL}/select.png` // 입력창이 선택
-    : `${process.env.PUBLIC_URL}/none.png`; // 입력창 선택 X
-
-  // 오른쪽 화살표 아이콘
-  const arrowIconSrc = open
-    ? `${process.env.PUBLIC_URL}/selectedArrow.png` // 입력창이 선택
-    : `${process.env.PUBLIC_URL}/noneArrow.png`; // 입력창 선택 X
+  // 왼쪽 아이콘
+  const leftIconSrc =
+    open || hover
+      ? `${process.env.PUBLIC_URL}/select.png`
+      : `${process.env.PUBLIC_URL}/none.png`;
+  // 화살표 아이콘
+  const arrowIconSrc =
+    open || hover
+      ? `${process.env.PUBLIC_URL}/selectedArrow.png`
+      : `${process.env.PUBLIC_URL}/noneArrow.png`;
 
   return (
-    <div className={`cal-input ${className}`} ref={ref}>
-      {/* 1. 입력창 버튼 */}
-      <button
-        type="button"
-        className="cal-input__field"
-        onClick={() => !disabled && setOpenSafe(!open)}
-        disabled={disabled}
-        aria-expanded={open}
-        aria-haspopup="dialog"
-      >
-        {/* 왼쪽 아이콘 */}
-        <span className="cal-input__left-icon" aria-hidden>
-          <img src={leftIconSrc} alt="" />
-        </span>
+    <div className="calendar-input-wrap">
+      <div className={`cal-input ${className}`} ref={ref}>
+        {/* 1. 입력창 버튼 */}
+        <button
+          type="button"
+          className={`cal-input__field ${open ? "open" : ""}`}
+          onClick={() => !disabled && setOpenSafe(!open)}
+          onMouseEnter={() => !disabled && setHover(true)}
+          onMouseLeave={() => setHover(false)}
+          onFocus={() => setHover(true)}
+          onBlur={() => setHover(false)}
+          disabled={disabled}
+          aria-expanded={open}
+          aria-haspopup="dialog"
+        >
+          <div className="cal-box">
+            {/* 왼쪽 아이콘 */}
+            <span className="cal-input__left-icon" aria-hidden>
+              <img src={leftIconSrc} alt="" />
+            </span>
 
-        {/* 텍스트 영역 */}
-        <div className="cal-input__text-wrap">
-          <div className="cal-input__label">Select a day</div>
-          <div className="cal-input__date">
-            {displayText || "YYYY / MM / DD"}
+            {/* 텍스트 영역 */}
+            <div className="cal-input__text-wrap">
+              <div className="cal-input__label">Select a day</div>
+              <div className="cal-input__date">
+                {displayText || "YYYY / MM / DD"}
+              </div>
+            </div>
           </div>
-        </div>
 
-        {/* 오른쪽 화살표 아이콘 */}
-        <img src={arrowIconSrc} alt="" className="cal-input__icon-right" />
-      </button>
+          {/* 오른쪽 화살표 아이콘 */}
+          <span className="cal-input__icon-right">
+            <img src={arrowIconSrc} alt="" />
+          </span>
+        </button>
 
-      {/*2. 달력 팝오버 */}
-      {open && (
-        <div className="cal-popover" role="dialog" aria-label="날짜 선택">
-          <CalendarGrid
-            year={y}
-            monthIndex={m}
-            selected={selected}
-            onSelect={handleSelect}
-            onPrevMonth={goPrevMonth}
-            onNextMonth={goNextMonth}
-            minDate={minDate}
-            maxDate={maxDate}
-            disabledDates={disabledDates}
-            renderDay={renderDay}
-          />
-        </div>
-      )}
+        {/*2. 달력 팝오버 */}
+        {open && (
+          <div className="cal-popover" role="dialog" aria-label="날짜 선택">
+            <CalendarGrid
+              year={y}
+              monthIndex={m}
+              selected={selected}
+              onSelect={handleSelect}
+              onPrevMonth={goPrevMonth}
+              onNextMonth={goNextMonth}
+              minDate={minDate}
+              maxDate={maxDate}
+              disabledDates={disabledDates}
+              renderDay={renderDay}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
