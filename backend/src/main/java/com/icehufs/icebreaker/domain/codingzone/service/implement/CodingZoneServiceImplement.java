@@ -1,8 +1,23 @@
 package com.icehufs.icebreaker.domain.codingzone.service.implement;
 
 import com.icehufs.icebreaker.common.ResponseCode;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.*;
-import com.icehufs.icebreaker.domain.membership.domain.exception.UserNotFoundException;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.AuthorityExistResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GroupInfUpdateResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfGroupInfResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneRegisterResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneCanceResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.PutAttendanceResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfCodingZoneClassResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfCodingZoneClassForNotLogInResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCountOfAttendResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetPersAttendListItemResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCodingZoneStudentListResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetReservedClassListItemResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCodingZoneAssitantListResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.SubjectMappingInfoResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.AssistantNamesResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneClassInfoResponseDto;
+
 import com.icehufs.icebreaker.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
@@ -22,6 +37,9 @@ import java.util.List;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PatchGroupInfRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.object.CodingZoneStudentListItem;
@@ -538,38 +556,6 @@ public class CodingZoneServiceImplement implements CodingZoneService {
     }
 
     @Override
-    @Transactional
-    public String deleteAll(String email) {
-        boolean existedUser = userRepository.existsByEmail(email);
-        if (!existedUser) {
-            throw new UserNotFoundException("사용자를 찾을 수 없습니다.");
-        }
-
-        // 코딩존 관련 모든 테이블 초기화
-        codingZoneRegisterRepository.deleteAll();
-        groupInfRepository.deleteAll();
-        codingZoneClassRepository.deleteAll();
-
-        // 코딩존 조교 권한 취소
-        updateAuthorities();
-        return "조교 권한을 취소하는데 성공했습니다.";
-    }
-
-    // 학기 초기화를 위한 트렌젝션 분리
-    @Transactional
-    public void updateAuthorities() {
-        List<Authority> usersC1 = authorityRepository.findByRoleAdminC1("ROLE_ADMINC1");
-        List<Authority> usersC2 = authorityRepository.findByRoleAdminC2("ROLE_ADMINC2");
-        List<Authority> usersC3 = authorityRepository.findByRoleAdminC3("ROLE_ADMINC3");
-        List<Authority> usersC4 = authorityRepository.findByRoleAdminC4("ROLE_ADMINC4");
-
-        usersC1.forEach(authority -> authority.revokeRole("ROLE_ADMINC1"));
-        usersC2.forEach(authority -> authority.revokeRole("ROLE_ADMINC2"));
-        usersC3.forEach(authority -> authority.revokeRole("ROLE_ADMINC3"));
-        usersC4.forEach(authority -> authority.revokeRole("ROLE_ADMINC4"));
-    }
-
-    @Override
     public ResponseEntity<? super GetCodingZoneAssitantListResponseDto> getAssistantList() {
         List<User> ListOfCodingZone1 = new ArrayList<>();
         List<User> ListOfCodingZone2 = new ArrayList<>();
@@ -598,16 +584,19 @@ public class CodingZoneServiceImplement implements CodingZoneService {
     }
 
     @Override
-    public CodingZoneClassNamesResponseDto getCodingZoneClassNamesByDate(String date) {
+    public SubjectMappingInfoResponseDto getClassNamesWithSubjectIdsByDate(String date) {
         DayOfWeek day = LocalDate.parse(date).getDayOfWeek();
         if (day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY) throw new BusinessException(ResponseCode.INVAIlD_DATE_WEEKEND, "입력한 날짜가 주말임", HttpStatus.BAD_REQUEST);
         List<CodingZoneClass> codingZoneClasses = codingZoneClassRepository.findAllByClassDate(date);
         if (codingZoneClasses.isEmpty()) throw new BusinessException(ResponseCode.NO_CODINGZONE_DATE, "입력한 평일에 코딩존이 없음", HttpStatus.BAD_REQUEST);
-        List<String> classNames = codingZoneClasses.stream()
-                .map(CodingZoneClass::getClassName)
-                .distinct()
-                .toList();
-        return new CodingZoneClassNamesResponseDto(classNames);
+
+        Map<Integer, String> subjectIdToClassNameMap  = codingZoneClasses.stream()
+                .collect(Collectors.toMap(
+                        c -> c.getSubject().getId(),
+                        CodingZoneClass::getClassName,
+                        (existing, replacement) -> existing
+                ));
+        return new SubjectMappingInfoResponseDto(subjectIdToClassNameMap );
     }
 
     @Override
@@ -648,7 +637,6 @@ public class CodingZoneServiceImplement implements CodingZoneService {
         }
         return classInfos;
     }
-
 
     @Override
     public ByteArrayResource generateAttendanceExcelOfGrade1() throws IOException {

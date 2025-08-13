@@ -16,7 +16,6 @@ public interface CodingZoneService {
     ResponseEntity<? super GetListOfGroupInfResponseDto> getList(String groupId, String email);
     ResponseEntity<? super GroupInfUpdateResponseDto> patchInf(List<PatchGroupInfRequestDto> dto, String email);
     ResponseEntity<? super GetCodingZoneStudentListResponseDto> getStudentList(String email);
-    String deleteAll(String email);
     ByteArrayResource generateAttendanceExcelOfGrade1() throws IOException;
     ByteArrayResource generateAttendanceExcelOfGrade2() throws IOException;
 
@@ -31,9 +30,8 @@ public interface CodingZoneService {
     ResponseEntity<? super GetReservedClassListItemResponseDto> getReservedClass(String classDate, String email);
     ResponseEntity<? super GetCodingZoneAssitantListResponseDto> getAssistantList();
     AssistantNamesResponseDto getAssistantNamesBySubjectId(Long subjectId);
-    CodingZoneClassNamesResponseDto getCodingZoneClassNamesByDate(String date);
+    SubjectMappingInfoResponseDto getClassNamesWithSubjectIdsByDate(String date);
     List<CodingZoneClassInfoResponseDto> findCodingZoneClassesBySubjectAndDate(Long subjectId, String date);
-
     //수업 코딩존 조교
 
     ResponseEntity<? super PutAttendanceResponseDto> putAttend(Integer registNum, String email);

@@ -12,6 +12,7 @@ public interface ResponseMessage {
     String SUCCESS_CLASS_UPDATE = "코딩존 정보 수정 성공";
     String SUCCESS_POST_MAPPING = "신규 매핑 정보로 등록 성공";
     String SUCCESS_DELETE_MAPPING = "코딩존 매핑 삭제 성공 ";
+    String SUCCESS_RESET_SEMESTER = "학기 초기화 성공";
 
     // HTTP Status 400
     String BAD_REQUEST = "잘못된 입력 형식";
