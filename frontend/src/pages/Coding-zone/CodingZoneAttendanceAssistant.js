@@ -28,6 +28,12 @@ const CodingZoneAttendanceAssistant = () => {
   const [activeButton, setActiveButton] = useState("manage");
   const token = cookies.accessToken;
   const navigate = useNavigate();
+  // 날짜에 해당하는 과목 목록 상태
+  const [subjects, setSubjects] = useState([]); // [{ id, name }]
+  const [isSubjectsLoading, setIsSubjectsLoading] = useState(false);
+  // 과목/조교 선택 상태 (지금은 디자인 단계라 기본 null 유지)
+  const [selectedSubjectId, setSelectedSubjectId] = useState(null);
+  const [selectedAssistantId, setSelectedAssistantId] = useState(null);
 
   const dateToYMD = (d) => {
     const y = d.getFullYear();
@@ -45,6 +51,23 @@ const CodingZoneAttendanceAssistant = () => {
   useEffect(() => {
     fetchReservedList();
   }, [token, selectedDateYMD]);
+
+  useEffect(() => {
+    if (!selectedDateYMD) {
+      setSubjects([]);
+      return;
+    }
+
+    // 로딩 시작
+    setIsSubjectsLoading(true);
+
+    // 0.5초 후에 목업 데이터 세팅 (디자인 확인용)
+    setTimeout(() => {
+      // 빈 배열로 두면 "현재 날짜에 등록된 코딩존이 없습니다." 문구가 뜸
+      setSubjects([]);
+      setIsSubjectsLoading(false);
+    }, 500);
+  }, [selectedDateYMD]);
 
   const fetchAuthType = async () => {
     const response = await getczauthtypetRequest(token, setCookie, navigate);
@@ -152,80 +175,117 @@ const CodingZoneAttendanceAssistant = () => {
           />
         </div>
 
-        <div className="line-manager-container1">{/* 실선 영역 */}</div>
+        {/* 날짜가 선택된 경우에만 회색 박스 노출 */}
+        {selectedDateYMD && (
+          <div className="panel-gray">
+            {isSubjectsLoading ? (
+              <div className="panel-empty">과목을 불러오는 중…</div>
+            ) : subjects.length === 0 ? (
+              // ✅ 과목 없음 → 회색 박스 안 메시지
+              <div className="panel-empty">
+                현재 날짜에 등록된 코딩존이 없습니다.
+              </div>
+            ) : (
+              // ✅ 과목 있음 → 칩 버튼 출력
+              <div className="panel-row">
+                <label className="panel-label">과목</label>
+                <div className="chips-wrap">
+                  {subjects.map((s) => (
+                    <button key={s.id} className="chip">
+                      {s.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
-        <div className="info-manager-container">
-          <div className="info_manager_inner">
-            <div className="info_manager_name">이름</div>
-            <div className="info_manager_studentnum ">학번</div>
-            <div className="info_manager_bar"></div>
-            <div className="info_manager_time ">시간</div>
-            <div className="info_manager_status">출결</div>
+        {/* ▼▼▼ 이 표는 날짜 선택 -> 과목 버튼 출력 -> 과목 선택 -> 조교 출력 -> 조교 리스트 선택 -> 학생 리스트 출력에서 
+        "학생 리스트 출력에만 사용!! ▼▼▼ */}
+        <div
+          className={`attendance-table ${
+            !selectedAssistantId ? "is-hidden" : ""
+          }`}
+          aria-hidden={!selectedAssistantId}
+        >
+          <div className="line-manager-container1">{/* 실선 영역 */}</div>
+
+          <div className="info-manager-container">
+            <div className="info_manager_inner">
+              <div className="info_manager_name">이름</div>
+              <div className="info_manager_studentnum ">학번</div>
+              <div className="info_manager_bar"></div>
+              <div className="info_manager_time ">시간</div>
+              <div className="info_manager_status">출결</div>
+            </div>
+          </div>
+          <div className="line-manager-container2">{/* 실선 영역 */}</div>
+
+          <div className="info_manager_container">
+            {reservedList.length > 0 ? (
+              reservedList.map((student, index, array) => {
+                const isNextTimeBlockDifferent =
+                  index === array.length - 1 ||
+                  student.classTime !== array[index + 1].classTime;
+                return (
+                  <div key={index}>
+                    <div className="info_manager_data_inner">
+                      <div className="info_manager_data_name">
+                        {student.userName}
+                      </div>
+                      <div className="info_manager_data_studentnum">
+                        {student.userStudentNum}
+                      </div>
+                      <div className="info_manager_data_bar"></div>
+                      <div className="info_manager_data_time">
+                        {formatTime(student.classTime)}
+                      </div>
+                      <div className="info_manager_data_status">
+                        {student.attendance === "1" ? (
+                          <button className="btn_manager_attendance" disabled>
+                            출석
+                          </button>
+                        ) : (
+                          <button
+                            className="btn_manager_attendance-disabled"
+                            onClick={() => handleAttendanceUpdate(student, "1")}
+                          >
+                            출석
+                          </button>
+                        )}
+                        {student.attendance === "0" ? (
+                          <button className="btn_manager_absence" disabled>
+                            결석
+                          </button>
+                        ) : (
+                          <button
+                            className="btn_manager_absence-disabled"
+                            onClick={() => handleAttendanceUpdate(student, "0")}
+                          >
+                            결석
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    <div
+                      className={
+                        isNextTimeBlockDifferent
+                          ? "hr_manager_line_thick"
+                          : "hr_manager_line"
+                      }
+                    ></div>
+                  </div>
+                );
+              })
+            ) : (
+              <p className="no-reservations">예약된 리스트가 없습니다.</p>
+            )}
           </div>
         </div>
-        <div className="line-manager-container2">{/* 실선 영역 */}</div>
-
-        <div className="info_manager_container">
-          {reservedList.length > 0 ? (
-            reservedList.map((student, index, array) => {
-              const isNextTimeBlockDifferent =
-                index === array.length - 1 ||
-                student.classTime !== array[index + 1].classTime;
-              return (
-                <div key={index}>
-                  <div className="info_manager_data_inner">
-                    <div className="info_manager_data_name">
-                      {student.userName}
-                    </div>
-                    <div className="info_manager_data_studentnum">
-                      {student.userStudentNum}
-                    </div>
-                    <div className="info_manager_data_bar"></div>
-                    <div className="info_manager_data_time">
-                      {formatTime(student.classTime)}
-                    </div>
-                    <div className="info_manager_data_status">
-                      {student.attendance === "1" ? (
-                        <button className="btn_manager_attendance" disabled>
-                          출석
-                        </button>
-                      ) : (
-                        <button
-                          className="btn_manager_attendance-disabled"
-                          onClick={() => handleAttendanceUpdate(student, "1")}
-                        >
-                          출석
-                        </button>
-                      )}
-                      {student.attendance === "0" ? (
-                        <button className="btn_manager_absence" disabled>
-                          결석
-                        </button>
-                      ) : (
-                        <button
-                          className="btn_manager_absence-disabled"
-                          onClick={() => handleAttendanceUpdate(student, "0")}
-                        >
-                          결석
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                  <div
-                    className={
-                      isNextTimeBlockDifferent
-                        ? "hr_manager_line_thick"
-                        : "hr_manager_line"
-                    }
-                  ></div>
-                </div>
-              );
-            })
-          ) : (
-            <p className="no-reservations">예약된 리스트가 없습니다.</p>
-          )}
-        </div>
       </div>
+      {/* ▲▲▲ 여기까지 표 영역 ▲▲▲ */}
     </div>
   );
 };
