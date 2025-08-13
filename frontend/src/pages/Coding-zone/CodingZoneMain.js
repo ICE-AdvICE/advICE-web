@@ -367,72 +367,80 @@ const CodingMain = () => {
               </button>
             </div>
           )}
-          <Link
-            to="/coding-zone/Codingzone_Attendance"
-            className="cz-count-container"
-          >
-            {token && renderAttendanceProgress(attendanceCount)}
-          </Link>
-        </div>
-        <div className="codingzone-date">
-          {days.map((day, index) => (
-            <React.Fragment key={day.name}>
-              <button
-                onClick={() => filterByDay(day.name)}
-                className={selectedDay === day.name ? "selected" : ""}
-              >
-                <p>{day.label}</p>
-              </button>
-              {index < days.length - 1 && <span> | </span>}
-            </React.Fragment>
-          ))}
-        </div>
-        <div className="category-name-container">
-          <div className="codingzone-title">
-            <p className="weekDay">요일</p>
-            <p className="weekDate">날짜</p>
-            <p className="weekTime">시간</p>
-            <p className="card-hidden-space"></p>
-            <p className="weeksubject">과목명</p>
-            <p className="weekperson">조교</p>
-            <p className="weekcount">인원</p>
-            {(cookies.accessToken || isAdmin) && isRendered && (
-              <p className="registerbutton"></p>
-            )}
-          </div>
-        </div>
-        <div className="codingzone-list">
-          {/* 항상 렌더되도록 유지하고, show/hide는 CSS 클래스 이름으로 제어 */}
-          <picture
-            className={`no-classes-image ${
-              showNoClassesImage ? "visible" : "hidden"
-            }`}
-          >
-            <source srcSet="/Codingzone-noregist.webp" type="image/webp" />
-            <img
-              src="/Codingzone-noregist.png"
-              alt="수업이 없습니다"
-              className="no-classes-img"
-              width="600"
-              height="260"
-              loading="eager"
-              decoding="sync"
-            />
-          </picture>
-
-          {/* 수업이 있을 경우에만 ClassList 보여줌 */}
-          {!showNoClassesImage && (
-            <ClassList
-              classList={classList}
-              handleCardClick={handleCardClick}
-              handleToggleReservation={handleToggleReservation}
-              isAdmin={isAdmin}
-              onDeleteClick={handleDelete}
-              userReservedClass={userReservedClass}
-              token={token}
-            />
+          {!isAdmin && (
+            <Link
+              to="/coding-zone/Codingzone_Attendance"
+              className="cz-count-container"
+            >
+              {token && renderAttendanceProgress(attendanceCount)}
+            </Link>
           )}
         </div>
+        {!isAdmin && (
+          <div className="codingzone-date">
+            {days.map((day, index) => (
+              <React.Fragment key={day.name}>
+                <button
+                  onClick={() => filterByDay(day.name)}
+                  className={selectedDay === day.name ? "selected" : ""}
+                >
+                  <p>{day.label}</p>
+                </button>
+                {index < days.length - 1 && <span> | </span>}
+              </React.Fragment>
+            ))}
+          </div>
+        )}
+        {!isAdmin && (
+          <div className="category-name-container">
+            <div className="codingzone-title">
+              <p className="weekDay">요일</p>
+              <p className="weekDate">날짜</p>
+              <p className="weekTime">시간</p>
+              <p className="card-hidden-space"></p>
+              <p className="weeksubject">과목명</p>
+              <p className="weekperson">조교</p>
+              <p className="weekcount">인원</p>
+              {(cookies.accessToken || isAdmin) && isRendered && (
+                <p className="registerbutton"></p>
+              )}
+            </div>
+          </div>
+        )}
+        {!isAdmin && (
+          <div className="codingzone-list">
+            {/* 항상 렌더되도록 유지하고, show/hide는 CSS 클래스 이름으로 제어 */}
+            <picture
+              className={`no-classes-image ${
+                showNoClassesImage ? "visible" : "hidden"
+              }`}
+            >
+              <source srcSet="/Codingzone-noregist.webp" type="image/webp" />
+              <img
+                src="/Codingzone-noregist.png"
+                alt="수업이 없습니다"
+                className="no-classes-img"
+                width="600"
+                height="260"
+                loading="eager"
+                decoding="sync"
+              />
+            </picture>
+
+            {/* 수업이 있을 경우에만 ClassList 보여줌 */}
+            {!showNoClassesImage && (
+              <ClassList
+                classList={classList}
+                handleCardClick={handleCardClick}
+                handleToggleReservation={handleToggleReservation}
+                isAdmin={isAdmin}
+                onDeleteClick={handleDelete}
+                userReservedClass={userReservedClass}
+                token={token}
+              />
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
