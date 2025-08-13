@@ -20,6 +20,8 @@ import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js";
 import CalendarInput from "../../widgets/Calendar/CalendarInput";
 import { isWeekendYMD } from "../../shared/lib/date";
 import { fetchCodingzoneSubjectsByDate } from "../../entities/api/CodingZone/AdminApi";
+import SubjectCard from "../../widgets/subjectCard/subjectCard.js";
+import { getColorById } from "../Coding-zone/subjectColors";
 
 const CodingZoneAttendanceAssistant = () => {
   const [attendList, setAttendList] = useState([]);
@@ -211,16 +213,16 @@ const CodingZoneAttendanceAssistant = () => {
                 현재 날짜에 등록된 코딩존이 없습니다.
               </div>
             ) : (
-              // ✅ 과목 있음 → 칩 버튼 출력
-              <div className="panel-row">
-                <label className="panel-label">과목</label>
-                <div className="chips-wrap">
-                  {subjects.map((s) => (
-                    <button key={s.id} className="chip">
-                      {s.name}
-                    </button>
-                  ))}
-                </div>
+              <div className="subject-grid">
+                {subjects.slice(0, 4).map((s) => (
+                  <SubjectCard
+                    key={s.id}
+                    title={s.name}
+                    color={getColorById(s.id)}
+                    onClick={() => setSelectedSubjectId(s.id)}
+                    aria-label={`${s.name} 과목 선택`}
+                  />
+                ))}
               </div>
             )}
           </div>
