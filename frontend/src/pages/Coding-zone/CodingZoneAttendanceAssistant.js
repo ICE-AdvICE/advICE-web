@@ -19,6 +19,7 @@ import Banner from "../../shared/ui/Banner/Banner"; // ✅ 추가(juhui): 공통
 import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js"; //코딩존 보드 바(버튼 네개) 컴포넌트
 import CalendarInput from "../../widgets/Calendar/CalendarInput";
 import { isWeekendYMD } from "../../shared/lib/date";
+import { fetchCodingzoneSubjectsByDate } from "../../entities/api/CodingZone/AdminApi";
 
 const CodingZoneAttendanceAssistant = () => {
   const [attendList, setAttendList] = useState([]);
@@ -58,16 +59,40 @@ const CodingZoneAttendanceAssistant = () => {
       return;
     }
 
-    // 로딩 시작
-    setIsSubjectsLoading(true);
+    let cancelled = false;
 
-    // 0.5초 후에 목업 데이터 세팅 (디자인 확인용)
-    setTimeout(() => {
-      // 빈 배열로 두면 "현재 날짜에 등록된 코딩존이 없습니다." 문구가 뜸
-      setSubjects([]);
-      setIsSubjectsLoading(false);
-    }, 500);
-  }, [selectedDateYMD]);
+    (async () => {
+      try {
+        setIsSubjectsLoading(true);
+        const res = await fetchCodingzoneSubjectsByDate(
+          selectedDateYMD,
+          token,
+          setCookie,
+          navigate
+        );
+
+        if (cancelled) return;
+
+        if (res && res.code === "SU") {
+          const classesMap = res.data?.classes ?? {};
+          // {"1":"컴프", "2":"자료구조"} → [{id:"1", name:"컴프"}, ...]
+          const subs = Object.entries(classesMap).map(([id, name]) => ({
+            id: String(id),
+            name: String(name),
+          }));
+          setSubjects(subs);
+        } else {
+          setSubjects([]);
+        }
+      } finally {
+        if (!cancelled) setIsSubjectsLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedDateYMD, token, setCookie, navigate]);
 
   const fetchAuthType = async () => {
     const response = await getczauthtypetRequest(token, setCookie, navigate);
