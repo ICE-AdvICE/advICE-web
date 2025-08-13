@@ -1,19 +1,30 @@
 /* widgets/Calendar/CalendarGrid.css */
 
-/* 팝오버 전체 박스에 테두리 */
+/* 팝오버 여기서만 관리 */
 .cal-popover {
+  position: absolute;
+  top: calc(100% + var(--calendar-gap));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+
   border: 1.2px solid #052940;
   border-radius: 12px;
-  background-color: #fff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
-  padding: 0;
+  background: #fff;
+  box-shadow: 6px 6px 6px rgba(0, 0, 0, 0.4);
+  padding: 10px;
+  box-sizing: border-box;
+
+  /* ✅ 입력박스(.cal-input) 폭과 동일하게 */
+  width: max(100%, var(--cal-input-min));
+  min-width: var(--cal-input-min);
+  max-width: var(--cal-popover-max);
 }
 
 .cal {
   width: auto;
   user-select: none;
-  padding: 13px 13px 13px 13px;
+  padding: 13px;
 }
 .cal__head {
   display: flex;
