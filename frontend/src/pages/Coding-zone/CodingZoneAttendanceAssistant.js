@@ -38,6 +38,15 @@ const CodingZoneAttendanceAssistant = () => {
   const [selectedSubjectId, setSelectedSubjectId] = useState(null);
   const [selectedAssistantId, setSelectedAssistantId] = useState(null);
 
+  const count = subjects.length;
+  const gridClass =
+    count === 4
+      ? "subject-grid cols-2x2"
+      : count === 3
+      ? "subject-grid layout-3"
+      : count === 2
+      ? "subject-grid cols-2"
+      : "subject-grid cols-1"; // 1개
   const dateToYMD = (d) => {
     const y = d.getFullYear();
     const m = String(d.getMonth() + 1).padStart(2, "0");
@@ -208,21 +217,22 @@ const CodingZoneAttendanceAssistant = () => {
             {isSubjectsLoading ? (
               <div className="panel-empty">과목을 불러오는 중…</div>
             ) : subjects.length === 0 ? (
-              // ✅ 과목 없음 → 회색 박스 안 메시지
+              //  과목 없음 → 회색 박스 안 메시지
               <div className="panel-empty">
                 현재 날짜에 등록된 코딩존이 없습니다.
               </div>
             ) : (
-              <div className="subject-grid">
-                {subjects.slice(0, 4).map((s) => (
-                  <SubjectCard
-                    key={s.id}
-                    title={s.name}
-                    color={getColorById(s.id)}
-                    onClick={() => setSelectedSubjectId(s.id)}
-                    aria-label={`${s.name} 과목 선택`}
-                  />
-                ))}
+              <div className={`panel-inner ${gridClass}`}>
+                <div className="subject-grid-inner">
+                  {subjects.slice(0, 4).map((s) => (
+                    <SubjectCard
+                      key={s.id}
+                      title={s.name}
+                      color={getColorById(s.id)}
+                      onClick={() => setSelectedSubjectId(s.id)}
+                    />
+                  ))}
+                </div>
               </div>
             )}
           </div>

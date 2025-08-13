@@ -5,8 +5,10 @@
   color: #0f2a3a; /* 본문 글자색 */
   border: none;
   border-radius: 22px;
-  width: 260px; /* 필요시 조정 */
-  height: 140px; /* 필요시 조정 */
+  min-width: 400px;
+  min-height: var(--card-min-h); /* ← 높이 변수 적용 */
+  height: var(--card-min-h); /* 필요 시 고정 높이로도 가능 */
+  box-sizing: border-box;
   padding: 18px 18px 18px 22px;
   display: flex;
   flex-direction: column;
@@ -18,17 +20,54 @@
     box-shadow 0.18s;
   appearance: none;
 }
+.subject-grid-inner {
+  display: grid;
+  gap: var(--gap);
+  justify-content: center; /* 가로 가운데 정렬 */
+}
 
+/* 1개일 때 — 꽉 차게 */
+.subject-grid.layout-1 .subject-grid-inner {
+  grid-template-columns: 1fr; /* 한 열 */
+}
+
+.subject-grid.layout-1 .subject-grid-inner > * {
+  width: 100%;
+  justify-self: center;
+}
+
+/* 2개: 2열 고정 */
+.subject-grid.cols-2 .subject-grid-inner {
+  grid-template-columns: repeat(2, minmax(var(--col-min), 1fr));
+}
+
+/* 4개: 2×2 강제 (2열) */
+.subject-grid.cols-2x2 .subject-grid-inner {
+  grid-template-columns: repeat(2, minmax(var(--col-min), 1fr));
+}
+
+/* 3개: 위 2 + 아래 1(가운데) */
+.subject-grid.layout-3 .subject-grid-inner {
+  grid-template-columns: repeat(2, minmax(var(--col-min), 1fr));
+  justify-content: center;
+}
+.subject-grid.layout-3 .subject-grid-inner > :nth-child(3) {
+  grid-column: 1 / -1; /* 두 칸 span */
+  justify-self: center; /* 행 가운데 */
+  max-width: calc((100% - var(--gap)) / 2); /* 위 한 칸과 동일 폭 */
+  width: 100%;
+}
 .subject-top {
-  font-size: 14px;
+  font-size: 15px;
   color: #244455;
   opacity: 0.9;
 }
 
 .subject-title {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 800;
   color: #0f2a3a;
+  text-overflow: ellipsis;
 }
 
 .subject-arrow {
@@ -73,11 +112,69 @@
   color: var(--hover-color);
 }
 
-/* 반응형(옵션) */
-@media (max-width: 480px) {
+:root {
+  --col-min: 400px; /* 카드 최소 너비 */
+  --gap: 25px; /* 카드 간격 */
+  --card-min-h: 170px; /* 카드 최소 높이 */
+}
+
+@media (max-width: 1280px) {
+  :root {
+    --col-min: 380px; /* 카드 최소 너비 */
+    --gap: 25px; /* 카드 간격 */
+    --card-min-h: 160px; /* 카드 최소 높이 */
+  }
+
   .subject-card {
-    width: 100%;
-    height: 120px;
+    min-width: 370px;
+    min-height: 160px;
+  }
+  .subject-title {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --col-min: 380px; /* 카드 최소 너비 */
+    --gap: 25px; /* 카드 간격 */
+    --card-min-h: 160px; /* 카드 최소 높이 */
+  }
+  .subject-grid-inner {
+    grid-template-columns: 1fr !important; /* 한 줄(세로) 배치 */
+  }
+  .subject-card {
+    min-width: 320px;
+    min-height: 150px;
+  }
+  .subject-title {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --col-min: 350px; /* 카드 최소 너비 */
+    --gap: 25px; /* 카드 간격 */
+    --card-min-h: 140px; /* 카드 최소 높이 */
+  }
+  .subject-card {
+    min-width: 330px;
+    min-height: 130px;
+  }
+  .subject-title {
+    font-size: 20px;
+  }
+}
+@media (max-width: 480px) {
+  :root {
+    --col-min: 330px; /* 카드 최소 너비 */
+    --gap: 25px; /* 카드 간격 */
+    --card-min-h: 130px; /* 카드 최소 높이 */
+  }
+
+  .subject-card {
+    min-width: 270px;
   }
   .subject-title {
     font-size: 20px;
