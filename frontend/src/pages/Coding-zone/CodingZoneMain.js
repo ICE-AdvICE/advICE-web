@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../css/codingzone/codingzone-main.css";
+import "../css/codingzone/codingzone_attend.css";
 import { useCookies } from "react-cookie";
 import CzCard from "../../widgets/layout/CzCard/czCard";
 import { useNavigate, useLocation, Link } from "react-router-dom";
@@ -22,6 +23,9 @@ import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigatio
 import BannerSlider from "../../shared/ui/Banner/BannerSlider"; // ✅ 추가(juhui): 슬라이더 컴포넌트
 import CalendarInput from "../../widgets/Calendar/CalendarInput"; // 달력
 import { isWeekendYMD } from "../../shared/lib/date"; // 달력
+import { getColorById } from "../Coding-zone/subjectColors";
+import { fetchCodingzoneSubjectsByDate } from "../../entities/api/CodingZone/AdminApi";
+import SubjectCard from "../../widgets/subjectCard/subjectCard.js";
 
 const ClassList = ({
   userReservedClass,
@@ -76,6 +80,53 @@ const CodingMain = () => {
   const [userRole, setUserRole] = useState("");
   const [showNoClassesImage, setShowNoClassesImage] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null); // 달력
+  const [subjects, setSubjects] = useState([]); // ★ NEW [{id, name}]
+  const [isSubjectsLoading, setIsSubjectsLoading] = useState(false); // ★ NEW
+  const [selectedSubjectId, setSelectedSubjectId] = useState(null); // ★ NEW
+  const [selectedDateYMD, setSelectedDateYMD] = useState(""); // ★ NEW: YYYY-MM-DD 문자열
+
+  // ★ NEW: 날짜 -> YYYY-MM-DD
+  // 기존 dateToYMD를 아래로 교체
+  const dateToYMD = (val) => {
+    if (!val) return "";
+
+    // 이미 YYYY-MM-DD 형태면 그대로 정규화해서 반환
+    if (typeof val === "string") {
+      // 2025-8-3, 2025/8/3, 20250803 모두 허용
+      const m = val.match(/^(\d{4})[./-]?(\d{1,2})[./-]?(\d{1,2})$/);
+      if (m) {
+        const y = m[1];
+        const mo = m[2].padStart(2, "0");
+        const d = m[3].padStart(2, "0");
+        return `${y}-${mo}-${d}`;
+      }
+      // 그 외 문자열은 Date 파싱 시도
+      const dt = new Date(val);
+      if (!Number.isNaN(dt.getTime())) {
+        return dateToYMD(dt); // 재귀로 포맷
+      }
+      return "";
+    }
+
+    // 숫자(timestamp) 또는 Date 객체 처리
+    const dt = val instanceof Date ? val : new Date(val);
+    if (Number.isNaN(dt.getTime())) return "";
+
+    const y = dt.getFullYear();
+    const m = String(dt.getMonth() + 1).padStart(2, "0");
+    const d = String(dt.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  };
+
+  const count = subjects.length; // ★ NEW
+  const gridClass =
+    count === 4
+      ? "subject-grid cols-2x2"
+      : count === 3
+      ? "subject-grid layout-3"
+      : count === 2
+      ? "subject-grid cols-2"
+      : "subject-grid cols-1"; // 1개
 
   useEffect(() => {
     if (cookies.accessToken) {
@@ -324,6 +375,48 @@ const CodingMain = () => {
     );
   };
 
+  // ★ NEW: selectedDate(달력 값) → YYYY-MM-DD 문자열 동기화
+  useEffect(() => {
+    setSelectedDateYMD(dateToYMD(selectedDate));
+  }, [selectedDate]);
+
+  // ★ NEW: EA + 날짜 선택 시 과목 목록 조회
+  useEffect(() => {
+    if (!isAdmin) return; // EA만 조회
+    if (!selectedDateYMD) {
+      setSubjects([]);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        setIsSubjectsLoading(true);
+        const res = await fetchCodingzoneSubjectsByDate(
+          selectedDateYMD,
+          cookies.accessToken,
+          setCookie,
+          navigate
+        );
+        if (cancelled) return;
+        if (res?.code === "SU") {
+          const classesMap = res.data?.classes ?? {};
+          const subs = Object.entries(classesMap).map(([id, name]) => ({
+            id: String(id),
+            name: String(name),
+          }));
+          setSubjects(subs);
+        } else {
+          setSubjects([]);
+        }
+      } finally {
+        if (!cancelled) setIsSubjectsLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [isAdmin, selectedDateYMD, cookies.accessToken, setCookie, navigate]); // ★ NEW
+
   return (
     <div className="codingzone-container">
       <CodingZoneNavigation />
@@ -372,10 +465,39 @@ const CodingMain = () => {
               to="/coding-zone/Codingzone_Attendance"
               className="cz-count-container"
             >
-              {token && renderAttendanceProgress(attendanceCount)}
+              {cookies.accessToken && renderAttendanceProgress(attendanceCount)}
             </Link>
           )}
         </div>
+        {isAdmin && (
+          <div className="panel-gray" style={{ margin: "40px" }}>
+            {!selectedDateYMD ? (
+              <div className="panel-empty">
+                조회하고자 하는 날짜를 입력해주세요.
+              </div>
+            ) : isSubjectsLoading ? (
+              <div className="panel-empty">과목을 불러오는 중…</div>
+            ) : subjects.length === 0 ? (
+              <div className="panel-empty">
+                현재 날짜에 등록된 코딩존이 없습니다.
+              </div>
+            ) : (
+              <div className={`panel-inner ${gridClass}`}>
+                <div className="subject-grid-inner">
+                  {subjects.slice(0, 4).map((s) => (
+                    <SubjectCard
+                      key={s.id}
+                      title={s.name}
+                      color={getColorById(s.id)}
+                      onClick={() => setSelectedSubjectId(s.id)}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {!isAdmin && (
           <div className="codingzone-date">
             {days.map((day, index) => (
