@@ -1,0 +1,103 @@
+/* widgets/Calendar/CalendarGrid.css */
+
+/* 팝오버 전체 박스에 테두리 */
+.cal-popover {
+  border: 1.2px solid #052940;
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  padding: 0;
+}
+
+.cal {
+  width: auto;
+  user-select: none;
+  padding: 13px 13px 13px 13px;
+}
+.cal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 6px 20px;
+}
+.cal__title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #052940;
+}
+.cal__nav {
+  border: none;
+  background: #fff;
+  border-radius: 10px;
+  width: 32px;
+  height: 32px;
+  line-height: 30px;
+  font-size: 25px;
+  display: inline-flex;
+  position: relative;
+  top: 9px;
+  left: 11px;
+}
+.cal__nav img {
+  width: 15px;
+  height: 15px;
+  display: block; /* 렌더링 깜빡임 방지 */
+}
+.cal__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  padding: 0px;
+  border-radius: 12px;
+}
+.cal__dow {
+  text-align: center;
+  font-size: 0.95rem;
+  color: #052940;
+  padding: 6px 0;
+  font-weight: 500;
+}
+.cal__cell {
+  height: 25px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: #fff;
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 13px;
+}
+.cal__cell:not(.-empty):hover {
+  border-color: #052940;
+}
+.cal__cell.-sel {
+  background: #052940;
+  color: #fff;
+  border-color: #052940;
+}
+.cal__cell.-dis {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.cal__cell.-empty {
+  background: transparent;
+  border: none;
+  cursor: default;
+}
+/* 일요일 컬럼 (라벨+셀) */
+.cal__grid > .cal__dow:nth-child(7n + 1),
+.cal__grid > .cal__cell:nth-child(7n + 1) {
+  color: #d94a4a; /* 원하면 다른 색으로 조정 */
+}
+
+/* 토요일 컬럼 (라벨+셀) */
+.cal__grid > .cal__dow:nth-child(7n),
+.cal__grid > .cal__cell:nth-child(7n) {
+  color: #2a6bd9;
+}
+
+/* 주말(일/토) 제외: 비활성 날짜는 회색 톤 */
+.cal__grid > .cal__cell.-dis:not(:nth-child(7n)):not(:nth-child(7n + 1)),
+.cal__grid > .cal__cell:disabled:not(:nth-child(7n)):not(:nth-child(7n + 1)) {
+  color: #9aa6b2;
+  opacity: 1;
+}
