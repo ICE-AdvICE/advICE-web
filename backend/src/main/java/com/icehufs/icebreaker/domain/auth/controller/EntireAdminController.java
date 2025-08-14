@@ -13,6 +13,7 @@ import com.icehufs.icebreaker.util.ResponseDto;
 import jakarta.validation.Valid;
 
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,9 @@ import com.icehufs.icebreaker.domain.codingzone.dto.request.PatchGroupInfRequest
 import com.icehufs.icebreaker.domain.codingzone.service.CodingZoneService;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.net.URLEncoder;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -122,4 +125,16 @@ public class EntireAdminController {
             return DownloadArticleExcelResponseDto.failed();
         }
     }
+
+    @GetMapping("/entire-attendance/{subjectId}/export")
+    public ResponseEntity<Resource> getEntireAttendanceExcelFile(@PathVariable Integer subjectId) {
+        ByteArrayResource excelFile = attendanceService.getEntireAttendanceExcelFile(subjectId);
+        String filename = "codingzone" + subjectId + "_entire_attendance.xlsx";
+
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+            .body(excelFile);
+    }
+
 }
