@@ -30,6 +30,41 @@ const CodingZoneRegist = () => {
   const [assistantOptionsMap, setAssistantOptionsMap] = useState({});
   const [assistantLoading, setAssistantLoading] = useState({});
 
+  // 응답 안쪽에 숨어있는 "첫 번째 배열"을 찾아 반환
+  const findFirstArray = (v) => {
+    if (Array.isArray(v)) return v;
+    if (v && typeof v === "object") {
+      for (const k of Object.keys(v)) {
+        const found = findFirstArray(v[k]);
+        if (found) return found;
+      }
+    }
+    return null;
+  };
+
+  // 서버 키 → 프론트 표준 키(subjectId/subjectName)로 정규화
+  const normalizeSubject = (m) => ({
+    subjectId: String(
+      m?.subjectId ??
+        m?.subject_id ??
+        m?.codingZone ??
+        m?.zone ??
+        m?.id ??
+        m?.code ??
+        m?.value ??
+        ""
+    ),
+    subjectName: String(
+      m?.subjectName ??
+        m?.subject_name ??
+        m?.name ??
+        m?.title ??
+        m?.label ??
+        m?.text ??
+        ""
+    ),
+  });
+
   //과목에 해당하는 조교 불러오기
   const handleSubjectChange = async (rowIndex, subjectId) => {
     const selected = subjects.find(
@@ -72,20 +107,62 @@ const CodingZoneRegist = () => {
   };
 
   useEffect(() => {
+    if (!cookies.accessToken) return; // 토큰 준비 전 호출 방지
+
     const loadSubjects = async () => {
-      const res = await fetchAllSubjects(
-        cookies.accessToken,
-        setCookie,
-        navigate
-      );
-      if (res?.code === "SU" && Array.isArray(res.data)) {
-        setSubjects(res.data); // [{subjectId, subjectName}, ...]
-      } else {
-        alert("과목 목록을 불러오지 못했습니다.");
+      try {
+        const res = await fetchAllSubjects(
+          cookies.accessToken,
+          setCookie,
+          navigate
+        );
+
+        console.debug("[subjects] raw response:", res);
+        // 1) 최상위가 배열
+        if (Array.isArray(res)) {
+          const list = res
+            .map(normalizeSubject)
+            .filter((s) => s.subjectId && s.subjectName);
+          setSubjects(list);
+          return;
+        }
+
+        // 2) 객체라면: 안쪽 어디든 배열이 있으면 성공으로 간주
+        if (res && typeof res === "object") {
+          const arr = findFirstArray(res);
+          if (Array.isArray(arr)) {
+            const list = arr
+              .map(normalizeSubject)
+              .filter((s) => s.subjectId && s.subjectName);
+            console.debug("[subjects] parsed list:", list);
+            setSubjects(list);
+            return;
+          }
+
+          // 3) 여기까지 왔으면 '진짜' 실패 코드만 처리
+          if ("code" in res) {
+            if (res.code === "NOT_ANY_MAPPINGSET") {
+              setSubjects([]); // 등록된 과목 없음(정상)
+              return;
+            }
+            console.warn("[subjects] load error:", res.code, res?.message);
+          } else {
+            console.warn("[subjects] unexpected shape with no array");
+          }
+          setSubjects([]);
+          return;
+        }
+
+        // 4) 예상 못한 타입
+        setSubjects([]);
+      } catch (e) {
+        console.error("과목 목록 불러오기 실패:", e);
+        setSubjects([]);
       }
     };
+
     loadSubjects();
-  }, [cookies.accessToken, setCookie, navigate]);
+  }, [cookies.accessToken]); // setCookie/navigate는 의존성에서 빼세요(불필요 재호출 방지)
 
   useEffect(() => {
     const fetchAuthType = async () => {
