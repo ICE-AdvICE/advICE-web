@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.icehufs.icebreaker.domain.auth.domain.entity.Authority;
 import com.icehufs.icebreaker.domain.auth.repostiory.AuthorityRepository;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.SubjectListResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.exception.UnmappedSubjectException;
 import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneClassRepository;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,7 @@ import com.icehufs.icebreaker.domain.codingzone.dto.response.PostSubjectMappingR
 import com.icehufs.icebreaker.domain.codingzone.repository.SubjectRepository;
 import com.icehufs.icebreaker.domain.membership.repository.UserRepository;
 import com.icehufs.icebreaker.exception.BusinessException;
-import com.icehufs.icebreaker.util.SubjectResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.SubjectResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -92,21 +93,22 @@ public class SubjectService {
     }
 
 
-    public List<SubjectResponseDto> getMappingCodingZoneClass(String email) {
-
-        boolean existedUser = userRepository.existsByEmail(email);
-        // 전역 처리로 사용자 계정 오류 예외처리
-        if (!existedUser)
-            throw new BusinessException(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER,HttpStatus.NOT_FOUND);
+    public SubjectListResponseDto getMappingCodingZoneClass() {
 
         // 아직 DB에 어떠한 매핑 정보도 없을 때, 예외 처리
         if (!subjectRepository.existsByIdIsNotNull())
             throw new BusinessException(ResponseCode.NOT_ANY_MAPPINGSET, ResponseMessage.NOT_ANY_MAPPINGSET,HttpStatus.NOT_FOUND);
 
         List<Subject> subjectList = subjectRepository.findAll();
-        return subjectList.stream()
-                .map(subject -> new SubjectResponseDto(subject.getId(), subject.getSubjectName()))
-                .toList();
+        List<SubjectResponseDto> subjectResponseDto = new ArrayList<>();
+
+        for(Subject subject : subjectList) {
+            subjectResponseDto.add(new SubjectResponseDto(subject.getId(), subject.getSubjectName()));
+        }
+        SubjectListResponseDto subjectListResponseDto = new SubjectListResponseDto(subjectResponseDto);
+        return subjectListResponseDto;
+
+
     }
 
     @Transactional

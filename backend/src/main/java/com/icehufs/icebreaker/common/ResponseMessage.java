@@ -5,8 +5,7 @@ public interface ResponseMessage {
     String SUCCESS = "Success.";
     String CODING_ADMIN = "This user is coding-zone admin.";
     String ENTIRE_ADMIN = "This user is entire admin.";
-    String SUCCESS_CLASS_MAPPING = "모든 매핑을 새로 등록하여 코딩존 매핑을 완료";
-    String SUCCESS_MAPPING_GET = "코딩존 매핑 조회 성공";
+    String SUCCESS_MAPPING_GET = "매핑 조회 성공";
     String SUCCESS_CLASS_CREATE = "코딩존 등록 성공";
     String SUCCESS_CLASS_DELETE = "코딩존 삭제 성공";
     String SUCCESS_CLASS_UPDATE = "코딩존 정보 수정 성공";
