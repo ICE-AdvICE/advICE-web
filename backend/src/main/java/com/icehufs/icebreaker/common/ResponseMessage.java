@@ -37,11 +37,11 @@ public interface ResponseMessage {
     String DELETE_NOT_ALLOW = "해당 코딩존 번호를 사용하는 수업이 등록되어 있습니다. 먼저 해당 수업을 삭제해주세요.";
     String ALREADY_RESERVED_CLASS = "이미 해당 수업을 예약한 학생이 있으므로, 등록 취소가 불가능한 수업입니다.";
     String NOT_FOUND_CLASS = "해당 코딩존 수업이 없습니다.";
-
+    String REGISTRATION_NOT_FOUND = "예약 정보를 찾을 수 없습니다.";
 
     // HTTP Status 401
     String SIGN_IN_FAIL = "Login information mismatch.";
-    String AUTHORIZATION_FAIL = "Authorization Failed.";
+    String AUTHORIZATION_FAIL = "권한이 없습니다.";
 
     // HTTP Status 403
     String NO_PERMISSION = "Do not have permission.";
