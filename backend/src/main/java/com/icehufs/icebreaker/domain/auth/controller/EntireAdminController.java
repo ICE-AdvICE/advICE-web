@@ -98,34 +98,6 @@ public class EntireAdminController {
         return ResponseEntity.ok(ResponseDto.success("특정 일에 특정 조교의 코딩존에 참여한 학생 리스트 조회 성공.", studentList));
     }
 
-    @GetMapping("/excel/attendance/grade1")
-    public ResponseEntity<?> downloadArticleExcel() {
-        try {
-            ByteArrayResource excelFile = codingzoneService.generateAttendanceExcelOfGrade1();
-
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=CodingZone1.xlsx") // 클라이언트가 이 요청을 받으면 파일을 자동으로 다운로드하도록 설정
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM) // 바이너리 파일(엑셀, PDF 등) 전송에 적합한 MIME 타입.
-                    .body(excelFile);
-        } catch (IOException e) {
-            return DownloadArticleExcelResponseDto.failed();
-        }
-    }
-
-    @GetMapping("/excel/attendance/grade2")
-    public ResponseEntity<?> downloadArticleExcel2() {
-        try {
-            ByteArrayResource excelFile = codingzoneService.generateAttendanceExcelOfGrade2();
-
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=CodingZone2.xlsx") // 클라이언트가 이 요청을 받으면 파일을 자동으로 다운로드하도록 설정
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM) // 바이너리 파일(엑셀, PDF 등) 전송에 적합한 MIME 타입.
-                    .body(excelFile);
-        } catch (IOException e) {
-            return DownloadArticleExcelResponseDto.failed();
-        }
-    }
-
     @GetMapping("/entire-attendance/{subjectId}/export")
     public ResponseEntity<Resource> getEntireAttendanceExcelFile(@PathVariable Integer subjectId) {
         ByteArrayResource excelFile = attendanceService.getEntireAttendanceExcelFile(subjectId);
