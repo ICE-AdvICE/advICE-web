@@ -1,0 +1,182 @@
+.subject-card {
+  /* 기본 스타일 */
+  --hover-color: #1a3f57; /* JS에서 style로 덮어씀 */
+  background: #fff;
+  color: #0f2a3a; /* 본문 글자색 */
+  border: none;
+  border-radius: 22px;
+  min-width: 400px;
+  min-height: var(--card-min-h); /* ← 높이 변수 적용 */
+  height: var(--card-min-h); /* 필요 시 고정 높이로도 가능 */
+  box-sizing: border-box;
+  padding: 30px 18px 25px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: left;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: background-color 0.18s, color 0.18s, transform 0.18s,
+    box-shadow 0.18s;
+  appearance: none;
+}
+.subject-grid-inner {
+  display: grid;
+  gap: var(--gap);
+  justify-content: center; /* 가로 가운데 정렬 */
+}
+
+/* 1개일 때 — 꽉 차게 */
+.subject-grid.layout-1 .subject-grid-inner {
+  grid-template-columns: 1fr; /* 한 열 */
+}
+
+.subject-grid.layout-1 .subject-grid-inner > * {
+  width: 100%;
+  justify-self: center;
+}
+
+/* 2개: 2열 고정 */
+.subject-grid.cols-2 .subject-grid-inner {
+  grid-template-columns: repeat(2, minmax(var(--col-min), 1fr));
+}
+
+/* 4개: 2×2 강제 (2열) */
+.subject-grid.cols-2x2 .subject-grid-inner {
+  grid-template-columns: repeat(2, minmax(var(--col-min), 1fr));
+}
+
+/* 3개: 위 2 + 아래 1(가운데) */
+.subject-grid.layout-3 .subject-grid-inner {
+  grid-template-columns: repeat(2, minmax(var(--col-min), 1fr));
+  justify-content: center;
+}
+.subject-grid.layout-3 .subject-grid-inner > :nth-child(3) {
+  grid-column: 1 / -1; /* 두 칸 span */
+  justify-self: center; /* 행 가운데 */
+  max-width: calc((100% - var(--gap)) / 2); /* 위 한 칸과 동일 폭 */
+  width: 100%;
+}
+.subject-top {
+  font-size: 16px;
+  color: #244455;
+  opacity: 0.9;
+}
+
+.subject-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f2a3a;
+  text-overflow: ellipsis;
+}
+
+.subject-arrow {
+  /* 오른쪽 아래 동그란 버튼 */
+  align-self: flex-end;
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: #0f2a3a;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.arrow-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.subject-card:hover,
+.subject-card:active,
+.subject-card.is-active {
+  background: var(--hover-color);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
+}
+
+.subject-card:hover .subject-top,
+.subject-card:hover .subject-title,
+.subject-card.is-active .subject-top,
+.subject-card.is-active .subject-title {
+  color: #fff;
+}
+
+/* hover 시 화살표 버튼을 반전(배경 흰색, 아이콘 색 = hover 컬러) */
+.subject-card:hover .subject-arrow,
+.subject-card.is-active .subject-arrow {
+  background: #fff;
+  color: var(--hover-color);
+}
+
+:root {
+  --col-min: 400px; /* 카드 최소 너비 */
+  --gap: 25px; /* 카드 간격 */
+  --card-min-h: 170px; /* 카드 최소 높이 */
+}
+
+@media (max-width: 1280px) {
+  :root {
+    --col-min: 380px; /* 카드 최소 너비 */
+    --gap: 25px; /* 카드 간격 */
+    --card-min-h: 160px; /* 카드 최소 높이 */
+  }
+
+  .subject-card {
+    min-width: 370px;
+    min-height: 160px;
+  }
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --col-min: 350px; /* 카드 최소 너비 */
+    --gap: 25px; /* 카드 간격 */
+    --card-min-h: 160px; /* 카드 최소 높이 */
+  }
+
+  .subject-card {
+    min-width: 300px;
+    min-height: 150px;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --col-min: 340px; /* 카드 최소 너비 */
+    --gap: 25px; /* 카드 간격 */
+    --card-min-h: 130px; /* 카드 최소 높이 */
+  }
+  .subject-grid-inner {
+    grid-template-columns: 1fr !important;
+  }
+  .subject-card {
+    min-width: 320px;
+    min-height: 130px;
+  }
+  .subject-top {
+    font-size: 15px;
+  }
+  .subject-title {
+    font-size: 17px;
+  }
+}
+@media (max-width: 480px) {
+  :root {
+    --col-min: 330px; /* 카드 최소 너비 */
+    --gap: 25px; /* 카드 간격 */
+    --card-min-h: 120px; /* 카드 최소 높이 */
+  }
+
+  .subject-card {
+    min-width: 270px;
+  }
+  .subject-top {
+    font-size: 14px;
+  }
+  .subject-title {
+    font-size: 16px;
+  }
+}

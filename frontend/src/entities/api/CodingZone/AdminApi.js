@@ -255,3 +255,48 @@ export const deleteClass = async (classNum, token, setCookie, navigate) => {
     return false;
   }
 };
+
+// 날짜별 코딩존 과목 조회
+export const fetchCodingzoneSubjectsByDate = async (
+  dateYMD,
+  token,
+  setCookie,
+  navigate
+) => {
+  try {
+    const response = await axios.get(`${API_DOMAIN_ADMIN}/codingzones`, {
+      headers: { Authorization: `Bearer ${token}` },
+      params: { date: dateYMD }, // ?date=YYYY-MM-DD
+    });
+    return response.data; // { code, message, data: { classes: { "1":"컴프", "2":"자료구조" } } }
+  } catch (error) {
+    if (!error.response) {
+      return {
+        code: "NETWORK_ERROR",
+        message: "네트워크 상태를 확인해주세요.",
+      };
+    }
+    const { code } = error.response.data || {};
+
+    if (code === "ATE") {
+      console.warn("🔄 날짜별 과목 조회: Access Token 만료. 재발급 시도...");
+      const newToken = await refreshTokenRequest(setCookie, token, navigate);
+      if (newToken?.accessToken) {
+        return fetchCodingzoneSubjectsByDate(
+          dateYMD,
+          newToken.accessToken,
+          setCookie,
+          navigate
+        );
+      } else {
+        setCookie("accessToken", "", { path: "/", expires: new Date(0) });
+        navigate("/");
+        return {
+          code: "TOKEN_EXPIRED",
+          message: "토큰 만료. 다시 로그인해주세요.",
+        };
+      }
+    }
+    return error.response.data;
+  }
+};
