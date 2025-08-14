@@ -12,6 +12,7 @@ public interface ResponseMessage {
     String SUCCESS_POST_MAPPING = "신규 매핑 정보로 등록 성공";
     String SUCCESS_DELETE_MAPPING = "코딩존 매핑 삭제 성공 ";
     String SUCCESS_RESET_SEMESTER = "학기 초기화 성공";
+    String SUCCESS_GET_CLASSLIST = "예약 가능한 수업 리스트 반환 성공";
 
     // HTTP Status 400
     String BAD_REQUEST = "잘못된 입력 형식";
@@ -36,6 +37,7 @@ public interface ResponseMessage {
     String DELETE_NOT_ALLOW = "해당 코딩존 번호를 사용하는 수업이 등록되어 있습니다. 먼저 해당 수업을 삭제해주세요.";
     String ALREADY_RESERVED_CLASS = "이미 해당 수업을 예약한 학생이 있으므로, 등록 취소가 불가능한 수업입니다.";
     String NOT_FOUND_CLASS = "해당 코딩존 수업이 없습니다.";
+    String CLASS_UNAVAILABLE_PERIOD = "수업 정보는 지정된 시간대에만 조회할 수 있습니다.";
 
 
     // HTTP Status 401
