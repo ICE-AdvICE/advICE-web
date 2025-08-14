@@ -26,14 +26,4 @@ public class GetListOfCodingZoneClassForNotLogInResponseDto extends ResponseDto{
         GetListOfCodingZoneClassForNotLogInResponseDto result = new GetListOfCodingZoneClassForNotLogInResponseDto(CodingZoneClassListEntities);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
-
-    public static ResponseEntity<ResponseDto> notExistUser (){
-        ResponseDto result = new ResponseDto(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER);
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
-    }
-
-    public static ResponseEntity<ResponseDto> noExistArticle(){
-        ResponseDto result = new ResponseDto(ResponseCode.NOT_EXISTED_ARTICLE, ResponseMessage.NOT_EXISTED_ARTICLE);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
-    }
 }
