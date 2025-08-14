@@ -9,7 +9,7 @@
   min-height: var(--card-min-h); /* ← 높이 변수 적용 */
   height: var(--card-min-h); /* 필요 시 고정 높이로도 가능 */
   box-sizing: border-box;
-  padding: 18px 18px 18px 22px;
+  padding: 30px 18px 25px 22px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -132,15 +132,13 @@
 
 @media (max-width: 1024px) {
   :root {
-    --col-min: 380px; /* 카드 최소 너비 */
+    --col-min: 350px; /* 카드 최소 너비 */
     --gap: 25px; /* 카드 간격 */
     --card-min-h: 160px; /* 카드 최소 높이 */
   }
-  .subject-grid-inner {
-    grid-template-columns: 1fr !important; /* 한 줄(세로) 배치 */
-  }
+
   .subject-card {
-    min-width: 320px;
+    min-width: 300px;
     min-height: 150px;
   }
 }
@@ -150,6 +148,9 @@
     --col-min: 340px; /* 카드 최소 너비 */
     --gap: 25px; /* 카드 간격 */
     --card-min-h: 130px; /* 카드 최소 높이 */
+  }
+  .subject-grid-inner {
+    grid-template-columns: 1fr !important;
   }
   .subject-card {
     min-width: 320px;
