@@ -1,7 +1,6 @@
 package com.icehufs.icebreaker.domain.codingzone.service;
 
 import com.icehufs.icebreaker.common.ResponseCode;
-import com.icehufs.icebreaker.common.ResponseMessage;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneClass;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneRegister;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.Subject;
@@ -14,6 +13,7 @@ import com.icehufs.icebreaker.exception.BusinessException;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -27,7 +27,6 @@ import org.springframework.http.HttpStatus;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +41,7 @@ public class AttendanceService {
     private final CodingZoneClassRepository codingZoneClassRepository;
     private final SubjectRepository subjectRepository;
 
+    @Transactional(readOnly = true)
     public List<ReservationStudentDto> getReservationStudentsByClassNum (Integer classNum) {
         List<CodingZoneRegister> reservations = codingZoneRegisterRepository.findByCodingZoneClassClassNum(classNum);
         return reservations.stream()
@@ -53,6 +53,7 @@ public class AttendanceService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public ByteArrayResource getEntireAttendanceExcelFile(Integer subjectId) {
         String subjectName = subjectRepository.findById(subjectId)
             .map(Subject::getSubjectName)
