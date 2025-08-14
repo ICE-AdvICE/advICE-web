@@ -32,6 +32,4 @@ public interface CodingZoneService {
     SubjectMappingInfoResponseDto getClassNamesWithSubjectIdsByDate(String date);
     List<CodingZoneClassInfoResponseDto> findCodingZoneClassesBySubjectAndDate(Long subjectId, String date);
     //수업 코딩존 조교
-
-    ResponseEntity<? super PutAttendanceResponseDto> putAttend(Integer registNum, String email);
 }
