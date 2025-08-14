@@ -1,22 +1,7 @@
 package com.icehufs.icebreaker.domain.codingzone.service.implement;
 
 import com.icehufs.icebreaker.common.ResponseCode;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GroupInfUpdateResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfGroupInfResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneRegisterResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneCanceResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.PutAttendanceResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfCodingZoneClassResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfCodingZoneClassForNotLogInResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCountOfAttendResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GetPersAttendListItemResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCodingZoneStudentListResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GetReservedClassListItemResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCodingZoneAssitantListResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.SubjectMappingInfoResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.AssistantNamesResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneClassInfoResponseDto;
-
+import com.icehufs.icebreaker.domain.codingzone.dto.response.*;
 import com.icehufs.icebreaker.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
@@ -33,8 +18,6 @@ import java.time.ZoneId;
 import java.time.LocalTime;
 import java.time.LocalDate;
 import java.util.List;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -248,136 +231,7 @@ public class CodingZoneServiceImplement implements CodingZoneService {
         }
     }
 
-    @Override
-    public ResponseEntity<? super GetListOfCodingZoneClassResponseDto> getClassList(Integer grade, String email) {
-        int registedClassNum = 0;
-        try {
-            log.info("✅ getClassList 진입 완료");
-            // 사용자 계정이 존재하는지(로그인 시간이 초과됐는지) 확인하는 코드
-            boolean existedUser = userRepository.existsByEmail(email);
-            if (!existedUser)
-                return GetListOfCodingZoneClassResponseDto.notExistUser();
 
-            if (grade != 1 && grade != 2)
-                return GetListOfCodingZoneClassResponseDto.validationFailed();
-
-            // 현재 날짜가 수요일에서 일요일 사이인지 확인 (Asia/Seoul 시간대 적용)
-            ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-
-            // 운영을 위한 조건
-            // ZonedDateTime lowerBound;
-            // // 이번 주 목요일 오후 4시를 lower bound 변수에 저장
-            // // 만약 현재가 월~수요일이면, 즉 이번주 목요일 오후 4시가 아직 미래일 때 이번 주 목요일(오후 4시)를 반환 받기
-            // if (now.getDayOfWeek().getValue() <= DayOfWeek.WEDNESDAY.getValue()) {
-            // lowerBound = now.with(TemporalAdjusters.next(DayOfWeek.THURSDAY))
-            // .withHour(16).withMinute(0).withSecond(0).withNano(0);
-            // } else {
-            // // 만약 현재가 목요일(오후 4시 이후) 또는 금~일요일인 경우, 즉 이번주 목요일 오후 4시가 과거일 때 이번 주 목요일(오후 4시)를
-            // 반환 받기
-            // lowerBound = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.THURSDAY))
-            // .withHour(16).withMinute(0).withSecond(0).withNano(0);
-            // }
-            // // upperBound는 이번 주 일요일의 마지막 순간 (예: 23:59:59.999...)로 설정
-            // ZonedDateTime upperBound =
-            // now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
-            // .with(LocalTime.MAX);
-
-            // 개발 & 테스트 기간을 위한 조건
-            ZonedDateTime lowerBound = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-                    .with(LocalTime.MIN);
-            ZonedDateTime upperBound = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
-                    .with(LocalTime.MAX);
-
-            // 현재 시각이 [이번주 목요일 오후 4시, 이번주 일요일] 범위 내에 있지 않으면 다음 주 수업 정보 번환하지 않기
-            if (now.isBefore(lowerBound) || now.isAfter(upperBound)) {
-                return GetListOfCodingZoneClassResponseDto.noExistArticle();
-            }
-
-            // 다음 주 월요일과 일요일 계산 (Asia/Seoul 시간대 적용)
-            ZonedDateTime nextMonday = now.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
-            ZonedDateTime nextSunday = nextMonday.plusDays(6);
-
-            // 다음 주 월요일부터 일요일까지의 수업만 조회
-            List<CodingZoneClass> classes = codingZoneClassRepository.findBySubjectIdAndClassDateBetween(
-                    grade,
-                    nextMonday.format(DateTimeFormatter.ISO_LOCAL_DATE),
-                    nextSunday.format(DateTimeFormatter.ISO_LOCAL_DATE));
-            if (classes.isEmpty())
-                return GetListOfCodingZoneClassResponseDto.noExistArticle();
-
-            for (CodingZoneClass classEntity : classes) {
-                CodingZoneRegister codingZoneRegister = codingZoneRegisterRepository
-                        .findByCodingZoneClassAndUserEmail(classEntity, email);
-                if (codingZoneRegister != null) {
-                    registedClassNum = classEntity.getClassNum();
-                    break;
-                }
-            }
-            return GetListOfCodingZoneClassResponseDto.success(registedClassNum, classes);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-    }
-
-    @Override
-    public ResponseEntity<? super GetListOfCodingZoneClassForNotLogInResponseDto> getClassList2(Integer grade) {
-        try {
-            // 사용자 계정이 존재하는지(로그인 시간이 초과됐는지) 확인하는 코드
-            if (grade != 1 && grade != 2)
-                return GetListOfCodingZoneClassForNotLogInResponseDto.validationFailed();
-
-            // 현재 날짜가 수요일에서 일요일 사이인지 확인 (Asia/Seoul 시간대 적용)
-            ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-
-            // 운영을 위한 조건
-            // ZonedDateTime lowerBound;
-            // // 이번 주 목요일 오후 4시를 lower bound 변수에 저장
-            // // 만약 현재가 월~수요일이면, 즉 이번주 목요일 오후 4시가 아직 미래일 때 이번 주 목요일(오후 4시)를 반환 받기
-            // if (now.getDayOfWeek().getValue() <= DayOfWeek.WEDNESDAY.getValue()) {
-            // lowerBound = now.with(TemporalAdjusters.next(DayOfWeek.THURSDAY))
-            // .withHour(16).withMinute(0).withSecond(0).withNano(0);
-            // } else {
-            // // 만약 현재가 목요일(오후 4시 이후) 또는 금~일요일인 경우, 즉 이번주 목요일 오후 4시가 과거일 때 이번 주 목요일(오후 4시)를
-            // 반환 받기
-            // lowerBound = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.THURSDAY))
-            // .withHour(16).withMinute(0).withSecond(0).withNano(0);
-            // }
-            // // upperBound는 이번 주 일요일의 마지막 순간 (예: 23:59:59.999...)로 설정
-            // ZonedDateTime upperBound =
-            // now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
-            // .with(LocalTime.MAX);
-
-            // 개발 & 테스트 기간을 위한 조건
-            ZonedDateTime lowerBound = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-                    .with(LocalTime.MIN);
-            ZonedDateTime upperBound = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
-                    .with(LocalTime.MAX);
-
-            // 현재 시각이 [이번주 목요일 오후 4시, 이번주 일요일] 범위 내에 있지 않으면 다음 주 수업 정보 번환하지 않기
-            if (now.isBefore(lowerBound) || now.isAfter(upperBound)) {
-                return GetListOfCodingZoneClassResponseDto.noExistArticle();
-            }
-
-            // 다음 주 월요일과 일요일 계산 (Asia/Seoul 시간대 적용)
-            ZonedDateTime nextMonday = now.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
-            ZonedDateTime nextSunday = nextMonday.plusDays(6);
-
-            // 다음 주 월요일부터 일요일까지의 수업만 조회
-            List<CodingZoneClass> classEntities = codingZoneClassRepository.findBySubjectIdAndClassDateBetween(
-                    grade,
-                    nextMonday.format(DateTimeFormatter.ISO_LOCAL_DATE),
-                    nextSunday.format(DateTimeFormatter.ISO_LOCAL_DATE));
-
-            if (classEntities.isEmpty())
-                return GetListOfCodingZoneClassForNotLogInResponseDto.noExistArticle();
-
-            return GetListOfCodingZoneClassForNotLogInResponseDto.success(classEntities);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-    }
 
     @Override
     public ResponseEntity<? super GetCountOfAttendResponseDto> getAttend(Integer subjectId, String email) {
