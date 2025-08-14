@@ -10,7 +10,7 @@ const DELETE_CLASS_URL = (classNum) =>
 // 매핑한 전체 과목 리스트 조회 API (subjectName + subjectId)
 export const fetchAllSubjects = async (token, setCookie, navigate) => {
   try {
-    const response = await axios.get(`${API_DOMAIN_ADMIN}/subjects`, {
+    const response = await axios.get(`${API_DOMAIN}/subjects`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -23,26 +23,27 @@ export const fetchAllSubjects = async (token, setCookie, navigate) => {
       };
     }
 
-    const { code } = error.response.data;
+    const { code, message } = error.response.data ?? {};
 
-    if (code === "ATE") {
-      console.warn(
-        "🔄 전체 과목 리스트: Access Token 만료됨. 토큰 재발급 시도 중..."
-      );
-      const newToken = await refreshTokenRequest(setCookie, token, navigate);
-      if (newToken?.accessToken) {
-        return fetchAllSubjects(newToken.accessToken, setCookie, navigate);
-      } else {
-        setCookie("accessToken", "", { path: "/", expires: new Date(0) });
-        navigate("/");
+    switch (code) {
+      case "AF":
+        return { code, message: message ?? "권한 없음", data: null };
+      case "DBE":
+        return { code, message: message ?? "데이터베이스 오류", data: null };
+      case "NOT_ANY_MAPPINGSET":
         return {
-          code: "TOKEN_EXPIRED",
-          message: "토큰이 만료되었습니다. 다시 로그인해주세요.",
+          code,
+          message: message ?? "어떠한 매핑 정보도 등록 정보 없음",
+          data: null,
         };
-      }
+      default:
+        // 혹시 모를 기타 실패 코드 대비
+        return {
+          code: code ?? "UNKNOWN_ERROR",
+          message: message ?? "알 수 없는 오류가 발생했습니다.",
+          data: null,
+        };
     }
-
-    return error.response.data;
   }
 };
 
@@ -253,5 +254,50 @@ export const deleteClass = async (classNum, token, setCookie, navigate) => {
         break;
     }
     return false;
+  }
+};
+
+// 날짜별 코딩존 과목 조회
+export const fetchCodingzoneSubjectsByDate = async (
+  dateYMD,
+  token,
+  setCookie,
+  navigate
+) => {
+  try {
+    const response = await axios.get(`${API_DOMAIN_ADMIN}/codingzones`, {
+      headers: { Authorization: `Bearer ${token}` },
+      params: { date: dateYMD }, // ?date=YYYY-MM-DD
+    });
+    return response.data; // { code, message, data: { classes: { "1":"컴프", "2":"자료구조" } } }
+  } catch (error) {
+    if (!error.response) {
+      return {
+        code: "NETWORK_ERROR",
+        message: "네트워크 상태를 확인해주세요.",
+      };
+    }
+    const { code } = error.response.data || {};
+
+    if (code === "ATE") {
+      console.warn("🔄 날짜별 과목 조회: Access Token 만료. 재발급 시도...");
+      const newToken = await refreshTokenRequest(setCookie, token, navigate);
+      if (newToken?.accessToken) {
+        return fetchCodingzoneSubjectsByDate(
+          dateYMD,
+          newToken.accessToken,
+          setCookie,
+          navigate
+        );
+      } else {
+        setCookie("accessToken", "", { path: "/", expires: new Date(0) });
+        navigate("/");
+        return {
+          code: "TOKEN_EXPIRED",
+          message: "토큰 만료. 다시 로그인해주세요.",
+        };
+      }
+    }
+    return error.response.data;
   }
 };
