@@ -10,21 +10,15 @@ import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfCodingZone
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCountOfAttendResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetPersAttendListItemResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetReservedClassListItemResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCodingZoneAssitantListResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.SubjectMappingInfoResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.AssistantNamesResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneClassInfoResponseDto;
 
 import com.icehufs.icebreaker.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.ZonedDateTime;
 import java.time.ZoneId;
@@ -467,34 +461,6 @@ public class CodingZoneServiceImplement implements CodingZoneService {
             exception.printStackTrace();
             return ResponseDto.databaseError();
         }
-    }
-
-    @Override
-    public ResponseEntity<? super GetCodingZoneAssitantListResponseDto> getAssistantList() {
-        List<User> ListOfCodingZone1 = new ArrayList<>();
-        List<User> ListOfCodingZone2 = new ArrayList<>();
-        try {
-            String C1 = "ROLE_ADMINC1";
-            String C2 = "ROLE_ADMINC2";
-            List<Authority> users = authorityRepository.findByRoleAdminC1(C1);
-            List<Authority> users2 = authorityRepository.findByRoleAdminC2(C2);
-            if (users.isEmpty() || users2.isEmpty())
-                return GetCodingZoneAssitantListResponseDto.notExistUser();
-
-            users.forEach(authorityEntity -> {
-                User user = userRepository.findByEmail(authorityEntity.getEmail());
-                ListOfCodingZone1.add(user);
-            });
-            users2.forEach(authorityEntity -> {
-                User user = userRepository.findByEmail(authorityEntity.getEmail());
-                ListOfCodingZone2.add(user);
-            });
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-        return GetCodingZoneAssitantListResponseDto.success(ListOfCodingZone1, ListOfCodingZone2);
     }
 
     @Override
