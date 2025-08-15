@@ -39,4 +39,10 @@ public interface AuthorityRepository extends JpaRepository<Authority, String> {
     """)
     void clearAllClassAssistantAuthority();
 
+    @Query("SELECT a FROM authority a WHERE " +
+        "( :role = 'ROLE_ADMINC1' AND a.roleAdminC1 = :role ) OR " +
+        "( :role = 'ROLE_ADMINC2' AND a.roleAdminC2 = :role ) OR " +
+        "( :role = 'ROLE_ADMINC3' AND a.roleAdminC3 = :role ) OR " +
+        "( :role = 'ROLE_ADMINC4' AND a.roleAdminC4 = :role )")
+    List<Authority> findByRole(@Param("role") String role);
 }

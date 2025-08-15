@@ -41,7 +41,11 @@ public interface ResponseCode {
 =======
     String REGISTRATION_NOT_FOUND = "REGISTRATION_NOT_FOUND";
     String NO_ANY_ATTENDANCE = "NO_ANY_ATTENDANCE";
+<<<<<<< HEAD
 >>>>>>> 0e2a5c389c2ce32b8880d3f66253ac0cd1fc0178
+=======
+    
+>>>>>>> 2f98b2138f094d46cd4387ada7ed6025bdc3cc74
     // HTTP Status 401
     String SIGN_IN_FAIL = "SF";
     String AUTHORIZATION_FAIL = "AF";
@@ -54,6 +58,8 @@ public interface ResponseCode {
     // HTTP Status 404
     String SUCCESS_BUT_NOT = "SN";
     String WITHDRAWN_EMAIL = "WDE";
+    String NO_ANY_ASSISTANTS = "NO_ANY_ASSISTANTS";
+
 
     // HTTP Status 500
     String MAIL_FAIL = "MF";

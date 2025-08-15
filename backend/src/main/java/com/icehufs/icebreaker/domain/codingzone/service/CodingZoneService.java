@@ -20,7 +20,6 @@ public interface CodingZoneService {
     ResponseEntity<? super GetCountOfAttendResponseDto> getAttend(Integer grade,String email);
     ResponseEntity<? super GetPersAttendListItemResponseDto> getPerAttendList(String email);
     ResponseEntity<? super GetReservedClassListItemResponseDto> getReservedClass(String classDate, String email);
-    ResponseEntity<? super GetCodingZoneAssitantListResponseDto> getAssistantList();
     AssistantNamesResponseDto getAssistantNamesBySubjectId(Long subjectId);
     SubjectMappingInfoResponseDto getClassNamesWithSubjectIdsByDate(String date);
     List<CodingZoneClassInfoResponseDto> findCodingZoneClassesBySubjectAndDate(Long subjectId, String date);
