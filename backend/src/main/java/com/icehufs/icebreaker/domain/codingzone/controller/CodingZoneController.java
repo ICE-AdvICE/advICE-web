@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneCanceResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneRegisterResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCodingZoneAssitantListResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCountOfAttendResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfCodingZoneClassForNotLogInResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfCodingZoneClassResponseDto;
@@ -89,12 +88,6 @@ public class CodingZoneController {
             @AuthenticationPrincipal String email) {
         ResponseEntity<? super GetReservedClassListItemResponseDto> response = codingzoneService
                 .getReservedClass(classDate, email);
-        return response;
-    }
-
-    @GetMapping("/assistant-list") // 모든 코딩존 조교 정보 반환 API
-    public ResponseEntity<? super GetCodingZoneAssitantListResponseDto> getAssistantList() {
-        ResponseEntity<? super GetCodingZoneAssitantListResponseDto> response = codingzoneService.getAssistantList();
         return response;
     }
 }
