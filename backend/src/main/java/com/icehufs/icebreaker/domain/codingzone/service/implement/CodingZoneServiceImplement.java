@@ -9,7 +9,6 @@ import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfCodingZone
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfCodingZoneClassForNotLogInResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCountOfAttendResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetPersAttendListItemResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCodingZoneStudentListResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetReservedClassListItemResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCodingZoneAssitantListResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.SubjectMappingInfoResponseDto;
@@ -40,7 +39,6 @@ import java.util.stream.Collectors;
 
 import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PatchGroupInfRequestDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.object.CodingZoneStudentListItem;
 import com.icehufs.icebreaker.domain.codingzone.dto.object.PersAttendManagListItem;
 import com.icehufs.icebreaker.domain.codingzone.dto.object.ReservedClassListItem;
 import com.icehufs.icebreaker.common.ResponseDto;
@@ -419,35 +417,6 @@ public class CodingZoneServiceImplement implements CodingZoneService {
                 attendClassEntities.add(persAttendManagListItem);
             }
             return GetPersAttendListItemResponseDto.success(attendClassEntities);
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-    }
-
-    @Override
-    public ResponseEntity<? super GetCodingZoneStudentListResponseDto> getStudentList(String email) {
-        List<CodingZoneStudentListItem> studentList = new ArrayList<>();
-        List<CodingZoneRegister> classEntities = new ArrayList<>();
-        try {
-            // 사용자 계정이 존재하는지(로그인 시간이 초과됐는지) 확인하는 코드
-            boolean existedUser = userRepository.existsByEmail(email);
-            if (!existedUser)
-                return GetCodingZoneStudentListResponseDto.notExistUser();
-
-            // 아직 출/결한 수업이 없을 때
-            classEntities = codingZoneRegisterRepository.findAllByOrderByUserStudentNumAsc();
-            if (classEntities.isEmpty())
-                return GetCodingZoneStudentListResponseDto.noExistArticle();
-
-            for (CodingZoneRegister register : classEntities) {
-                CodingZoneClass codingZoneClass = register.getCodingZoneClass();
-                CodingZoneStudentListItem codingZoneStudentListItem = new CodingZoneStudentListItem(codingZoneClass,
-                        register);
-                studentList.add(codingZoneStudentListItem);
-            }
-            return GetCodingZoneStudentListResponseDto.success(studentList);
 
         } catch (Exception exception) {
             exception.printStackTrace();
