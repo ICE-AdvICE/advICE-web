@@ -18,8 +18,8 @@ public class GetListOfCodingZoneClassForNotLogInResponseDto extends ResponseDto{
     private List<CodingZoneClassListItem> classList;
 
     private GetListOfCodingZoneClassForNotLogInResponseDto(List<CodingZoneClass> CodingZoneClassListEntities){
-    super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
-    this.classList = CodingZoneClassListItem.getList(CodingZoneClassListEntities);
+        super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
+        this.classList = CodingZoneClassListItem.getList(CodingZoneClassListEntities);
     }
 
     public static ResponseEntity<GetListOfCodingZoneClassForNotLogInResponseDto> success(List<CodingZoneClass> CodingZoneClassListEntities){

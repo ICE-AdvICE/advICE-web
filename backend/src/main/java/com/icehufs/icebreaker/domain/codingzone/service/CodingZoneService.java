@@ -17,8 +17,6 @@ public interface CodingZoneService {
     //권한이 필요없는 로직
     ResponseEntity<? super CodingZoneRegisterResponseDto> classRegist(Integer classNum, String email);
     ResponseEntity<? super CodingZoneCanceResponseDto> classCancel(Integer classNum, String email);
-    ResponseEntity<? super GetListOfCodingZoneClassResponseDto> getClassList(Integer grade, String email);
-    ResponseEntity<? super GetListOfCodingZoneClassForNotLogInResponseDto> getClassList2(Integer grade);
     ResponseEntity<? super GetCountOfAttendResponseDto> getAttend(Integer grade,String email);
     ResponseEntity<? super GetPersAttendListItemResponseDto> getPerAttendList(String email);
     ResponseEntity<? super GetReservedClassListItemResponseDto> getReservedClass(String classDate, String email);

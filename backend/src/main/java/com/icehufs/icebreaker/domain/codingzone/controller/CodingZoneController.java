@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneCanceResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneRegisterResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCountOfAttendResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfCodingZoneClassForNotLogInResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfCodingZoneClassResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetPersAttendListItemResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetReservedClassListItemResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.service.CodingZoneService;
@@ -47,23 +45,6 @@ public class CodingZoneController {
             @PathVariable Integer classNum,
             @AuthenticationPrincipal String email) {
         ResponseEntity<? super CodingZoneCanceResponseDto> response = codingzoneService.classCancel(classNum, email);
-        return response;
-    }
-
-    @GetMapping("/class-list/{grade}") // 코딩존 메인 페이지에서 로그인 된 사용자를 위한 수업들 나열 API
-    public ResponseEntity<? super GetListOfCodingZoneClassResponseDto> getClassList(
-            @PathVariable Integer grade,
-            @AuthenticationPrincipal String email) {
-        ResponseEntity<? super GetListOfCodingZoneClassResponseDto> response = codingzoneService.getClassList(grade,
-                email);
-        return response;
-    }
-
-    @GetMapping("/class-list/for-not-login/{grade}") // 코딩존 메인 페이지에서 로그인 안된 사용자를 위한 수업들 나열 API
-    public ResponseEntity<? super GetListOfCodingZoneClassForNotLogInResponseDto> getClassList2(
-            @PathVariable Integer grade) {
-        ResponseEntity<? super GetListOfCodingZoneClassForNotLogInResponseDto> response = codingzoneService
-                .getClassList2(grade);
         return response;
     }
 
