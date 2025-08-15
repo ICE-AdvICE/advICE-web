@@ -52,11 +52,8 @@ public class CodingZoneRegister {
         this.codingZoneClass = codingZoneClass;
     }
 
-    public void putAttend() {
-        this.attendance = "1";
-    }
-
-    public void putNotAttend() {
-        this.attendance = "0";
+    public String toggleAttendance() {
+        attendance = "1".equals(this.attendance) ? "0" : "1";
+        return attendance;
     }
 }

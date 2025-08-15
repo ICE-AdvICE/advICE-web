@@ -1,28 +1,32 @@
 package com.icehufs.icebreaker.domain.codingzone.dto.response;
 
 import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.icehufs.icebreaker.common.ResponseCode;
 import com.icehufs.icebreaker.common.ResponseMessage;
-import com.icehufs.icebreaker.domain.codingzone.dto.object.CodingZoneStudentListItem;
+import com.icehufs.icebreaker.domain.codingzone.dto.object.CodingZoneClassListItem;
 import com.icehufs.icebreaker.common.ResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneClass;
 
 import lombok.Getter;
 
 @Getter
-public class GetCodingZoneStudentListResponseDto extends ResponseDto{
+public class GetListOfCodingZoneClassResponseDto extends ResponseDto{
 
-    private List<CodingZoneStudentListItem> studentList;
+    private List<CodingZoneClassListItem> classList;
+    private int registedClassNum;
 
-    private GetCodingZoneStudentListResponseDto(List<CodingZoneStudentListItem> codingZoneStudentListItems){
-    super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
-    this.studentList = CodingZoneStudentListItem.getList(codingZoneStudentListItems);
+    private GetListOfCodingZoneClassResponseDto(int registedClassNum,List<CodingZoneClass> CodingZoneClassListEntities){
+        super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
+        this.registedClassNum = registedClassNum;
+        this.classList = CodingZoneClassListItem.getList(CodingZoneClassListEntities);
     }
 
-    public static ResponseEntity<GetCodingZoneStudentListResponseDto> success(List<CodingZoneStudentListItem> codingZoneStudentListItems){
-        GetCodingZoneStudentListResponseDto result = new GetCodingZoneStudentListResponseDto(codingZoneStudentListItems);
+    public static ResponseEntity<GetListOfCodingZoneClassResponseDto> success(int registedClassNum,List<CodingZoneClass> CodingZoneClassListEntities){
+        GetListOfCodingZoneClassResponseDto result = new GetListOfCodingZoneClassResponseDto(registedClassNum, CodingZoneClassListEntities);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
@@ -35,4 +39,5 @@ public class GetCodingZoneStudentListResponseDto extends ResponseDto{
         ResponseDto result = new ResponseDto(ResponseCode.NOT_EXISTED_ARTICLE, ResponseMessage.NOT_EXISTED_ARTICLE);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
     }
+
 }

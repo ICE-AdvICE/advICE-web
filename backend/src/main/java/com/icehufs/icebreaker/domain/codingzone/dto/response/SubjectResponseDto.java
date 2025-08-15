@@ -1,7 +1,5 @@
 package com.icehufs.icebreaker.domain.codingzone.dto.response;
 
-import com.icehufs.icebreaker.domain.codingzone.domain.entity.Subject;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter

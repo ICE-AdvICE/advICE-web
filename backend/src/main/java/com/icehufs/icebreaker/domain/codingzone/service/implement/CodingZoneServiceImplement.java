@@ -1,19 +1,20 @@
 package com.icehufs.icebreaker.domain.codingzone.service.implement;
 
 import com.icehufs.icebreaker.common.ResponseCode;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneCanceResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneRegisterResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfGroupInfResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GroupInfUpdateResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.PutAttendanceResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfGroupInfResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneRegisterResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneCanceResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfCodingZoneClassResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfCodingZoneClassForNotLogInResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCountOfAttendResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetPersAttendListItemResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCodingZoneStudentListResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetReservedClassListItemResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCodingZoneAssitantListResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.SubjectMappingInfoResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.AssistantNamesResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneClassInfoResponseDto;
+
 import com.icehufs.icebreaker.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
@@ -30,16 +31,16 @@ import java.time.ZoneId;
 import java.time.LocalTime;
 import java.time.LocalDate;
 import java.util.List;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PatchGroupInfRequestDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.object.CodingZoneStudentListItem;
 import com.icehufs.icebreaker.domain.codingzone.dto.object.PersAttendManagListItem;
 import com.icehufs.icebreaker.domain.codingzone.dto.object.ReservedClassListItem;
-
 import com.icehufs.icebreaker.common.ResponseDto;
 import com.icehufs.icebreaker.domain.auth.domain.entity.Authority;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneClass;
@@ -68,7 +69,7 @@ public class CodingZoneServiceImplement implements CodingZoneService {
 
     @Transactional
     public ResponseEntity<? super GroupInfUpdateResponseDto> uploadInf(List<GroupInfUpdateRequestDto> requestBody,
-                                                                       String email) {
+            String email) {
         try {
             boolean existedUser = userRepository.existsByEmail(email);
             if (!existedUser)
@@ -218,35 +219,6 @@ public class CodingZoneServiceImplement implements CodingZoneService {
     }
 
     @Override
-    @Transactional
-    public ResponseEntity<? super PutAttendanceResponseDto> putAttend(Integer registNum, String email) {
-        try {
-            // 사용자 계정이 존재하는지(로그인 시간이 초과됐는지) 확인하는 코드
-            boolean existedUser = userRepository.existsByEmail(email);
-            if (!existedUser)
-                return PutAttendanceResponseDto.notExistUser();
-
-            CodingZoneRegister codingZoneRegister = codingZoneRegisterRepository.findByRegistrationId(registNum);
-            if (codingZoneRegister == null)
-                return PutAttendanceResponseDto.validationFailed();
-
-            // 출석 상태 업데이트
-            if ("0".equals(codingZoneRegister.getAttendance())) { // 결석(미출석) -> 출석
-                codingZoneRegister.putAttend();
-            } else {
-                codingZoneRegister.putNotAttend(); // 출석 -> 결석
-            }
-
-            return PutAttendanceResponseDto.success();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-    }
-
-
-
-    @Override
     public ResponseEntity<? super GetCountOfAttendResponseDto> getAttend(Integer subjectId, String email) {
         Integer NumOfAttend = 0;
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
@@ -314,35 +286,6 @@ public class CodingZoneServiceImplement implements CodingZoneService {
                 attendClassEntities.add(persAttendManagListItem);
             }
             return GetPersAttendListItemResponseDto.success(attendClassEntities);
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-    }
-
-    @Override
-    public ResponseEntity<? super GetCodingZoneStudentListResponseDto> getStudentList(String email) {
-        List<CodingZoneStudentListItem> studentList = new ArrayList<>();
-        List<CodingZoneRegister> classEntities = new ArrayList<>();
-        try {
-            // 사용자 계정이 존재하는지(로그인 시간이 초과됐는지) 확인하는 코드
-            boolean existedUser = userRepository.existsByEmail(email);
-            if (!existedUser)
-                return GetCodingZoneStudentListResponseDto.notExistUser();
-
-            // 아직 출/결한 수업이 없을 때
-            classEntities = codingZoneRegisterRepository.findAllByOrderByUserStudentNumAsc();
-            if (classEntities.isEmpty())
-                return GetCodingZoneStudentListResponseDto.noExistArticle();
-
-            for (CodingZoneRegister register : classEntities) {
-                CodingZoneClass codingZoneClass = register.getCodingZoneClass();
-                CodingZoneStudentListItem codingZoneStudentListItem = new CodingZoneStudentListItem(codingZoneClass,
-                        register);
-                studentList.add(codingZoneStudentListItem);
-            }
-            return GetCodingZoneStudentListResponseDto.success(studentList);
 
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -476,97 +419,5 @@ public class CodingZoneServiceImplement implements CodingZoneService {
             classInfos.add(dto);
         }
         return classInfos;
-    }
-
-    @Override
-    public ByteArrayResource generateAttendanceExcelOfGrade1() throws IOException {
-        List<CodingZoneRegister> codingZoneRegisters;
-
-        Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet("코딩존1 출석부"); // 시트 이름 설정
-
-        // 헤더 생성 및 스타일 설정
-        Row headerRow = sheet.createRow(0);
-        String[] columns = { "학번", "이름", "수업 날짜", "수업 시간", "출/결석" };
-        CellStyle headerStyle = workbook.createCellStyle();
-        Font headerFont = workbook.createFont();
-        headerFont.setBold(true);
-        headerStyle.setFont(headerFont);
-
-        for (int i = 0; i < columns.length; i++) {
-            Cell cell = headerRow.createCell(i);
-            cell.setCellValue(columns[i]);
-            cell.setCellStyle(headerStyle);
-        }
-
-        // 코딩존1을 들은 모든 학생들을 학번순으로 불러오기
-        // TODO: 매핑 이후 필드값을 가져오는 방식으로 수정 바람
-        List<CodingZoneClass> classes = codingZoneClassRepository.findAllBySubjectId(1);
-        codingZoneRegisters = codingZoneRegisterRepository.findAllByCodingZoneClassInOrderByUserStudentNumAsc(classes);
-
-        // 데이터 채우기
-        int rowNum = 1;
-        for (CodingZoneRegister register : codingZoneRegisters) {
-            Row row = sheet.createRow(rowNum++);
-            row.createCell(0).setCellValue(register.getUserStudentNum());
-            row.createCell(1).setCellValue(register.getUserName());
-
-            CodingZoneClass codingZoneClass = register.getCodingZoneClass();
-            row.createCell(2).setCellValue(codingZoneClass.getClassDate());
-            row.createCell(3).setCellValue(codingZoneClass.getClassTime());
-            row.createCell(4).setCellValue(register.getAttendance());
-        }
-
-        // 워크북을 바이트 배열로 변환
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        workbook.write(outputStream);
-        workbook.close();
-
-        return new ByteArrayResource(outputStream.toByteArray());
-
-    }
-
-    @Override
-    public ByteArrayResource generateAttendanceExcelOfGrade2() throws IOException {
-        Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet("코딩존1 출석부"); // 시트 이름 설정
-
-        // 헤더 생성 및 스타일 설정
-        Row headerRow = sheet.createRow(0);
-        String[] columns = { "학번", "이름", "수업 날짜", "수업 시간", "출/결석" };
-        CellStyle headerStyle = workbook.createCellStyle();
-        Font headerFont = workbook.createFont();
-        headerFont.setBold(true);
-        headerStyle.setFont(headerFont);
-
-        for (int i = 0; i < columns.length; i++) {
-            Cell cell = headerRow.createCell(i);
-            cell.setCellValue(columns[i]);
-            cell.setCellStyle(headerStyle);
-        }
-
-        // 코딩존1을 들은 모든 학생들을 학번순으로 불러오기
-        List<CodingZoneClass> classes = codingZoneClassRepository.findAllBySubjectId(2);
-        List<CodingZoneRegister> codingZoneRegisters = codingZoneRegisterRepository.findAllByCodingZoneClassInOrderByUserStudentNumAsc(classes);
-
-        int rowNum = 1;
-        for (CodingZoneRegister register : codingZoneRegisters) {
-            Row row = sheet.createRow(rowNum++);
-            row.createCell(0).setCellValue(register.getUserStudentNum());
-            row.createCell(1).setCellValue(register.getUserName());
-
-            CodingZoneClass codingZoneClass = register.getCodingZoneClass();
-            row.createCell(2).setCellValue(codingZoneClass.getClassDate());
-            row.createCell(3).setCellValue(codingZoneClass.getClassTime());
-            row.createCell(4).setCellValue(register.getAttendance());
-        }
-
-        // 워크북을 바이트 배열로 변환
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        workbook.write(outputStream);
-        workbook.close();
-
-        return new ByteArrayResource(outputStream.toByteArray());
-
     }
 }
