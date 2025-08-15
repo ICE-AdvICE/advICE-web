@@ -2,12 +2,10 @@ package com.icehufs.icebreaker.domain.auth.controller;
 
 
 import com.icehufs.icebreaker.domain.codingzone.service.AttendanceService;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCodingZoneStudentListResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfGroupInfResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GroupInfUpdateResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.SubjectMappingInfoResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.ReservationStudentDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.DownloadArticleExcelResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.EntireAttendanceResponseDto;
 import com.icehufs.icebreaker.util.ResponseDto;
 import jakarta.validation.Valid;
@@ -24,10 +22,7 @@ import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateReques
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PatchGroupInfRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.service.CodingZoneService;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.net.URLEncoder;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -72,14 +67,6 @@ public class EntireAdminController {
         @AuthenticationPrincipal String email
     ) {
         ResponseEntity<? super GroupInfUpdateResponseDto> response = codingzoneService.patchInf(requestBody, email);
-        return response;
-    }
-
-    @GetMapping("/student-list") // 해당학기에 출/결한 모든 학생을 리스트로 반환 API
-    public ResponseEntity<? super GetCodingZoneStudentListResponseDto> getStudentList(
-        @AuthenticationPrincipal String email
-    ) {
-        ResponseEntity<? super GetCodingZoneStudentListResponseDto> response = codingzoneService.getStudentList(email);
         return response;
     }
 
