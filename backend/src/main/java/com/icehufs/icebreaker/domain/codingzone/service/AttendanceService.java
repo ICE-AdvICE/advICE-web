@@ -12,8 +12,8 @@ import com.icehufs.icebreaker.domain.codingzone.exception.UnmappedSubjectExcepti
 import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneClassRepository;
 import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneRegisterRepository;
 import com.icehufs.icebreaker.exception.BusinessException;
-import jakarta.transaction.Transactional;
 import com.icehufs.icebreaker.domain.codingzone.repository.SubjectRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
