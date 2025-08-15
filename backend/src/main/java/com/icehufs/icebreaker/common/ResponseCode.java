@@ -37,6 +37,7 @@ public interface ResponseCode {
     String NOT_FOUND_CLASS = "NOT_FOUND_CLASS";
     String REGISTRATION_NOT_FOUND = "REGISTRATION_NOT_FOUND";
     String NO_ANY_ATTENDANCE = "NO_ANY_ATTENDANCE";
+    
     // HTTP Status 401
     String SIGN_IN_FAIL = "SF";
     String AUTHORIZATION_FAIL = "AF";
@@ -49,6 +50,8 @@ public interface ResponseCode {
     // HTTP Status 404
     String SUCCESS_BUT_NOT = "SN";
     String WITHDRAWN_EMAIL = "WDE";
+    String NO_ANY_ASSISTANTS = "NO_ANY_ASSISTANTS";
+
 
     // HTTP Status 500
     String MAIL_FAIL = "MF";
