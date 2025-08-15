@@ -8,7 +8,7 @@ import com.icehufs.icebreaker.domain.codingzone.dto.response.GroupInfUpdateRespo
 import com.icehufs.icebreaker.domain.codingzone.dto.response.SubjectMappingInfoResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.ReservationStudentDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.DownloadArticleExcelResponseDto;
-
+import com.icehufs.icebreaker.domain.codingzone.dto.response.EntireAttendanceResponseDto;
 import com.icehufs.icebreaker.util.ResponseDto;
 import jakarta.validation.Valid;
 
@@ -19,7 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
-
+import com.icehufs.icebreaker.domain.codingzone.dto.object.SubjectAttendanceListItem;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PatchGroupInfRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.service.CodingZoneService;
@@ -109,4 +109,14 @@ public class EntireAdminController {
             .body(excelFile);
     }
 
+    @GetMapping("/entire-attendance/{subjectId}")
+    public ResponseEntity<ResponseDto<EntireAttendanceResponseDto>> getEntireAttendanceList(
+            @PathVariable Integer subjectId
+    ) {
+        List<SubjectAttendanceListItem> studentList = attendanceService.getEntireAttendanceList(subjectId);
+        EntireAttendanceResponseDto response = new EntireAttendanceResponseDto(studentList);
+        return ResponseEntity.ok(
+                ResponseDto.success("모든 수강생들의 출/결 정보 조회 성공.", response)
+        );  
+    }
 }
