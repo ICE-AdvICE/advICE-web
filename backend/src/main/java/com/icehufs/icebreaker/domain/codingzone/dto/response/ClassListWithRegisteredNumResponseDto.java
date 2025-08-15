@@ -9,7 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ClassListWithRegisteredNumResponseDto {
 
-    private ClassListResponseDto classListResponseDto;
+    private List<ClassResponseDto> classList;
     private Integer registedClassNum;
 
 }
