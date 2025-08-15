@@ -1,20 +1,30 @@
 package com.icehufs.icebreaker.domain.codingzone.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.Subject;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassUpdateRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.exception.*;
 import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneRegisterRepository;
 import org.springframework.stereotype.Service;
+
+import com.icehufs.icebreaker.domain.auth.domain.entity.Authority;
+import com.icehufs.icebreaker.domain.auth.repostiory.AuthorityRepository;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneClass;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.GroupInf;
+import com.icehufs.icebreaker.domain.codingzone.dto.object.AssistantInfoDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassAssignRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateRequestDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.SubjectAssistantsResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneClassRepository;
 import com.icehufs.icebreaker.domain.codingzone.repository.GroupInfRepository;
 import com.icehufs.icebreaker.domain.codingzone.repository.SubjectRepository;
-import jakarta.transaction.Transactional;
+import com.icehufs.icebreaker.domain.membership.repository.UserRepository;
+
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -25,6 +35,8 @@ public class CodingZoneClassService {
     private final CodingZoneRegisterRepository codingZoneRegisterRepository;
     private final GroupInfRepository groupInfRepository;
     private final SubjectRepository subjectRepository;
+    private final AuthorityRepository authorityRepository;
+    private final UserRepository userRepository;
 
     // 코딩존 등록
     @Transactional
@@ -104,5 +116,51 @@ public class CodingZoneClassService {
         }
         codingZoneClassRepository.delete(codingZoneClass);
     }
+
+    @Transactional(readOnly = true)
+    public List<SubjectAssistantsResponseDto> getAssistantList() {
+        List<SubjectAssistantsResponseDto> result = new ArrayList<>();
+
+        for (int i = 1; i <= 4; i++) {
+            final int index = i;
+            String role = "ROLE_ADMINC" + index;
+
+            List<Authority> authorities = switch (role) {
+                case "ROLE_ADMINC1" -> authorityRepository.findByRoleAdminC1(role);
+                case "ROLE_ADMINC2" -> authorityRepository.findByRoleAdminC2(role);
+                case "ROLE_ADMINC3" -> authorityRepository.findByRoleAdminC3(role);
+                case "ROLE_ADMINC4" -> authorityRepository.findByRoleAdminC4(role);
+                default -> List.of();
+            };
+
+            if (authorities.isEmpty()) continue; // 조교가 한 명도 없으면 건너뜀
+
+            Optional<Subject> optionalSubject = subjectRepository.findById(index);
+            if (optionalSubject.isEmpty()) continue;
+
+            Subject subject = optionalSubject.get();
+
+            List<AssistantInfoDto> assistants = authorities.stream()
+                .map(auth -> userRepository.findById(auth.getEmail())
+                    .map(user -> new AssistantInfoDto(
+                        user.getEmail(),
+                        user.getStudentNum(),
+                        user.getName()
+                    ))
+                    .orElse(null))
+                .filter(Objects::nonNull)
+                .toList();
+
+                result.add(new SubjectAssistantsResponseDto(subject.getSubjectName(), assistants));
+        }
+
+        if(result.isEmpty()) {
+            throw new AssistantsNotFoundException("조교가 등록된 과목이 아직 없습니다.");
+        }
+
+        return result;
+    }
+
+
 
 }
