@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/coding-zone") // 코딩존 일반 사용자 API 주소
 @RequiredArgsConstructor
-public class CodingZoneListController {
+public class CodingZoneReservationController {
 
     private final CodingZoneClassService codingZoneClassService;
 
