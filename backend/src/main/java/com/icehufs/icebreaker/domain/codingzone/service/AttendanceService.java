@@ -17,10 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.ss.usermodel.Workbook; 
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 
@@ -105,13 +107,32 @@ public class AttendanceService {
 
         try (Workbook workbook = new XSSFWorkbook();
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-                
+
             Sheet sheet = workbook.createSheet(subjectName + " 코딩존 출석부");
             String[] columns = { "학번", "이름", "수업 날짜", "수업 시간", "출/결석", "인정된 총 출석 수" };
-            createHeaderRow(workbook, sheet, columns);
+
+            // 제목 행 생성
+            Row titleRow = sheet.createRow(0);
+            Cell titleCell = titleRow.createCell(0);
+            titleCell.setCellValue(subjectName + " 코딩존 출석부");
+
+            // 스타일 설정: 제목을 굵게 & 가운데 정렬
+            CellStyle titleStyle = workbook.createCellStyle();
+            Font titleFont = workbook.createFont();
+            titleFont.setBold(true);
+            titleFont.setFontHeightInPoints((short) 14);
+            titleStyle.setFont(titleFont);
+            titleStyle.setAlignment(HorizontalAlignment.CENTER);
+            titleCell.setCellStyle(titleStyle);
+
+            // 제목 셀 병합 (컬럼 개수만큼)
+            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, columns.length - 1));
+
+            // 헤더 행 생성 (1행 내려감)
+            createHeaderRow(workbook, sheet, columns, 1);
 
             Set<String> printed = new HashSet<>();
-            int rowNum = 1;
+            int rowNum = 2; // 데이터는 2행부터 시작
 
             for (CodingZoneRegister r : registers) {
                 Row row = sheet.createRow(rowNum++);
@@ -136,19 +157,19 @@ public class AttendanceService {
             }
 
             autoSizeColumns(sheet, columns.length);
-            sheet.createFreezePane(0, 1);
+            sheet.createFreezePane(0, 2); // 제목 + 헤더 고정
             workbook.write(outputStream);
 
             return new ByteArrayResource(outputStream.toByteArray());
 
         } catch (IOException e) {
-            throw new BusinessException(ResponseCode.INTERNAL_SERVER_ERROR,"엑셀 파일 생성 중 오류 발생", HttpStatus.INTERNAL_SERVER_ERROR
-        );
+            throw new BusinessException(
+                ResponseCode.INTERNAL_SERVER_ERROR, "엑셀 파일 생성 중 오류 발생", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-}
 
-    private void createHeaderRow(Workbook wb, Sheet sheet, String[] columns) {
-        Row headerRow = sheet.createRow(0);
+    private void createHeaderRow(Workbook wb, Sheet sheet, String[] columns, int startRow) {
+        Row headerRow = sheet.createRow(startRow);
         CellStyle headerStyle = wb.createCellStyle();
         Font headerFont = wb.createFont();
         headerFont.setBold(true);
