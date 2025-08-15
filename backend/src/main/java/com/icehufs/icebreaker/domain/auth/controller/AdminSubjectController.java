@@ -13,7 +13,6 @@ import com.icehufs.icebreaker.common.ResponseMessage;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.PostSubjectMappingRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.service.SubjectService;
 import com.icehufs.icebreaker.util.ResponseDto;
-import com.icehufs.icebreaker.util.SubjectResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequestMapping("/api/admin/subjects") // 코딩존 메핑 관련 controller
 @RequiredArgsConstructor
-public class SubjectController {
+public class AdminSubjectController {
 
     private final SubjectService subjectService;
     private final CodingZoneService codingzoneService;
@@ -42,12 +41,6 @@ public class SubjectController {
         return ResponseEntity.ok(postSubjectMappingResponseDto);
     }
 
-    @GetMapping
-    public ResponseEntity<ResponseDto<List<SubjectResponseDto>>> getSubjectMapping(
-            @AuthenticationPrincipal String email) {
-        return ResponseEntity
-                .ok(ResponseDto.success(ResponseMessage.SUCCESS_CLASS_CREATE, subjectService.getMappingCodingZoneClass(email)));
-    }
     @GetMapping("/{subjectId}/assistants")
     public ResponseEntity<ResponseDto<AssistantNamesResponseDto>> getAssistantsName(
             @PathVariable Long subjectId

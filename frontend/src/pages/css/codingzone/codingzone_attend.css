@@ -57,52 +57,34 @@
   padding-top: 20px;
 }
 
-/*
-.button-container,
-.cza_button_container {
+/* 회색 박스 기본(이미 있다면 그대로) */
+.panel-gray {
+  margin: 1rem 0 4rem 0;
   display: flex;
+  width: 68rem; /* 1200px = 75rem (기본 폰트 16px 기준) */
+  height: 27rem; /* 320px */
+  padding: 8rem 5rem; /* 상하 8rem(128px), 좌우 5rem(80px) */
   justify-content: center;
-  gap: 10px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  padding: 0 10px;
-}
-
-.btn-attend {
-  padding: 0.6rem 1.2rem;
-  border: 1px solid #838181a8;
-  background-color: rgba(255, 255, 255, 0);
-  color: #838181a8;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
-  min-width: 80px;
-  max-width: 100px;
-  width: auto;
-  box-sizing: border-box;
-  display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 0.625rem; /* 10px */
+  border-radius: 20px;
+  background: #efefef;
 }
 
-.btn-attend.active,
-.btn-attend.manage,
-.btn-attend.manage_all,
-.btn-attend.manage_class {
-  background-color: rgba(255, 255, 255, 0);
-  color: #052940;
-  border-color: #052940;
-  box-shadow: 0px 0px 3px #0b4264;
-  font-weight: 530;
-  padding: 0.6rem 1.2rem;
-  font-size: 1rem;
-  min-width: 80px;
-  max-width: 100px;
-  width: auto;
-  box-sizing: border-box;
+/* 가운데 문구용 */
+.panel-empty {
+  color: rgba(73, 80, 87, 0.75);
+  text-align: center;
+  font-family: Inter;
+  font-size: 25px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
 }
 
-*/
+.attendance-table.is-hidden {
+  display: none;
+}
 
 .line-container1 {
   width: 100%;
@@ -320,12 +302,52 @@
   padding: 20px;
 }
 
-@media (max-width: 920px) {
-  .line-container1,
-  .line-container2,
-  .hr-line {
-    max-width: calc(100% - 20px);
-  }
+/* 회색 박스 안 실제 콘텐츠 폭 */
+.panel-inner {
+  max-width: 980px; /* 필요하면 920~1080px 사이로 조정 */
+  margin: 0 auto;
+}
+
+/* 공통 그리드 래퍼 */
+.subject-grid-inner {
+  display: grid;
+  gap: 25px; /* 카드 간격 */
+}
+
+/* 1개 */
+.subject-grid.cols-1 .subject-grid-inner {
+  grid-template-columns: 1fr;
+  justify-items: center;
+}
+.subject-grid.cols-1 .subject-grid-inner > * {
+  width: 100%;
+}
+
+/* 2개 */
+.subject-grid.cols-2 .subject-grid-inner {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* ✅ 4개: 2×2 강제 */
+.subject-grid.cols-2x2 .subject-grid-inner {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* ✅ 3개: 위 2 + 아래 1(가운데) */
+.subject-grid.layout-3 .subject-grid-inner {
+  grid-template-columns: repeat(2, 1fr);
+  justify-items: center; /* 각 칸 내부 중앙 */
+}
+.subject-grid.layout-3 .subject-grid-inner > :nth-child(3) {
+  grid-column: 1 / -1; /* 두 칸 span */
+  justify-self: center; /* 행 중앙 */
+  max-width: 460px; /* 너무 넓어지지 않게 (옵션) */
+  width: 100%;
+}
+
+/* 카드가 칸을 꽉 채우도록 */
+.subject-grid-inner > * {
+  width: 100%;
 }
 
 @media (max-width: 1920px) {
@@ -338,7 +360,56 @@
   }
 }
 
-@media (max-width: 350px) {
+@media (max-width: 1280px) {
+  .panel-inner {
+    max-width: 900px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .panel-inner {
+    max-width: 760px;
+  }
+  /* 4개도 2열 유지 */
+  .subject-grid.cols-2x2 .subject-grid-inner {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .panel-gray {
+    width: 50rem;
+    height: 30rem;
+  }
+  .panel-empty {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-body-container {
+    padding: 0 10%; /* 더 작은 padding으로 외부 공간 최소화 */
+  }
+  .main-category-bar button,
+  .category-bar button {
+    font-size: 12px; /* 모바일에서의 폰트 크기 조정 */
+  }
+  .class-input-box > select,
+  .class-input-box > input {
+    flex-grow: 1; /* 플렉스 아이템이 확장하여 사용 가능한 공간을 채움 */
+  }
+
+  .panel-gray {
+    width: 42rem;
+    height: 45rem;
+  }
+  .panel-empty {
+    font-size: 19px;
+  }
+  /* 모바일 */
+  .panel-inner {
+    max-width: 92%;
+  }
+}
+
+@media (max-width: 480px) {
   .banner_img_container .banner {
     width: 95%;
     max-width: 100%;
@@ -361,56 +432,11 @@
     max-width: 100%;
     height: auto;
   }
-}
-
-/*
-@media (max-width: 768px) {
-  .btn-attend {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-    min-width: 70px;
-    max-width: 90px;
+  .panel-gray {
+    width: 25rem;
+    height: 40rem;
   }
-
-  .btn-attend.active,
-  .btn-attend.manage,
-  .btn-attend.manage_all,
-  .btn-attend.manage_class {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-    min-width: 70px;
-    max-width: 90px;
-  }
-
-  .button-container,
-  .cza_button_container {
-    margin-top: 15px;
+  .panel-empty {
+    font-size: 17px;
   }
 }
-
-
-/* 모바일 화면 
-@media (max-width: 480px) {
-  .btn-attend {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.8rem;
-    min-width: 60px;
-    max-width: 80px; /* max-width을 80px으로 감소 
-  }
-
-  .btn-attend.active,
-  .btn-attend.manage,
-  .btn-attend.manage_all,
-  .btn-attend.manage_class {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.8rem;
-    min-width: 60px;
-    max-width: 80px;
-  }
-
-  .button-container,
-  .cza_button_container {
-    margin-top: 10px;
-  }
-}
-*/
