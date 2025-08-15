@@ -7,10 +7,12 @@ import com.icehufs.icebreaker.domain.auth.repostiory.AuthorityRepository;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneClass;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneRegister;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.Subject;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.RegisterInfoResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.ReservationStudentDto;
 import com.icehufs.icebreaker.domain.codingzone.exception.UnmappedSubjectException;
 import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneClassRepository;
 import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneRegisterRepository;
+import com.icehufs.icebreaker.domain.membership.repository.UserRepository;
 import com.icehufs.icebreaker.exception.BusinessException;
 import com.icehufs.icebreaker.domain.codingzone.repository.SubjectRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +47,7 @@ public class AttendanceService {
     private final AuthorityRepository authorityRepository;
     private final CodingZoneClassRepository codingZoneClassRepository;
     private final SubjectRepository subjectRepository;
-
+    private final UserRepository userRepository;
     @Transactional(readOnly = true)
     public List<ReservationStudentDto> getReservationStudentsByClassNum (Integer classNum) {
         List<CodingZoneRegister> reservations = codingZoneRegisterRepository.findByCodingZoneClassClassNum(classNum);
@@ -56,6 +58,26 @@ public class AttendanceService {
                         reservation.getCodingZoneClass().getClassNum()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    public List<RegisterInfoResponseDto> getReservationStudentsByDate(String email, String date) {
+        String assistantName = userRepository.findByEmail(email).getName();
+        return codingZoneClassRepository.findByAssistantNameAndClassDate(assistantName, date).stream()
+                .flatMap(codingZoneClass ->
+                        codingZoneRegisterRepository.findByCodingZoneClassClassNum(codingZoneClass.getClassNum()).stream()
+                                .map(register -> new RegisterInfoResponseDto(
+                                        register.getRegistrationId(),
+                                        register.getUserStudentNum(),
+                                        register.getUserName(),
+                                        register.getUserEmail(),
+                                        codingZoneClass.getClassName(),
+                                        codingZoneClass.getSubject().getId(),
+                                        codingZoneClass.getClassTime(),
+                                        codingZoneClass.getAssistantName(),
+                                        register.getAttendance()
+                                ))
+                )
+                .toList();
     }
 
     @Transactional
@@ -113,7 +135,7 @@ public class AttendanceService {
         .collect(Collectors.toMap(
             Map.Entry::getKey,
             e -> Math.max(0, e.getValue())
-        )); 
+        ));
     }
 
     private void sortRegisters(List<CodingZoneRegister> registers) {
