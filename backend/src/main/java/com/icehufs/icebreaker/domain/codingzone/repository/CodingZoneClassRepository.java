@@ -44,4 +44,11 @@ public interface CodingZoneClassRepository extends JpaRepository<CodingZoneClass
             @Param("weekDay") String weekDay,
             @Param("subjectId") int subjectId);
 
+    @Query(value = """
+        SELECT * FROM codingzoneclass c
+        WHERE c.subject_id = :subjectId
+        AND STR_TO_DATE(CONCAT(c.class_date, ' ', c.class_time), '%Y-%m-%d %H:%i') < NOW()
+        """, nativeQuery = true)
+    List<CodingZoneClass> findPastClassesBySubjectId(@Param("subjectId") int subjectId);        
+
 }
