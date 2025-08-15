@@ -35,7 +35,7 @@ public interface ResponseCode {
     String DELETE_NOT_ALLOW = "DELETE_NOT_ALLOW";
     String ALREADY_RESERVED_CLASS = "ALREADY_RESERVED_CLASS";
     String NOT_FOUND_CLASS = "NOT_FOUND_CLASS";
-
+    String REGISTRATION_NOT_FOUND = "REGISTRATION_NOT_FOUND";
     // HTTP Status 401
     String SIGN_IN_FAIL = "SF";
     String AUTHORIZATION_FAIL = "AF";

@@ -5,7 +5,6 @@ import com.icehufs.icebreaker.domain.codingzone.dto.response.GroupInfUpdateRespo
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfGroupInfResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneRegisterResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneCanceResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.PutAttendanceResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfCodingZoneClassResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfCodingZoneClassForNotLogInResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCountOfAttendResponseDto;
@@ -219,33 +218,6 @@ public class CodingZoneServiceImplement implements CodingZoneService {
         }
 
         return CodingZoneCanceResponseDto.success();
-    }
-
-    @Override
-    @Transactional
-    public ResponseEntity<? super PutAttendanceResponseDto> putAttend(Integer registNum, String email) {
-        try {
-            // 사용자 계정이 존재하는지(로그인 시간이 초과됐는지) 확인하는 코드
-            boolean existedUser = userRepository.existsByEmail(email);
-            if (!existedUser)
-                return PutAttendanceResponseDto.notExistUser();
-
-            CodingZoneRegister codingZoneRegister = codingZoneRegisterRepository.findByRegistrationId(registNum);
-            if (codingZoneRegister == null)
-                return PutAttendanceResponseDto.validationFailed();
-
-            // 출석 상태 업데이트
-            if ("0".equals(codingZoneRegister.getAttendance())) { // 결석(미출석) -> 출석
-                codingZoneRegister.putAttend();
-            } else {
-                codingZoneRegister.putNotAttend(); // 출석 -> 결석
-            }
-
-            return PutAttendanceResponseDto.success();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
     }
 
     @Override
