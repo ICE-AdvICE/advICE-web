@@ -7,7 +7,9 @@ import com.icehufs.icebreaker.domain.auth.repostiory.AuthorityRepository;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneClass;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneRegister;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.Subject;
+import com.icehufs.icebreaker.domain.codingzone.dto.object.SubjectAttendanceListItem;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.ReservationStudentDto;
+import com.icehufs.icebreaker.domain.codingzone.exception.AttendanceNotFoundException;
 import com.icehufs.icebreaker.domain.codingzone.exception.UnmappedSubjectException;
 import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneClassRepository;
 import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneRegisterRepository;
@@ -30,6 +32,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.core.io.ByteArrayResource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -211,4 +214,45 @@ public class AttendanceService {
             sheet.autoSizeColumn(i);
         }
     }
+
+    @Transactional(readOnly = true)
+    public List<SubjectAttendanceListItem> getEntireAttendanceList(Integer subjectId) {
+
+        List<CodingZoneClass> subjectClasses = codingZoneClassRepository.findPastClassesBySubjectId(subjectId);
+        List<CodingZoneRegister> attendanceRecords =
+            codingZoneRegisterRepository.findAllByCodingZoneClassInOrderByUserStudentNumAsc(subjectClasses);
+
+        if (attendanceRecords.isEmpty()) {
+            throw new AttendanceNotFoundException("해당 과목에 등록된 출결 정보가 아직 없습니다.");
+        }
+
+        Map<String, List<CodingZoneRegister>> groupedByStudentNum =
+            attendanceRecords.stream().collect(Collectors.groupingBy(CodingZoneRegister::getUserStudentNum));
+
+        return groupedByStudentNum.values().stream()
+            .map(this::summarizeAttendance)
+            .toList();
+    }
+
+    private SubjectAttendanceListItem summarizeAttendance(List<CodingZoneRegister> records) {
+
+        CodingZoneRegister first = records.get(0);
+
+        int attendanceCount = (int) records.stream()
+            .filter(r -> "1".equals(r.getAttendance()))
+            .count();
+
+        int absenceCount = (int) records.stream()
+            .filter(r -> "0".equals(r.getAttendance()))
+            .count();
+
+        return new SubjectAttendanceListItem(
+            first.getUserStudentNum(),
+            first.getUserName(),
+            first.getUserEmail(),
+            attendanceCount,
+            absenceCount
+        );
+    }
+
 }
