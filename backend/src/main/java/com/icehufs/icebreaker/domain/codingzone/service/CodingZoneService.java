@@ -16,8 +16,6 @@ public interface CodingZoneService {
     ResponseEntity<? super GetListOfGroupInfResponseDto> getList(String groupId, String email);
     ResponseEntity<? super GroupInfUpdateResponseDto> patchInf(List<PatchGroupInfRequestDto> dto, String email);
     ResponseEntity<? super GetCodingZoneStudentListResponseDto> getStudentList(String email);
-    ByteArrayResource generateAttendanceExcelOfGrade1() throws IOException;
-    ByteArrayResource generateAttendanceExcelOfGrade2() throws IOException;
 
     //권한이 필요없는 로직
     ResponseEntity<? super CodingZoneRegisterResponseDto> classRegist(Integer classNum, String email);
