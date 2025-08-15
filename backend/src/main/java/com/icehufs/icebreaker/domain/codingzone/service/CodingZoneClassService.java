@@ -22,8 +22,8 @@ import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateReques
 import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneClassRepository;
 import com.icehufs.icebreaker.domain.codingzone.repository.GroupInfRepository;
 import com.icehufs.icebreaker.domain.codingzone.repository.SubjectRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -112,6 +112,7 @@ public class CodingZoneClassService {
         codingZoneClassRepository.delete(codingZoneClass);
     }
 
+    @Transactional(readOnly = true)
     public ClassListResponseDto getClassListForAllPublic(Integer subjectId) {
 
         List<ClassResponseDto> list = fetchNextWeekClassDtos(subjectId);
@@ -119,7 +120,7 @@ public class CodingZoneClassService {
 
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ClassListWithRegisteredNumResponseDto getClassListForAuth(Integer subjectId, String email) {
         List<ClassResponseDto> list = fetchNextWeekClassDtos(subjectId);
         int registedClassNum = 0;
@@ -130,10 +131,9 @@ public class CodingZoneClassService {
                 break;
             }
         }
-        return new ClassListWithRegisteredNumResponseDto(new ClassListResponseDto(list), registedClassNum);
+        return new ClassListWithRegisteredNumResponseDto(list, registedClassNum);
     }
 
-    @Transactional
     public List<ClassResponseDto> fetchNextWeekClassDtos(Integer subjectId) {
 
         // 과목 유효성 검증
