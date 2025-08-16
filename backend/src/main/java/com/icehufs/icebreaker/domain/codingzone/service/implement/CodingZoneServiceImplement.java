@@ -371,7 +371,7 @@ public class CodingZoneServiceImplement implements CodingZoneService {
 
     @Override
     public List<CodingZoneClassInfoResponseDto> findCodingZoneClassesBySubjectAndDate(Long subjectId, String date) {
-        List<CodingZoneClass> codingZoneClasses = codingZoneClassRepository.findBySubject_IdAndClassDate(subjectId.intValue(), date);
+        List<CodingZoneClass> codingZoneClasses = codingZoneClassRepository.findBySubjectIdAndClassDate(subjectId.intValue(), date);
         List<CodingZoneClassInfoResponseDto> classInfos = new ArrayList<>();
 
         for (CodingZoneClass codingZoneClass :codingZoneClasses){

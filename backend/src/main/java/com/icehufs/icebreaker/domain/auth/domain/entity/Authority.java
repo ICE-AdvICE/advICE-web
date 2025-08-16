@@ -9,6 +9,7 @@ import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
 @NoArgsConstructor
 @Getter
@@ -80,6 +81,14 @@ public class Authority {
             default:
                 return false;
         }
+    }
+
+    public Optional<String> getClassAdminAuth() {
+        if (hasRole("ROLE_ADMINC1")) return Optional.of("ROLE_ADMINC1");
+        if (hasRole("ROLE_ADMINC2")) return Optional.of("ROLE_ADMINC2");
+        if (hasRole("ROLE_ADMINC3")) return Optional.of("ROLE_ADMINC3");
+        if (hasRole("ROLE_ADMINC4")) return Optional.of("ROLE_ADMINC4");
+        return Optional.empty();
     }
 
     public boolean grantRole(String role) {
