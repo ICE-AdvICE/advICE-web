@@ -85,15 +85,74 @@ const ClassSetting = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [existingMappings]);
 
+  // 깊은 곳에 숨어있는 첫 번째 배열을 찾아서 반환
+  const findFirstArray = (v) => {
+    if (Array.isArray(v)) return v;
+    if (v && typeof v === "object") {
+      for (const k of Object.keys(v)) {
+        const found = findFirstArray(v[k]);
+        if (found) return found;
+      }
+    }
+    return null;
+  };
+
+  // 서버 키 -> 프론트 표준 키로 통일
+  const normalizeMappingItem = (m) => ({
+    // 서버가 어떤 키를 주든 subjectId/subjectName으로 맞춰줌
+    subjectId: String(
+      m?.subjectId ?? m?.codingZone ?? m?.zone ?? m?.id ?? m?.code ?? ""
+    ),
+    subjectName: String(
+      m?.subjectName ?? m?.name ?? m?.title ?? m?.label ?? ""
+    ),
+  });
+
   // 매핑 리스트 불러오기
   const loadMappings = async () => {
     try {
       setLoading(true);
       const res = await fetchAllSubjects(accessToken, setCookie, navigate);
-      // 응답 형태에 맞춰 파싱 (배열이거나 {data:[...]}일 수 있음)
-      const list = Array.isArray(res) ? res : res?.data ?? [];
-      setExistingMappings(list);
-      setExistingOrig(list);
+
+      // 🔍 디버그: 서버가 실제로 뭘 주는지 한 번 찍어보자
+      console.debug("[subjects] raw response:", res);
+
+      // 바로 배열이면 성공
+      if (Array.isArray(res)) {
+        const list = res.map(normalizeMappingItem);
+        console.debug("[subjects] parsed list (top-level array):", list);
+        setExistingMappings(list);
+        setExistingOrig(list);
+        setMappingsLoaded(true);
+        return;
+      }
+
+      // 객체 응답: 어디든 숨은 배열 찾아서 사용
+      if (res && typeof res === "object") {
+        // 실패 응답일 수도 있으니 우선 code 체크
+        if ("code" in res && res.code === "NOT_ANY_MAPPINGSET") {
+          console.debug("[subjects] empty mapping set from server");
+          setExistingMappings([]);
+          setExistingOrig([]);
+          setMappingsLoaded(true);
+          return;
+        }
+
+        const arr = findFirstArray(res) || [];
+        const list = arr.map(normalizeMappingItem);
+
+        console.debug("[subjects] parsed list (deep scan):", list);
+
+        setExistingMappings(list);
+        setExistingOrig(list);
+        setMappingsLoaded(true);
+        return;
+      }
+
+      // 예상치 못한 형태 → 안전하게 비움
+      console.warn("[subjects] unexpected response shape; fallback to empty");
+      setExistingMappings([]);
+      setExistingOrig([]);
       setMappingsLoaded(true);
     } finally {
       setLoading(false);
@@ -101,8 +160,9 @@ const ClassSetting = () => {
   };
 
   useEffect(() => {
+    if (!accessToken) return;
     loadMappings();
-  }, []);
+  }, [accessToken]);
 
   const handleAddRow = () => {
     const id = Date.now();
@@ -138,8 +198,11 @@ const ClassSetting = () => {
 
   // ✅ 현재 선택값을 '유지'하지 않는 버전 (기본값 계산용)
   const getAvailableZonesStrict = (rowId) => {
+    const safeExisting = Array.isArray(existingMappings)
+      ? existingMappings
+      : [];
     const usedByExisting = new Set(
-      existingMappings.map((m) => String(m.subjectId))
+      safeExisting.map((m) => String(m.subjectId))
     );
     const usedByOtherNewRows = new Set(
       rows.filter((r) => r.id !== rowId).map((r) => String(r.codingZone))
@@ -149,10 +212,12 @@ const ClassSetting = () => {
     );
   };
 
-  // (기존 유지 버전은 그대로 사용: 옵션 렌더링용)
   const getAvailableZones = (rowId, currentValue) => {
+    const safeExisting = Array.isArray(existingMappings)
+      ? existingMappings
+      : [];
     const usedByExisting = new Set(
-      existingMappings.map((m) => String(m.subjectId))
+      safeExisting.map((m) => String(m.subjectId))
     );
     const usedByOtherNewRows = new Set(
       rows.filter((r) => r.id !== rowId).map((r) => String(r.codingZone))

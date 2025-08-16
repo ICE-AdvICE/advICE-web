@@ -7,8 +7,7 @@ import {
   deprivePermission,
   grantPermission,
 } from "../features/api/Admin/Codingzone/AuthApi";
-
-import { getSubjectMappingList } from "../features/api/Admin/Codingzone/ClassApi";
+import { fetchAllSubjects } from "../entities/api/CodingZone/AdminApi";
 
 const AuthHandle = () => {
   const [cookies, setCookie] = useCookies(["accessToken"]);
@@ -17,8 +16,41 @@ const AuthHandle = () => {
   const [role, setRole] = useState("");
   const navigate = useNavigate();
   const [mappedSubjects, setMappedSubjects] = useState([]);
+  // 응답 안쪽 어디에 있든 첫 번째 배열을 찾아 반환
+  const findFirstArray = (v) => {
+    if (Array.isArray(v)) return v;
+    if (v && typeof v === "object") {
+      for (const k of Object.keys(v)) {
+        const found = findFirstArray(v[k]);
+        if (found) return found;
+      }
+    }
+    return null;
+  };
 
- 
+  // 서버 키 → 프론트 표준(subjectId/subjectName)으로 정규화
+  const normalizeSubject = (m) => ({
+    subjectId: String(
+      m?.subjectId ??
+        m?.subject_id ??
+        m?.codingZone ??
+        m?.zone ??
+        m?.id ??
+        m?.code ??
+        m?.value ??
+        ""
+    ),
+    subjectName: String(
+      m?.subjectName ??
+        m?.subject_name ??
+        m?.name ??
+        m?.title ??
+        m?.label ??
+        m?.text ??
+        ""
+    ),
+  });
+
   const handleResponse = (response) => {
     alert(response.message);
     if (response.code === "ATE" || response.code === "TOKEN_EXPIRED") {
@@ -32,7 +64,11 @@ const AuthHandle = () => {
       alert("모든 필드의 값을 입력해주세요.");
       return;
     }
-    if (window.confirm(`정말 ${email} 사용자에게 선택하신 권한을 부여하시겠습니까?`)) {
+    if (
+      window.confirm(
+        `정말 ${email} 사용자에게 선택하신 권한을 부여하시겠습니까?`
+      )
+    ) {
       try {
         const response = await grantPermission(
           email,
@@ -55,7 +91,11 @@ const AuthHandle = () => {
       alert("모든 필드의 값을 입력해주세요.");
       return;
     }
-    if (window.confirm(`정말 ${email} 사용자에게 선택하신 권한을 박탈하시겠습니까?`)) {
+    if (
+      window.confirm(
+        `정말 ${email} 사용자에게 선택하신 권한을 박탈하시겠습니까?`
+      )
+    ) {
       try {
         const response = await deprivePermission(
           email,
@@ -73,20 +113,66 @@ const AuthHandle = () => {
 
   /** 과목 목록 불러오기 */
   useEffect(() => {
+    if (!cookies.accessToken) return;
+
     const fetchSubjects = async () => {
-      const result = await getSubjectMappingList(
-        cookies.accessToken,
-        setCookie,
-        navigate
-      );
-      if (result.success) {
-        setMappedSubjects(result.subjectList);
-      } else {
-        console.warn("매핑된 과목 조회 실패:", result.message);
+      try {
+        const res = await fetchAllSubjects(
+          cookies.accessToken,
+          setCookie,
+          navigate
+        );
+        console.debug("[auth-handle] raw subjects:", res);
+
+        // 1) 최상위가 배열
+        if (Array.isArray(res)) {
+          const list = res
+            .map(normalizeSubject)
+            .filter((s) => s.subjectId && s.subjectName);
+          setMappedSubjects(list);
+          return;
+        }
+
+        // 2) 객체라면: 안쪽 어디든 배열이 있으면 성공
+        if (res && typeof res === "object") {
+          const arr = findFirstArray(res);
+          if (Array.isArray(arr)) {
+            const list = arr
+              .map(normalizeSubject)
+              .filter((s) => s.subjectId && s.subjectName);
+            setMappedSubjects(list);
+            return;
+          }
+
+          // 3) 여기까지 왔으면 '진짜' 실패만 처리
+          if ("code" in res) {
+            // 등록된 매핑이 아직 없을 때
+            if (res.code === "NOT_ANY_MAPPINGSET") {
+              setMappedSubjects([]);
+              return;
+            }
+            console.warn(
+              "[auth-handle] subjects error:",
+              res.code,
+              res?.message
+            );
+          } else {
+            console.warn("[auth-handle] unexpected shape (no array in object)");
+          }
+          setMappedSubjects([]);
+          return;
+        }
+
+        // 4) 예상 못한 타입
+        setMappedSubjects([]);
+      } catch (e) {
+        console.error("매핑된 과목 조회 실패:", e);
+        setMappedSubjects([]);
       }
     };
+
     fetchSubjects();
-  }, [cookies.accessToken, setCookie, navigate]);
+  }, [cookies.accessToken]);
 
   return (
     <div className="main-container-AHpage">
