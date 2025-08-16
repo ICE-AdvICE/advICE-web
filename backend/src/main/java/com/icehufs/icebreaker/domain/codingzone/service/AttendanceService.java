@@ -47,9 +47,9 @@ public class AttendanceService {
     private final AuthorityRepository authorityRepository;
     private final CodingZoneClassRepository codingZoneClassRepository;
     private final SubjectRepository subjectRepository;
-    private final UserRepository userRepository;
+
     @Transactional(readOnly = true)
-    public List<ReservationStudentDto> getReservationStudentsByClassNum (Integer classNum) {
+    public List<ReservationStudentDto> getReservationStudentsByClassNum(Integer classNum) {
         List<CodingZoneRegister> reservations = codingZoneRegisterRepository.findByCodingZoneClassClassNum(classNum);
         return reservations.stream()
                 .map(reservation -> new ReservationStudentDto(
@@ -61,23 +61,26 @@ public class AttendanceService {
     }
 
     public List<RegisterInfoResponseDto> getReservationStudentsByDate(String email, String date) {
-        String assistantName = userRepository.findByEmail(email).getName();
-        return codingZoneClassRepository.findByAssistantNameAndClassDate(assistantName, date).stream()
-                .flatMap(codingZoneClass ->
-                        codingZoneRegisterRepository.findByCodingZoneClassClassNum(codingZoneClass.getClassNum()).stream()
-                                .map(register -> new RegisterInfoResponseDto(
-                                        register.getRegistrationId(),
-                                        register.getUserStudentNum(),
-                                        register.getUserName(),
-                                        register.getUserEmail(),
-                                        codingZoneClass.getClassName(),
-                                        codingZoneClass.getSubject().getId(),
-                                        codingZoneClass.getClassTime(),
-                                        codingZoneClass.getAssistantName(),
-                                        register.getAttendance()
-                                ))
-                )
-                .toList();
+        Integer subjectId = authorityRepository.findByEmail(email)
+                .getClassAdminAuth()
+                .map(role -> role.replace("ROLE_ADMINC", ""))
+                .map(Integer::parseInt)
+                .orElseThrow(() -> new BusinessException(ResponseCode.NO_PERMISSION, "코딩존 조교가 아닙니다.", HttpStatus.UNAUTHORIZED));
+
+        return codingZoneClassRepository.findBySubjectIdAndClassDate(subjectId, date).stream()
+                .flatMap(codingZoneClass -> codingZoneRegisterRepository.findByCodingZoneClassClassNum(codingZoneClass.getClassNum()).stream()
+                        .map(register -> new RegisterInfoResponseDto(
+                                register.getRegistrationId(),
+                                register.getUserStudentNum(),
+                                register.getUserName(),
+                                register.getUserEmail(),
+                                codingZoneClass.getClassName(),
+                                codingZoneClass.getSubject().getId(),
+                                codingZoneClass.getClassTime(),
+                                codingZoneClass.getAssistantName(),
+                                register.getAttendance()
+                        ))
+                ).toList();
     }
 
     @Transactional
