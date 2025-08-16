@@ -12,7 +12,6 @@ import com.icehufs.icebreaker.domain.codingzone.dto.response.ReservationStudentD
 import com.icehufs.icebreaker.domain.codingzone.exception.UnmappedSubjectException;
 import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneClassRepository;
 import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneRegisterRepository;
-import com.icehufs.icebreaker.domain.membership.repository.UserRepository;
 import com.icehufs.icebreaker.exception.BusinessException;
 import com.icehufs.icebreaker.domain.codingzone.repository.SubjectRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,7 +64,7 @@ public class AttendanceService {
                 .getClassAdminAuth()
                 .map(role -> role.replace("ROLE_ADMINC", ""))
                 .map(Integer::parseInt)
-                .orElseThrow(() -> new BusinessException(ResponseCode.NO_PERMISSION, "코딩존 조교가 아닙니다.", HttpStatus.UNAUTHORIZED));
+                .orElseThrow(() -> new BusinessException(ResponseCode.NO_PERMISSION, "코딩존 조교가 아닙니다.", HttpStatus.BAD_REQUEST));
 
         return codingZoneClassRepository.findBySubjectIdAndClassDate(subjectId, date).stream()
                 .flatMap(codingZoneClass -> codingZoneRegisterRepository.findByCodingZoneClassClassNum(codingZoneClass.getClassNum()).stream()
