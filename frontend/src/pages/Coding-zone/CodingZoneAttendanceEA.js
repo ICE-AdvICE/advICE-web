@@ -20,7 +20,10 @@ import Banner from "../../shared/ui/Banner/Banner"; // ✅ 추가(juhui): 공통
 import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js"; //코딩존 보드 바(버튼 네개) 컴포넌트
 import CalendarInput from "../../widgets/Calendar/CalendarInput";
 import { isWeekendYMD } from "../../shared/lib/date";
-import { fetchCodingzoneSubjectsByDate } from "../../entities/api/CodingZone/AdminApi";
+import {
+  fetchCodingzoneSubjectsByDate,
+  fetchClassesBySubjectAndDate,
+} from "../../entities/api/CodingZone/AdminApi";
 import SubjectCard from "../../widgets/subjectCard/subjectCard.js";
 import { getColorById } from "../Coding-zone/subjectColors";
 
@@ -38,6 +41,10 @@ const CodingZoneAttendanceAssistant = () => {
   // 과목/조교 선택 상태 (지금은 디자인 단계라 기본 null 유지)
   const [selectedSubjectId, setSelectedSubjectId] = useState(null);
   const [selectedAssistantId, setSelectedAssistantId] = useState(null);
+  // ▼ 과목 선택 → 수업 리스트 표시용
+  const [selectedSubjectName, setSelectedSubjectName] = useState("");
+  const [classes, setClasses] = useState([]); // [{classTime, assistantName, groupId, classStatus, classNum}]
+  const [isClassesLoading, setIsClassesLoading] = useState(false);
 
   const count = subjects.length;
   const gridClass =
@@ -64,6 +71,54 @@ const CodingZoneAttendanceAssistant = () => {
   useEffect(() => {
     fetchReservedList();
   }, [token, selectedDateYMD]);
+
+  // 🟢 CHANGED: 날짜가 바뀌면 과목 선택/표 상태 초기화(= 카드 그리드로 복귀)
+  useEffect(() => {
+    setSelectedSubjectId(null);
+    setSelectedSubjectName("");
+    setSelectedAssistantId(null);
+    setClasses([]);
+    setReservedList([]);
+  }, [selectedDateYMD]);
+
+  useEffect(() => {
+    if (!selectedSubjectId || !selectedDateYMD) {
+      setClasses([]);
+      return;
+    }
+
+    let cancelled = false;
+
+    (async () => {
+      setIsClassesLoading(true);
+      const res = await fetchClassesBySubjectAndDate(
+        selectedSubjectId,
+        selectedDateYMD,
+        token,
+        setCookie,
+        navigate
+      );
+      if (cancelled) return;
+
+      if (res?.code === "SU") {
+        // 시간 오름차순 정렬
+        const sorted = (res.data ?? [])
+          .slice()
+          .sort((a, b) =>
+            String(a.classTime).localeCompare(String(b.classTime))
+          );
+        setClasses(sorted);
+      } else {
+        setClasses([]);
+        // 필요 시 메시지 처리: res?.message
+      }
+      setIsClassesLoading(false);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedSubjectId, selectedDateYMD, token, setCookie, navigate]);
 
   useEffect(() => {
     if (!selectedDateYMD) {
@@ -212,33 +267,97 @@ const CodingZoneAttendanceAssistant = () => {
           />
         </div>
 
-        <div className="panel-gray">
-          {!selectedDateYMD ? (
-            <div className="panel-empty">
-              조회하고자 하는 날짜를 입력해주세요.
-            </div>
-          ) : isSubjectsLoading ? (
-            // 로딩 중
-            <div className="panel-empty">과목을 불러오는 중…</div>
-          ) : subjects.length === 0 ? (
-            <div className="panel-empty">
-              현재 날짜에 등록된 코딩존이 없습니다.
-            </div>
-          ) : (
-            <div className={`panel-inner ${gridClass}`}>
-              <div className="subject-grid-inner">
-                {subjects.slice(0, 4).map((s) => (
-                  <SubjectCard
-                    key={s.id}
-                    title={s.name}
-                    color={getColorById(s.id)}
-                    onClick={() => setSelectedSubjectId(s.id)}
-                  />
-                ))}
+        {/* ====== 과목 카드 그리드 (panel-gray 안) ====== */}
+        {!selectedSubjectId && (
+          <div className="panel-gray">
+            {!selectedDateYMD ? (
+              <div className="panel-empty">
+                조회하고자 하는 날짜를 입력해주세요.
               </div>
+            ) : isSubjectsLoading ? (
+              <div className="panel-empty">과목을 불러오는 중…</div>
+            ) : subjects.length === 0 ? (
+              <div className="panel-empty">
+                현재 날짜에 등록된 코딩존이 없습니다.
+              </div>
+            ) : (
+              <div className={`panel-inner ${gridClass}`}>
+                <div className="subject-grid-inner">
+                  {subjects.slice(0, 4).map((s) => (
+                    <SubjectCard
+                      key={s.id}
+                      title={s.name}
+                      color={getColorById(s.id)}
+                      onClick={(e) => {
+                        e?.preventDefault?.();
+                        e?.stopPropagation?.();
+                        setSelectedSubjectId(s.id);
+                        setSelectedSubjectName(s.name);
+                        setSelectedAssistantId(null);
+                        setReservedList([]);
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ====== 표(수업 리스트) — panel-gray 밖, 단독 섹션 ====== */}
+        {selectedSubjectId && (
+          <div className="cz-classes">
+            <div className="cz-classes-title">
+              <strong className="subject-name">{selectedSubjectName}</strong>{" "}
+              코딩존 현황
             </div>
-          )}
-        </div>
+
+            <div className="cz-classes-back">
+              <button
+                type="button"
+                className="btn-ghost"
+                onClick={() => {
+                  setSelectedSubjectId(null);
+                  setSelectedSubjectName("");
+                  setClasses([]);
+                }}
+              >
+                ← 전체 과목 보기
+              </button>
+            </div>
+
+            <div className="manager-table-card">
+              {isClassesLoading ? (
+                <div className="panel-empty" style={{ margin: 0 }}>
+                  수업을 불러오는 중…
+                </div>
+              ) : classes.length === 0 ? (
+                <div className="panel-empty" style={{ margin: 0 }}>
+                  해당 과목의 등록된 수업이 없습니다.
+                </div>
+              ) : (
+                <table className="manager-table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: "33%" }}>조교명</th>
+                      <th style={{ width: "20%" }}>조 정보</th>
+                      <th>시간</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {classes.map((c) => (
+                      <tr key={c.classNum} className="clickable-row">
+                        <td>{c.assistantName || "-"}</td>
+                        <td>{c.groupId || "-"}</td>
+                        <td>{formatTime(c.classTime)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* ▼▼▼ 이 표는 날짜 선택 -> 과목 버튼 출력 -> 과목 선택 -> 조교 출력 -> 조교 리스트 선택 -> 학생 리스트 출력에서 
         "학생 리스트 출력에만 사용!! ▼▼▼ */}
