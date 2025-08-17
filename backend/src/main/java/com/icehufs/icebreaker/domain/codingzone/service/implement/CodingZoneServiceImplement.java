@@ -375,7 +375,8 @@ public class CodingZoneServiceImplement implements CodingZoneService {
             CodingZoneClassInfoResponseDto dto = new CodingZoneClassInfoResponseDto(
                     codingZoneClass.getClassTime(),
                     codingZoneClass.getAssistantName(),
-                    groupInfRepository.findByClassNum(codingZoneClass.getClassNum()).orElseThrow(GroupInfNotFoundException::new).getGroupId(),
+                    groupInfRepository.findByClassNum(codingZoneClass.getClassNum()).orElseThrow(GroupInfNotFoundException::new)
+                            .getGroupId(),
                     codingZoneClass.calculateClassStatus(date),
                     codingZoneClass.getClassNum());
 
