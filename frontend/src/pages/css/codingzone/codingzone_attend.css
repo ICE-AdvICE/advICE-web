@@ -188,15 +188,6 @@
   color: #002d56;
 }
 
-/*
-.divider {
-  height: 30px;
-  width: 0.5px;
-  background-color: #052940;
-  margin: auto 5px;
-}
-*/
-
 .info_data_container {
   width: 100%;
   justify-content: center;
@@ -391,11 +382,12 @@
   color: #adacac;
   height: 35px;
   border-radius: 10px;
-  border: #848484;
+  border: #efefef;
 }
 
 .btn-ghost:hover {
-  background: #052940;
+  background: #848484;
+  color: #ffffff;
 }
 
 /* ===== 코딩존 수업 표 ===== */
