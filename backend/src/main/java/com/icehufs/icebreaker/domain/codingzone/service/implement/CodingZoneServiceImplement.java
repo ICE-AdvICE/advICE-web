@@ -5,8 +5,6 @@ import com.icehufs.icebreaker.domain.codingzone.dto.response.GroupInfUpdateRespo
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfGroupInfResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneRegisterResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneCanceResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfCodingZoneClassResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfCodingZoneClassForNotLogInResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCountOfAttendResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetPersAttendListItemResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetReservedClassListItemResponseDto;
@@ -25,8 +23,6 @@ import java.time.ZoneId;
 import java.time.LocalTime;
 import java.time.LocalDate;
 import java.util.List;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -370,8 +366,8 @@ public class CodingZoneServiceImplement implements CodingZoneService {
     }
 
     @Override
-    public List<CodingZoneClassInfoResponseDto> findCodingZoneClassesBySubjectAndDate(Long subjectId, String date) {
-        List<CodingZoneClass> codingZoneClasses = codingZoneClassRepository.findBySubject_IdAndClassDate(subjectId.intValue(), date);
+    public List<CodingZoneClassInfoResponseDto> findCodingZoneClassesBySubjectAndDate(Integer subjectId, String date) {
+        List<CodingZoneClass> codingZoneClasses = codingZoneClassRepository.findBySubjectIdAndClassDate(subjectId, date);
         List<CodingZoneClassInfoResponseDto> classInfos = new ArrayList<>();
 
         for (CodingZoneClass codingZoneClass :codingZoneClasses){

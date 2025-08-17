@@ -7,6 +7,7 @@ import com.icehufs.icebreaker.domain.auth.repostiory.AuthorityRepository;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneClass;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneRegister;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.Subject;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.RegisterInfoResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.object.SubjectAttendanceListItem;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.ReservationStudentDto;
 import com.icehufs.icebreaker.domain.codingzone.exception.AttendanceNotFoundException;
@@ -49,7 +50,7 @@ public class AttendanceService {
     private final SubjectRepository subjectRepository;
 
     @Transactional(readOnly = true)
-    public List<ReservationStudentDto> getReservationStudentsByClassNum (Integer classNum) {
+    public List<ReservationStudentDto> getReservationStudentsByClassNum(Integer classNum) {
         List<CodingZoneRegister> reservations = codingZoneRegisterRepository.findByCodingZoneClassClassNum(classNum);
         return reservations.stream()
                 .map(reservation -> new ReservationStudentDto(
@@ -58,6 +59,29 @@ public class AttendanceService {
                         reservation.getCodingZoneClass().getClassNum()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    public List<RegisterInfoResponseDto> getReservationStudentsByDate(String email, String date) {
+        Integer subjectId = authorityRepository.findByEmail(email)
+                .getClassAdminAuth()
+                .map(role -> role.replace("ROLE_ADMINC", ""))
+                .map(Integer::parseInt)
+                .orElseThrow(() -> new BusinessException(ResponseCode.NO_PERMISSION, "코딩존 조교가 아닙니다.", HttpStatus.BAD_REQUEST));
+
+        return codingZoneClassRepository.findBySubjectIdAndClassDate(subjectId, date).stream()
+                .flatMap(codingZoneClass -> codingZoneRegisterRepository.findByCodingZoneClassClassNum(codingZoneClass.getClassNum()).stream()
+                        .map(register -> new RegisterInfoResponseDto(
+                                register.getRegistrationId(),
+                                register.getUserStudentNum(),
+                                register.getUserName(),
+                                register.getUserEmail(),
+                                codingZoneClass.getClassName(),
+                                codingZoneClass.getSubject().getId(),
+                                codingZoneClass.getClassTime(),
+                                codingZoneClass.getAssistantName(),
+                                register.getAttendance()
+                        ))
+                ).toList();
     }
 
     @Transactional
@@ -115,7 +139,7 @@ public class AttendanceService {
         .collect(Collectors.toMap(
             Map.Entry::getKey,
             e -> Math.max(0, e.getValue())
-        )); 
+        ));
     }
 
     private void sortRegisters(List<CodingZoneRegister> registers) {
