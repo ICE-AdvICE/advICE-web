@@ -336,7 +336,7 @@ const CodingZoneAttendanceAssistant = () => {
               ) : classes.length === 0 ? (
                 <div className="panel-gray">
                   <div className="panel-empty" style={{ margin: 0 }}>
-                    해당 날짜에 등록된 코딩존이 없습니다.
+                    해당 과목에 등록된 코딩존이 없습니다.
                   </div>
                 </div>
               ) : (
