@@ -22,6 +22,6 @@ public interface CodingZoneService {
     ResponseEntity<? super GetReservedClassListItemResponseDto> getReservedClass(String classDate, String email);
     AssistantNamesResponseDto getAssistantNamesBySubjectId(Long subjectId);
     SubjectMappingInfoResponseDto getClassNamesWithSubjectIdsByDate(String date);
-    List<CodingZoneClassInfoResponseDto> findCodingZoneClassesBySubjectAndDate(Long subjectId, String date);
+    List<CodingZoneClassInfoResponseDto> findCodingZoneClassesBySubjectAndDate(Integer subjectId, String date);
     //수업 코딩존 조교
 }
