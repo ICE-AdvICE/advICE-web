@@ -301,3 +301,70 @@ export const fetchCodingzoneSubjectsByDate = async (
     return error.response.data;
   }
 };
+
+// 특정 교과목에 해당하는 조교 리스트 불러오기 API
+export const fetchClassesBySubjectAndDate = async (
+  subjectId,
+  dateYMD, // 'YYYY-MM-DD'
+  token,
+  setCookie,
+  navigate
+) => {
+  try {
+    const response = await axios.get(
+      `${API_DOMAIN_ADMIN}/subjects/${subjectId}/codingzones`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { date: dateYMD }, // ?date=YYYY-MM-DD
+      }
+    );
+    // 성공 예시: { code: "SU", message: "...", data: [ { classTime, assistantName, groupId, classStatus, classNum }, ... ] }
+    return response.data;
+  } catch (error) {
+    if (!error.response) {
+      return {
+        code: "NETWORK_ERROR",
+        message: "네트워크 상태를 확인해주세요.",
+        data: null,
+      };
+    }
+
+    const { code, message } = error.response.data || {};
+
+    if (code === "ATE") {
+      console.warn("🔄 과목별 수업 리스트: Access Token 만료. 재발급 시도...");
+      const newToken = await refreshTokenRequest(setCookie, token, navigate);
+      if (newToken?.accessToken) {
+        return fetchClassesBySubjectAndDate(
+          subjectId,
+          dateYMD,
+          newToken.accessToken,
+          setCookie,
+          navigate
+        );
+      } else {
+        setCookie("accessToken", "", { path: "/", expires: new Date(0) });
+        navigate("/");
+        return {
+          code: "TOKEN_EXPIRED",
+          message: "토큰이 만료되었습니다. 다시 로그인해주세요.",
+          data: null,
+        };
+      }
+    }
+
+    // 기타 실패 코드 케이스
+    switch (code) {
+      case "AF":
+        return { code, message: message ?? "권한 없음", data: null };
+      case "DBE":
+        return { code, message: message ?? "데이터베이스 오류", data: null };
+      default:
+        return {
+          code: code ?? "UNKNOWN_ERROR",
+          message: message ?? "알 수 없는 오류가 발생했습니다.",
+          data: null,
+        };
+    }
+  }
+};

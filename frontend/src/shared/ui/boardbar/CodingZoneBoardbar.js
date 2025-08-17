@@ -5,11 +5,17 @@ import { useCookies } from "react-cookie";
 import { getczauthtypetRequest } from "../../api/AuthApi";
 
 const ROUTES = {
-  attendanceEntry: "/coding-zone/Codingzone_Attendance",
+  // ✅ 출결 공통 진입점 (AttendanceRouter가 EA/CA/학생으로 자동 분기)
+  attendanceEntry: "/coding-zone/attendance",
+  attendanceEA: "/coding-zone/attendance/ea",
+  attendanceCA: "/coding-zone/attendance/ca",
+
   attendanceReal: "/coding-zone/Codingzone_Attendance_Real",
-  classRegist: "/coding-zone/Coding-class-regist", // ← App 라우터와 대소문자 동일
+  // ✅ App.js와 경로 정확히 일치(소문자)
+  classRegist: "/coding-zone/coding-class-regist",
   setting: "/coding-zone/Codingzone_Setting",
-  manager: "/coding-zone/Codingzone_Manager",
+  // ✅ '출결 관리'도 공통 진입점으로 보냄 (EA/CA 모두 사용)
+  manager: "/coding-zone/attendance",
   allAttend: "/coding-zone/Codingzone_All_Attend",
 };
 
@@ -18,6 +24,7 @@ const CodingZoneBoardbar = () => {
   const location = useLocation();
   const [cookies, setCookie] = useCookies(["accessToken"]);
   const token = cookies.accessToken;
+  const authCode = (sessionStorage.getItem("czAuthCode") || "").toUpperCase();
 
   const [showAdminButton, setShowAdminButton] = useState(false);
   const [showManageAllButton, setShowManageAllButton] = useState(false);
@@ -112,7 +119,13 @@ const CodingZoneBoardbar = () => {
             className={`btn-attend ${
               !showAdminButton && !showRegisterClassButton ? "student" : ""
             } ${activeButton === "check" ? "active" : ""}`}
-            onClick={() => handleNavigation(ROUTES.attendanceEntry)}
+            onClick={() =>
+              handleNavigation(
+                authCode === "CA"
+                  ? ROUTES.attendanceReal
+                  : ROUTES.attendanceEntry
+              )
+            }
           >
             출결 확인
           </button>
@@ -154,8 +167,8 @@ const CodingZoneBoardbar = () => {
           <button
             className={`btn-attend ${
               activeButton === "manage" ? "active" : ""
-            }`}
-            onClick={() => handleNavigation(ROUTES.manager)}
+            }`} // ✅ EA/CA 모두 공통 진입점으로 보내면 AttendanceRouter가 알아서 분기
+            onClick={() => handleNavigation(ROUTES.attendanceEntry)}
           >
             출결 관리
           </button>

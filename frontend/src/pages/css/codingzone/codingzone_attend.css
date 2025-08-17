@@ -188,15 +188,6 @@
   color: #002d56;
 }
 
-/*
-.divider {
-  height: 30px;
-  width: 0.5px;
-  background-color: #052940;
-  margin: auto 5px;
-}
-*/
-
 .info_data_container {
   width: 100%;
   justify-content: center;
@@ -348,6 +339,134 @@
 /* 카드가 칸을 꽉 채우도록 */
 .subject-grid-inner > * {
   width: 100%;
+}
+
+.cz-classes-title {
+  font-size: 20px;
+}
+
+.cz-classes-title .subject-name {
+  font-size: 22px; /* ← 이름만 크게 */
+  font-weight: 800; /* 굵게 유지(원하면 700/600으로 조절) */
+  margin-right: 6px; /* 이름과 '코딩존 현황' 사이 간격 */
+  line-height: 1; /* 줄높이 튐 방지 */
+}
+
+.cz-classes {
+  height: 600px;
+}
+
+/* 표 섹션 래퍼가 가운데 폭을 갖고, 내부는 좌우 여백만 */
+.cz-classes {
+  max-width: 1140px;
+  margin: 24px auto 56px;
+  padding: 0 16px;
+}
+
+/* ← 전체 과목 보기 버튼 줄: 왼쪽 정렬 고정 */
+.cz-classes-back {
+  width: 100%; /* 가로 전체 차지 (중요) */
+  display: flex;
+  justify-content: flex-start; /* 왼쪽 정렬 */
+  align-self: flex-start; /* 부모가 flex일 때도 왼쪽 고정 */
+  margin: 8px 0 12px;
+}
+
+/* 버튼 여백 기본값 */
+.cz-classes-back .btn-ghost {
+  margin-left: 0;
+}
+
+.btn-ghost {
+  background: #efefef;
+  color: #adacac;
+  height: 35px;
+  border-radius: 10px;
+  border: #efefef;
+}
+
+.btn-ghost:hover {
+  background: #848484;
+  color: #ffffff;
+}
+
+/* ===== 코딩존 수업 표 ===== */
+/* 테이블 자체는 배경/라운드 없음 */
+.manager-table {
+  width: 1140px;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  background: transparent !important; /* ← 테이블 배경 제거 */
+  border-radius: 0 !important; /* ← 라운드 제거 */
+}
+
+/* ✅ 헤더 바(타이틀)만 둥글게: thead에 배경판을 깔아줌 */
+.manager-table thead {
+  position: relative;
+  z-index: 0; /* 배경판 뒤로 */
+}
+.manager-table thead::before {
+  content: "";
+  position: absolute;
+  inset: 0; /* thead 전체 덮기 */
+  background: #052940;
+  border-radius: 12px; /* ← 위쪽만 둥글게 */
+  z-index: 0;
+}
+
+/* 헤더 셀은 투명 배경 + 글자만 흰색 */
+.manager-table thead th,
+.manager-table thead th:first-child,
+.manager-table thead th:last-child {
+  background: transparent !important; /* ← 각 셀 배경 제거 */
+  border-radius: 0 !important; /* ← 각 셀 라운드 제거 */
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1;
+  text-align: center;
+  padding: 18px 24px;
+  position: relative;
+  z-index: 1; /* 글자가 배경판 위로 */
+}
+
+/* 바디는 유지 */
+.manager-table tbody td {
+  padding: 22px 24px;
+  text-align: center;
+  font-size: 16px;
+  color: #0b1f2a;
+  background: #ffffff;
+}
+.manager-table tbody td:first-child {
+  text-align: center;
+  font-weight: 700;
+}
+/* 모든 행 아래 구분선 */
+.manager-table tbody tr td {
+  border-bottom: 1px solid #cfd8e3 !important;
+}
+
+.manager-table tbody tr:hover td {
+  background: #f8fafc;
+}
+
+/* (옵션) 세로도 가운데로 */
+.manager-table td {
+  vertical-align: middle;
+}
+
+/* 반응형: 모바일에서 여백과 글자 조금 축소 */
+@media (max-width: 768px) {
+  .manager-table thead th {
+    font-size: 14px;
+    padding: 14px 16px;
+  }
+  .manager-table tbody td {
+    font-size: 14px;
+    padding: 16px;
+  }
 }
 
 @media (max-width: 1920px) {
