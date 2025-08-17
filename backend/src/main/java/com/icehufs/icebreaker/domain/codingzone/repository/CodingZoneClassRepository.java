@@ -20,7 +20,7 @@ public interface CodingZoneClassRepository extends JpaRepository<CodingZoneClass
 
     List<CodingZoneClass> findAllByClassDate(String classDate);
 
-    List<CodingZoneClass> findBySubjectIdAndClassDate(int subjectId, String classDate);
+    List<CodingZoneClass> findBySubjectIdAndClassDate(Integer subjectId, String classDate);
 
     List<CodingZoneClass> findByAssistantNameAndClassDate(String assistantName, String classDate);
 

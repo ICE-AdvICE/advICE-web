@@ -58,7 +58,7 @@ public class AdminSubjectController {
 
     @GetMapping("/{subjectId}/codingzones")
     public ResponseEntity<ResponseDto<List<CodingZoneClassInfoResponseDto>>> getCodingZoneClassesBySubjectAndDate(
-            @PathVariable Long subjectId,
+            @PathVariable Integer subjectId,
             @RequestParam("date") String date) {
         List<CodingZoneClassInfoResponseDto> result = codingzoneService.findCodingZoneClassesBySubjectAndDate(subjectId, date);
         return ResponseEntity.ok(ResponseDto.success(ResponseMessage.SUCCESS_MAPPING_GET, result));
