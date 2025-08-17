@@ -328,12 +328,16 @@ const CodingZoneAttendanceAssistant = () => {
 
             <div className="manager-table-card">
               {isClassesLoading ? (
-                <div className="panel-empty" style={{ margin: 0 }}>
-                  수업을 불러오는 중…
+                <div className="panel-gray">
+                  <div className="panel-empty" style={{ margin: 0 }}>
+                    수업을 불러오는 중…
+                  </div>
                 </div>
               ) : classes.length === 0 ? (
-                <div className="panel-empty" style={{ margin: 0 }}>
-                  해당 과목의 등록된 수업이 없습니다.
+                <div className="panel-gray">
+                  <div className="panel-empty" style={{ margin: 0 }}>
+                    해당 날짜에 등록된 코딩존이 없습니다.
+                  </div>
                 </div>
               ) : (
                 <table className="manager-table">
