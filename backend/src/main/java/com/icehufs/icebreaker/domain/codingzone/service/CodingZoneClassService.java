@@ -93,6 +93,10 @@ public class CodingZoneClassService {
         CodingZoneClass existingClass = codingZoneClassRepository.findByClassNum(classNum);
         if(dto.isSameEntity(existingClass)) throw new DuplicatedClassException();
 
+        GroupInf existinfGroup = groupInfRepository.findByAssistantNameAndClassTimeAndClassName
+                (existingClass.getAssistantName(), existingClass.getClassTime(), existingClass.getClassName())
+                    .orElseThrow(GroupInfNotFoundException::new);
+
         // 수정한 정보가 이미 DB에 저장되어 있는 경우
         boolean isDuplicate = codingZoneClassRepository
                 .existsByIdentity(
@@ -106,13 +110,13 @@ public class CodingZoneClassService {
                 );
 
         // 이미 시전에 동일한 수업을 등록한 경우 예외처리
-        if (isDuplicate) throw new AlreadyExistClassException();
+            if (isDuplicate && existinfGroup.getGroupId().equals(dto.getGroupId())) throw new AlreadyExistClassException();
 
         // 수정된 필드만 반영 (Dirty Checking)
         Subject subject = subjectRepository.findById(dto.getSubjectId())
                 .orElseThrow(() -> new UnmappedSubjectException());
-
         existingClass.update(dto, subject);
+        existinfGroup.update(dto.getAssistantName(), dto.getGroupId(), dto.getClassTime(), dto.getWeekDay(), dto.getMaximumNumber(),dto.getClassName(), dto.getSubjectId());
     }
 
     @Transactional

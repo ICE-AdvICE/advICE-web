@@ -1,5 +1,6 @@
 package com.icehufs.icebreaker.domain.codingzone.domain.entity;
 
+import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassUpdateRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -58,5 +59,15 @@ public class GroupInf {
         this.className = dto.getClassName();
         this.subjectId = dto.getSubjectId();
 
+    }
+
+    public void update(String assistantName, String groupId, String classTime, String weekDay, Integer maximumNumber, String className, int subjectId) {
+        this.assistantName = assistantName;
+        this.groupId = groupId;
+        this.classTime = classTime;
+        this.weekDay = weekDay;
+        this.maximumNumber = maximumNumber;
+        this.className = className;
+        this.subjectId = subjectId;
     }
 }
