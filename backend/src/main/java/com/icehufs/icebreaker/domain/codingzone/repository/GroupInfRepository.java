@@ -13,7 +13,7 @@ public interface GroupInfRepository extends JpaRepository<GroupInf, Integer> {
 
     List<GroupInf> findByGroupId(String groupId);
 
-    GroupInf findByClassNum(int classNum);
+    Optional<GroupInf> findByClassNum(Integer classNum);
 
     void deleteByGroupId(String groupId);
 
