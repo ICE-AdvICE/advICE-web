@@ -14,6 +14,7 @@ import com.icehufs.icebreaker.domain.codingzone.dto.response.SubjectMappingInfoR
 import com.icehufs.icebreaker.domain.codingzone.dto.response.AssistantNamesResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneClassInfoResponseDto;
 
+import com.icehufs.icebreaker.domain.codingzone.exception.GroupInfNotFoundException;
 import com.icehufs.icebreaker.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,8 +26,6 @@ import java.time.ZoneId;
 import java.time.LocalTime;
 import java.time.LocalDate;
 import java.util.List;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -118,7 +117,7 @@ public class CodingZoneServiceImplement implements CodingZoneService {
 
             // 각 수업을 수정
             for (PatchGroupInfRequestDto dtos : dto) {
-                GroupInf existingEntity = groupInfRepository.findByClassNum(dtos.getClassNum());
+                GroupInf existingEntity = groupInfRepository.findByClassNum(dtos.getClassNum()).orElseThrow(GroupInfNotFoundException::new);
                 if (existingEntity != null) {
                     existingEntity.setAssistantName(dtos.getAssistantName());
                     existingEntity.setClassTime(dtos.getClassTime());
@@ -378,7 +377,7 @@ public class CodingZoneServiceImplement implements CodingZoneService {
             CodingZoneClassInfoResponseDto dto = new CodingZoneClassInfoResponseDto(
                     codingZoneClass.getClassTime(),
                     codingZoneClass.getAssistantName(),
-                    groupInfRepository.findByClassNum(codingZoneClass.getClassNum()).getGroupId(),
+                    groupInfRepository.findByClassNum(codingZoneClass.getClassNum()).orElseThrow(GroupInfNotFoundException::new).getGroupId(),
                     codingZoneClass.calculateClassStatus(date),
                     codingZoneClass.getClassNum());
 
