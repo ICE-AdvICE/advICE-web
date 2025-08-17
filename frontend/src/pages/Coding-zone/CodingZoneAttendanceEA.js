@@ -322,7 +322,7 @@ const CodingZoneAttendanceAssistant = () => {
                   setClasses([]);
                 }}
               >
-                ← 전체 과목 보기
+                ← 뒤로가기
               </button>
             </div>
 
