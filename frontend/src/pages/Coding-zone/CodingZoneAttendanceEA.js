@@ -199,11 +199,6 @@ const CodingZoneAttendanceAssistant = () => {
       .slice()
       .sort((a, b) => String(a.classTime).localeCompare(String(b.classTime)));
     setClasses(sorted);
-
-    // ★ 가장 이른 시간의 수업으로 바로 이동
-    const first = sorted[0];
-    setSelectedClassNum(first.classNum);
-    await loadStudents(first.classNum, first.classTime);
   };
 
   // 수업 클릭 → 학생 리스트 로드   // ★ 새 추가
