@@ -493,7 +493,7 @@ const CodingZoneAttendanceAssistant = () => {
             </div>
 
             <div className="manager-table-card">
-              <table className="manager-table">
+              <table className="manager-table students-table">
                 <thead>
                   <tr>
                     <th style={{ width: "33%" }}>이름</th>

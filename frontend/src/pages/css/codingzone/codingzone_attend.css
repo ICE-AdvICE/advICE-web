@@ -82,6 +82,16 @@
   line-height: normal;
 }
 
+.panel-student {
+  color: rgba(73, 80, 87, 0.75);
+  text-align: center;
+  font-family: Inter;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+}
+
 .attendance-table.is-hidden {
   display: none;
 }
