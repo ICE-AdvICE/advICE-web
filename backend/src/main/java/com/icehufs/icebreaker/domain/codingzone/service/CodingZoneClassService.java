@@ -6,18 +6,19 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
+import com.icehufs.icebreaker.common.ResponseCode;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.Subject;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassUpdateRequestDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.request.PostSubjectMappingRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.ClassListResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.ClassListWithRegisteredNumResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.ClassResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.exception.*;
 import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneRegisterRepository;
+import com.icehufs.icebreaker.exception.BusinessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.icehufs.icebreaker.domain.auth.domain.entity.Authority;
@@ -52,9 +53,14 @@ public class CodingZoneClassService {
     @Transactional
     public void postClassAndGroup(List<CodingZoneClassAssignRequestDto> dto, String email) {
 
+
+        Set<CodingZoneClassAssignRequestDto> seenClass = new HashSet<>(dto);
+
         for (CodingZoneClassAssignRequestDto assignedClass : dto) {
-            // 매핑 작업을 하지 않은 교과목에 해당하는 코딩존 수업을 등록하려고 할때
+            // 매핑 작업을 하지 않은 교과목에 해당하는 코딩존 수업을 등록 경우 예외처리
             if (!subjectRepository.existsById(assignedClass.getSubjectId())) throw new UnmappedSubjectException();
+            // 등록되는 수업 중 중복 값들 예외처리
+            if (seenClass.size() != dto.size()) throw new BusinessException(ResponseCode.BAD_REQUEST, "등록하려는 코딩존 중 중복 정보가 존재합니다.", HttpStatus.BAD_REQUEST);
 
             // 등록 하려는 필드 값들이 DB에서 모두 같은 (currentNumber제외)경우가 있을 때 예외처리
             boolean isDuplicate = codingZoneClassRepository
