@@ -444,7 +444,7 @@ const CodingZoneAttendanceAssistant = () => {
             </div>
           </div>
         )}
-        {/* 3) 학생 리스트: 수업을 고른 뒤에 보임 */} {/* ★ 추가 */}
+        {/* 3) 학생 리스트: 수업을 고른 뒤에 보임 */}
         {selectedSubjectId && selectedClassNum && (
           <div className="cz-classes">
             <div className="cz-classes-title">

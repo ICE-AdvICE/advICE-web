@@ -14,7 +14,7 @@ import { getczauthtypetRequest } from "../../shared/api/AuthApi.js";
 import { toggleAttendanceByRegistNum } from "../../entities/api/CodingZone/AdminApi";
 import InquiryModal from "./InquiryModal.js";
 import { getczattendlistRequest } from "../../features/api/CodingzoneApi.js";
-import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네이게이션 바 컴포넌트
+import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네비게이션 바 컴포넌트
 import Banner from "../../shared/ui/Banner/Banner"; // ✅ 추가(juhui): 공통 배너 컴포넌트 적용
 import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js"; //코딩존 보드 바(버튼 네개) 컴포넌트
 
@@ -108,7 +108,6 @@ const CodingZoneAttendanceAssistant = () => {
     }
   };
 
-  // ✅ 변경: 토글 API 사용 + 같은 상태면 호출하지 않음 + 성공 시 재조회
   const handleAttendanceUpdate = async (student, target) => {
     const current = String(student.attendance ?? "");
     if (current === target) return; // 이미 같은 상태면 무시
@@ -204,7 +203,7 @@ const CodingZoneAttendanceAssistant = () => {
                           <button className="btn_manager_attendance" disabled>
                             출석
                           </button>
-                          {/* ✅ 변경: 결석으로 변경 클릭 시 토글 호출 */}
+
                           <button
                             className="btn_manager_absence-disabled"
                             onClick={() => handleAttendanceUpdate(student, "0")}
@@ -214,7 +213,6 @@ const CodingZoneAttendanceAssistant = () => {
                         </>
                       ) : student.attendance === "0" ? (
                         <>
-                          {/* ✅ 변경: 출석으로 변경 클릭 시 토글 호출 */}
                           <button
                             className="btn_manager_attendance-disabled"
                             onClick={() => handleAttendanceUpdate(student, "1")}
