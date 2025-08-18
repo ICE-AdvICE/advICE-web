@@ -56,7 +56,8 @@ public class AttendanceService {
                 .map(reservation -> new ReservationStudentDto(
                         reservation.getUserName(),
                         reservation.getUserStudentNum(),
-                        reservation.getCodingZoneClass().getClassNum()
+                        reservation.getRegistrationId(),
+                        reservation.getAttendance()
                 ))
                 .collect(Collectors.toList());
     }
