@@ -9,10 +9,7 @@ import "../css/codingzone/CodingClassRegist.css";
 import "../../shared/ui/boardbar/CodingZoneBoardbar.css";
 import { getczreservedlistRequest } from "../../features/api/Admin/Codingzone/ClassApi.js";
 import { getczauthtypetRequest } from "../../shared/api/AuthApi.js";
-import {
-  putczattendc1Request,
-  putczattendc2Request,
-} from "../../features/api/Admin/Codingzone/AttendanceApi.js";
+
 import InquiryModal from "./InquiryModal.js";
 import { getczattendlistRequest } from "../../features/api/CodingzoneApi.js";
 import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네이게이션 바 컴포넌트
@@ -324,24 +321,6 @@ const CodingZoneAttendanceAssistant = () => {
     } else {
       console.error(response.message);
       setReservedList([]);
-    }
-  };
-
-  const handleAttendanceUpdate = async (student, newState) => {
-    const method =
-      student.grade === 1 ? putczattendc1Request : putczattendc2Request;
-    const response = await method(
-      student.registrationId,
-      token,
-      setCookie,
-      navigate
-    );
-    if (response.code === "SU") {
-      alert("처리가 완료되었습니다.");
-      fetchReservedList(); // 새로고침 기능
-    } else if (response && response.code === "NU") {
-    } else {
-      alert("오류가 발생했습니다. 다시 시도 해 주세요.");
     }
   };
 

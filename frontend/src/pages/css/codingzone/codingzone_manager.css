@@ -89,9 +89,9 @@
 .line-manager-container2 {
   width: 100%;
   max-width: 920px;
-  height: 1.5px;
+
   background-color: #dcdada;
-  margin: 23px auto;
+  margin: 4px auto;
   justify-content: center;
   display: flex;
 }
@@ -163,7 +163,7 @@
   display: column;
   margin: 10px auto;
   padding: 10px 0;
-  min-height: 200px;
+  min-height: 150px;
 }
 
 .info_manager_inner {
