@@ -13,7 +13,7 @@ public interface ResponseMessage {
     String SUCCESS_DELETE_MAPPING = "코딩존 매핑 삭제 성공 ";
     String SUCCESS_RESET_SEMESTER = "학기 초기화 성공";
     String SUCCESS_GET_CLASSLIST = "예약 가능한 수업 리스트 반환 성공";
-
+    String SUCCESS_ADMIN_GET_CLASSLIST = "특정 날짜와 교과목에 해당하는 코딩존 수업 리스트 조회 성공.";
     // HTTP Status 400
     String BAD_REQUEST = "잘못된 입력 형식";
     String VALIDATION_FAILED = "Validation failed.";

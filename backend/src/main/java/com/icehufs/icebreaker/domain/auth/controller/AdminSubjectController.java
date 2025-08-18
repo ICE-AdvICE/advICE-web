@@ -61,6 +61,6 @@ public class AdminSubjectController {
             @PathVariable Integer subjectId,
             @RequestParam("date") String date) {
         List<CodingZoneClassInfoResponseDto> result = codingzoneService.findCodingZoneClassesBySubjectAndDate(subjectId, date);
-        return ResponseEntity.ok(ResponseDto.success(ResponseMessage.SUCCESS_MAPPING_GET, result));
+        return ResponseEntity.ok(ResponseDto.success(ResponseMessage.SUCCESS_ADMIN_GET_CLASSLIST, result));
     }
 }
