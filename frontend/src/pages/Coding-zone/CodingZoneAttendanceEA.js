@@ -250,7 +250,9 @@ const CodingZoneAttendanceAssistant = () => {
   };
 
   // 출결 토글(버튼)
-  const handleToggleAttendance = async (student, target) => {
+  const handleToggleAttendance = async (e, student, target) => {
+    e?.preventDefault?.();
+    e?.stopPropagation?.();
     if ((student.attendance ?? "") === target) return; // 같은 상태면 무시
     const res = await toggleAttendanceByRegistNum(
       student.registrationId,
@@ -512,7 +514,7 @@ const CodingZoneAttendanceAssistant = () => {
                   ) : students.length === 0 ? (
                     <tr>
                       <td colSpan={3}>
-                        <div className="panel-empty" style={{ margin: 0 }}>
+                        <div className="panel-student" style={{ margin: 0 }}>
                           예약된 리스트가 없습니다.
                         </div>
                       </td>
@@ -533,7 +535,9 @@ const CodingZoneAttendanceAssistant = () => {
                               </button>
                               <button
                                 className="btn_manager_absence-disabled"
-                                onClick={() => handleToggleAttendance(st, "0")}
+                                onClick={(e) =>
+                                  handleToggleAttendance(e, st, "0")
+                                }
                               >
                                 결석
                               </button>
@@ -542,7 +546,9 @@ const CodingZoneAttendanceAssistant = () => {
                             <>
                               <button
                                 className="btn_manager_attendance-disabled"
-                                onClick={() => handleToggleAttendance(st, "1")}
+                                onClick={(e) =>
+                                  handleToggleAttendance(e, st, "1")
+                                }
                               >
                                 출석
                               </button>
