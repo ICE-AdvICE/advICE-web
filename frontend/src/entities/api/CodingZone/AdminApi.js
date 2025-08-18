@@ -3,7 +3,8 @@ import { refreshTokenRequest } from "../../../shared/api/AuthApi";
 const DOMAIN = process.env.REACT_APP_API_DOMAIN;
 const API_DOMAIN = `${DOMAIN}/api/v1`;
 const API_DOMAIN_ADMIN = `${DOMAIN}/api/admin`;
-const API_DOMAIN_ADMINS = `${DOMAIN}/api/admins`;
+const ATTENDANCE_TOGGLE_URL = (registNum) =>
+  `${DOMAIN}/api/admins/attendances/${registNum}`;
 
 const DELETE_CLASS_URL = (classNum) =>
   `${DOMAIN}/api/admin/delete-class/${classNum}`;
@@ -462,26 +463,20 @@ export const toggleAttendanceByRegistNum = async (
   navigate
 ) => {
   try {
-    const response = await axios.patch(
-      `${API_DOMAIN_ADMINS}/attendance/${registNum}`,
-      null,
+    const res = await axios.patch(
+      ATTENDANCE_TOGGLE_URL(registNum),
+      null, // 본문 없음!
       { headers: { Authorization: `Bearer ${token}` } }
     );
-    // 그대로 전달 (code, message, data)
-    return response.data;
+    return res.data; // { code: "SU", message: "출/결석 처리 성공", data: ... }
   } catch (error) {
     if (!error.response) {
-      return {
-        code: "NETWORK_ERROR",
-        message: "네트워크 상태를 확인해주세요.",
-        data: null,
-      };
+      return { code: "NETWORK_ERROR", message: "네트워크 오류" };
     }
+    const { code, message } = error.response.data ?? {};
 
-    const { code, message } = error.response.data || {};
-
+    // 토큰 만료 처리
     if (code === "ATE") {
-      console.warn("🔄 출/결석 처리: Access Token 만료. 토큰 재발급 시도...");
       const newToken = await refreshTokenRequest(setCookie, token, navigate);
       if (newToken?.accessToken) {
         return toggleAttendanceByRegistNum(
@@ -490,30 +485,11 @@ export const toggleAttendanceByRegistNum = async (
           setCookie,
           navigate
         );
-      } else {
-        setCookie("accessToken", "", { path: "/", expires: new Date(0) });
-        navigate("/");
-        return {
-          code: "TOKEN_EXPIRED",
-          message: "토큰이 만료되었습니다. 다시 로그인해주세요.",
-          data: null,
-        };
       }
+      setCookie("accessToken", "", { path: "/", expires: new Date(0) });
+      navigate("/");
+      return { code: "TOKEN_EXPIRED", message: "다시 로그인 해주세요." };
     }
-
-    switch (code) {
-      case "AF":
-        return { code, message: message ?? "권한 없음", data: null };
-      case "NU":
-        return { code, message: message ?? "로그인이 필요합니다.", data: null };
-      case "DBE":
-        return { code, message: message ?? "데이터베이스 오류", data: null };
-      default:
-        return {
-          code: code ?? "UNKNOWN_ERROR",
-          message: message ?? "알 수 없는 오류가 발생했습니다.",
-          data: null,
-        };
-    }
+    return { code: code ?? "UNKNOWN_ERROR", message: message ?? "오류" };
   }
 };
