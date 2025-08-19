@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import {
   getEntireAttendanceBySubject,
-  downloadAttendanceExcel,
+  downloadAttendanceExcelBySubject,
 } from "../../features/api/Admin/Codingzone/ClassApi.js";
 import { useCookies } from "react-cookie";
 import "../css/codingzone/codingzone-main.css";
@@ -177,7 +177,22 @@ const CodingZoneAttendanceManager = () => {
       alert("로그인 후 이용 가능합니다.");
       return;
     }
-    await downloadAttendanceExcel(token, selectedGrade, setCookie, navigate);
+   if (!selectedSubjectId) {
+    alert("과목을 선택해주세요.");
+    return;
+   }
+
+   const selected = subjects.find(
+     (s) => Number(s.subjectId) === Number(selectedSubjectId)
+   );
+   const subjectName = selected?.subjectName || `codingzone_${selectedSubjectId}`;
+   await downloadAttendanceExcelBySubject(
+     token,
+     Number(selectedSubjectId),
+     subjectName,              
+     setCookie,
+     navigate
+   );
   };
 
   return (
