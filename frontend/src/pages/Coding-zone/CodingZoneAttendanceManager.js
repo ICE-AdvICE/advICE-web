@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import {
-  getczallattendRequest,
+  getEntireAttendanceBySubject,
   downloadAttendanceExcel,
 } from "../../features/api/Admin/Codingzone/ClassApi.js";
 import { useCookies } from "react-cookie";
@@ -37,6 +37,11 @@ const CodingZoneAttendanceManager = () => {
     // 로딩/오류
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
+
+  const [loadingSubjects, setLoadingSubjects] = useState(false);
+  const [loadingAttendance, setLoadingAttendance] = useState(false);
+  
+
 
   const handlecodingzonemanager = () => {
     navigate(`/coding-zone/Codingzone_Manager`);
@@ -89,11 +94,20 @@ const CodingZoneAttendanceManager = () => {
 
       if (!res) return;
 
+      // 1) 실제로 배열로 바로 내려오는 경우 (예: [{subjectId, subjectName}, ...])
+      if (Array.isArray(res)) {
+        console.log("[/subjects] array response:", res);
+        setSubjects(res);
+        setSelectedSubjectId(res.length > 0 ? Number(res[0].subjectId) : null);
+        return;
+      }
+
+      // 2) 문서대로 code/data 래핑되어 오는 경우
       if (res.code === "SU") {
         const list = res.data?.subjectList ?? [];
+        console.log("[/subjects] wrapped response:", list);
         setSubjects(list);
-        // 기본 선택은 첫 번째 과목(선택만 표시, 아직 조회는 안 함)
-        setSelectedSubjectId(list.length > 0 ? list[0].subjectId : null);
+        setSelectedSubjectId(list.length > 0 ? Number(list[0].subjectId) : null);
       } else if (res.code === "AF") {
         setErrMsg("권한이 없습니다.");
       } else if (res.code === "NOT_ANY_MAPPINGSET") {
@@ -108,36 +122,55 @@ const CodingZoneAttendanceManager = () => {
         setErrMsg(res.message || "알 수 없는 오류가 발생했습니다.");
       }
     };
+
     run();
   }, [token, setCookie, navigate]);
+  
 
-  const handleGradeChange = (grade) => {
-    setSelectedGrade(grade);
-  };
-
-  const aggregateAttendanceData = (attendanceList) => {
-    const aggregatedData = {};
-
-    attendanceList.forEach((record) => {
-      const key = record.userEmail; // 이메일 별로 집계
-      if (!aggregatedData[key]) {
-        aggregatedData[key] = {
-          userStudentNum: record.userStudentNum,
-          userName: record.userName,
-          userEmail: record.userEmail,
-          presentCount: 0,
-          absentCount: 0,
-        };
+  // 선택 과목 출결 로딩
+  useEffect(() => {
+    const run = async () => {
+      if (!selectedSubjectId) {
+        setAttendanceList([]);
+        return;
       }
-      if (record.attendance === "0") {
-        aggregatedData[key].absentCount++;
+
+      console.log("[CALL] /admin/entire-attendance/", selectedSubjectId, "token?", !!token);
+
+      setLoadingAttendance(true);
+      setErrMsg("");
+
+      const res = await getEntireAttendanceBySubject(token, selectedSubjectId, setCookie, navigate);
+
+      setLoadingAttendance(false);
+
+      if (!res) return;
+
+      if (res.code === "SU") {
+        console.log("✅ 학생 리스트 응답", res.data?.studentList);
+        setAttendanceList(res.data?.studentList ?? []);
+      } else if (res.code === "NO_ANY_ATTENDANCE") {
+        setAttendanceList([]);
+        setErrMsg("해당 과목에 등록된 출결 정보가 아직 없습니다.");
+      } else if (res.code === "AF") {
+        setErrMsg("권한이 없습니다.");
+      } else if (res.code === "DBE") {
+        setErrMsg("데이터베이스 오류입니다.");
+      } else if (res.code === "NETWORK_ERROR") {
+        setErrMsg(res.message || "네트워크 오류입니다.");
+      } else if (res.code === "TOKEN_EXPIRED") {
+        // 재발급 실패로 홈 이동된 상태
+        return;
       } else {
-        aggregatedData[key].presentCount++;
+        setErrMsg(res.message || "알 수 없는 오류가 발생했습니다.");
       }
-    });
+    };
 
-    return Object.values(aggregatedData);
-  };
+    run();
+  }, [token, selectedSubjectId, setCookie, navigate]);
+
+
+  
 
   const handleDownload = async () => {
     if (!token) {
@@ -196,24 +229,30 @@ const CodingZoneAttendanceManager = () => {
         </div>
         <div className="line-container2"></div>
 
-        <div className="info_all_data_container">
-          {aggregateAttendanceData(attendanceList).map((student, index) => (
+       <div className="info_all_data_container">
+          {loadingAttendance && (
+            <div style={{ textAlign: "center", color: "#777", padding: "24px 0" }}>
+              출결 불러오는 중…
+            </div>
+          )}
+
+          {!loadingAttendance && attendanceList.length === 0 && !errMsg && (
+            <div style={{ textAlign: "center", color: "#777", padding: "24px 0" }}>
+              표시할 출결 정보가 없습니다.
+            </div>
+          )}
+
+          {attendanceList.map((student, index) => (
             <div key={index}>
               <div className="info_all_data_inner">
-                <div className="info_all_data_studentnum">
-                  {student.userStudentNum}
-                </div>
+                <div className="info_all_data_studentnum">{student.userStudentNum}</div>
                 <div className="info_all_data_name">{student.userName}</div>
                 <div className="info_all_data_email">
-                  {student.userEmail.split("@")[0]}
+                  {(student.userEmail || "").split("@")[0]}
                 </div>
                 <div className="info_all_data_bar"></div>
-                <div className="info_all_data_presentcount">
-                  {student.presentCount}
-                </div>
-                <div className="info_all_data_absentcount">
-                  {student.absentCount}
-                </div>
+                <div className="info_all_data_presentcount">{student.attendance}</div>
+                <div className="info_all_data_absentcount">{student.absence}</div>
               </div>
               <div className="hr-line"></div>{" "}
               {/* Horizontal line after each item */}
