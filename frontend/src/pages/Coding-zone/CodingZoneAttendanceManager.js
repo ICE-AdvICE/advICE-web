@@ -15,6 +15,7 @@ import { getczauthtypetRequest } from "../../shared/api/AuthApi.js";
 import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네이게이션 바 컴포넌트
 import Banner from "../../shared/ui/Banner/Banner"; // ✅ 추가(juhui): 공통 배너 컴포넌트 적용
 import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js"; //코딩존 보드 바(버튼 네개) 컴포넌트
+import { fetchAllSubjects } from "../../entities/api/CodingZone/AdminApi.js"; //(NEW)수업 매핑 정보 API 연동
 
 const CodingZoneAttendanceManager = () => {
   const [authMessage, setAuthMessage] = useState("");
@@ -28,6 +29,14 @@ const CodingZoneAttendanceManager = () => {
   const token = cookies.accessToken;
   const navigate = useNavigate();
   const [selectedButton, setSelectedButton] = useState("attendence");
+
+    // 과목 목록/선택 상태
+  const [subjects, setSubjects] = useState([]);
+  const [selectedSubjectId, setSelectedSubjectId] = useState(null);
+
+    // 로딩/오류
+  const [loading, setLoading] = useState(false);
+  const [errMsg, setErrMsg] = useState("");
 
   const handlecodingzonemanager = () => {
     navigate(`/coding-zone/Codingzone_Manager`);
@@ -71,23 +80,36 @@ const CodingZoneAttendanceManager = () => {
   }, [token, authMessage]);
 
   useEffect(() => {
-    const fetchAttendanceData = async () => {
-      const response = await getczallattendRequest(token, setCookie, navigate);
-      if (response && response.code === "SU") {
-        // Filter data based on selected grade
-        const filteredData = response.studentList.filter(
-          (student) => student.grade === selectedGrade
-        );
-        setAttendanceList(filteredData);
-      } else if (response && response.code === "NU") {
-        navigate("/");
+    const run = async () => {
+      setLoading(true);
+      setErrMsg("");
+
+      const res = await fetchAllSubjects(token, setCookie, navigate);
+      setLoading(false);
+
+      if (!res) return;
+
+      if (res.code === "SU") {
+        const list = res.data?.subjectList ?? [];
+        setSubjects(list);
+        // 기본 선택은 첫 번째 과목(선택만 표시, 아직 조회는 안 함)
+        setSelectedSubjectId(list.length > 0 ? list[0].subjectId : null);
+      } else if (res.code === "AF") {
+        setErrMsg("권한이 없습니다.");
+      } else if (res.code === "NOT_ANY_MAPPINGSET") {
+        setErrMsg("등록된 코딩존 과목이 없습니다.");
+        setSubjects([]);
+        setSelectedSubjectId(null);
+      } else if (res.code === "DBE") {
+        setErrMsg("데이터베이스 오류입니다.");
+      } else if (res.code === "NETWORK_ERROR") {
+        setErrMsg(res.message || "네트워크 오류입니다.");
       } else {
-        console.error(response?.message || "Failed to fetch attendance data.");
+        setErrMsg(res.message || "알 수 없는 오류가 발생했습니다.");
       }
     };
-
-    fetchAttendanceData();
-  }, [token, selectedGrade]); // Add selectedGrade to dependency array
+    run();
+  }, [token, setCookie, navigate]);
 
   const handleGradeChange = (grade) => {
     setSelectedGrade(grade);
@@ -137,19 +159,17 @@ const CodingZoneAttendanceManager = () => {
       </div>
       <div className="centered-content">
         <div className="allattendance_buttons">
-          <div className="grade-buttons">
-            <button
-              className={selectedGrade === 1 ? "active" : ""}
-              onClick={() => handleGradeChange(1)}
-            >
-              코딩존1
-            </button>
-            <button
-              className={selectedGrade === 2 ? "active" : ""}
-              onClick={() => handleGradeChange(2)}
-            >
-              코딩존2
-            </button>
+          <div className="subject-buttons">
+            {subjects.map((s) => (
+              <button
+                key={s.subjectId}
+                className={`subject-button ${selectedSubjectId === s.subjectId ? "active" : ""}`}
+                onClick={() => setSelectedSubjectId(s.subjectId)}
+              >
+                {s.subjectName}
+              </button>
+            ))}
+            {loading && <span style={{ marginLeft: 12, color: "#666" }}>불러오는 중…</span>}
           </div>
 
           <button className="download-button" onClick={handleDownload}>
