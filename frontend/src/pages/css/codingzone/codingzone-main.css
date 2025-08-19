@@ -3,9 +3,18 @@ body {
   width: 100%;
   overflow-x: hidden;
 }
+
+.cz-fixed-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  gap: 8px;
+}
 .codingzone-container {
   min-width: 360px;
 }
+
 .select-container {
   display: flex;
   margin: 0 auto;
@@ -32,11 +41,11 @@ body {
   cursor: pointer;
 }
 .select-container button.selected {
-  color: #002d56;
+  color: #052940;
   font-weight: bolder;
 }
 .select-container button.attendence {
-  color: #002d56;
+  color: #052940;
 }
 .codingzone-top-container {
   width: 100%;
@@ -57,7 +66,7 @@ body {
 
 .codingzone-body-container {
   max-width: 1000px;
-  margin: 3px auto; /*여기 수정*/
+  margin: 37.5px auto;
   padding: 0 10px 10px 10px;
   margin-bottom: 100px;
   display: flex;
@@ -66,18 +75,19 @@ body {
 }
 
 .cz-category-top {
-  position: relative;
   display: flex;
   align-items: center;
+  justify-content: center;
+  gap: 12px;
   font-size: 8px;
+  margin-top: -20px;
 }
 .cz-category-date {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  position: static;
+  transform: none;
 }
 
 .cz-category-date button {
@@ -96,12 +106,12 @@ body {
 }
 .cz-category-date button:hover {
   color: white;
-  background-color: #002d56;
+  background-color: #052940;
 }
 .cz-category-date .cz-1.selected,
 .cz-category-date .cz-2.selected {
-  background-color: #002d56;
-  color: white; /* 텍스트 색상 변경 (선택사항) */
+  background-color: #052940;
+  color: white;
 }
 .codingzone-date button.selected p {
   color: black;
@@ -191,7 +201,7 @@ body {
 .card-weekDay {
   font-weight: 900;
   text-align: center;
-  color: #002d56;
+  color: #052940;
   width: 100px;
 }
 .card-weekDate,
@@ -201,7 +211,7 @@ body {
 }
 
 .card-currentNumber {
-  color: #002d56;
+  color: #052940;
   font-weight: 600;
   text-align: center;
   width: 100px;
@@ -252,7 +262,6 @@ body {
   position: static;
 }
 
-/* cz-count-container 스타일 */
 .cz-count-container {
   display: flex;
   align-items: center;
@@ -260,7 +269,7 @@ body {
   text-decoration: none;
   color: inherit;
   margin-bottom: 30px;
-  margin-top: 10px;
+  margin-top: px;
   margin-left: auto;
 }
 
@@ -289,15 +298,19 @@ body {
 
 .attendance-progress-fill {
   height: 100%;
-  background-color: #002d56;
+  background-color: #052940;
   transition: width 0.5s ease-in-out;
 }
-/* 달력 입력칸 가운데 정렬 */
+
 .cz-date-picker {
-  position: absolute;
-  z-index: 1000;
-  left: 50%;
-  transform: translateX(-50%);
+  position: static;
+  transform: none;
+  left: auto;
+}
+
+.return.return-back {
+  position: relative;
+  top: 55px;
 }
 
 @media (max-width: 1000px) {
