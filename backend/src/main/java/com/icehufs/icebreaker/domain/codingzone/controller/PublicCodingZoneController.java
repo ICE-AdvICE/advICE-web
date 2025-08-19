@@ -2,7 +2,6 @@ package com.icehufs.icebreaker.domain.codingzone.controller;
 
 import java.util.List;
 
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GetAttendanceResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,10 +29,10 @@ public class PublicCodingZoneController {
     }
 
     @GetMapping("/count-of-attend/{subjectId}") // 출석한 횟수 반환 API
-    public ResponseEntity<ResponseDto<GetAttendanceResponseDto>> getCountAttend(
+    public ResponseEntity<ResponseDto<Integer>> getCountAttend(
             @PathVariable Integer subjectId,
             @AuthenticationPrincipal String email) {
-        GetAttendanceResponseDto response = codingzoneService.getAttend(subjectId, email);
+        Integer response = codingzoneService.getAttend(subjectId, email);
         return ResponseEntity.ok(ResponseDto.success("특정 학생의 출석 횟수 조회에 성공했습니다.",response));
     }
 
