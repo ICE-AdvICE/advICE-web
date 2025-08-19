@@ -38,9 +38,8 @@ AdvICE는 위의 문제들을 다음과 같이 해결했습니다.
 ↗️ [AdvICE 웹사이트](https://ice-advice.co.kr/)
 
 <br/>
-<br/>
 
-# 3. 팀 소개
+## 💻 팀 소개
 | 도성현 | 이윤빈 | 박준서 | 김진우 |
 |:------:|:-------------------:|:------:|:------:|
 | <img src="https://avatars.githubusercontent.com/u/52828205?v=4" alt="도성현" width="150"> | <img src="https://avatars.githubusercontent.com/u/81556800?v=4" alt="이윤빈" width="150"> | <img src="https://avatars.githubusercontent.com/u/81576126?v=4" alt="박준서" width="150"> | <img src="https://github.com/user-attachments/assets/c72a1cf0-86c4-4028-a52c-aa4b27a96fa8" alt="김진우" width="150"> |
@@ -54,9 +53,8 @@ AdvICE는 위의 문제들을 다음과 같이 해결했습니다.
 | [GitHub](https://github.com/Dayoung0402) | [GitHub](https://github.com/dkanrjskgkwkhufs) | [GitHub](https://github.com/juhui4078) | [GitHub](https://github.com/Pigonhayo) |
 
 <br/>
-<br/>
 
-# 4. 기술 스택
+## ⚙️ 기술 스택
 
 ### 🎨 Frontend
 
