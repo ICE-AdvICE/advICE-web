@@ -9,6 +9,7 @@ const authorization = (accessToken) => {
 };
 const GET_AVAILABLE_CLASSES_FOR_NOT_LOGIN_URL = (grade) => `${API_DOMAIN}/coding-zone/class-list/for-not-login/${grade}`;
 const GET_CZ_ALL_ATTEND = () => `${DOMAIN}/api/admin/student-list`;
+
 //6. 학기 초기화 API
 export const resetCodingZoneData = async (token, setCookie, navigate) => {
     try {
@@ -55,6 +56,7 @@ export const resetCodingZoneData = async (token, setCookie, navigate) => {
     }
     return { code: 'ERROR', message: '학기 초기화 실패' };
 };
+/*
 //13. 해당 학기에 출/결한 모든 학생들 리스트로 반환 API
 export const getczallattendRequest = async (accessToken, setCookie, navigate) => {
     try {
@@ -83,7 +85,7 @@ export const getczallattendRequest = async (accessToken, setCookie, navigate) =>
         return error.response.data;
     }
 };
-
+*/
 
 // 9. 선택 학년의 예약 가능한 수업 리스트로 반환 API (ForNotLogIn)
 export const getAvailableClassesForNotLogin = async (grade) => {
@@ -250,7 +252,7 @@ export const registerSubjectMapping = async (mappings, accessToken, setCookie, n
   };
   //과목명과 코딩존 번호 매핑불러오는 api
   export const getSubjectMappingList = async (accessToken, setCookie, navigate) => {
-    console.log("📌 getSubjectMappingList 호출됨, accessToken:", accessToken);
+    console.log("getSubjectMappingList 호출됨, accessToken:", accessToken);
     try {
       const response = await axios.get(
         `${API_DOMAIN_ADMIN}/subjects`, authorization(accessToken)
@@ -306,4 +308,33 @@ export const registerSubjectMapping = async (mappings, accessToken, setCookie, n
       }
     }
   };
-  
+
+
+  export const getEntireAttendanceBySubject = async (accessToken, subjectId, setCookie, navigate) => {
+  try {
+    const res = await axios.get(`${API_DOMAIN}/admin/entire-attendance/${subjectId}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    if (!error.response || !error.response.data) {
+      return { code: "NETWORK_ERROR", message: "네트워크 상태를 확인해주세요.", data: null };
+    }
+    const { code, message } = error.response.data;
+
+    if (code === "ATE") {
+      // Access Token 만료 → 재발급 후 재시도
+      const next = await refreshTokenRequest(setCookie, accessToken, navigate);
+      if (next?.accessToken) {
+        return getEntireAttendanceBySubject(next.accessToken, subjectId, setCookie, navigate);
+      }
+      setCookie("accessToken", "", { path: "/", expires: new Date(0) });
+      navigate("/");
+      return { code: "TOKEN_EXPIRED", message: "토큰이 만료되었습니다. 다시 로그인해주세요.", data: null };
+    }
+
+    // 그 외 실패 코드들 그대로 전달 (AF / NO_ANY_ATTENDANCE / DBE 등)
+    return { code: code ?? "UNKNOWN_ERROR", message: message ?? "알 수 없는 오류", data: null };
+  }
+};
