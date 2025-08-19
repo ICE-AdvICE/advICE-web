@@ -139,11 +139,87 @@
   border-radius: none;
   background: #ffffff;
   color: #a8a8a8;
-  font-size: 23px;
+  font-size: 30px;
   font-weight: 200;
   padding: 0;
+  line-height: 1;
 }
 
+/* 테이블 마지막 칸 자체도 중앙 정렬 */
+.cz-table td:last-child {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 버튼 기본 박스 */
+.cz-btn-danger {
+  position: relative;
+  display: inline-flex;
+  justify-items: center;
+  align-items: center;
+  width: 33px;
+  height: 33px;
+  border: 1px solid #a8a8a8;
+  border-radius: 0;
+  background: #fff;
+  margin-top: 9.8px;
+}
+
+/* X 라인 2개를 기하학적 중앙에 교차시킴 */
+.cz-btn-danger::before,
+.cz-btn-danger::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 2px;
+  background: #a8a8a8;
+  transform-origin: center;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.cz-btn-danger::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+/* 호버/활성화(포커스 포함) 상태 */
+.cz-btn-danger:not(:disabled):hover,
+.cz-btn-danger:not(:disabled):active,
+.cz-btn-danger:not(:disabled):focus-visible {
+  background: #052940;
+  border: none;
+}
+
+/* X 라인 색상 - 기본은 회색 */
+.cz-btn-danger::before,
+.cz-btn-danger::after {
+  background: #a8a8a8;
+}
+
+.cz-btn-danger:not(:disabled):hover::before,
+.cz-btn-danger:not(:disabled):hover::after,
+.cz-btn-danger:not(:disabled):active::before,
+.cz-btn-danger:not(:disabled):active::after,
+.cz-btn-danger:not(:disabled):focus-visible::before,
+.cz-btn-danger:not(:disabled):focus-visible::after {
+  background: #fff; /* 호버/클릭 시 흰색 X */
+}
+
+/* 비활성화 */
+.cz-btn-danger:disabled {
+  background: #a8a8a8;
+  border: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 비활성화 상태의 X */
+.cz-btn-danger:disabled::before,
+.cz-btn-danger:disabled::after {
+  background: #fff;
+}
 .cz-badge {
   display: inline-block;
   padding: 8px 16px;

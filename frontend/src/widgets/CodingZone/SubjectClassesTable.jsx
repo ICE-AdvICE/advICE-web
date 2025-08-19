@@ -1,5 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { fetchClassesBySubjectAndDate } from "../../entities/api/CodingZone/AdminApi";
+import {
+  fetchClassesBySubjectAndDate,
+  adminDeleteCodingzoneClassByClassNum,
+} from "../../entities/api/CodingZone/AdminApi";
 import {
   computeStatusByDate,
   formatHHmmRangeFromStart,
@@ -13,6 +16,7 @@ export default function SubjectClassesTable({
   accessToken,
   setCookie,
   navigate,
+  onEmptyAfterDelete,
 }) {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -53,6 +57,42 @@ export default function SubjectClassesTable({
       ignore = true;
     };
   }, [selectedDateYMD, selectedSubjectId, accessToken, setCookie, navigate]);
+  // 행 단위 삭제 핸들러
+  const handleRowDelete = async (row) => {
+    if (!window.confirm("해당 수업을 삭제하시겠습니까?")) return;
+    const res = await adminDeleteCodingzoneClassByClassNum(
+      row.id,
+      accessToken,
+      setCookie,
+      navigate
+    );
+    if (res.ok) {
+      // 성공하면 현재 rows 상태에서 삭제한 행 제거
+      setRows((prev) => {
+        const next = prev.filter((it) => it.classNum !== row.id);
+        // ✅ 다음 상태가 0개일 때에만 부모에 알림(과목선택으로 돌아갈 준비)
+        if (next.length === 0 && typeof onEmptyAfterDelete === "function") {
+          onEmptyAfterDelete();
+        }
+        return next;
+      });
+      alert("삭제되었습니다.");
+    } else {
+      switch (res.code) {
+        case "ALREADY_RESERVED_CLASS":
+          alert("이미 예약자가 있어 삭제할 수 없습니다.");
+          break;
+        case "AF":
+          alert("권한이 없습니다.");
+          break;
+        case "DBE":
+          alert("데이터베이스 오류가 발생했습니다.");
+          break;
+        default:
+          alert(res.message ?? "삭제 실패");
+      }
+    }
+  };
 
   const view = useMemo(() => {
     const toNum = (v) => {
@@ -89,8 +129,10 @@ export default function SubjectClassesTable({
       {loading && <div className="cz-table-msg">불러오는 중…</div>}
       {err && !loading && <div className="cz-table-msg error">{err}</div>}
       {!loading && !err && view.length === 0 && (
-        <div className="cz-table-msg">
-          해당 날짜에 등록된 코딩존이 없습니다.
+        <div className="panel-block panel-gray">
+          <div className="panel-empty">
+            현재 날짜에 등록된 코딩존이 없습니다.
+          </div>
         </div>
       )}
 
@@ -141,11 +183,17 @@ export default function SubjectClassesTable({
                     <td>
                       <button
                         className="cz-btn cz-btn-danger"
-                        disabled
-                        title="조회 단계에서는 비활성화"
-                      >
-                        X
-                      </button>
+                        disabled={
+                          r.status === "진행중" || r.status === "진행종료"
+                        }
+                        title={
+                          r.status === "진행중" || r.status === "진행종료"
+                            ? "진행중/진행종료 수업은 삭제할 수 없습니다."
+                            : "삭제"
+                        }
+                        onClick={() => handleRowDelete(r)}
+                        aria-label="삭제"
+                      />
                     </td>
                   </tr>
                 ))}
