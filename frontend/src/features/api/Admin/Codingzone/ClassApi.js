@@ -4,12 +4,15 @@ const DOMAIN = process.env.REACT_APP_API_DOMAIN;
 const API_DOMAIN = `${DOMAIN}/api/v1`;
 
 const API_DOMAIN_ADMIN = `${DOMAIN}/api/admin`;
+const API_DOMAIN_ADMINS = `${DOMAIN}/api/admins`;
 const authorization = (accessToken) => {
   return { headers: { Authorization: `Bearer ${accessToken}` } };
 };
 const GET_AVAILABLE_CLASSES_FOR_NOT_LOGIN_URL = (grade) =>
   `${API_DOMAIN}/coding-zone/class-list/for-not-login/${grade}`;
 const GET_CZ_ALL_ATTEND = () => `${DOMAIN}/api/admin/student-list`;
+const GET_CZ_RESERVED_BY_DATE_URL = (date) =>
+  `${API_DOMAIN_ADMINS}/codingzones?date=${date}`;
 
 //6. 학기 초기화 API
 export const resetCodingZoneData = async (token, setCookie, navigate) => {
@@ -137,54 +140,6 @@ export const getAvailableClassesForNotLogin = async (grade) => {
       }
     }
     return [];
-  }
-};
-// 14.특정 날짜에 1학년/2학년 코딩존 수업 예약한 학생들 리스트로 반환 API
-export const getczreservedlistRequest = async (
-  accessToken,
-  classDate,
-  setCookie,
-  navigate
-) => {
-  try {
-    const response = await axios.get(
-      `${API_DOMAIN}/coding-zone/reserved-list/${classDate}`,
-      authorization(accessToken)
-    );
-    return response.data;
-  } catch (error) {
-    if (!error.response || !error.response.data) return null;
-
-    const { code } = error.response.data;
-
-    if (code === "ATE") {
-      console.warn(
-        "특정 날짜 예약된 학생 목록 조회: Access Token 만료됨. 토큰 재발급 시도 중..."
-      );
-      const newToken = await refreshTokenRequest(
-        setCookie,
-        accessToken,
-        navigate
-      );
-
-      if (newToken?.accessToken) {
-        return getczreservedlistRequest(
-          newToken.accessToken,
-          classDate,
-          setCookie,
-          navigate
-        );
-      } else {
-        setCookie("accessToken", "", { path: "/", expires: new Date(0) });
-        navigate("/");
-        return {
-          code: "TOKEN_EXPIRED",
-          message: "토큰이 만료되었습니다. 다시 로그인해주세요.",
-        };
-      }
-    }
-
-    return error.response.data;
   }
 };
 
@@ -416,5 +371,69 @@ export const getSubjectMappingList = async (
           subjectList: [],
         };
     }
+  }
+};
+
+// 학생 조교 권한 출결 관리 (특정 날짜에 코딩존 번호 1~4 중 특정 과목 학생 조교의 수업 예약한 학생들 리스트로 반환 API)
+export const getCodingzoneReservedListByDate = async (
+  accessToken,
+  classDate, // 형식: "YYYY-MM-DD"
+  setCookie,
+  navigate
+) => {
+  try {
+    const response = await axios.get(
+      GET_CZ_RESERVED_BY_DATE_URL(classDate), // 🆕 NEW
+      authorization(accessToken) // 🆕 NEW
+    );
+
+    // 성공 시 BE 포맷 그대로 전달 (code/message/data)
+    return response.data; // 🆕 NEW
+  } catch (error) {
+    // 네트워크 단절 등
+    if (!error.response || !error.response.data) {
+      return {
+        code: "NETWORK_ERROR",
+        message: "네트워크 상태를 확인해주세요.",
+        data: null, // 🆕 NEW: 포맷 통일
+      };
+    }
+
+    const { code } = error.response.data;
+
+    // 토큰 만료 재발급 처리
+    if (code === "ATE") {
+      console.warn(
+        "특정 날짜 예약 학생 목록 조회: Access Token 만료됨. 토큰 재발급 시도 중..." // 🆕 NEW
+      );
+      const newToken = await refreshTokenRequest(
+        setCookie,
+        accessToken,
+        navigate
+      );
+
+      if (newToken?.accessToken) {
+        return getCodingzoneReservedListByDate(
+          newToken.accessToken,
+          classDate,
+          setCookie,
+          navigate
+        ); // 🆕 NEW: 재귀 재시도
+      } else {
+        setCookie("accessToken", "", { path: "/", expires: new Date(0) });
+        navigate("/");
+        return {
+          code: "TOKEN_EXPIRED",
+          message: "토큰이 만료되었습니다. 다시 로그인해주세요.",
+          data: null, // 🆕 NEW
+        };
+      }
+    }
+
+    // 그 외 서버 반환 에러 그대로 전달
+    return {
+      ...error.response.data,
+      data: error.response.data?.data ?? null, // 🆕 NEW: data 키 보존
+    };
   }
 };
