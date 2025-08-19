@@ -311,20 +311,28 @@ export const registerSubjectMapping = async (mappings, accessToken, setCookie, n
 
 
   export const getEntireAttendanceBySubject = async (accessToken, subjectId, setCookie, navigate) => {
+  const url = `${API_DOMAIN_ADMIN}/entire-attendance/${subjectId}`;
   try {
-    const res = await axios.get(`${API_DOMAIN}/admin/entire-attendance/${subjectId}`, {
+    if (subjectId == null || Number.isNaN(Number(subjectId))) {
+      return { code: "INVALID_SUBJECT_ID", message: "유효하지 않은 과목 ID", data: null };
+    }
+    const res = await axios.get(url, {
       headers: { Authorization: `Bearer ${accessToken}` },
       withCredentials: true,
+      timeout: 15000,
     });
     return res.data;
   } catch (error) {
-    if (!error.response || !error.response.data) {
+    if (!error.response) {
       return { code: "NETWORK_ERROR", message: "네트워크 상태를 확인해주세요.", data: null };
     }
+    if (!error.response.data) {
+      return { code: "SERVER_ERROR", message: `서버 오류(${error.response.status})`, data: null };
+    }
+
     const { code, message } = error.response.data;
 
     if (code === "ATE") {
-      // Access Token 만료 → 재발급 후 재시도
       const next = await refreshTokenRequest(setCookie, accessToken, navigate);
       if (next?.accessToken) {
         return getEntireAttendanceBySubject(next.accessToken, subjectId, setCookie, navigate);
@@ -334,7 +342,6 @@ export const registerSubjectMapping = async (mappings, accessToken, setCookie, n
       return { code: "TOKEN_EXPIRED", message: "토큰이 만료되었습니다. 다시 로그인해주세요.", data: null };
     }
 
-    // 그 외 실패 코드들 그대로 전달 (AF / NO_ANY_ATTENDANCE / DBE 등)
     return { code: code ?? "UNKNOWN_ERROR", message: message ?? "알 수 없는 오류", data: null };
   }
 };
