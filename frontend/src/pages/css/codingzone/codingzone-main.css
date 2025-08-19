@@ -251,6 +251,18 @@ body {
   opacity: 1;
   position: static;
 }
+.no-classes-image.hidden {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: -9999px;
+}
+
+.no-classes-image.visible {
+  opacity: 1;
+  position: static;
+}
+
 
 /* cz-count-container 스타일 */
 .cz-count-container {
