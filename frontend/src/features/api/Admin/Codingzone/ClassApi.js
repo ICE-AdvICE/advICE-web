@@ -147,24 +147,41 @@ export const getczreservedlistRequest = async (accessToken, classDate, setCookie
 };
 
 //16. 해당 학기 모든 학생들의 출결 정보를 Excel 파일로 반환하는 API 
-export const downloadAttendanceExcelBySubject = async (accessToken, subjectId, setCookie, navigate) => {
+export const downloadAttendanceExcelBySubject = async (
+  accessToken,
+  subjectId,
+  subjectName,           // ✅ 추가
+  setCookie,
+  navigate
+) => {
+
+
+  // OS 별 파일명 금지문자 제거 + 공백 정리
+  const sanitize = (name) =>
+    (name || "")
+      .replace(/[\\/:*?"<>|]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+
   try {
     if (subjectId == null || Number.isNaN(Number(subjectId))) {
       alert("유효하지 않은 과목입니다.");
       return;
     }
 
-    const res = await axios.get(`${API_DOMAIN_ADMIN}/entire-attendance/${subjectId}/export`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-      responseType: "blob",
-      withCredentials: true,
-      timeout: 30000,
-    });
+    const res = await axios.get(
+      `${API_DOMAIN_ADMIN}/entire-attendance/${subjectId}/export`,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        responseType: "blob",
+        withCredentials: true,
+        timeout: 30000,
+      }
+    );
 
-    // 파일명 시도: Content-Disposition → fallback
-    const cd = res.headers?.["content-disposition"] || "";
-    const match = cd.match(/filename\*?=(?:UTF-8'')?("?)([^";]+)\1/);
-    const filename = match ? decodeURIComponent(match[2]) : `codingzone_${subjectId}_entire_attendance.xlsx`;
+    // 과목명 기반 커스텀 파일명
+    const safeName = sanitize(subjectName) || `codingzone_${subjectId}`;
+    const filename = `${safeName}_출석부.xlsx`;
 
     const url = window.URL.createObjectURL(new Blob([res.data]));
     const a = document.createElement("a");
@@ -187,10 +204,15 @@ export const downloadAttendanceExcelBySubject = async (accessToken, subjectId, s
     const { code, message } = error.response.data;
 
     if (code === "ATE") {
-      console.warn("엑셀 다운로드: Access Token 만료됨 → 재발급 시도");
       const next = await refreshTokenRequest(setCookie, accessToken, navigate);
       if (next?.accessToken) {
-        return downloadAttendanceExcelBySubject(next.accessToken, subjectId, setCookie, navigate);
+        return downloadAttendanceExcelBySubject(
+          next.accessToken,
+          subjectId,
+          subjectName, 
+          setCookie,
+          navigate
+        );
       }
       setCookie("accessToken", "", { path: "/", expires: new Date(0) });
       navigate("/");
