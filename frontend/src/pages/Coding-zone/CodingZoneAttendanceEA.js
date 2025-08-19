@@ -7,12 +7,8 @@ import "../css/codingzone/codingzone_manager.css";
 import "../css/codingzone/codingzone_attend.css";
 import "../css/codingzone/CodingClassRegist.css";
 import "../../shared/ui/boardbar/CodingZoneBoardbar.css";
-import { getczreservedlistRequest } from "../../features/api/Admin/Codingzone/ClassApi.js";
 import { getczauthtypetRequest } from "../../shared/api/AuthApi.js";
-import {
-  putczattendc1Request,
-  putczattendc2Request,
-} from "../../features/api/Admin/Codingzone/AttendanceApi.js";
+
 import InquiryModal from "./InquiryModal.js";
 import { getczattendlistRequest } from "../../features/api/CodingzoneApi.js";
 import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네이게이션 바 컴포넌트
@@ -23,12 +19,15 @@ import { isWeekendYMD } from "../../shared/lib/date";
 import {
   fetchCodingzoneSubjectsByDate,
   fetchClassesBySubjectAndDate,
+  fetchApplicantsByClassNum,
+  toggleAttendanceByRegistNum,
 } from "../../entities/api/CodingZone/AdminApi";
 import SubjectCard from "../../widgets/subjectCard/subjectCard.js";
 import { getColorById } from "../Coding-zone/subjectColors";
 
 const CodingZoneAttendanceAssistant = () => {
   const [attendList, setAttendList] = useState([]);
+
   const [reservedList, setReservedList] = useState([]);
   const [showAdminButton, setShowAdminButton] = useState(false);
   const [cookies, setCookie] = useCookies(["accessToken"]);
@@ -44,7 +43,12 @@ const CodingZoneAttendanceAssistant = () => {
   // ▼ 과목 선택 → 수업 리스트 표시용
   const [selectedSubjectName, setSelectedSubjectName] = useState("");
   const [classes, setClasses] = useState([]); // [{classTime, assistantName, groupId, classStatus, classNum}]
+
   const [isClassesLoading, setIsClassesLoading] = useState(false);
+
+  const [selectedClassNum, setSelectedClassNum] = useState(null); // ★ 클릭된 수업
+  const [students, setStudents] = useState([]); // ★ 학생 리스트
+  const [isStudentsLoading, setIsStudentsLoading] = useState(false); // ★ 학생 로딩
 
   const count = subjects.length;
   const gridClass =
@@ -68,17 +72,14 @@ const CodingZoneAttendanceAssistant = () => {
     fetchAttendList();
   }, [token]);
 
-  useEffect(() => {
-    fetchReservedList();
-  }, [token, selectedDateYMD]);
-
-  // 🟢 CHANGED: 날짜가 바뀌면 과목 선택/표 상태 초기화(= 카드 그리드로 복귀)
+  // 날짜가 바뀌면 과목 선택/표 상태 초기화(= 카드 그리드로 복귀)
   useEffect(() => {
     setSelectedSubjectId(null);
     setSelectedSubjectName("");
     setSelectedAssistantId(null);
     setClasses([]);
-    setReservedList([]);
+    setSelectedClassNum(null);
+    setStudents([]);
   }, [selectedDateYMD]);
 
   useEffect(() => {
@@ -161,6 +162,97 @@ const CodingZoneAttendanceAssistant = () => {
     };
   }, [selectedDateYMD, token, setCookie, navigate]);
 
+  // 과목 클릭 → 해당 과목 수업 조회 → 가장 이른 수업 자동 선택 → 학생 목록 페이지로 전환
+  const handleSubjectClick = async (subject) => {
+    setSelectedSubjectId(subject.id);
+    setSelectedSubjectName(subject.name);
+    setSelectedClassNum(null); // 학생 표 초기화
+    setStudents([]);
+    setIsClassesLoading(true);
+    const res = await fetchClassesBySubjectAndDate(
+      subject.id,
+      selectedDateYMD,
+      token,
+      setCookie,
+      navigate
+    );
+    setIsClassesLoading(false);
+
+    if (
+      res?.code !== "SU" ||
+      !Array.isArray(res.data) ||
+      res.data.length === 0
+    ) {
+      setClasses([]);
+      setSelectedClassNum(null);
+      setStudents([]);
+      alert("해당 과목에 등록된 코딩존이 없습니다.");
+      return;
+    }
+
+    const sorted = res.data
+      .slice()
+      .sort((a, b) => String(a.classTime).localeCompare(String(b.classTime)));
+    setClasses(sorted);
+  };
+
+  // 수업 클릭 → 학생 리스트 로드   // ★ 새 추가
+  const handleClassClick = async (c) => {
+    setSelectedClassNum(c.classNum);
+    await loadStudents(c.classNum, c.classTime);
+  };
+
+  // 학생 리스트 로드
+  const loadStudents = async (classNum, fallbackTime = "") => {
+    setIsStudentsLoading(true);
+    const res = await fetchApplicantsByClassNum(
+      classNum,
+      token,
+      setCookie,
+      navigate
+    );
+    if (res?.code === "SU") {
+      const raw = Array.isArray(res?.data)
+        ? res.data
+        : Array.isArray(res?.studentList)
+        ? res.studentList
+        : Array.isArray(res?.data?.studentList)
+        ? res.data.studentList
+        : [];
+      const list = raw.map((it) => ({
+        userName: it.userName,
+        userStudentNum: it.userStudentNum,
+        attendance: String(it.attendance ?? ""), // "1" | "0" | ""
+        registrationId: it.registrationId ?? it.registerId,
+        classTime: it.classTime ?? fallbackTime,
+      }));
+      list.sort((a, b) =>
+        String(a.classTime).localeCompare(String(b.classTime))
+      );
+      setStudents(list);
+    } else {
+      setStudents([]);
+    }
+    setIsStudentsLoading(false);
+  };
+
+  // 출결 토글(버튼)
+  const handleToggleAttendance = async (e, student, target) => {
+    e?.preventDefault?.();
+    e?.stopPropagation?.();
+    if ((student.attendance ?? "") === target) return; // 같은 상태면 무시
+    const res = await toggleAttendanceByRegistNum(
+      student.registrationId,
+      token,
+      setCookie,
+      navigate
+    );
+    if (res?.code === "SU" && selectedClassNum) {
+      await loadStudents(selectedClassNum);
+    } else if (res?.message) {
+      alert(res.message);
+    }
+  };
   const fetchAuthType = async () => {
     const response = await getczauthtypetRequest(token, setCookie, navigate);
     if (response) {
@@ -201,45 +293,6 @@ const CodingZoneAttendanceAssistant = () => {
     }
   };
 
-  const fetchReservedList = async () => {
-    const formattedDate = selectedDateYMD || dateToYMD(new Date());
-    const response = await getczreservedlistRequest(
-      token,
-      formattedDate,
-      setCookie,
-      navigate
-    );
-    if (response && response.code === "SU") {
-      setReservedList(
-        response.studentList.sort((a, b) =>
-          a.classTime.localeCompare(b.classTime)
-        )
-      );
-    } else if (response && response.code === "NU") {
-    } else {
-      console.error(response.message);
-      setReservedList([]);
-    }
-  };
-
-  const handleAttendanceUpdate = async (student, newState) => {
-    const method =
-      student.grade === 1 ? putczattendc1Request : putczattendc2Request;
-    const response = await method(
-      student.registrationId,
-      token,
-      setCookie,
-      navigate
-    );
-    if (response.code === "SU") {
-      alert("처리가 완료되었습니다.");
-      fetchReservedList(); // 새로고침 기능
-    } else if (response && response.code === "NU") {
-    } else {
-      alert("오류가 발생했습니다. 다시 시도 해 주세요.");
-    }
-  };
-
   const formatTime = (timeString) => {
     const [hours, minutes] = timeString.split(":");
     return `${hours}:${minutes}`;
@@ -266,7 +319,6 @@ const CodingZoneAttendanceAssistant = () => {
             className="custom_manager_datepicker" // 기존 클래스 재사용 가능
           />
         </div>
-
         {/* ====== 과목 카드 그리드 (panel-gray 안) ====== */}
         {!selectedSubjectId && (
           <div className="panel-gray">
@@ -291,10 +343,7 @@ const CodingZoneAttendanceAssistant = () => {
                       onClick={(e) => {
                         e?.preventDefault?.();
                         e?.stopPropagation?.();
-                        setSelectedSubjectId(s.id);
-                        setSelectedSubjectName(s.name);
-                        setSelectedAssistantId(null);
-                        setReservedList([]);
+                        handleSubjectClick(s);
                       }}
                     />
                   ))}
@@ -303,9 +352,8 @@ const CodingZoneAttendanceAssistant = () => {
             )}
           </div>
         )}
-
-        {/* ====== 표(수업 리스트) — panel-gray 밖, 단독 섹션 ====== */}
-        {selectedSubjectId && (
+        {/* 2) 수업 리스트 */}
+        {selectedSubjectId && !selectedClassNum && (
           <div className="cz-classes">
             <div className="cz-classes-title">
               <strong className="subject-name">{selectedSubjectName}</strong>{" "}
@@ -320,6 +368,8 @@ const CodingZoneAttendanceAssistant = () => {
                   setSelectedSubjectId(null);
                   setSelectedSubjectName("");
                   setClasses([]);
+                  setSelectedClassNum(null);
+                  setStudents([]);
                 }}
               >
                 ← 뒤로가기
@@ -350,7 +400,13 @@ const CodingZoneAttendanceAssistant = () => {
                   </thead>
                   <tbody>
                     {classes.map((c) => (
-                      <tr key={c.classNum} className="clickable-row">
+                      <tr
+                        key={c.classNum}
+                        className={`clickable-row ${
+                          selectedClassNum === c.classNum ? "is-active" : ""
+                        }`}
+                        onClick={() => handleClassClick(c)} // ★ 수업 클릭 → 학생 리스트
+                      >
                         <td>{c.assistantName || "-"}</td>
                         <td>{c.groupId || "-"}</td>
                         <td>{formatTime(c.classTime)}</td>
@@ -362,92 +418,118 @@ const CodingZoneAttendanceAssistant = () => {
             </div>
           </div>
         )}
+        {/* 3) 학생 리스트: 수업을 고른 뒤에 보임 */}
+        {selectedSubjectId && selectedClassNum && (
+          <div className="cz-classes">
+            <div className="cz-classes-title">
+              <strong className="subject-name">{selectedSubjectName}</strong>{" "}
+              코딩존 수강 학생 현황
+            </div>
 
-        {/* ▼▼▼ 이 표는 날짜 선택 -> 과목 버튼 출력 -> 과목 선택 -> 조교 출력 -> 조교 리스트 선택 -> 학생 리스트 출력에서 
-        "학생 리스트 출력에만 사용!! ▼▼▼ */}
-        <div
-          className={`attendance-table ${
-            !selectedAssistantId ? "is-hidden" : ""
-          }`}
-          aria-hidden={!selectedAssistantId}
-        >
-          <div className="line-manager-container1">{/* 실선 영역 */}</div>
+            <div className="cz-classes-back">
+              <button
+                type="button"
+                className="btn-ghost"
+                onClick={() => {
+                  // ← 수업 목록으로
+                  setSelectedClassNum(null);
+                  setStudents([]);
+                }}
+              >
+                ← 뒤로가기
+              </button>
+            </div>
 
-          <div className="info-manager-container">
-            <div className="info_manager_inner">
-              <div className="info_manager_name">이름</div>
-              <div className="info_manager_studentnum ">학번</div>
-              <div className="info_manager_bar"></div>
-              <div className="info_manager_time ">시간</div>
-              <div className="info_manager_status">출결</div>
+            <div className="manager-table-card">
+              <table className="manager-table students-table">
+                <thead>
+                  <tr>
+                    <th style={{ width: "33%" }}>이름</th>
+                    <th style={{ width: "27%" }}>학번</th>
+                    <th>출결</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {isStudentsLoading ? (
+                    <tr>
+                      <td colSpan={3}>
+                        <div className="panel-empty" style={{ margin: 0 }}>
+                          학생을 불러오는 중…
+                        </div>
+                      </td>
+                    </tr>
+                  ) : students.length === 0 ? (
+                    <tr>
+                      <td colSpan={3}>
+                        <div className="panel-student" style={{ margin: 0 }}>
+                          예약된 리스트가 없습니다.
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    students.map((st, i) => (
+                      <tr key={i}>
+                        <td>{st.userName}</td>
+                        <td>{st.userStudentNum}</td>
+                        <td>
+                          {st.attendance === "1" ? (
+                            <>
+                              <button
+                                className="btn_manager_attendance"
+                                disabled
+                              >
+                                출석
+                              </button>
+                              <button
+                                className="btn_manager_absence-disabled"
+                                onClick={(e) =>
+                                  handleToggleAttendance(e, st, "0")
+                                }
+                              >
+                                결석
+                              </button>
+                            </>
+                          ) : st.attendance === "0" ? (
+                            <>
+                              <button
+                                className="btn_manager_attendance-disabled"
+                                onClick={(e) =>
+                                  handleToggleAttendance(e, st, "1")
+                                }
+                              >
+                                출석
+                              </button>
+                              <button className="btn_manager_absence" disabled>
+                                결석
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                className="btn_manager_attendance-disabled"
+                                onClick={() => handleToggleAttendance(st, "1")}
+                              >
+                                출석
+                              </button>
+                              <button
+                                className="btn_manager_absence-disabled"
+                                onClick={() => handleToggleAttendance(st, "0")}
+                              >
+                                결석
+                              </button>
+                            </>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
-          <div className="line-manager-container2">{/* 실선 영역 */}</div>
-
-          <div className="info_manager_container">
-            {reservedList.length > 0 ? (
-              reservedList.map((student, index, array) => {
-                const isNextTimeBlockDifferent =
-                  index === array.length - 1 ||
-                  student.classTime !== array[index + 1].classTime;
-                return (
-                  <div key={index}>
-                    <div className="info_manager_data_inner">
-                      <div className="info_manager_data_name">
-                        {student.userName}
-                      </div>
-                      <div className="info_manager_data_studentnum">
-                        {student.userStudentNum}
-                      </div>
-                      <div className="info_manager_data_bar"></div>
-                      <div className="info_manager_data_time">
-                        {formatTime(student.classTime)}
-                      </div>
-                      <div className="info_manager_data_status">
-                        {student.attendance === "1" ? (
-                          <button className="btn_manager_attendance" disabled>
-                            출석
-                          </button>
-                        ) : (
-                          <button
-                            className="btn_manager_attendance-disabled"
-                            onClick={() => handleAttendanceUpdate(student, "1")}
-                          >
-                            출석
-                          </button>
-                        )}
-                        {student.attendance === "0" ? (
-                          <button className="btn_manager_absence" disabled>
-                            결석
-                          </button>
-                        ) : (
-                          <button
-                            className="btn_manager_absence-disabled"
-                            onClick={() => handleAttendanceUpdate(student, "0")}
-                          >
-                            결석
-                          </button>
-                        )}
-                      </div>
-                    </div>
-
-                    <div
-                      className={
-                        isNextTimeBlockDifferent
-                          ? "hr_manager_line_thick"
-                          : "hr_manager_line"
-                      }
-                    ></div>
-                  </div>
-                );
-              })
-            ) : (
-              <p className="no-reservations">예약된 리스트가 없습니다.</p>
-            )}
-          </div>
-        </div>
+        )}
       </div>
-      {/* ▲▲▲ 여기까지 표 영역 ▲▲▲ */}
     </div>
   );
 };

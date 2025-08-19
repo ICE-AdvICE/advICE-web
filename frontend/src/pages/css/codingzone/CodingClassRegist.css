@@ -122,8 +122,8 @@
 .category-bar button:hover,
 .category-bar button.active {
   color: white;
-  background-color: #002d56; /* 선택된 버튼과 호버 시 배경 색상 */
-  border-color: #002d56; /* 선택된 버튼과 호버 시 테두리 색상 */
+  background-color: #052940; /* 선택된 버튼과 호버 시 배경 색상 */
+  border-color: #052940; /* 선택된 버튼과 호버 시 테두리 색상 */
 }
 
 .inner-category-bar {

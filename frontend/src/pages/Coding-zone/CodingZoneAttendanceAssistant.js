@@ -8,15 +8,13 @@ import "../css/codingzone/codingzone_manager.css";
 import "../css/codingzone/codingzone_attend.css";
 import "../css/codingzone/CodingClassRegist.css";
 import "../../shared/ui/boardbar/CodingZoneBoardbar.css";
-import { getczreservedlistRequest } from "../../features/api/Admin/Codingzone/ClassApi.js";
+import { getCodingzoneReservedListByDate } from "../../features/api/Admin/Codingzone/ClassApi.js";
 import { getczauthtypetRequest } from "../../shared/api/AuthApi.js";
-import {
-  putczattendc1Request,
-  putczattendc2Request,
-} from "../../features/api/Admin/Codingzone/AttendanceApi.js";
+
+import { toggleAttendanceByRegistNum } from "../../entities/api/CodingZone/AdminApi";
 import InquiryModal from "./InquiryModal.js";
 import { getczattendlistRequest } from "../../features/api/CodingzoneApi.js";
-import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네이게이션 바 컴포넌트
+import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네비게이션 바 컴포넌트
 import Banner from "../../shared/ui/Banner/Banner"; // ✅ 추가(juhui): 공통 배너 컴포넌트 적용
 import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js"; //코딩존 보드 바(버튼 네개) 컴포넌트
 
@@ -91,7 +89,7 @@ const CodingZoneAttendanceAssistant = () => {
 
   const fetchReservedList = async () => {
     const formattedDate = selectedDate.toISOString().split("T")[0];
-    const response = await getczreservedlistRequest(
+    const response = await getCodingzoneReservedListByDate(
       token,
       formattedDate,
       setCookie,
@@ -99,7 +97,7 @@ const CodingZoneAttendanceAssistant = () => {
     );
     if (response && response.code === "SU") {
       setReservedList(
-        response.studentList.sort((a, b) =>
+        (response.data ?? []).sort((a, b) =>
           a.classTime.localeCompare(b.classTime)
         )
       );
@@ -110,21 +108,21 @@ const CodingZoneAttendanceAssistant = () => {
     }
   };
 
-  const handleAttendanceUpdate = async (student, newState) => {
-    const method =
-      student.grade === 1 ? putczattendc1Request : putczattendc2Request;
-    const response = await method(
+  const handleAttendanceUpdate = async (student, target) => {
+    const current = String(student.attendance ?? "");
+    if (current === target) return; // 이미 같은 상태면 무시
+
+    const res = await toggleAttendanceByRegistNum(
       student.registrationId,
       token,
       setCookie,
       navigate
     );
-    if (response.code === "SU") {
-      alert("처리가 완료되었습니다.");
-      fetchReservedList(); // 새로고침 기능
-    } else if (response && response.code === "NU") {
+
+    if (res?.code === "SU") {
+      await fetchReservedList(); // 갱신
     } else {
-      alert("오류가 발생했습니다. 다시 시도 해 주세요.");
+      alert(res?.message ?? "출결 처리 중 오류가 발생했습니다.");
     }
   };
 
@@ -201,28 +199,46 @@ const CodingZoneAttendanceAssistant = () => {
                     </div>
                     <div className="info_manager_data_status">
                       {student.attendance === "1" ? (
-                        <button className="btn_manager_attendance" disabled>
-                          출석
-                        </button>
+                        <>
+                          <button className="btn_manager_attendance" disabled>
+                            출석
+                          </button>
+
+                          <button
+                            className="btn_manager_absence-disabled"
+                            onClick={() => handleAttendanceUpdate(student, "0")}
+                          >
+                            결석
+                          </button>
+                        </>
+                      ) : student.attendance === "0" ? (
+                        <>
+                          <button
+                            className="btn_manager_attendance-disabled"
+                            onClick={() => handleAttendanceUpdate(student, "1")}
+                          >
+                            출석
+                          </button>
+                          <button className="btn_manager_absence" disabled>
+                            결석
+                          </button>
+                        </>
                       ) : (
-                        <button
-                          className="btn_manager_attendance-disabled"
-                          onClick={() => handleAttendanceUpdate(student, "1")}
-                        >
-                          출석
-                        </button>
-                      )}
-                      {student.attendance === "0" ? (
-                        <button className="btn_manager_absence" disabled>
-                          결석
-                        </button>
-                      ) : (
-                        <button
-                          className="btn_manager_absence-disabled"
-                          onClick={() => handleAttendanceUpdate(student, "0")}
-                        >
-                          결석
-                        </button>
+                        <>
+                          {/* 초기 미표기 상태일 때도 토글로 변경 */}
+                          <button
+                            className="btn_manager_attendance-disabled"
+                            onClick={() => handleAttendanceUpdate(student, "1")}
+                          >
+                            출석
+                          </button>
+                          <button
+                            className="btn_manager_absence-disabled"
+                            onClick={() => handleAttendanceUpdate(student, "0")}
+                          >
+                            결석
+                          </button>
+                        </>
                       )}
                     </div>
                   </div>
