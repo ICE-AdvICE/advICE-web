@@ -147,60 +147,71 @@ export const getczreservedlistRequest = async (accessToken, classDate, setCookie
 };
 
 //16. 해당 학기 모든 학생들의 출결 정보를 Excel 파일로 반환하는 API 
-export const downloadAttendanceExcel = async (accessToken, grade, setCookie, navigate) => {
-    try {
-        const response = await axios.get(`${API_DOMAIN_ADMIN}/excel/attendance/grade${grade}`, {
-            headers: { Authorization: `Bearer ${accessToken}` },
-            responseType: 'blob',
-        });
-
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', `코딩존${grade}.xlsx`);
-        document.body.appendChild(link);
-        link.click();
-        link.parentNode.removeChild(link);
-    } catch (error) {
-        if (!error.response) {
-            alert("다운로드 실패: 네트워크 상태를 확인해주세요.");
-            return;
-        }
-
-        const { code } = error.response.data;
-
-        if (code === "ATE") {
-            console.warn(" 출결 Excel 다운로드: Access Token 만료됨. 토큰 재발급 시도 중...");
-            const newToken = await refreshTokenRequest(setCookie, accessToken, navigate);
-
-            if (newToken?.accessToken) {
-
-                return downloadAttendanceExcel(newToken.accessToken, grade, setCookie, navigate);
-            } else {
-
-                setCookie('accessToken', '', { path: '/', expires: new Date(0) });
-                navigate('/');
-                return;
-            }
-        }
-
-        switch (code) {
-            case "AF":
-                alert("권한이 없습니다. 학과 조교 권한이 필요합니다.");
-                break;
-            case "ISE":
-                alert("서버 문제로 인해 파일 생성에 실패했습니다. 다시 시도해주세요.");
-                break;
-            case "DBE":
-                alert("데이터베이스 오류가 발생했습니다. 관리자에게 문의하세요.");
-                break;
-            default:
-                alert("다운로드 실패: 네트워크 상태를 확인해주세요.");
-                break;
-        }
+export const downloadAttendanceExcelBySubject = async (accessToken, subjectId, setCookie, navigate) => {
+  try {
+    if (subjectId == null || Number.isNaN(Number(subjectId))) {
+      alert("유효하지 않은 과목입니다.");
+      return;
     }
-};
 
+    const res = await axios.get(`${API_DOMAIN_ADMIN}/entire-attendance/${subjectId}/export`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      responseType: "blob",
+      withCredentials: true,
+      timeout: 30000,
+    });
+
+    // 파일명 시도: Content-Disposition → fallback
+    const cd = res.headers?.["content-disposition"] || "";
+    const match = cd.match(/filename\*?=(?:UTF-8'')?("?)([^";]+)\1/);
+    const filename = match ? decodeURIComponent(match[2]) : `codingzone_${subjectId}_entire_attendance.xlsx`;
+
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    const a = document.createElement("a");
+    a.href = url;
+    a.setAttribute("download", filename);
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    if (!error.response) {
+      alert("다운로드 실패: 네트워크 상태를 확인해주세요.");
+      return;
+    }
+    if (!error.response.data) {
+      alert(`서버 오류(${error.response.status})`);
+      return;
+    }
+
+    const { code, message } = error.response.data;
+
+    if (code === "ATE") {
+      console.warn("엑셀 다운로드: Access Token 만료됨 → 재발급 시도");
+      const next = await refreshTokenRequest(setCookie, accessToken, navigate);
+      if (next?.accessToken) {
+        return downloadAttendanceExcelBySubject(next.accessToken, subjectId, setCookie, navigate);
+      }
+      setCookie("accessToken", "", { path: "/", expires: new Date(0) });
+      navigate("/");
+      return;
+    }
+
+    switch (code) {
+      case "AF":
+        alert("권한이 없습니다. 학과 조교 권한이 필요합니다.");
+        break;
+      case "DBE":
+        alert("데이터베이스 오류가 발생했습니다. 관리자에게 문의하세요.");
+        break;
+      case "NO_ANY_ATTENDANCE":
+        alert("해당 과목의 출결 데이터가 없습니다.");
+        break;
+      default:
+        alert(message || "다운로드 실패: 다시 시도해주세요.");
+    }
+  }
+};
 //과목명과 코딩존 번호 매핑 API
 export const registerSubjectMapping = async (mappings, accessToken, setCookie, navigate) => {
     try {
