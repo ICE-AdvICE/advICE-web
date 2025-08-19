@@ -4,5 +4,7 @@ public record CodingZoneClassInfoResponseDto(
         String assistantName,
         String groupId,
         String classStatus,
-        int classNum
+        int classNum,
+        int maximumNumber,
+        int currentNumber
 ) {}
