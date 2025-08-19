@@ -371,15 +371,18 @@ public class CodingZoneServiceImplement implements CodingZoneService {
         List<CodingZoneClass> codingZoneClasses = codingZoneClassRepository.findBySubjectIdAndClassDate(subjectId, date);
         List<CodingZoneClassInfoResponseDto> classInfos = new ArrayList<>();
 
-        for (CodingZoneClass codingZoneClass :codingZoneClasses){
+        for (CodingZoneClass codingZoneClass : codingZoneClasses) {
             CodingZoneClassInfoResponseDto dto = new CodingZoneClassInfoResponseDto(
                     codingZoneClass.getClassTime(),
                     codingZoneClass.getAssistantName(),
-                    groupInfRepository.findByClassNum(codingZoneClass.getClassNum()).orElseThrow(GroupInfNotFoundException::new)
+                    groupInfRepository.findByClassNum(codingZoneClass.getClassNum())
+                            .orElseThrow(GroupInfNotFoundException::new)
                             .getGroupId(),
                     codingZoneClass.calculateClassStatus(date),
-                    codingZoneClass.getClassNum());
-
+                    codingZoneClass.getClassNum(),
+                    codingZoneClass.getMaximumNumber(),
+                    codingZoneClass.getCurrentNumber()
+            );
             classInfos.add(dto);
         }
         return classInfos;
