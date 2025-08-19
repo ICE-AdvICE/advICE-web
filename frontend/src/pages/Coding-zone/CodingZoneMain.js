@@ -548,7 +548,6 @@ const CodingMain = () => {
                 decoding="sync"
               />
             </picture>
-
             {/* 수업이 있을 경우에만 ClassList 보여줌 */}
             {!showNoClassesImage && (
               <ClassList
