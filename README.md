@@ -1,5 +1,5 @@
 <a href="https://club-project-one.vercel.app/" target="_blank">
-  <img width="900" alt="프로젝트 스크린샷" src="https://github.com/user-attachments/assets/4a711bee-0c04-4248-990a-b7f3a127300f">
+  <img width="900" alt="프로젝트 스크린샷" src="https://github.com/user-attachments/assets/0847399d-d930-46fd-a29e-02f4fde7c9e3">
 </a>
 
 <br/>
@@ -35,12 +35,7 @@ AdvICE는 위의 문제들을 다음과 같이 해결했습니다.
 👉 **공로상을 수상**하는 등 실질적인 성과를 거두었습니다.  
 👉 현재까지도 학과 내에서 **지속적으로 운영 중**입니다.
 
-
-<br/>
-<br/>
-
-# 2. 사이트 링크
-[AdvICE 웹사이트](https://ice-advice.co.kr/)
+↗️ [AdvICE 웹사이트](https://ice-advice.co.kr/)
 
 <br/>
 <br/>
@@ -48,9 +43,15 @@ AdvICE는 위의 문제들을 다음과 같이 해결했습니다.
 # 3. 팀 소개
 | 도성현 | 이윤빈 | 박준서 | 김진우 |
 |:------:|:-------------------:|:------:|:------:|
-| <img src="https://avatars.githubusercontent.com/u/52828205?v=4" alt="도성현" width="150"> | <img src="https://avatars.githubusercontent.com/u/81556800?v=4" alt="이바체슬라브" width="150"> | <img src="https://avatars.githubusercontent.com/u/81576126?v=4" alt="박준서" width="150"> | <img src="https://github.com/user-attachments/assets/c72a1cf0-86c4-4028-a52c-aa4b27a96fa8" alt="김진우" width="150"> |
+| <img src="https://avatars.githubusercontent.com/u/52828205?v=4" alt="도성현" width="150"> | <img src="https://avatars.githubusercontent.com/u/81556800?v=4" alt="이윤빈" width="150"> | <img src="https://avatars.githubusercontent.com/u/81576126?v=4" alt="박준서" width="150"> | <img src="https://github.com/user-attachments/assets/c72a1cf0-86c4-4028-a52c-aa4b27a96fa8" alt="김진우" width="150"> |
 | 백엔드 개발 | 백엔드 개발(leader) | 프론트엔드 개발 | 프론트엔드 개발 |
 | [GitHub](https://github.com/glaxyt) | [GitHub](https://github.com/kanado5385-k) | [GitHub](https://github.com/Debuging-JunSeoPark) | [GitHub](https://github.com/JinWooKim85) |
+
+| 박다영 | 이의현 | 김주희 | 이혜원 |
+|:------:|:-------------------:|:------:|:------:|
+| <img src="https://avatars.githubusercontent.com/u/183728904?v=4" alt="박다영" width="150"> | <img src="https://avatars.githubusercontent.com/u/184843907?v=4" alt="이의현" width="150"> | <img src="https://avatars.githubusercontent.com/u/170783675?v=4" alt="김주희" width="150"> | <img src="https://avatars.githubusercontent.com/u/170749575?v=4" alt="이혜원" width="150"> |
+| 백엔드 개발 | 백엔드 개발 | 프론트엔드 개발 | 프론트엔드 개발 |
+| [GitHub](https://github.com/Dayoung0402) | [GitHub](https://github.com/dkanrjskgkwkhufs) | [GitHub](https://github.com/juhui4078) | [GitHub](https://github.com/Pigonhayo) |
 
 <br/>
 <br/>
@@ -67,6 +68,7 @@ AdvICE는 위의 문제들을 다음과 같이 해결했습니다.
 ![Java](https://img.shields.io/badge/Java-007396?style=flat-square&logo=OpenJDK&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=flat-square&logo=Spring%20Boot&logoColor=white)
 ![JPA](https://img.shields.io/badge/JPA-007396?style=flat-square&logo=Hibernate&logoColor=white)
+<img src="https://img.shields.io/badge/-Redis-DC382D?style=flat-square&logo=redis&logoColor=white"/>
 
 ### 💾 Database
 
