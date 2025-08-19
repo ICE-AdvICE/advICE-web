@@ -1,7 +1,11 @@
-.btn_manager_attendance,
-.btn_manager_absence,
-.btn_manager_attendance-disabled,
-.btn_manager_absence-disabled {
+.students-table .btn_manager_attendance,
+.students-table .btn_manager_absence,
+.students-table .btn_manager_attendance-disabled,
+.students-table .btn_manager_absence-disabled {
+  box-sizing: border-box;
+  height: 38px !important;
+  padding: 4px 10px;
+  line-height: 1;
   border-radius: 8px;
   border: none;
   padding: 8px 24px;
@@ -10,27 +14,58 @@
 }
 
 .btn_manager_attendance {
-  color: green;
-  font-weight: bold;
-  background-color: #dff0d8;
-  margin-right: 10px;
+  color: #1d6527;
+  text-align: center;
+  font-family: Inter;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  width: 88px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #a8ffb7;
 }
 
 .btn_manager_absence {
-  color: red;
-  font-weight: bold;
-  background-color: #f2dede;
+  width: 88px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #ffc4c4;
+  color: #e31b14;
+  text-align: center;
+  font-family: Inter;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
 }
 
 .btn_manager_attendance-disabled,
 .btn_manager_absence-disabled {
-  color: gray;
-  background-color: #f0f0f0;
-  cursor: not-allowed;
+  width: 88px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #f0f0f0;
 }
 
+.btn_manager_attendance,
 .btn_manager_attendance-disabled {
   margin-right: 10px;
+}
+
+/* 학생 리스트 테이블: 행 높이 55px, 셀은 타이트하게 */
+.students-table tbody tr {
+  height: 68.8px;
+}
+.students-table tbody td {
+  padding: 6px 10px;
+  line-height: 1.2;
+  vertical-align: middle;
+  white-space: nowrap;
 }
 
 .reserved_manager-list-container {
@@ -54,9 +89,9 @@
 .line-manager-container2 {
   width: 100%;
   max-width: 920px;
-  height: 1.5px;
+
   background-color: #dcdada;
-  margin: 23px auto;
+  margin: 4px auto;
   justify-content: center;
   display: flex;
 }
@@ -128,7 +163,7 @@
   display: column;
   margin: 10px auto;
   padding: 10px 0;
-  min-height: 200px;
+  min-height: 150px;
 }
 
 .info_manager_inner {

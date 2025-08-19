@@ -11,6 +11,9 @@ const ROUTES = {
   allAttend: "/coding-zone/Codingzone_All_Attend", // 과사 조교(EA)용
   classRegist: "/coding-zone/Coding-class-regist", // 보드바-수업 등록 ㅇ
   setting: "/coding-zone/Codingzone_Setting", // 보드바-코딩존 설정
+  attendanceBase: "/coding-zone/attendance",
+  attendanceCA: "/coding-zone/attendance/ca", // 학생 조교
+  attendanceEA: "/coding-zone/attendance/ea", // 과사 조교
 };
 
 const CodingZoneNavigation = () => {
@@ -20,11 +23,16 @@ const CodingZoneNavigation = () => {
   // 초기 값을 경로 기반으로 계산
   const computeSelected = (path) => {
     const p = path.replace(/\/+$/, "").toLowerCase();
+    const attendancePrefixes = [
+      ROUTES.attendanceBase,
+      ROUTES.attendanceCA,
+      ROUTES.attendanceEA,
+      ROUTES.allAttend,
+      ROUTES.attendenceReal,
+    ].map((s) => s.toLowerCase());
+
     const isAttendance =
-      p.startsWith(ROUTES.attendenceEntry.toLowerCase()) ||
-      p.startsWith(ROUTES.attendenceReal.toLowerCase()) ||
-      p.startsWith(ROUTES.manager.toLowerCase()) ||
-      p.startsWith(ROUTES.allAttend.toLowerCase()) ||
+      attendancePrefixes.some((prefix) => p.startsWith(prefix)) ||
       p.startsWith(ROUTES.classRegist.toLowerCase()) ||
       p.startsWith(ROUTES.setting.toLowerCase());
     return isAttendance ? "attendence" : "codingzone";
