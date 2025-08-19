@@ -18,7 +18,6 @@ import com.icehufs.icebreaker.domain.codingzone.dto.response.ClassListResponseDt
 import com.icehufs.icebreaker.domain.codingzone.dto.response.ClassListWithRegisteredNumResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.ClassResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.SubjectAssistantsResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GetAttendanceResponseDto;
 
 import com.icehufs.icebreaker.domain.codingzone.exception.UnmappedSubjectException;
 import com.icehufs.icebreaker.domain.codingzone.exception.AlreadyExistClassException;
@@ -291,19 +290,18 @@ public class CodingZoneClassService {
     }
 
     @Transactional(readOnly = true)
-    public  GetAttendanceResponseDto getAttend(Integer subjectId, String email) {
+    public  Integer getAttend(Integer subjectId, String email) {
         Integer numOfAttend = 0;
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 
-        boolean existedUser = userRepository.existsByEmail(email);
-        if (!existedUser) throw new NotExistedUserException();
+        if (!userRepository.existsByEmail(email)) throw new NotExistedUserException();
 
-        if (subjectId != 1 && subjectId != 2 && subjectId != 3 && subjectId != 4) throw new NotExistSubjectException();
+        if (subjectId < 1 || subjectId > 4) throw new NotExistSubjectException();
 
         List<CodingZoneClass> classes = codingZoneClassRepository.findAllBySubjectId(subjectId);
         List<CodingZoneRegister> registratedClassList = codingZoneRegisterRepository.findAllByCodingZoneClassIn(classes);
 
-        if (registratedClassList.isEmpty()) return new GetAttendanceResponseDto(numOfAttend);
+        if (registratedClassList.isEmpty()) return numOfAttend;
 
         for (CodingZoneRegister register : registratedClassList) {
             if (register.getUserEmail().equals(email)) {
@@ -326,7 +324,7 @@ public class CodingZoneClassService {
                 }
             }
         }
-        return new GetAttendanceResponseDto(numOfAttend);
+        return numOfAttend;
     }
 }
 
