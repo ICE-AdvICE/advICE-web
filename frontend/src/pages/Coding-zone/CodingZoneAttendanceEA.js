@@ -7,7 +7,6 @@ import "../css/codingzone/codingzone_manager.css";
 import "../css/codingzone/codingzone_attend.css";
 import "../css/codingzone/CodingClassRegist.css";
 import "../../shared/ui/boardbar/CodingZoneBoardbar.css";
-import { getczreservedlistRequest } from "../../features/api/Admin/Codingzone/ClassApi.js";
 import { getczauthtypetRequest } from "../../shared/api/AuthApi.js";
 
 import InquiryModal from "./InquiryModal.js";
@@ -72,10 +71,6 @@ const CodingZoneAttendanceAssistant = () => {
     fetchAuthType();
     fetchAttendList();
   }, [token]);
-
-  useEffect(() => {
-    fetchReservedList();
-  }, [token, selectedDateYMD]);
 
   // 날짜가 바뀌면 과목 선택/표 상태 초기화(= 카드 그리드로 복귀)
   useEffect(() => {
@@ -295,27 +290,6 @@ const CodingZoneAttendanceAssistant = () => {
     } else if (response && response.code === "NU") {
     } else {
       console.error(response.message);
-    }
-  };
-
-  const fetchReservedList = async () => {
-    const formattedDate = selectedDateYMD || dateToYMD(new Date());
-    const response = await getczreservedlistRequest(
-      token,
-      formattedDate,
-      setCookie,
-      navigate
-    );
-    if (response && response.code === "SU") {
-      setReservedList(
-        response.studentList.sort((a, b) =>
-          a.classTime.localeCompare(b.classTime)
-        )
-      );
-    } else if (response && response.code === "NU") {
-    } else {
-      console.error(response.message);
-      setReservedList([]);
     }
   };
 

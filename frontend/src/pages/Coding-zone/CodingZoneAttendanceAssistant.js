@@ -8,7 +8,7 @@ import "../css/codingzone/codingzone_manager.css";
 import "../css/codingzone/codingzone_attend.css";
 import "../css/codingzone/CodingClassRegist.css";
 import "../../shared/ui/boardbar/CodingZoneBoardbar.css";
-import { getczreservedlistRequest } from "../../features/api/Admin/Codingzone/ClassApi.js";
+import { getCodingzoneReservedListByDate } from "../../features/api/Admin/Codingzone/ClassApi.js";
 import { getczauthtypetRequest } from "../../shared/api/AuthApi.js";
 
 import { toggleAttendanceByRegistNum } from "../../entities/api/CodingZone/AdminApi";
@@ -89,7 +89,7 @@ const CodingZoneAttendanceAssistant = () => {
 
   const fetchReservedList = async () => {
     const formattedDate = selectedDate.toISOString().split("T")[0];
-    const response = await getczreservedlistRequest(
+    const response = await getCodingzoneReservedListByDate(
       token,
       formattedDate,
       setCookie,
@@ -97,7 +97,7 @@ const CodingZoneAttendanceAssistant = () => {
     );
     if (response && response.code === "SU") {
       setReservedList(
-        response.studentList.sort((a, b) =>
+        (response.data ?? []).sort((a, b) =>
           a.classTime.localeCompare(b.classTime)
         )
       );
