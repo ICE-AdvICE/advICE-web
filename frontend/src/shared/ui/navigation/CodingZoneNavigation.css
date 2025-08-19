@@ -1,0 +1,82 @@
+.select-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 19rem;
+}
+.cz-nav-btn {
+  flex: 0 0 auto !important; /* flex:1로 늘어나는 것 방지 */
+  width: auto !important; /* width 고정/100% 제거 */
+  padding: 0.8125em 1.75em;
+  border-radius: 6.25em;
+}
+
+.cz-nav-btn.btn-codingzone,
+.cz-nav-btn.btn-attendence,
+.cz-nav-btn.btn-inquiry {
+  background-color: #efefef;
+  color: #052940 !important;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.cz-nav-btn:hover,
+.cz-nav-btn:active,
+.cz-nav-btn.selected,
+.cz-nav-btn[aria-pressed="true"],
+.cz-nav-btn:focus-visible {
+  background: #052940;
+  color: #fff !important;
+  border-color: #052940;
+  outline: none;
+  font-weight: 600 !important;
+}
+
+/* 반응형 */
+/* ≤ 1280px 반응형 */
+@media (max-width: 1280px) {
+  .select-container {
+    gap: 15.5rem;
+  }
+  .cz-nav-btn.btn-codingzone,
+  .cz-nav-btn.btn-attendence,
+  .cz-nav-btn.btn-inquiry {
+    font-size: 0.9rem;
+  }
+}
+
+/* ≤ 1024px 반응형 */
+@media (max-width: 1024px) {
+  .select-container {
+    gap: 12rem;
+  }
+  .cz-nav-btn.btn-codingzone,
+  .cz-nav-btn.btn-attendence,
+  .cz-nav-btn.btn-inquiry {
+    font-size: 0.85rem;
+  }
+}
+
+/* ≤ 768px 반응형 */
+@media (max-width: 768px) {
+  .select-container {
+    gap: 9.3rem;
+  }
+  .cz-nav-btn.btn-codingzone,
+  .cz-nav-btn.btn-attendence,
+  .cz-nav-btn.btn-inquiry {
+    font-size: 0.8rem;
+  }
+}
+
+/* ≤ 480px 반응형 */
+@media (max-width: 480px) {
+  .select-container {
+    gap: 4rem;
+  }
+  .cz-nav-btn.btn-codingzone,
+  .cz-nav-btn.btn-attendence,
+  .cz-nav-btn.btn-inquiry {
+    font-size: 0.65rem;
+  }
+}

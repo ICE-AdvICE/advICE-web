@@ -1,12 +1,12 @@
 html,
-body{
-width:100%;
-overflow-x:hidden;
+body {
+  width: 100%;
+  overflow-x: hidden;
 }
-.codingzone-container{
+.codingzone-container {
   min-width: 360px;
 }
-.select-container{
+.select-container {
   display: flex;
   margin: 0 auto;
   margin-bottom: 1%;
@@ -14,12 +14,12 @@ overflow-x:hidden;
 }
 .select-container button {
   background-color: white;
-  border: none !important;  
+  border: none !important;
   font-size: 12px;
   color: black;
   width: 200px;
 }
-.select-container span{
+.select-container span {
   font-size: 12px;
   width: 100px;
   justify-content: center;
@@ -27,44 +27,46 @@ overflow-x:hidden;
   flex: 1 4;
   min-width: 25px;
 }
-.select-container button:hover{
+.select-container button:hover {
   color: #164694f4;
   cursor: pointer;
 }
 .select-container button.selected {
-  color: #002D56;
+  color: #002d56;
   font-weight: bolder;
 }
 .select-container button.attendence {
-  color:#002D56;
-
+  color: #002d56;
 }
 .codingzone-top-container {
   width: 100%;
   display: flex;
-  align-items: center; 
-  justify-content: center; 
-  height: auto; 
-  padding: 20px 10px; 
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  padding: 20px 10px;
 }
 
 .codingzonetop2-image {
-  max-width: 100%; 
-  max-height: 330px; 
+  max-width: 100%;
+  max-height: 330px;
   display: block;
-  margin: auto; 
-  width: auto; 
+  margin: auto;
+  width: auto;
 }
 
-.codingzone-body-container{
+.codingzone-body-container {
   max-width: 1000px;
-  margin: 0 auto;
+  margin: 3px auto; /*여기 수정*/
   padding: 0 10px 10px 10px;
   margin-bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .cz-category-top {
-  position: relative; 
+  position: relative;
   display: flex;
   align-items: center;
   font-size: 8px;
@@ -76,63 +78,58 @@ overflow-x:hidden;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
- 
 }
 
-
-.cz-category-date button{
+.cz-category-date button {
   padding: 10px 1px;
   width: 100px;
   color: black;
   align-items: center;
   justify-content: center;
   display: flex;
-  border: 1px solid #D0D5DD;
+  border: 1px solid #d0d5dd;
   font-size: 10px;
   background-color: white;
-  
 }
-.cz-1{
+.cz-1 {
   margin-right: 10px;
 }
-.cz-category-date button:hover{
+.cz-category-date button:hover {
   color: white;
-  background-color: #002D56;
+  background-color: #002d56;
 }
 .cz-category-date .cz-1.selected,
 .cz-category-date .cz-2.selected {
-  background-color: #002D56;
+  background-color: #002d56;
   color: white; /* 텍스트 색상 변경 (선택사항) */
 }
 .codingzone-date button.selected p {
   color: black;
-  margin: 0;
+  margin: 0px;
   border-bottom: 2px solid #000;
-  
 }
-.cz-count-container{
+.cz-count-container {
   font-size: 12px;
   margin-top: 25px;
 }
-.codingzone-date{
+.codingzone-date {
   display: flex;
   align-items: center;
-  margin-top: 1%;
-  
+  margin-top: 2.5%;
 }
-.codingzone-date button{
+.codingzone-date button {
   width: 160px;
   font-size: 13px;
   height: 40px;
   font-weight: 700;
   background-color: white;
-  border:none;
+  border: none;
   display: flex;
   justify-content: center;
   color: black;
   align-items: center;
 }
-.codingzone-date span{
+.codingzone-date span {
   font-size: 13px;
   width: 50px;
   justify-content: center;
@@ -140,7 +137,7 @@ overflow-x:hidden;
   flex: 1 4;
   min-width: 10px;
 }
-.category-name-container{
+.category-name-container {
   border-bottom: 1px solid #333;
   border-top: 1px solid #333;
   display: flex;
@@ -148,67 +145,76 @@ overflow-x:hidden;
   flex-direction: column;
   justify-content: center;
 }
-.codingzone-title{
+.codingzone-title {
   display: flex;
   justify-content: space-between;
-} 
-.codingzone-list{
+}
+.codingzone-list {
   margin-top: 1%;
 }
 .czcard {
   margin-bottom: 3%;
-  background-color: #F6F6F6;
+  background-color: #f6f6f6;
   justify-content: space-between;
   height: 80px;
   align-items: center;
   display: flex;
 }
-.card-delete{
+.card-delete {
   background-color: #ff0000bf;
 }
-.czcard p, .codingzone-title p{
+.czcard p,
+.codingzone-title p {
   margin: 0;
   font-size: 14px;
 }
-.weekDay,.weekTime,  .weekcount ,.registerbutton,.card-hidden-space, .card-classTime {
-  text-align: center;  
-  width: 100px;  
-}
-.weeksubject,.card-className {
+.weekDay,
+.weekTime,
+.weekcount,
+.registerbutton,
+.card-hidden-space,
+.card-classTime {
   text-align: center;
-  width: 300px;  
+  width: 100px;
 }
- .weekperson, .card-assistantName {
+.weeksubject,
+.card-className {
   text-align: center;
-  width: 150px; 
- }
+  width: 300px;
+}
+.weekperson,
+.card-assistantName {
+  text-align: center;
+  width: 150px;
+}
 
 .card-weekDay {
   font-weight: 900;
-  text-align: center;  
-  color: #002D56;
-  width: 100px;  
- 
-}
- .card-weekDate,.weekDate {
   text-align: center;
-  width: 50px;  
+  color: #002d56;
+  width: 100px;
 }
- 
+.card-weekDate,
+.weekDate {
+  text-align: center;
+  width: 50px;
+}
+
 .card-currentNumber {
-  color: #002D56;
+  color: #002d56;
   font-weight: 600;
   text-align: center;
-  width: 100px; 
- 
+  width: 100px;
 }
-.card-button-container, .card-hidden-space {
+.card-button-container,
+.card-hidden-space {
   width: 100px;
   display: flex;
   margin-top: 2px;
   justify-content: center;
 }
-.card-reservation,.card-delete {
+.card-reservation,
+.card-delete {
   border: none !important;
   font-size: 12px;
   border-radius: 3px;
@@ -220,11 +226,11 @@ overflow-x:hidden;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;          
-  padding-left: 10px;        
-  padding-right: 10px;       
-  margin-bottom: 0;          
-  box-sizing: border-box;    
+  margin-top: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-bottom: 0;
+  box-sizing: border-box;
 }
 
 .no-classes-img {
@@ -245,38 +251,48 @@ overflow-x:hidden;
   opacity: 1;
   position: static;
 }
+.no-classes-image.hidden {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: -9999px;
+}
+
+.no-classes-image.visible {
+  opacity: 1;
+  position: static;
+}
 
 
 /* cz-count-container 스타일 */
 .cz-count-container {
   display: flex;
   align-items: center;
-  cursor: pointer; 
-  text-decoration: none; 
-  color: inherit; 
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
   margin-bottom: 30px;
   margin-top: 10px;
   margin-left: auto;
-  
 }
 
 .attendance-progress-container {
   display: flex;
   flex-direction: column;
-  align-items: center; 
-  margin-top: 10px; 
+  align-items: center;
+  margin-top: 10px;
 }
 
 .attendance-label {
-  font-size: 0.9rem; 
-  color: #333; 
-  margin-bottom: 5px; 
+  font-size: 0.9rem;
+  color: #333;
+  margin-bottom: 5px;
 }
 
 .attendance-progress-bar {
-  width: 90px; 
-  height: 10px; 
-  background-color: #e0e0e0; 
+  width: 90px;
+  height: 10px;
+  background-color: #e0e0e0;
   border-radius: 2px;
   overflow: hidden;
   position: relative;
@@ -285,17 +301,23 @@ overflow-x:hidden;
 
 .attendance-progress-fill {
   height: 100%;
-  background-color: #002D56; 
+  background-color: #002d56;
   transition: width 0.5s ease-in-out;
 }
+/* 달력 입력칸 가운데 정렬 */
+.cz-date-picker {
+  position: absolute;
+  z-index: 1000;
+  left: 50%;
+  transform: translateX(-50%);
+}
 
- 
 @media (max-width: 1000px) {
   .card-hidden-space {
     flex: 1 4 0;
     min-width: 0;
   }
-  .cz-category-date button{
+  .cz-category-date button {
     width: 10vw;
   }
 }
@@ -305,24 +327,28 @@ overflow-x:hidden;
     font-size: 8px;
   }
 
-  .attendance-progress-container{
-    margin-top: -10px; 
+  .attendance-progress-container {
+    margin-top: -10px;
     margin-bottom: -20px;
   }
-  .cz-category-date button{
+  .cz-category-date button {
     height: 100%;
-    border-color: #D0D5DD;
+    border-color: #d0d5dd;
     background-color: white;
-    margin-top: -10px; 
+    margin-top: -10px;
     margin-bottom: -15px;
     width: 10vw;
   }
 }
+
 @media (max-width: 465px) {
-  .czcard p, .codingzone-title p,.codingzone-date button{
+  .czcard p,
+  .codingzone-title p,
+  .codingzone-date button {
     font-size: 12px;
   }
-  .card-reservation, .card-delete{
+  .card-reservation,
+  .card-delete {
     font-size: 12px;
   }
   .cz-category-date button:first-child,
@@ -331,7 +357,9 @@ overflow-x:hidden;
   }
 }
 @media (max-width: 395px) {
-  .czcard p, .codingzone-title p,.codingzone-date button{
+  .czcard p,
+  .codingzone-title p,
+  .codingzone-date button {
     font-size: 12px;
   }
 }
@@ -342,7 +370,7 @@ overflow-x:hidden;
   }
 
   .codingzonetop2-image {
-    max-width: calc(100% ); /* 컨테이너 너비에서 20px(좌우 패딩)을 빼준 값 */
+    max-width: calc(100%); /* 컨테이너 너비에서 20px(좌우 패딩)을 빼준 값 */
   }
   .cz-category-date button:first-child,
   .cz-category-date button:last-child {
@@ -353,22 +381,22 @@ overflow-x:hidden;
 /*수업 없을때 뜨는 이미지 이미지 조정*/
 @media (max-width: 768px) {
   .no-classes-image {
-    margin-bottom: 15px; 
+    margin-bottom: 15px;
   }
 
   .no-classes-img {
-    max-width: 80%; 
+    max-width: 80%;
   }
 }
 
 /* 모바일 화면 크기 */
 @media (max-width: 480px) {
   .no-classes-image {
-    margin-bottom: 10px; 
+    margin-bottom: 10px;
   }
 
   .no-classes-img {
-    max-width: 100%; 
+    max-width: 100%;
   }
 }
 
@@ -394,7 +422,7 @@ overflow-x:hidden;
   }
 
   .attendance-progress-bar {
-    width: 70px; 
+    width: 70px;
     height: 10px;
   }
 
@@ -402,4 +430,3 @@ overflow-x:hidden;
     font-size: 0.7rem;
   }
 }
-

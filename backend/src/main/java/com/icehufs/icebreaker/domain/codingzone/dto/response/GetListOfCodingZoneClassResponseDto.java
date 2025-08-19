@@ -20,9 +20,9 @@ public class GetListOfCodingZoneClassResponseDto extends ResponseDto{
     private int registedClassNum;
 
     private GetListOfCodingZoneClassResponseDto(int registedClassNum,List<CodingZoneClass> CodingZoneClassListEntities){
-    super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
-    this.registedClassNum = registedClassNum;
-    this.classList = CodingZoneClassListItem.getList(CodingZoneClassListEntities);
+        super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
+        this.registedClassNum = registedClassNum;
+        this.classList = CodingZoneClassListItem.getList(CodingZoneClassListEntities);
     }
 
     public static ResponseEntity<GetListOfCodingZoneClassResponseDto> success(int registedClassNum,List<CodingZoneClass> CodingZoneClassListEntities){
@@ -39,5 +39,5 @@ public class GetListOfCodingZoneClassResponseDto extends ResponseDto{
         ResponseDto result = new ResponseDto(ResponseCode.NOT_EXISTED_ARTICLE, ResponseMessage.NOT_EXISTED_ARTICLE);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
     }
-    
+
 }

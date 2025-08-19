@@ -1,0 +1,81 @@
+:root {
+  --calendar-gap: 8px;
+  --cal-input-min: 300px;
+  --cal-popover-max: 360px;
+}
+
+/* 달력 입력 박스 래퍼 */
+.calendar-input-wrap {
+  position: relative; /* 팝오버 absolute 기준점 */
+}
+
+/* 팝오버 패널(컨테이너) */
+
+.cal-input {
+  position: relative; /* ✅ 기준점 */
+  display: inline-block; /* 버튼 크기만큼만 차지 */
+  overflow: visible;
+  top: -5px;
+}
+
+.cal-box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}
+
+.cal-input__left-icon img {
+  width: 25px;
+}
+
+.cal-input__icon-right img {
+  width: 20px;
+}
+
+.cal-input__text-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  text-align: left;
+}
+
+.cal-input__label {
+  font-size: 14px;
+}
+
+.cal-input__date {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.cal-input__field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: var(--cal-input-min);
+  padding: 6px 23px;
+  border: 1.2px solid #a8a8a8;
+  border-radius: 15px;
+  background: #fff;
+  color: #a8a8a8;
+  cursor: pointer;
+}
+
+.cal-input__field {
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.cal-input__field:hover,
+.cal-input__field.open {
+  color: #052940;
+  border: 1.2px solid #052940;
+}
+
+.cal-input__text.-ph {
+  color: #8a97a6;
+}
+.cal-input__icon {
+  font-size: 0.85rem;
+}

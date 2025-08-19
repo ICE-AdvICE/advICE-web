@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import '../css/MainPage/MainPage.css';
+import { AppInstallPrompt } from '../../shared/ui/AppInstallPrompt'; 
 
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from "react-cookie";
@@ -77,6 +78,7 @@ const HomePage = () => {
           서비스 이용하시는데 불편한 점이나 요청사항이 있으신가요?
         </button>
       </div>
+       <AppInstallPrompt />
     </div>
   );
 };

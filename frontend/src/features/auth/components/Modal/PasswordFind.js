@@ -115,7 +115,11 @@ const FindPasswordForm = ({ onClose }) => {
         if (response?.code === "SU") {
             alert('비밀번호 변경이 성공적으로 완료되었습니다.');
             onClose();
-        } else {
+        } 
+        else if (response?.code === "DP") {
+            alert('현재 비밀번호와 변경하려는 비밀번호가 동일합니다.');
+        }
+        else {
             alert('오류가 발생했습니다. 다시 시도 해 주세요.');
         }
     };

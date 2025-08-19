@@ -1,440 +1,571 @@
-.banner_img_container {
-    width: 100%;
-    height: auto;
-    padding: 20px 10px;
-    box-sizing: border-box;
-    margin: 20px auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-
-.banner_img_container .banner {
-    width: auto;
-    max-width: 920px;
-    max-height: 330px;
-}
+/* Article (익명게시판) 페이지 banner */
 .banner_img_container_icebreaker {
-    width: 100%;
-    height: auto;
-    padding: 20px 10px;
-    box-sizing: border-box;
- 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #eaecf5;
-    margin-bottom: 0;
+  width: 100%;
+  height: auto;
+  padding: 20px 10px;
+  box-sizing: border-box;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #eaecf5;
+  margin-bottom: 0;
 }
 
 .banner_img_container_icebreaker .banner {
-    width: auto;
-    max-width: 590px;
-    max-height: 295px;
-  
+  width: auto;
+  max-width: 590px;
+  max-height: 295px;
 }
 
 .banner_img_container_icebreaker_write {
-    width: 100%;
-    height: auto;
-    padding: 20px 10px;
-    box-sizing: border-box;
-    margin: 20px auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 0;
+  width: 100%;
+  height: auto;
+  padding: 20px 10px;
+  box-sizing: border-box;
+  margin: 20px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0;
 }
 
 .banner_img_container_icebreaker_write .banner {
-    width: auto;
-    max-width: 960px;
-    max-height: 370px;
-    padding-top: 20px;
+  width: auto;
+  max-width: 960px;
+  max-height: 370px;
+  padding-top: 20px;
 }
 
 .banner_img_container_icebreaker_article {
-    width: 100%;
-    height: auto;
-    padding: 20px 10px;
-    box-sizing: border-box;
- 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 0;
-    background-color: #eaecf5;
+  width: 100%;
+  height: auto;
+  padding: 20px 10px;
+  box-sizing: border-box;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0;
+  background-color: #eaecf5;
 }
 
 .banner_img_container_icebreaker_article .banner {
-    width: auto;
-    max-width: 960px;
-    max-height: 370px;
-    padding-top: 20px;
+  width: auto;
+  max-width: 960px;
+  max-height: 370px;
+  padding-top: 20px;
 }
 
-
-
-.button-container,
-.cza_button_container {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 20px;    
-    margin-bottom: 20px; 
-    padding: 0 10px;
+/* 회색 박스 기본(이미 있다면 그대로) */
+.panel-gray {
+  margin: 1rem 0 4rem 0;
+  display: flex;
+  width: 68rem; /* 1200px = 75rem (기본 폰트 16px 기준) */
+  height: 27rem; /* 320px */
+  padding: 8rem 5rem; /* 상하 8rem(128px), 좌우 5rem(80px) */
+  justify-content: center;
+  align-items: center;
+  gap: 0.625rem; /* 10px */
+  border-radius: 20px;
+  background: #efefef;
 }
 
-.btn-attend {
-    padding: 0.6rem 1.2rem; 
-    border: 1px solid #838181a8;
-    background-color: rgba(255, 255, 255, 0);
-    color: #838181a8;
-    font-size: 1rem; 
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-    min-width: 80px; 
-    max-width: 100px; 
-    width: auto; 
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* 가운데 문구용 */
+.panel-empty {
+  color: rgba(73, 80, 87, 0.75);
+  text-align: center;
+  font-family: Inter;
+  font-size: 25px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
 }
 
-.btn-attend.active,
-.btn-attend.manage,
-.btn-attend.manage_all,
-.btn-attend.manage_class {
-    background-color: rgba(255, 255, 255, 0);
-    color: #052940;
-    border-color: #052940;
-    box-shadow: 0px 0px 3px #0b4264;
-    font-weight: 530;
-    padding: 0.6rem 1.2rem; 
-    font-size: 1rem; 
-    min-width: 80px; 
-    max-width: 100px; 
-    width: auto; 
-    box-sizing: border-box;
+.panel-student {
+  color: rgba(73, 80, 87, 0.75);
+  text-align: center;
+  font-family: Inter;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
 }
 
-
-
-
+.attendance-table.is-hidden {
+  display: none;
+}
 
 .line-container1 {
-    width: 100%;
-    max-width: 920px;
-    height: 1.5px;
-    background-color: #818181;
-    margin: -10px auto;
-    justify-content: center;
-    display: flex;
-
+  width: 100%;
+  max-width: 920px;
+  height: 1.5px;
+  background-color: #818181;
+  margin: -10px auto;
+  justify-content: center;
+  display: flex;
 }
 
 .line-container2 {
-    width: 100%;
-    max-width: 920px;
-    height: 1.5px;
-    background-color: #dcdada;
-    margin: -10px auto;
-    justify-content: center;
-    display: flex;
+  width: 100%;
+  max-width: 920px;
+  height: 1.5px;
+  background-color: #dcdada;
+  margin: -10px auto;
+  justify-content: center;
+  display: flex;
 }
 
 .info-container {
-    width: 100%;
-    justify-content: center;
-    display: flex;
-    margin: 10px auto;
-    padding: 10px 0;
+  width: 100%;
+  justify-content: center;
+  display: flex;
+  margin: 10px auto;
+  padding: 10px 0;
 }
 
 .info_inner {
-    width: calc(100% - 20px);
-    max-width: 920px;
-    display: flex;
-    height: 40px;
-    margin: -10px auto;
-    background-color: rgb(243, 242, 242);
+  width: calc(100% - 20px);
+  max-width: 920px;
+  display: flex;
+  height: 40px;
+  margin: -10px auto;
+  background-color: rgb(243, 242, 242);
 }
 
 .info_date {
-    width: 110px;
-    height: 100%;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: sans-serif;
-    font-weight: bold;
-    color: #002D56;
+  width: 110px;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: #002d56;
 }
 
 .info_time {
-    width: 110px;
-    height: 100%;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: sans-serif;
-    font-weight: bold;
-    color: #002D56;
+  width: 110px;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: #002d56;
 }
 
 .info_bar {
-    flex: 1 8 0;
-    width: 200px;
+  flex: 1 8 0;
+  width: 200px;
 }
 
 .info_classname {
-    width: 260px;
-    height: 100%;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: sans-serif;
-    font-weight: bold;
-    color: #002D56;
+  width: 260px;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: #002d56;
 }
 
 .info_assistant {
-    width: 120px;
-    height: 100%;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: sans-serif;
-    font-weight: bold;
-    color: #002D56;
+  width: 120px;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: #002d56;
 }
 
 .info_status {
-    width: 120px;
-    height: 100%;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: sans-serif;
-    font-weight: bold;
-    color: #002D56;
-}
-
-.divider {
-    height: 30px;
-    width: 0.5px;
-    background-color: #052940;
-    margin: auto 5px;
+  width: 120px;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: #002d56;
 }
 
 .info_data_container {
-    width: 100%;
-    justify-content: center;
-    display: column;
-    margin: 10px auto;
-    padding: 10px 0;
-    min-height: 200px;
+  width: 100%;
+  justify-content: center;
+  display: column;
+  margin: 10px auto;
+  padding: 10px 0;
+  min-height: 200px;
 }
 
 .info_data_inner {
-    width: calc(100% - 20px);
-    max-width: 920px;
-    margin: 0 auto;
-    height: 40px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  width: calc(100% - 20px);
+  max-width: 920px;
+  margin: 0 auto;
+  height: 40px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .info_data_date {
-    width: 110px;
-    height: 100%;
-    text-align: center;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: sans-serif;
-    font-weight: bold;
-    color: #002D56;
+  width: 110px;
+  height: 100%;
+  text-align: center;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: #002d56;
 }
 
 .info_data_time {
-    width: 110px;
-    height: 100%;
-    text-align: center;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: sans-serif;
-    color: #848484;
+  width: 110px;
+  height: 100%;
+  text-align: center;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  color: #848484;
 }
 
 .info_data_bar {
-    flex: 1 8 0;
-    width: 200px;
-    height: 100%;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: sans-serif;
+  flex: 1 8 0;
+  width: 200px;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
 }
 
 .info_data_classname {
-    width: 260px;
-    height: 100%;
-    text-align: center;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: sans-serif;
-    color: #848484;
+  width: 260px;
+  height: 100%;
+  text-align: center;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  color: #848484;
 }
 
 .info_data_assistant {
-    width: 120px;
-    height: 100%;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: sans-serif;
-    color: #848484;
+  width: 120px;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  color: #848484;
 }
 
 .info_data_status {
-    width: 120px;
-    height: 100%;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: sans-serif;
-    font-weight: bold;
-    color: #002D56;
+  width: 120px;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: #002d56;
 }
 
 .hr-line {
-    border-bottom: 1px solid #ccc;
-    margin: 10px auto;
-    width: 100%;
-    max-width: 920px;
+  border-bottom: 1px solid #ccc;
+  margin: 10px auto;
+  width: 100%;
+  max-width: 920px;
 }
 
 .empty-list-message {
-    text-align: center;    
-    width: 100%;    
-    font-family: sans-serif;      
-    padding: 20px;         
+  text-align: center;
+  width: 100%;
+  font-family: sans-serif;
+  padding: 20px;
 }
 
-@media (max-width: 920px) {
+/* 회색 박스 안 실제 콘텐츠 폭 */
+.panel-inner {
+  max-width: 980px; /* 필요하면 920~1080px 사이로 조정 */
+  margin: 0 auto;
+}
 
-    .line-container1,
-    .line-container2,
-    .hr-line {
-        max-width: calc(100% - 20px);
-    }
+/* 공통 그리드 래퍼 */
+.subject-grid-inner {
+  display: grid;
+  gap: 25px; /* 카드 간격 */
+}
+
+/* 1개 */
+.subject-grid.cols-1 .subject-grid-inner {
+  grid-template-columns: 1fr;
+  justify-items: center;
+}
+.subject-grid.cols-1 .subject-grid-inner > * {
+  width: 100%;
+}
+
+/* 2개 */
+.subject-grid.cols-2 .subject-grid-inner {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* ✅ 4개: 2×2 강제 */
+.subject-grid.cols-2x2 .subject-grid-inner {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* ✅ 3개: 위 2 + 아래 1(가운데) */
+.subject-grid.layout-3 .subject-grid-inner {
+  grid-template-columns: repeat(2, 1fr);
+  justify-items: center; /* 각 칸 내부 중앙 */
+}
+.subject-grid.layout-3 .subject-grid-inner > :nth-child(3) {
+  grid-column: 1 / -1; /* 두 칸 span */
+  justify-self: center; /* 행 중앙 */
+  max-width: 460px; /* 너무 넓어지지 않게 (옵션) */
+  width: 100%;
+}
+
+/* 카드가 칸을 꽉 채우도록 */
+.subject-grid-inner > * {
+  width: 100%;
+}
+
+.cz-classes-title {
+  font-size: 20px;
+}
+
+.cz-classes-title .subject-name {
+  font-size: 22px; /* ← 이름만 크게 */
+  font-weight: 800; /* 굵게 유지(원하면 700/600으로 조절) */
+  margin-right: 6px; /* 이름과 '코딩존 현황' 사이 간격 */
+  line-height: 1; /* 줄높이 튐 방지 */
+}
+
+.cz-classes {
+  height: 600px;
+}
+
+/* 표 섹션 래퍼가 가운데 폭을 갖고, 내부는 좌우 여백만 */
+.cz-classes {
+  max-width: 1140px;
+  margin: 24px auto 56px;
+  padding: 0 16px;
+}
+
+/* ← 전체 과목 보기 버튼 줄: 왼쪽 정렬 고정 */
+.cz-classes-back {
+  width: 100%; /* 가로 전체 차지 (중요) */
+  display: flex;
+  justify-content: flex-start; /* 왼쪽 정렬 */
+  align-self: flex-start; /* 부모가 flex일 때도 왼쪽 고정 */
+  margin: 8px 0 12px;
+}
+
+/* 버튼 여백 기본값 */
+.cz-classes-back .btn-ghost {
+  margin-left: 0;
+}
+
+.btn-ghost {
+  background: #efefef;
+  color: #adacac;
+  height: 35px;
+  border-radius: 10px;
+  border: #efefef;
+}
+
+.btn-ghost:hover {
+  background: #848484;
+  color: #ffffff;
+}
+
+/* ===== 코딩존 수업 표 ===== */
+/* 테이블 자체는 배경/라운드 없음 */
+.manager-table {
+  width: 1140px;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  background: transparent !important; /* ← 테이블 배경 제거 */
+  border-radius: 0 !important; /* ← 라운드 제거 */
+}
+
+/* ✅ 헤더 바(타이틀)만 둥글게: thead에 배경판을 깔아줌 */
+.manager-table thead {
+  position: relative;
+  z-index: 0; /* 배경판 뒤로 */
+}
+.manager-table thead::before {
+  content: "";
+  position: absolute;
+  inset: 0; /* thead 전체 덮기 */
+  background: #052940;
+  border-radius: 12px; /* ← 위쪽만 둥글게 */
+  z-index: 0;
+}
+
+/* 헤더 셀은 투명 배경 + 글자만 흰색 */
+.manager-table thead th,
+.manager-table thead th:first-child,
+.manager-table thead th:last-child {
+  background: transparent !important; /* ← 각 셀 배경 제거 */
+  border-radius: 0 !important; /* ← 각 셀 라운드 제거 */
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1;
+  text-align: center;
+  padding: 18px 24px;
+  position: relative;
+  z-index: 1; /* 글자가 배경판 위로 */
+}
+
+/* 바디는 유지 */
+.manager-table tbody td {
+  padding: 22px 24px;
+  text-align: center;
+  font-size: 16px;
+  color: #0b1f2a;
+  background: #ffffff;
+}
+.manager-table tbody td:first-child {
+  text-align: center;
+  font-weight: 700;
+}
+/* 모든 행 아래 구분선 */
+.manager-table tbody tr td {
+  border-bottom: 1px solid #cfd8e3 !important;
+}
+
+.manager-table tbody tr:hover td {
+  background: #f8fafc;
+}
+
+/* (옵션) 세로도 가운데로 */
+.manager-table td {
+  vertical-align: middle;
+}
+
+/* 반응형: 모바일에서 여백과 글자 조금 축소 */
+@media (max-width: 768px) {
+  .manager-table thead th {
+    font-size: 14px;
+    padding: 14px 16px;
+  }
+  .manager-table tbody td {
+    font-size: 14px;
+    padding: 16px;
+  }
 }
 
 @media (max-width: 1920px) {
-    .banner_img_container .banner,.banner_img_container_icebreaker .banner ,.banner_img_container_icebreaker_write .banner , .banner_img_container_icebreaker_article .banner{
-        max-width: calc(100%);
-        margin: -10px 10px;
-    }
-
-    
-
-
+  .banner_img_container .banner,
+  .banner_img_container_icebreaker .banner,
+  .banner_img_container_icebreaker_write .banner,
+  .banner_img_container_icebreaker_article .banner {
+    max-width: calc(100%);
+    margin: -10px 10px;
+  }
 }
 
+@media (max-width: 1280px) {
+  .panel-inner {
+    max-width: 900px;
+  }
+}
 
-@media (max-width: 350px) {
-
-
-    .banner_img_container .banner {
-        width: 95%; 
-        max-width: 100%; 
-        height: auto; 
-    }
-    .banner_img_container_icebreaker .banner {
-        width: 95%; 
-        max-width: 100%; 
-        height: auto; 
-    }
-
-    .banner_img_container_icebreaker_write .banner {
-        width: 95%; 
-        max-width: 100%; 
-        height: auto; 
-    }
-
-    .banner_img_container_icebreaker_article .banner{
-        width: 95%; 
-        max-width: 100%; 
-        height: auto; 
-    }
+@media (max-width: 1024px) {
+  .panel-inner {
+    max-width: 760px;
+  }
+  /* 4개도 2열 유지 */
+  .subject-grid.cols-2x2 .subject-grid-inner {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .panel-gray {
+    width: 50rem;
+    height: 30rem;
+  }
+  .panel-empty {
+    font-size: 22px;
+  }
 }
 
 @media (max-width: 768px) {
-    .btn-attend {
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
-        min-width: 70px;
-        max-width: 90px; 
-    }
+  .main-body-container {
+    padding: 0 10%; /* 더 작은 padding으로 외부 공간 최소화 */
+  }
+  .main-category-bar button,
+  .category-bar button {
+    font-size: 12px; /* 모바일에서의 폰트 크기 조정 */
+  }
+  .class-input-box > select,
+  .class-input-box > input {
+    flex-grow: 1; /* 플렉스 아이템이 확장하여 사용 가능한 공간을 채움 */
+  }
 
-    .btn-attend.active,
-    .btn-attend.manage,
-    .btn-attend.manage_all,
-    .btn-attend.manage_class {
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
-        min-width: 70px;
-        max-width: 90px; 
-    }
-
-    .button-container,
-    .cza_button_container {
-        margin-top: 15px; 
-        
-    }
+  .panel-gray {
+    width: 42rem;
+    height: 45rem;
+  }
+  .panel-empty {
+    font-size: 19px;
+  }
+  /* 모바일 */
+  .panel-inner {
+    max-width: 92%;
+  }
 }
 
-/* 모바일 화면 */
 @media (max-width: 480px) {
-    .btn-attend {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.8rem;
-        min-width: 60px;
-        max-width: 80px; /* max-width을 80px으로 감소 */
-    }
+  .banner_img_container .banner {
+    width: 95%;
+    max-width: 100%;
+    height: auto;
+  }
+  .banner_img_container_icebreaker .banner {
+    width: 95%;
+    max-width: 100%;
+    height: auto;
+  }
 
-    .btn-attend.active,
-    .btn-attend.manage,
-    .btn-attend.manage_all,
-    .btn-attend.manage_class {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.8rem;
-        min-width: 60px;
-        max-width: 80px; 
-    }
+  .banner_img_container_icebreaker_write .banner {
+    width: 95%;
+    max-width: 100%;
+    height: auto;
+  }
 
-    .button-container,
-    .cza_button_container {
-        margin-top: 10px; 
-        
-    }
+  .banner_img_container_icebreaker_article .banner {
+    width: 95%;
+    max-width: 100%;
+    height: auto;
+  }
+  .panel-gray {
+    width: 25rem;
+    height: 40rem;
+  }
+  .panel-empty {
+    font-size: 17px;
+  }
 }
-

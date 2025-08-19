@@ -16,6 +16,8 @@ import org.springframework.security.config.annotation.web.configurers.CsrfConfig
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -44,12 +46,12 @@ public class WebSecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authorizeHttpRequests(request -> request
-                .requestMatchers("/api/v1/**").permitAll()
-                .requestMatchers("/api/admin/**").hasRole("ADMIN") //'ICEbreaker' 코딩존 수업 등록 및 권한 부여 가능한 권한 (과사조교)
-                .requestMatchers("/api/admin1/**").hasRole("ADMIN1") //익명게시판 운영자 권한
-                .requestMatchers("/api/admin-c1/**").hasRole("ADMINC1") //코딩존 과목1 조교 권한
-                .requestMatchers("/api/admin-c2/**").hasRole("ADMINC2") //코딩존 과목2 조교 권한 
-                .anyRequest().authenticated()
+                    .requestMatchers("/api/v1/**").permitAll()
+                    .requestMatchers("/api/admin/**").hasRole("ADMIN") //'ICEbreaker' 코딩존 수업 등록 및 권한 부여 가능한 권한 (과사조교)
+                    .requestMatchers("/api/admin1/**").hasRole("ADMIN1") //익명게시판 운영자 권한
+                    .requestMatchers("/api/admins/attendances/**")
+                    .hasAnyRole("ADMIN", "ADMINC1", "ADMINC2", "ADMINC3", "ADMINC4")
+                    .anyRequest().authenticated()
             )
             .exceptionHandling(exceptionHandling -> exceptionHandling
                 .authenticationEntryPoint(new FailedAuthenticationEntryPoint())
@@ -72,6 +74,11 @@ public class WebSecurityConfig {
         source.registerCorsConfiguration("/api/**", corsConfiguration);
 
         return source;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
 

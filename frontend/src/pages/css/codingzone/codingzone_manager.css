@@ -1,306 +1,335 @@
-.btn_manager_attendance, .btn_manager_absence, .btn_manager_attendance-disabled, .btn_manager_absence-disabled {
-    border-radius: 8px;       
-    border: none;            
-    padding: 8px 24px;       
-    font-size: 14px;          
-    cursor: pointer;         
+.students-table .btn_manager_attendance,
+.students-table .btn_manager_absence,
+.students-table .btn_manager_attendance-disabled,
+.students-table .btn_manager_absence-disabled {
+  box-sizing: border-box;
+  height: 38px !important;
+  padding: 4px 10px;
+  line-height: 1;
+  border-radius: 8px;
+  border: none;
+  padding: 8px 24px;
+  font-size: 14px;
+  cursor: pointer;
 }
 
 .btn_manager_attendance {
-    color: green;
-    font-weight: bold;
-    background-color: #dff0d8;
-    margin-right: 10px;     
+  color: #1d6527;
+  text-align: center;
+  font-family: Inter;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  width: 88px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #a8ffb7;
 }
 
 .btn_manager_absence {
-    color: red;
-    font-weight: bold;
-    background-color: #f2dede;
+  width: 88px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #ffc4c4;
+  color: #e31b14;
+  text-align: center;
+  font-family: Inter;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
 }
 
-.btn_manager_attendance-disabled, .btn_manager_absence-disabled {
-    color: gray;
-    background-color: #f0f0f0;
-    cursor: not-allowed;    
+.btn_manager_attendance-disabled,
+.btn_manager_absence-disabled {
+  width: 88px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #f0f0f0;
 }
 
+.btn_manager_attendance,
 .btn_manager_attendance-disabled {
-    margin-right: 10px;       
+  margin-right: 10px;
+}
+
+/* 학생 리스트 테이블: 행 높이 55px, 셀은 타이트하게 */
+.students-table tbody tr {
+  height: 68.8px;
+}
+.students-table tbody td {
+  padding: 6px 10px;
+  line-height: 1.2;
+  vertical-align: middle;
+  white-space: nowrap;
 }
 
 .reserved_manager-list-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .line-manager-container1 {
-    width: 100%;
-    max-width: 920px;
-    height: 1.5px;
-    background-color: #818181;
-    margin: -10px auto;
-    justify-content: center;
-    display: flex;
-
+  width: 100%;
+  max-width: 920px;
+  height: 1.5px;
+  background-color: #818181;
+  margin: 23px auto;
+  justify-content: center;
+  display: flex;
 }
 
 .line-manager-container2 {
-    width: 100%;
-    max-width: 920px;
-    height: 1.5px;
-    background-color: #dcdada;
-    margin: -10px auto;
-    justify-content: center;
-    display: flex;
+  width: 100%;
+  max-width: 920px;
+
+  background-color: #dcdada;
+  margin: 4px auto;
+  justify-content: center;
+  display: flex;
 }
 
 .info-manager-container {
-    width: 100%;
-    justify-content: center;
-    display: flex;
-    margin: 10px auto;
-    padding: 0 0;
-    
+  width: 100%;
+  justify-content: center;
+  display: flex;
+  margin: -23px auto;
+  padding: 0 0;
 }
 
-
 .info_manager_name {
-    width: 110px;
-    height: 100%;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: sans-serif;
-    font-weight: bold;
-    color: #002D56;
+  width: 110px;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: #002d56;
 }
 
 .info_manager_studentnum {
-    width: 140px;
-    height: 100%;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: sans-serif;
-    font-weight: bold;
-    color: #002D56;
+  width: 140px;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: #002d56;
 }
 
 .info_manager_bar {
-    flex: 1 8 0;
-    width: 370px;
-   
+  flex: 1 8 0;
+  width: 370px;
 }
 
-
-
 .info_manager_time {
-    width: 120px;
-    height: 100%;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: sans-serif;
-    font-weight: bold;
-    color: #002D56;
+  width: 120px;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: #002d56;
 }
 
 .info_manager_status {
-    width: 180px;
-    height: 100%;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: sans-serif;
-    font-weight: bold;
-    color: #002D56;
+  width: 180px;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: #002d56;
 }
 
 .info_manager_container {
-    width: 100%;
-    justify-content: center;
-    display: column;
-    margin: 10px auto;
-    padding: 10px 0;
-    min-height: 200px;
+  width: 100%;
+  justify-content: center;
+  display: column;
+  margin: 10px auto;
+  padding: 10px 0;
+  min-height: 150px;
 }
 
 .info_manager_inner {
-    width: calc(100% - 20px);
-    max-width: 920px;
-    margin: 0 auto;
-    height: 40px;
-    background-color: rgb(243, 242, 242);
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  width: calc(100% - 20px);
+  max-width: 920px;
+  margin: 0 auto;
+  height: 40px;
+  background-color: rgb(243, 242, 242);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .info_manager_data_inner {
-    width: calc(100% - 20px);
-    max-width: 920px;
-    margin: 0 auto;
-    height: 40px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  width: calc(100% - 20px);
+  max-width: 920px;
+  margin: 0 auto;
+  height: 40px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-
 .info_manager_data_name {
-    width: 110px;
-    height: 100%;
-    text-align: center;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: sans-serif;
-    font-weight: bold;
-    color: #002D56;
-    
+  width: 110px;
+  height: 100%;
+  text-align: center;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: #002d56;
 }
 
 .info_manager_data_studentnum {
-    width: 140px;
-    height: 100%;
-    text-align: center;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: sans-serif;
-    color: #848484;
-   
+  width: 140px;
+  height: 100%;
+  text-align: center;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  color: #848484;
 }
 
 .info_manager_data_bar {
-    flex: 1 8 0;
-    width: 370px;
-    height: 100%;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: sans-serif;
-    
-   
+  flex: 1 8 0;
+  width: 370px;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
 }
 
-
-
 .info_manager_data_time {
-    width: 120px;
-    height: 100%;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: sans-serif;
-    color: #848484;
-    
+  width: 120px;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  color: #848484;
 }
 
 .info_manager_data_status {
-    width: 180px;
-    height: 100%;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: sans-serif;
-    font-weight: bold;
-    color: #002D56;
+  width: 180px;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: #002d56;
 }
 
 .hr_manager_line {
-    border-bottom: 1px solid #ccc;
-    margin: 10px auto;
-    width: 100%;
-    max-width: 920px;
+  border-bottom: 1px solid #ccc;
+  margin: 10px auto;
+  width: 100%;
+  max-width: 920px;
 }
 
 .hr_manager_line_thick {
-    border-bottom: 2px solid #002D56; /* 굵은 선으로 설정 */
-    margin: 10px auto;
-    width: 100%;
-    max-width: 920px;
+  border-bottom: 2px solid #002d56; /* 굵은 선으로 설정 */
+  margin: 10px auto;
+  width: 100%;
+  max-width: 920px;
 }
-
 
 .date_manager_title {
-    width: 920px;
-    margin: 20px auto 30px;
-    font-size: 25px; 
-    font-weight: bold;
-    color: #002D56;
-    text-align: center; 
+  width: 920px;
+  margin: 20px auto 30px;
+  font-size: 25px;
+  font-weight: bold;
+  color: #002d56;
+  text-align: center;
 }
 
-.czm_manager_container{
-    width: calc(100% - 20px);
-    max-width: 920px;
-    margin: 0 auto;
-    height: 40px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-
+.czm_manager_container {
+  width: 100%;
+  margin: 0 auto;
+  display: grid;
+  place-items: center; /* 가로/세로 중앙 */
 }
+
 .custom_manager_datepicker {
-    width: 230px; /* 가로 크기 설정 */
-    min-width: 230px; /* 최소 너비 설정 */
-    padding: 10px;/* 글자 크기 증가 */
-    display: block;
-    margin: 0 auto;
-    text-align: center; /* 텍스트 가운데 정렬 */
+  display: block;
+  width: var(--cal-input-min); /* 300px */
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
 }
 
 .no-reservations {
-    text-align: center;    
-    width: 100%;    
-    font-family: sans-serif;      
-    padding: 20px;         
+  text-align: center;
+  width: 100%;
+  font-family: sans-serif;
+  padding: 20px;
+}
+.custom_manager_datepicker .cal-input {
+  width: 100%; /* ✅ .cal-input 자체가 래퍼 폭을 꽉 채우게 */
+  min-width: 0;
+}
+/* 버튼(입력창) 너비를 맞춤 */
+.custom_manager_datepicker .cal-input__field {
+  width: 100%;
+  min-width: 0;
 }
 
 @media (max-width: 920px) {
+  .date_manager_title {
+    width: 100%; /* 전체 너비를 차지하도록 설정 */
+    font-size: 18px; /* 작은 화면에서는 글씨 크기를 줄임 */
+  }
 
-
-    .date_manager_title {
-        width: 100%; /* 전체 너비를 차지하도록 설정 */
-        font-size: 18px; /* 작은 화면에서는 글씨 크기를 줄임 */
-    }
-
-    .line-manager-container1,
-    .line-manager-container2,
-    .hr_manager_line, .hr_manager_line_thick{
-        max-width: calc(100% - 20px);
-    }
+  .line-manager-container1,
+  .line-manager-container2,
+  .hr_manager_line,
+  .hr_manager_line_thick {
+    max-width: calc(100% - 20px);
+  }
 }
 
 @media (max-width: 520px) {
-    .btn_manager_attendance, .btn_manager_absence, .btn_manager_attendance-disabled, .btn_manager_absence-disabled {
-        padding: 10px 18px;    
-        font-size: 12px;        
-        white-space: nowrap;     
-        overflow: hidden;        
-        text-overflow: ellipsis; 
-    }
+  .btn_manager_attendance,
+  .btn_manager_absence,
+  .btn_manager_attendance-disabled,
+  .btn_manager_absence-disabled {
+    padding: 10px 18px;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-    .btn_manager_attendance, .btn_manager_attendance-disabled {
-        margin-right: 5px;      
-    }
+  .btn_manager_attendance,
+  .btn_manager_attendance-disabled {
+    margin-right: 5px;
+  }
 }
-

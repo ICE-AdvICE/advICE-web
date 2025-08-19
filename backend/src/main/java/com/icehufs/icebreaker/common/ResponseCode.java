@@ -1,13 +1,14 @@
 package com.icehufs.icebreaker.common;
 
 public interface ResponseCode {
-    //HTTP Status 200
+    // HTTP Status 200
     String SUCCESS = "SU";
-    String CODING_ADMIN ="CA";
-    String ENTIRE_ADMIN ="EA";
+    String CODING_ADMIN = "CA";
+    String ENTIRE_ADMIN = "EA";
+    String SUCCESS_POST_MAPPING = "SUCCESS_POST_MAPPING";
 
-    //HTTP Status 400
-    String VALIDATION_FAILED= "VF";
+    // HTTP Status 400
+    String VALIDATION_FAILED = "VF";
     String DUPLICATE_EMAIL = "DE";
     String NOT_EXISTED_USER = "NU";
     String NOT_EXISTED_ARTICLE = "NA";
@@ -17,21 +18,44 @@ public interface ResponseCode {
     String NOT_RESERVE_CLASS = "NR";
     String NOT_SIGNUP_USER = "NS";
     String PERMITTED_ERROR = "PE";
+    String BAD_REQUEST = "BR";
+    String ALREADY_EXISTED_CLASS = "ALREADY_EXISTED_CLASS";
+    String NOT_MAPPED_CLASS = "NOT_MAPPED_CLASS";
+    String DUPLICATED_MAPPING_SET = "DUPLICATED_MAPPING_SET";
+    String DUPLICATED_MAPPING_CLASSNAME = "DUPLICATED_MAPPING_CLASSNAME";
+    String DUPLICATED_MAPPING_NUMBER = "DUPLICATED_MAPPING_NUMBER";
+    String NOT_ANY_MAPPINGSET = "NOT_ANY_MAPPINGSET";
+    String NOT_WEEKDAY = "NOT_WEEKDAY";
+    String TUTOR_NOT_FOUND = "TNF";
+    String INVALID_SUBJECT_ID = "ISI";
+    String DUPLICATE_PASSWORD = "DP";
+    String INVAIlD_DATE_WEEKEND = "INVAIlD_DATE_WEEKEND";
+    String NO_CODINGZONE_DATE = "NO_CODINGZONE_DATE";
+    String NOT_MODIFIED_INFO = "NOT_MODIFIED_INFO";
+    String DELETE_NOT_ALLOW = "DELETE_NOT_ALLOW";
+    String ALREADY_RESERVED_CLASS = "ALREADY_RESERVED_CLASS";
+    String NOT_FOUND_CLASS = "NOT_FOUND_CLASS";
+    String NOT_FOUND_GROUP = "NOT_FOUND_GROUP";
+    String CLASS_UNAVAILABLE_PERIOD = "CLASS_UNAVAILABLE_PERIOD";
+    String REGISTRATION_NOT_FOUND = "REGISTRATION_NOT_FOUND";
+    String NO_ANY_ATTENDANCE = "NO_ANY_ATTENDANCE";
 
-    //HTTP Status 401
+    // HTTP Status 401
     String SIGN_IN_FAIL = "SF";
     String AUTHORIZATION_FAIL = "AF";
 
-    //HTTP Status 403
+    // HTTP Status 403
     String NO_PERMISSION = "NP";
     String BANNED_USER = "BU";
     String ACCESS_TOKEN_EXPIRED = "ATE";
 
-    //HTTP Status 404
+    // HTTP Status 404
     String SUCCESS_BUT_NOT = "SN";
     String WITHDRAWN_EMAIL = "WDE";
+    String NO_ANY_ASSISTANTS = "NO_ANY_ASSISTANTS";
 
-    //HTTP Status 500
+
+    // HTTP Status 500
     String MAIL_FAIL = "MF";
     String DATABASE_ERROR = "DBE";
     String INTERNAL_SERVER_ERROR = "ISE";

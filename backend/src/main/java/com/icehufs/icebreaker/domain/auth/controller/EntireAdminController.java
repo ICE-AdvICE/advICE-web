@@ -1,32 +1,39 @@
 package com.icehufs.icebreaker.domain.auth.controller;
 
-import com.icehufs.icebreaker.domain.codingzone.dto.response.*;
+
+import com.icehufs.icebreaker.domain.codingzone.service.AttendanceService;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfGroupInfResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.GroupInfUpdateResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.SubjectMappingInfoResponseDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.ReservationStudentDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.EntireAttendanceResponseDto;
+import com.icehufs.icebreaker.util.ResponseDto;
 import jakarta.validation.Valid;
 
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+
+import com.icehufs.icebreaker.domain.codingzone.dto.object.SubjectAttendanceListItem;
+import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateRequestDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.request.PatchGroupInfRequestDto;
+import com.icehufs.icebreaker.domain.codingzone.service.CodingZoneService;
+
+import java.util.List;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassAssignRequestDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateRequestDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.request.HandleAuthRequestDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.request.PatchGroupInfRequestDto;
-import com.icehufs.icebreaker.domain.codingzone.service.CodingZoneService;
-
-import java.io.IOException;
-import java.util.List;
-
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/admin") // 'ICEbreaker' 코딩존 수업 등록 및 권한 부여 가능한 권한(과사조교) API 주소
@@ -34,21 +41,13 @@ import lombok.RequiredArgsConstructor;
 public class EntireAdminController {
 
     private final CodingZoneService codingzoneService;
-
-    @PostMapping("/upload-codingzone") // 수업 리스트 등록 API
-    public ResponseEntity<? super CodingZoneClassAssignResponseDto> CodingZoneClassAssignResponse(
-        @RequestBody @Valid List<CodingZoneClassAssignRequestDto> requestBody,
-        @AuthenticationPrincipal String email
-    ){
-        ResponseEntity<? super CodingZoneClassAssignResponseDto> response = codingzoneService.codingzoneClassAssign(requestBody, email);
-        return response;
-    }
+    private final AttendanceService attendanceService;
 
     @PostMapping("/upload-group") //특정 (A/B)조 정보 등록 API
     public ResponseEntity<? super GroupInfUpdateResponseDto> uploadInf(
         @RequestBody @Valid List<GroupInfUpdateRequestDto> requestBody,
         @AuthenticationPrincipal String email
-    ){
+    ) {
         ResponseEntity<? super GroupInfUpdateResponseDto> response = codingzoneService.uploadInf(requestBody, email);
         return response;
     }
@@ -57,7 +56,7 @@ public class EntireAdminController {
     public ResponseEntity<? super GetListOfGroupInfResponseDto> getList(
         @PathVariable String groupId,
         @AuthenticationPrincipal String email
-    ){
+    ) {
         ResponseEntity<? super GetListOfGroupInfResponseDto> response = codingzoneService.getList(groupId, email);
         return response;
     }
@@ -71,77 +70,40 @@ public class EntireAdminController {
         return response;
     }
 
-    @DeleteMapping("/delete-class/{classNum}") //등록된 특정 수업 삭제 API
-    public ResponseEntity<? super DeleteClassResponseDto> deleteClass(
-        @PathVariable Integer classNum,
-        @AuthenticationPrincipal String email
+    @GetMapping("/codingzones")
+    public ResponseEntity<ResponseDto<SubjectMappingInfoResponseDto>> getCodingZonesByDate(@RequestParam("date") String date) {
 
-    ){
-        ResponseEntity<? super DeleteClassResponseDto> response = codingzoneService.deleteClass(classNum, email);
-        return response;
+        SubjectMappingInfoResponseDto subjectIdNameMap = codingzoneService.getClassNamesWithSubjectIdsByDate(date);
+        return ResponseEntity.ok(ResponseDto.success("특정 날짜에 이루어진 코딩존 교과목 리스트 조회 성공.", subjectIdNameMap));
     }
 
-    @GetMapping("/student-list") // 해당학기에 출/결한 모든 학생을 리스트로 반환 API
-    public ResponseEntity<? super GetCodingZoneStudentListResponseDto> getStudentList(
-        @AuthenticationPrincipal String email
-    ){
-        ResponseEntity<? super GetCodingZoneStudentListResponseDto> response = codingzoneService.getStudentList(email);
-        return response;
-    } 
-
-    @DeleteMapping("/delete-allinf") // 코딩존 관련 모든 정보 초기화(코딩존 조교 권한 박할까지) API
-    public ResponseEntity<? super DeleteAllInfResponseDto> deleteAll(
-        @AuthenticationPrincipal String email
-
-    ){
-        ResponseEntity<? super DeleteAllInfResponseDto> response = codingzoneService.deleteAll(email);
-        return response;
-    }
-
-
-    @PatchMapping("/give-auth") //사용자 특정 권한 부여 API
-    public ResponseEntity<? super GiveAuthResponseDto> giveAuth(
-        @RequestBody @Valid HandleAuthRequestDto requestBody,
-        @AuthenticationPrincipal String email
+    @GetMapping("/attendances/{classNum}")
+    public ResponseEntity<ResponseDto<List<ReservationStudentDto>>> getReservationStudents(
+            @PathVariable Integer classNum
     ) {
-        ResponseEntity<? super GiveAuthResponseDto> response = codingzoneService.giveAuth(email, requestBody);
-        return response;
+        List<ReservationStudentDto> studentList = attendanceService.getReservationStudentsByClassNum(classNum);
+        return ResponseEntity.ok(ResponseDto.success("특정 일에 특정 조교의 코딩존에 참여한 학생 리스트 조회 성공.", studentList));
     }
 
-    @PatchMapping("/deprive-auth") //사용자 특정 권한 박탈 API
-    public ResponseEntity<? super DepriveAuthResponseDto> depriveAuth(
-        @RequestBody @Valid HandleAuthRequestDto requestBody,
-        @AuthenticationPrincipal String email
+    @GetMapping("/entire-attendance/{subjectId}/export")
+    public ResponseEntity<Resource> getEntireAttendanceExcelFile(@PathVariable Integer subjectId) {
+        ByteArrayResource excelFile = attendanceService.getEntireAttendanceExcelFile(subjectId);
+        String filename = "codingzone" + subjectId + "_entire_attendance.xlsx";
+
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+            .body(excelFile);
+    }
+
+    @GetMapping("/entire-attendance/{subjectId}")
+    public ResponseEntity<ResponseDto<EntireAttendanceResponseDto>> getEntireAttendanceList(
+            @PathVariable Integer subjectId
     ) {
-        ResponseEntity<? super DepriveAuthResponseDto> response = codingzoneService.depriveAuth(email, requestBody);
-        return response;
-    }
-
-    @GetMapping("/excel/attendance/grade1")
-    public ResponseEntity<?> downloadArticleExcel() {
-        try {
-            ByteArrayResource excelFile = codingzoneService.generateAttendanceExcelOfGrade1();
-
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=CodingZone1.xlsx") // 클라이언트가 이 요청을 받으면 파일을 자동으로 다운로드하도록 설정
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM) // 바이너리 파일(엑셀, PDF 등) 전송에 적합한 MIME 타입.
-                    .body(excelFile);
-        } catch (IOException e) {
-            return DownloadArticleExcelResponseDto.failed();
-        }
-    }
-
-    @GetMapping("/excel/attendance/grade2")
-    public ResponseEntity<?> downloadArticleExcel2() {
-        try {
-            ByteArrayResource excelFile = codingzoneService.generateAttendanceExcelOfGrade2();
-
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=CodingZone2.xlsx") // 클라이언트가 이 요청을 받으면 파일을 자동으로 다운로드하도록 설정
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM) // 바이너리 파일(엑셀, PDF 등) 전송에 적합한 MIME 타입.
-                    .body(excelFile);
-        } catch (IOException e) {
-            return DownloadArticleExcelResponseDto.failed();
-        }
+        List<SubjectAttendanceListItem> studentList = attendanceService.getEntireAttendanceList(subjectId);
+        EntireAttendanceResponseDto response = new EntireAttendanceResponseDto(studentList);
+        return ResponseEntity.ok(
+                ResponseDto.success("모든 수강생들의 출/결 정보 조회 성공.", response)
+        );  
     }
 }

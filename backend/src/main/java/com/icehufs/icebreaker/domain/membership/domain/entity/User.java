@@ -1,22 +1,19 @@
 package com.icehufs.icebreaker.domain.membership.domain.entity;
 
+import com.icehufs.icebreaker.domain.membership.domain.exception.DuplicatePasswordException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 import com.icehufs.icebreaker.domain.auth.dto.request.SignUpRequestDto;
-import com.icehufs.icebreaker.domain.membership.dto.request.PatchUserPassRequestDto;
-import com.icehufs.icebreaker.domain.membership.dto.request.PatchUserRequestDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity
 @Getter
 @Table(name = "user")
@@ -34,13 +31,16 @@ public class User {
     @Column(name = "user_name")
     private String name;
 
-    public void patchUser(PatchUserRequestDto dto){
-        this.studentNum = dto.getStudentNum();
-        this.name = dto.getName();
+    public void changeUserInfo(String studentNum, String name){
+        this.studentNum = studentNum;
+        this.name = name;
     }
 
-    public void patchUserPass(PatchUserPassRequestDto dto){
-        this.password = dto.getPassword();
+    public void changeUserPassword(String password){
+        if (this.password.equals(password)) {
+            throw new DuplicatePasswordException("현재 비밀번호와 변경하려는 비밀번호가 동일합니다.");
+        }
+        this.password = password;
     }
 
     public User(SignUpRequestDto dto) {
@@ -48,9 +48,5 @@ public class User {
         this.studentNum = dto.getStudentNum();
         this.password = dto.getPassword();
         this.name = dto.getName();
-
     }
-
-
 }
-

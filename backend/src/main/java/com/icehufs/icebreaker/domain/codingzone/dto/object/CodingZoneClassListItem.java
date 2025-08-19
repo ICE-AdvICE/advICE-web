@@ -22,7 +22,7 @@ public class CodingZoneClassListItem {
     private int maximumNumber;
     private String className;
     private String weekDay;
-    private int grade;
+    private int subjectId;
 
     public CodingZoneClassListItem(CodingZoneClass codingZoneClass){
         this.classNum = codingZoneClass.getClassNum();
@@ -31,7 +31,7 @@ public class CodingZoneClassListItem {
         this.weekDay = codingZoneClass.getWeekDay();
         this.maximumNumber = codingZoneClass.getMaximumNumber();
         this.className = codingZoneClass.getClassName();
-        this.grade = codingZoneClass.getGrade();
+        this.subjectId = codingZoneClass.getSubject().getId();
         this.classDate = codingZoneClass.getClassDate();
         this.currentNumber = codingZoneClass.getCurrentNumber();
     }

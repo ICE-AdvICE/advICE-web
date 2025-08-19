@@ -1,20 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import '../css/codingzone/codingzone-main.css';
+import React, { useState, useEffect } from "react";
+import "../css/codingzone/codingzone-main.css";
+import "../css/codingzone/codingzone_attend.css";
 import { useCookies } from "react-cookie";
-import CzCard from '../../widgets/layout/CzCard/czCard';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { deleteClass } from '../../entities/api/CodingZone/AdminApi.js';
-import { checkAdminType } from '../../features/api/Admin/UserApi.js';
-import { getAvailableClassesForNotLogin } from '../../features/api/Admin/Codingzone/ClassApi.js';
-import InquiryModal from './InquiryModal';
+import CzCard from "../../widgets/layout/CzCard/czCard";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import { deleteClass } from "../../entities/api/CodingZone/AdminApi.js";
+import { checkAdminType } from "../../features/api/Admin/UserApi.js";
+import { getAvailableClassesForNotLogin } from "../../features/api/Admin/Codingzone/ClassApi.js";
+import InquiryModal from "./InquiryModal";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Slider from 'react-slick';
-import { getAttendanceCount, getcodingzoneListRequest } from '../../features/api/CodingzoneApi.js';
-import { deleteCodingZoneClass, reserveCodingZoneClass } from '../../entities/api/CodingZone/StudentApi.js';
-const ClassList = ({ userReservedClass, onDeleteClick, classList, handleCardClick, handleToggleReservation, isAdmin }) => {
+import Slider from "react-slick";
+import {
+  getAttendanceCount,
+  getcodingzoneListRequest,
+} from "../../features/api/CodingzoneApi.js";
+import {
+  deleteCodingZoneClass,
+  reserveCodingZoneClass,
+} from "../../entities/api/CodingZone/StudentApi.js";
+import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네이게이션 바 컴포넌트
+import BannerSlider from "../../shared/ui/Banner/BannerSlider"; // ✅ 추가(juhui): 슬라이더 컴포넌트
+import CalendarInput from "../../widgets/Calendar/CalendarInput"; // 달력
+import { isWeekendYMD } from "../../shared/lib/date"; // 달력
+import { getColorById } from "../Coding-zone/subjectColors";
+import { fetchCodingzoneSubjectsByDate } from "../../entities/api/CodingZone/AdminApi";
+import SubjectCard from "../../widgets/subjectCard/subjectCard.js";
+
+const ClassList = ({
+  userReservedClass,
+  onDeleteClick,
+  classList,
+  handleCardClick,
+  handleToggleReservation,
+  isAdmin,
+}) => {
   return (
-    <div className='cz-card'>
+    <div className="cz-card">
       {classList.map((classItem) => (
         <CzCard
           key={classItem.classNum}
@@ -33,7 +55,8 @@ const ClassList = ({ userReservedClass, onDeleteClick, classList, handleCardClic
           isReserved={classItem.isReserved}
           disableReserveButton={
             userReservedClass &&
-            (userReservedClass.classNum !== classItem.classNum && userReservedClass.grade === classItem.grade)
+            userReservedClass.classNum !== classItem.classNum &&
+            userReservedClass.grade === classItem.grade
           }
         />
       ))}
@@ -44,19 +67,66 @@ const ClassList = ({ userReservedClass, onDeleteClick, classList, handleCardClic
 const CodingMain = () => {
   const [classList, setClassList] = useState([]);
   const [grade, setGrade] = useState(1);
-  const [cookies, setCookie] = useCookies(['accessToken']);
+  const [cookies, setCookie] = useCookies(["accessToken"]);
   const [originalClassList, setOriginalClassList] = useState([]);
   const [attendanceCount, setAttendanceCount] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const [selectedZone, setSelectedZone] = useState(1);
-  const [selectedButton, setSelectedButton] = useState('codingzone');
   const [userReservedClass, setUserReservedClass] = useState(null);
-  const [selectedDay, setSelectedDay] = useState('');
+  const [selectedDay, setSelectedDay] = useState("");
   const [isRendered, setIsRendered] = useState(false);
-  const [userRole, setUserRole] = useState('');
+  const [userRole, setUserRole] = useState("");
   const [showNoClassesImage, setShowNoClassesImage] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null); // 달력
+  const [subjects, setSubjects] = useState([]); // ★ NEW [{id, name}]
+  const [isSubjectsLoading, setIsSubjectsLoading] = useState(false); // ★ NEW
+  const [selectedSubjectId, setSelectedSubjectId] = useState(null); // ★ NEW
+  const [selectedDateYMD, setSelectedDateYMD] = useState(""); // ★ NEW: YYYY-MM-DD 문자열
+
+  // ★ NEW: 날짜 -> YYYY-MM-DD
+  // 기존 dateToYMD를 아래로 교체
+  const dateToYMD = (val) => {
+    if (!val) return "";
+
+    // 이미 YYYY-MM-DD 형태면 그대로 정규화해서 반환
+    if (typeof val === "string") {
+      // 2025-8-3, 2025/8/3, 20250803 모두 허용
+      const m = val.match(/^(\d{4})[./-]?(\d{1,2})[./-]?(\d{1,2})$/);
+      if (m) {
+        const y = m[1];
+        const mo = m[2].padStart(2, "0");
+        const d = m[3].padStart(2, "0");
+        return `${y}-${mo}-${d}`;
+      }
+      // 그 외 문자열은 Date 파싱 시도
+      const dt = new Date(val);
+      if (!Number.isNaN(dt.getTime())) {
+        return dateToYMD(dt); // 재귀로 포맷
+      }
+      return "";
+    }
+
+    // 숫자(timestamp) 또는 Date 객체 처리
+    const dt = val instanceof Date ? val : new Date(val);
+    if (Number.isNaN(dt.getTime())) return "";
+
+    const y = dt.getFullYear();
+    const m = String(dt.getMonth() + 1).padStart(2, "0");
+    const d = String(dt.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  };
+
+  const count = subjects.length; // ★ NEW
+  const gridClass =
+    count === 4
+      ? "subject-grid cols-2x2"
+      : count === 3
+      ? "subject-grid layout-3"
+      : count === 2
+      ? "subject-grid cols-2"
+      : "subject-grid cols-1"; // 1개
 
   useEffect(() => {
     if (cookies.accessToken) {
@@ -74,12 +144,10 @@ const CodingMain = () => {
         const response = await checkAdminType(token, setCookie, navigate);
         if (response === "EA") {
           setIsAdmin(true);
-        }
-        else if (response === "SU") {
-          setUserRole('SU');
-        }
-        else if (response === "CA") {
-          setUserRole('CA');
+        } else if (response === "SU") {
+          setUserRole("SU");
+        } else if (response === "CA") {
+          setUserRole("CA");
         }
       }
     };
@@ -87,7 +155,7 @@ const CodingMain = () => {
   }, [cookies.accessToken]);
 
   // 요일과 슬라이더 설정을 상수로 정의
-  const daysOfWeek = ['월요일', '화요일', '수요일', '목요일', '금요일'];
+  const daysOfWeek = ["월요일", "화요일", "수요일", "목요일", "금요일"];
 
   // [과사 권한이 있는 계정] 삭제 버튼
   const handleDelete = async (classNum) => {
@@ -99,8 +167,10 @@ const CodingMain = () => {
     const result = await deleteClass(classNum, token, setCookie, navigate);
     if (result) {
       alert("수업이 삭제되었습니다.");
-      setClassList(prevClassList => {
-        const updatedList = prevClassList.filter(item => item.classNum !== classNum);
+      setClassList((prevClassList) => {
+        const updatedList = prevClassList.filter(
+          (item) => item.classNum !== classNum
+        );
         if (updatedList.length === 0) {
           setShowNoClassesImage(true);
         } else {
@@ -115,13 +185,14 @@ const CodingMain = () => {
 
   // 시간 문자열을 분 단위 숫자로 변환하여 정렬
   const timeToNumber = (timeStr) => {
-    const [hours, minutes] = timeStr.split(':').map(Number);
+    const [hours, minutes] = timeStr.split(":").map(Number);
     return hours * 60 + minutes;
   };
   // 수업 목록을 요일과 시간 순으로 정렬
   const sortClassList = (classList) => {
     return classList.sort((a, b) => {
-      const dayComparison = daysOfWeek.indexOf(a.weekDay) - daysOfWeek.indexOf(b.weekDay);
+      const dayComparison =
+        daysOfWeek.indexOf(a.weekDay) - daysOfWeek.indexOf(b.weekDay);
       if (dayComparison !== 0) {
         return dayComparison;
       }
@@ -140,9 +211,9 @@ const CodingMain = () => {
   const filterByDay = (day) => {
     if (selectedDay === day) {
       setClassList(originalClassList);
-      setSelectedDay('');
+      setSelectedDay("");
     } else {
-      const filteredData = originalClassList.filter(classItem => {
+      const filteredData = originalClassList.filter((classItem) => {
         return classItem.weekDay.toLowerCase() === day.toLowerCase();
       });
       setClassList(filteredData);
@@ -150,44 +221,43 @@ const CodingMain = () => {
     }
   };
 
-  useEffect(() => {
-    if (location.pathname === '/coding-zone') {
-      setSelectedButton('codingzone');
-    } else if (location.pathname.includes('/coding-zone/Codingzone_Attendance')) {
-      setSelectedButton('attendence');
-    }
-  }, [location.pathname]);
-
   const token = cookies.accessToken;
   /// 코딩존 수업 데이터를 가져오는 useEffect
   const fetchData = async () => {
     try {
       let classes = [];
       if (cookies.accessToken) {
-        const response = await getcodingzoneListRequest(cookies.accessToken, grade, setCookie, navigate);
+        const response = await getcodingzoneListRequest(
+          cookies.accessToken,
+          grade,
+          setCookie,
+          navigate
+        );
         if (response) {
           if (response.registedClassNum !== 0) {
-            classes = response.classList.map(classItem => ({
+            classes = response.classList.map((classItem) => ({
               ...classItem,
-              isReserved: classItem.classNum === response.registedClassNum
+              isReserved: classItem.classNum === response.registedClassNum,
             }));
-            const reservedClass = classes.find(classItem => classItem.isReserved);
+            const reservedClass = classes.find(
+              (classItem) => classItem.isReserved
+            );
             if (reservedClass) {
               setUserReservedClass(reservedClass);
             }
           } else {
-            classes = response.classList.map(classItem => ({
+            classes = response.classList.map((classItem) => ({
               ...classItem,
-              isReserved: false
+              isReserved: false,
             }));
           }
         }
       } else {
         const response = await getAvailableClassesForNotLogin(grade);
         if (response && response.length > 0) {
-          classes = response.map(classItem => ({
+          classes = response.map((classItem) => ({
             ...classItem,
-            isReserved: undefined
+            isReserved: undefined,
           }));
         }
       }
@@ -212,12 +282,17 @@ const CodingMain = () => {
     fetchData();
   }, [cookies.accessToken, grade]);
 
-  // 출석 횟수 
+  // 출석 횟수
   useEffect(() => {
     const fetchAttendance = async () => {
       const token = cookies.accessToken;
       if (token) {
-        const count = await getAttendanceCount(token, grade, setCookie, navigate);
+        const count = await getAttendanceCount(
+          token,
+          grade,
+          setCookie,
+          navigate
+        );
         setAttendanceCount(count);
       }
     };
@@ -234,15 +309,24 @@ const CodingMain = () => {
     try {
       let result;
       if (classItem.isReserved) {
-        result = await deleteCodingZoneClass(token, classItem.classNum, setCookie, navigate);
+        result = await deleteCodingZoneClass(
+          token,
+          classItem.classNum,
+          setCookie,
+          navigate
+        );
         if (result === true) {
           alert("예약 취소가 완료되었습니다.");
           setUserReservedClass(null);
           await fetchData();
         }
       } else {
-        result = await reserveCodingZoneClass(token, classItem.classNum, setCookie, navigate);
-
+        result = await reserveCodingZoneClass(
+          token,
+          classItem.classNum,
+          setCookie,
+          navigate
+        );
 
         if (result === "FC") {
           alert("예약 가능한 인원이 꽉 찼습니다.");
@@ -260,51 +344,15 @@ const CodingMain = () => {
     }
   };
 
-
-
-  const handleTabChange = (tab) => {
-    if (tab === 'attendence' && !cookies.accessToken) {
-      alert("로그인 후 이용 가능합니다.");
-      return;
-    }
-    setSelectedButton(tab);
-    if (tab === 'codingzone') {
-      navigate('/coding-zone');
-    } else if (tab === 'attendence') {
-      navigate('/coding-zone/Codingzone_Attendance');
-    }
-  };
-
-
-  const handleCardClick = (classItem) => {
-  };
+  const handleCardClick = (classItem) => {};
   // 수업 목록 업데이트
   const updateClassItem = (classNum, isReserved, newCurrentNumber) => {
-    const updatedList = classList.map(item =>
-      item.classNum === classNum ? { ...item, isReserved, currentNumber: newCurrentNumber } : item
+    const updatedList = classList.map((item) =>
+      item.classNum === classNum
+        ? { ...item, isReserved, currentNumber: newCurrentNumber }
+        : item
     );
     setClassList(updatedList);
-  };
-
-  const [showModal, setShowModal] = useState(false);
-
-  const handleOpenModal = () => {
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
-
-  const sliderSettings = {
-    dots: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 4000,
-    pauseOnHover: true
   };
 
   /*출석률 체크바 */
@@ -327,143 +375,193 @@ const CodingMain = () => {
     );
   };
 
+  // ★ NEW: selectedDate(달력 값) → YYYY-MM-DD 문자열 동기화
+  useEffect(() => {
+    setSelectedDateYMD(dateToYMD(selectedDate));
+  }, [selectedDate]);
+
+  // ★ NEW: EA + 날짜 선택 시 과목 목록 조회
+  useEffect(() => {
+    if (!isAdmin) return; // EA만 조회
+    if (!selectedDateYMD) {
+      setSubjects([]);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        setIsSubjectsLoading(true);
+        const res = await fetchCodingzoneSubjectsByDate(
+          selectedDateYMD,
+          cookies.accessToken,
+          setCookie,
+          navigate
+        );
+        if (cancelled) return;
+        if (res?.code === "SU") {
+          const classesMap = res.data?.classes ?? {};
+          const subs = Object.entries(classesMap).map(([id, name]) => ({
+            id: String(id),
+            name: String(name),
+          }));
+          setSubjects(subs);
+        } else {
+          setSubjects([]);
+        }
+      } finally {
+        if (!cancelled) setIsSubjectsLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [isAdmin, selectedDateYMD, cookies.accessToken, setCookie, navigate]); // ★ NEW
 
   return (
     <div className="codingzone-container">
-      <div className='select-container'>
-        <span> | </span>
-        <button
-          onClick={() => handleTabChange('codingzone')}
-          className={selectedButton === 'codingzone' ? 'selected' : ''}
-        >
-          코딩존 예약
-        </button>
-        <span> | </span>
-        <button
-          onClick={() => handleTabChange('attendence')}
-          className={selectedButton === 'attendence' ? 'selected' : ''}
-        >
-          출결 관리
-        </button>
-        <span> | </span>
-        <button
-          onClick={handleOpenModal}
-          className={selectedButton === 'inquiry' ? 'selected' : ''}
-        >
-          문의 하기
-        </button>
-        {showModal && <InquiryModal isOpen={showModal} onClose={handleCloseModal} />}
-        <span> | </span>
-      </div>
-
-      <Slider {...sliderSettings}>
-        <div className="codingzone-top-container">
-          <picture>
-            <source srcSet="/codingzone_main_v5.webp" type="image/webp" />
-            <img
-              src="/codingzone_main_v5.png"
-              alt="코딩존 메인 이미지 1"
-              className="codingzonetop2-image"
-              loading="eager"
-            />
-          </picture>
-        </div>
-        <div className="codingzone-top-container">
-          <picture>
-            <source srcSet="/coding-zone-main2.webp" type="image/webp" />
-            <img src="/coding-zone-main2.png" alt="코딩존 메인 이미지 2" className="codingzonetop2-image" />
-          </picture>
-        </div>
-        <div className="codingzone-top-container">
-          <picture>
-            <source srcSet="/coding-zone-main3.webp" type="image/webp" />
-            <img src="/coding-zone-main3.png" alt="코딩존 메인 이미지 3" className="codingzonetop2-image" />
-          </picture>
-        </div>
-      </Slider>
-      <div className='codingzone-body-container'>
+      <CodingZoneNavigation />
+      <BannerSlider />
+      <div className="codingzone-body-container">
         <div className="cz-category-top">
-          <div className="cz-category-date">
-            <button
-              className={`cz-1 ${selectedZone === 1 ? 'selected' : ''}`}
-              onClick={() => {
-                setGrade(1);
-                setSelectedZone(1);
-                setSelectedDay('');
-                setClassList(originalClassList);
-              }}>
-              코딩존 1
-            </button>
-            <button
-              className={`cz-2 ${selectedZone === 2 ? 'selected' : ''}`}
-              onClick={() => {
-                setGrade(2); setSelectedZone(2);
-                setSelectedDay(''); setClassList(originalClassList);
-              }}>
-              코딩존 2
-            </button>
-          </div>
-          <Link to="/coding-zone/Codingzone_Attendance" className='cz-count-container'>
-            {token && renderAttendanceProgress(attendanceCount)}
-          </Link>
-        </div>
-        <div className="codingzone-date">
-          {days.map((day, index) => (
-            <React.Fragment key={day.name}>
+          {isAdmin ? (
+            // 과사 조교(EA)에게만 달력 표시
+            <div className="cz-date-picker">
+              <CalendarInput
+                value={selectedDate}
+                onChange={setSelectedDate}
+                disabledDates={isWeekendYMD} // 주말 비활성
+                placeholder="조회할 날짜를 선택하세요"
+              />
+            </div>
+          ) : (
+            // 학생 조교/일반 학생에게는 기존 버튼 표시
+            <div className="cz-category-date">
               <button
-                onClick={() => filterByDay(day.name)}
-                className={selectedDay === day.name ? 'selected' : ''}
+                className={`cz-1 ${selectedZone === 1 ? "selected" : ""}`}
+                onClick={() => {
+                  setGrade(1);
+                  setSelectedZone(1);
+                  setSelectedDay("");
+                  setClassList(originalClassList);
+                }}
               >
-                <p>{day.label}</p>
+                코딩존 1
               </button>
-              {index < days.length - 1 && <span> | </span>}
-            </React.Fragment>
-          ))}
+              <button
+                className={`cz-2 ${selectedZone === 2 ? "selected" : ""}`}
+                onClick={() => {
+                  setGrade(2);
+                  setSelectedZone(2);
+                  setSelectedDay("");
+                  setClassList(originalClassList);
+                }}
+              >
+                코딩존 2
+              </button>
+            </div>
+          )}
+          {!isAdmin && (
+            <Link
+              to="/coding-zone/Codingzone_Attendance"
+              className="cz-count-container"
+            >
+              {cookies.accessToken && renderAttendanceProgress(attendanceCount)}
+            </Link>
+          )}
         </div>
-        <div className='category-name-container'>
-          <div className="codingzone-title">
-            <p className='weekDay'>요일</p>
-            <p className='weekDate'>날짜</p>
-            <p className='weekTime'>시간</p>
-            <p className='card-hidden-space'></p>
-            <p className='weeksubject'>과목명</p>
-            <p className='weekperson'>조교</p>
-            <p className='weekcount'>인원</p>
-            {(cookies.accessToken || isAdmin) && isRendered && (
-              <p className='registerbutton'></p>
+        {isAdmin && (
+          <div className="panel-gray" style={{ margin: "40px" }}>
+            {!selectedDateYMD ? (
+              <div className="panel-empty">
+                조회하고자 하는 날짜를 입력해주세요.
+              </div>
+            ) : isSubjectsLoading ? (
+              <div className="panel-empty">과목을 불러오는 중…</div>
+            ) : subjects.length === 0 ? (
+              <div className="panel-empty">
+                현재 날짜에 등록된 코딩존이 없습니다.
+              </div>
+            ) : (
+              <div className={`panel-inner ${gridClass}`}>
+                <div className="subject-grid-inner">
+                  {subjects.slice(0, 4).map((s) => (
+                    <SubjectCard
+                      key={s.id}
+                      title={s.name}
+                      color={getColorById(s.id)}
+                      onClick={() => setSelectedSubjectId(s.id)}
+                    />
+                  ))}
+                </div>
+              </div>
             )}
           </div>
-        </div>
-        <div className="codingzone-list">
-  {/* 항상 렌더되도록 유지하고, show/hide는 CSS 클래스 이름으로 제어 */}
-  <picture className={`no-classes-image ${showNoClassesImage ? 'visible' : 'hidden'}`}>
-    <source srcSet="/Codingzone-noregist.webp" type="image/webp" />
-    <img
-      src="/Codingzone-noregist.png"
-      alt="수업이 없습니다"
-      className="no-classes-img"
-      width="600"
-      height="260"
-      loading="eager"
-      decoding="sync"
-    />
-  </picture>
+        )}
 
-  {/* 수업이 있을 경우에만 ClassList 보여줌 */}
-  {!showNoClassesImage && (
-    <ClassList
-      classList={classList}
-      handleCardClick={handleCardClick}
-      handleToggleReservation={handleToggleReservation}
-      isAdmin={isAdmin}
-      onDeleteClick={handleDelete}
-      userReservedClass={userReservedClass}
-      token={token}
-    />
-  )}
-</div>
-
-
+        {!isAdmin && (
+          <div className="codingzone-date">
+            {days.map((day, index) => (
+              <React.Fragment key={day.name}>
+                <button
+                  onClick={() => filterByDay(day.name)}
+                  className={selectedDay === day.name ? "selected" : ""}
+                >
+                  <p>{day.label}</p>
+                </button>
+                {index < days.length - 1 && <span> | </span>}
+              </React.Fragment>
+            ))}
+          </div>
+        )}
+        {!isAdmin && (
+          <div className="category-name-container">
+            <div className="codingzone-title">
+              <p className="weekDay">요일</p>
+              <p className="weekDate">날짜</p>
+              <p className="weekTime">시간</p>
+              <p className="card-hidden-space"></p>
+              <p className="weeksubject">과목명</p>
+              <p className="weekperson">조교</p>
+              <p className="weekcount">인원</p>
+              {(cookies.accessToken || isAdmin) && isRendered && (
+                <p className="registerbutton"></p>
+              )}
+            </div>
+          </div>
+        )}
+        {!isAdmin && (
+          <div className="codingzone-list">
+            {/* 항상 렌더되도록 유지하고, show/hide는 CSS 클래스 이름으로 제어 */}
+            <picture
+              className={`no-classes-image ${
+                showNoClassesImage ? "visible" : "hidden"
+              }`}
+            >
+              <source srcSet="/Codingzone-noregist.webp" type="image/webp" />
+              <img
+                src="/Codingzone-noregist.png"
+                alt="수업이 없습니다"
+                className="no-classes-img"
+                width="600"
+                height="260"
+                loading="eager"
+                decoding="sync"
+              />
+            </picture>
+            {/* 수업이 있을 경우에만 ClassList 보여줌 */}
+            {!showNoClassesImage && (
+              <ClassList
+                classList={classList}
+                handleCardClick={handleCardClick}
+                handleToggleReservation={handleToggleReservation}
+                isAdmin={isAdmin}
+                onDeleteClick={handleDelete}
+                userReservedClass={userReservedClass}
+                token={token}
+              />
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

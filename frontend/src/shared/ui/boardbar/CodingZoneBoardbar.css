@@ -1,0 +1,150 @@
+/* 버튼 컨테이너 */
+.cza_button_container {
+  display: flex; /* 기본값 : row */
+  width: 100%;
+  margin: 1.7rem 0 1.0625rem 0;
+  justify-content: center;
+  align-items: center;
+  gap: 1.875rem;
+  flex-wrap: nowrap;
+}
+
+/* 버튼 공통 */
+.btn-attend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+
+  font-size: 1rem;
+  font-weight: 400;
+  color: #adacac;
+  padding: 0.875em 1.5625em;
+
+  border: 0.0625em solid #adacac;
+  border-radius: 0.625em;
+  background-color: #fff;
+
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease,
+    border-color 0.2s ease;
+  white-space: nowrap;
+}
+
+/* 세로 구분선 */
+.divider {
+  flex: 0 0 0.0625rem;
+  width: 0.0625em;
+  background: #868181;
+  align-self: stretch;
+  opacity: 0.6;
+}
+
+/* 활성 상태 */
+.btn-attend.active,
+.btn-attend:hover,
+.btn-attend:active {
+  background-color: #052940;
+  color: #fff;
+  border-color: #052940;
+  font-weight: 600;
+}
+
+/* 일반 학생 전용 버튼 컨테이너 */
+.cza_button_container.student {
+  margin: 2rem 0 1.5rem 0;
+  margin-inline: auto;
+}
+
+/* 일반 학생 전용 버튼 */
+.btn-attend.student {
+  padding: 0.85em 1.6em;
+  margin-inline: auto;
+  position: relative;
+  left: 9.5px;
+}
+
+/* 학생 전용일 땐 구분선 제거 */
+.cza_button_container.student .divider {
+  display: none;
+}
+
+/* 반응형 */
+/* ≤ 1280px 반응형 */
+@media (max-width: 1280px) {
+  .cza_button_container {
+    margin: 1.7 0 0.84rem 0;
+  }
+  .btn-attend {
+    font-size: 0.9rem;
+  }
+  .cza_button_container.student {
+    margin: 1.5rem 0 1.7rem 0;
+    position: relative;
+    right: 0.2px;
+  }
+}
+
+/* ≤ 1024px 반응형 */
+@media (max-width: 1024px) {
+  .cza_button_container {
+    margin: 1.95rem 0 0.7rem 0;
+  }
+  .btn-attend {
+    font-size: 0.74rem;
+  }
+  .cza_button_container.student {
+    margin: 1.3rem 0 1.6rem 0;
+    position: relative;
+    right: 0.1rem;
+  }
+}
+
+/* ≤ 768px 반응형 */
+@media (max-width: 768px) {
+  .cza_button_container {
+    margin: 1.85rem 0 0.7rem 0;
+  }
+  .btn-attend {
+    font-size: 0.7rem;
+  }
+  .cza_button_container.student {
+    margin: 1.3rem 0 1.6rem 0;
+    position: relative;
+    right: 0.28rem;
+  }
+}
+
+/* ≤ 480px 반응형 */
+@media (max-width: 480px) {
+  .cza_button_container {
+    flex-wrap: wrap; /* 줄바꿈 허용 */
+    justify-content: center;
+    gap: 0.75rem;
+    margin: 1.4rem 0 0.35rem 0;
+  }
+
+  /* 세로 구분선 숨김 */
+  .cza_button_container .divider {
+    display: none;
+  }
+
+  .btn-attend {
+    flex: 0 1 calc(25% - 0.75rem);
+    width: calc(30% - 0.75rem);
+    min-width: unset; /* 데스크톱용 최소폭 해제 */
+    padding: 0.5rem 0.7rem;
+    font-size: 0.55rem;
+  }
+  .cza_button_container.student {
+    margin: 1.2rem 0 1.5rem 0;
+    position: relative;
+    right: 0.315rem;
+  }
+
+  .cza_button_container.student .btn-attend.student {
+    flex: 0 0 auto;
+    width: auto;
+    padding: 0.5rem 1rem !important;
+  }
+}
