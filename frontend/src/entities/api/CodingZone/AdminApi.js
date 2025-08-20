@@ -493,3 +493,61 @@ export const toggleAttendanceByRegistNum = async (
     return { code: code ?? "UNKNOWN_ERROR", message: message ?? "오류" };
   }
 };
+
+// 15. 코딩존 등록 현황에서 단건 리스트 삭제하기(ADMIN : 과사조교)
+
+export const adminDeleteCodingzoneClassByClassNum = async (
+  classNum,
+  token,
+  setCookie,
+  navigate
+) => {
+  try {
+    const res = await axios.delete(
+      `${API_DOMAIN_ADMIN}/codingzones/classes/${classNum}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    const { code, message, data } = res.data || {};
+    return { ok: code === "SU", code, message, data: data ?? null };
+  } catch (error) {
+    if (!error.response) {
+      return {
+        ok: false,
+        code: "NETWORK_ERROR",
+        message: "네트워크 상태를 확인해주세요.",
+        data: null,
+      };
+    }
+    const { code, message } = error.response.data || {};
+
+    // 토큰 만료 → 재발급 후 1회 재시도
+    if (code === "ATE") {
+      const newToken = await refreshTokenRequest(setCookie, token, navigate);
+      if (newToken?.accessToken) {
+        return adminDeleteCodingzoneClassByClassNum(
+          classNum,
+          newToken.accessToken,
+          setCookie,
+          navigate
+        );
+      }
+      // 재발급 실패 → 로그아웃 처리
+      setCookie("accessToken", "", { path: "/", expires: new Date(0) });
+      navigate("/");
+      return {
+        ok: false,
+        code: "TOKEN_EXPIRED",
+        message: "토큰이 만료되었습니다. 다시 로그인해주세요.",
+        data: null,
+      };
+    }
+
+    // 기타 실패 코드 일관 처리
+    return {
+      ok: false,
+      code: code ?? "UNKNOWN_ERROR",
+      message: message ?? "삭제 실패",
+      data: null,
+    };
+  }
+};

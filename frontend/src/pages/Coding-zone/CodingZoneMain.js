@@ -27,6 +27,7 @@ import { getColorById } from "../Coding-zone/subjectColors";
 import { fetchCodingzoneSubjectsByDate } from "../../entities/api/CodingZone/AdminApi";
 import SubjectCard from "../../widgets/subjectCard/subjectCard.js";
 import SubjectClassesTable from "../../widgets/CodingZone/SubjectClassesTable";
+import { adminDeleteCodingzoneClassByClassNum } from "../../entities/api/CodingZone/AdminApi.js";
 
 const ClassList = ({
   userReservedClass,
@@ -87,6 +88,7 @@ const CodingMain = () => {
   const [selectedDateYMD, setSelectedDateYMD] = useState(""); // ★ NEW: YYYY-MM-DD 문자열
   const [selectedSubjectName, setSelectedSubjectName] = useState("");
   const [backIcon, setBackIcon] = useState("/leftnone.png");
+  const [refreshing, setRefreshing] = useState(false);
 
   // ★ 과목 선택 해제 (그리드로 되돌아오기)
   const clearSubjectSelection = () => {
@@ -173,8 +175,13 @@ const CodingMain = () => {
       alert("로그인이 필요합니다.");
       return;
     }
-    const result = await deleteClass(classNum, token, setCookie, navigate);
-    if (result) {
+    const result = await adminDeleteCodingzoneClassByClassNum(
+      classNum,
+      token,
+      setCookie,
+      navigate
+    );
+    if (result.ok) {
       alert("수업이 삭제되었습니다.");
       setClassList((prevClassList) => {
         const updatedList = prevClassList.filter(
@@ -188,10 +195,54 @@ const CodingMain = () => {
         return updatedList;
       });
     } else {
-      alert("수업 삭제에 실패했습니다.");
+      switch (result.code) {
+        case "ALREADY_RESERVED_CLASS":
+          alert("이미 예약자가 있는 수업은 삭제할 수 없습니다.");
+          break;
+        case "AF":
+          alert("권한이 없습니다.");
+          break;
+        case "DBE":
+          alert("데이터베이스 오류가 발생했습니다.");
+          break;
+        case "TOKEN_EXPIRED":
+          break;
+        default:
+          alert(result.message ?? "수업 삭제에 실패했습니다.");
+      }
     }
   };
 
+  const refetchSubjectsForDate = async () => {
+    if (!selectedDateYMD || !isAdmin) return;
+    try {
+      setRefreshing(true);
+      const res = await fetchCodingzoneSubjectsByDate(
+        selectedDateYMD,
+        cookies.accessToken,
+        setCookie,
+        navigate
+      );
+      if (res?.code === "SU") {
+        const classesMap = res.data?.classes ?? {};
+        const subs = Object.entries(classesMap).map(([id, name]) => ({
+          id: String(id),
+          name: String(name),
+        }));
+        setSubjects(subs);
+      } else {
+        setSubjects([]);
+      }
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+  const handleEmptyAfterDelete = async () => {
+    setSelectedSubjectId(null);
+    setSelectedSubjectName("");
+    await refetchSubjectsForDate();
+  };
   // 시간 문자열을 분 단위 숫자로 변환하여 정렬
   const timeToNumber = (timeStr) => {
     const [hours, minutes] = timeStr.split(":").map(Number);
@@ -420,16 +471,13 @@ const CodingMain = () => {
             name: String(name),
           }));
           setSubjects(subs);
-          // ★ NEW: 현재 선택된 과목이 목록에 없으면 선택 해제
-          if (
-            subs.length > 0 &&
-            selectedSubjectId &&
-            !subs.some((s) => String(s.id) === String(selectedSubjectId))
-          ) {
+          if (subs.length === 0) {
             setSelectedSubjectId(null);
             setSelectedSubjectName("");
           }
         } else {
+          // ❗요청 실패/에러일 때는 "과목 선택"을 건드리지 말고 유지
+          // (일시적 오류/지연으로 튕기는 현상 방지)
           setSubjects([]);
           setSelectedSubjectId(null);
           setSelectedSubjectName("");
@@ -568,6 +616,7 @@ const CodingMain = () => {
                   accessToken={cookies.accessToken}
                   setCookie={setCookie}
                   navigate={navigate}
+                  onEmptyAfterDelete={handleEmptyAfterDelete}
                 />
               </div>
             </div>
