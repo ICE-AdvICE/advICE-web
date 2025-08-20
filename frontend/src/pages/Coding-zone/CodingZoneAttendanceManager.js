@@ -40,8 +40,6 @@ const CodingZoneAttendanceManager = () => {
 
   const [loadingSubjects, setLoadingSubjects] = useState(false);
   const [loadingAttendance, setLoadingAttendance] = useState(false);
-  
-
 
   const handlecodingzonemanager = () => {
     navigate(`/coding-zone/Codingzone_Manager`);
@@ -170,7 +168,6 @@ const CodingZoneAttendanceManager = () => {
   }, [token, selectedSubjectId, setCookie, navigate]);
 
 
-  
 
   const handleDownload = async () => {
     if (!token) {

@@ -275,6 +275,7 @@ body {
   top: -9999px;
 }
 
+
 .no-classes-image.visible {
   opacity: 1;
   position: static;
@@ -319,6 +320,13 @@ body {
   height: 100%;
   background-color: #052940;
   transition: width 0.5s ease-in-out;
+}
+/* 달력 입력칸 가운데 정렬 */
+.cz-date-picker {
+  position: absolute;
+  z-index: 1000;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .cz-date-picker {

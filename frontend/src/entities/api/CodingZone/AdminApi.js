@@ -9,6 +9,7 @@ const ATTENDANCE_TOGGLE_URL = (registNum) =>
 const DELETE_CLASS_URL = (classNum) =>
   `${DOMAIN}/api/admin/delete-class/${classNum}`;
 
+
 // 매핑한 전체 과목 리스트 조회 API (subjectName  subjectId)
 export const fetchAllSubjects = async (token, setCookie, navigate) => {
   try {
@@ -100,6 +101,7 @@ export const fetchAssistantsBySubjectId = async (
     return error.response.data;
   }
 };
+
 
 //1. 코딩존 수업  기존의 조 등록 API
 export const uploadClassForWeek = async (
