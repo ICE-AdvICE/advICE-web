@@ -24,10 +24,10 @@ public class GroupInf {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id; // 수업 고유 번호
+    private int id;
 
     @Column(name = "class_num")
-    private int classNum;
+    private int classNum; // 수업 고유 번호
 
     @Column(name = "assistant_name")
     private String assistantName; // 조교 이름
