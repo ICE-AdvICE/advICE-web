@@ -5,7 +5,6 @@ import com.icehufs.icebreaker.domain.codingzone.dto.response.GroupInfUpdateRespo
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfGroupInfResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneRegisterResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.CodingZoneCanceResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GetCountOfAttendResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetPersAttendListItemResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.GetReservedClassListItemResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.SubjectMappingInfoResponseDto;
@@ -19,9 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.time.DayOfWeek;
-import java.time.ZonedDateTime;
-import java.time.ZoneId;
-import java.time.LocalTime;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
@@ -209,51 +206,6 @@ public class CodingZoneServiceImplement implements CodingZoneService {
         return CodingZoneCanceResponseDto.success();
     }
 
-    @Override
-    public ResponseEntity<? super GetCountOfAttendResponseDto> getAttend(Integer subjectId, String email) {
-        Integer NumOfAttend = 0;
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-        try {
-            // 사용자 계정이 존재하는지(로그인 시간이 초과됐는지) 확인하는 코드
-            boolean existedUser = userRepository.existsByEmail(email);
-            if (!existedUser) return GetCountOfAttendResponseDto.notExistUser();
-
-            // 학년 검증
-            if (subjectId != 1 && subjectId != 2) return GetCountOfAttendResponseDto.validationFailed();
-
-            List<CodingZoneClass> classes = codingZoneClassRepository.findAllBySubjectId(subjectId);
-            List<CodingZoneRegister> registratedClassList = codingZoneRegisterRepository.findAllByCodingZoneClassIn(classes);
-
-            if (registratedClassList.isEmpty()) return GetCountOfAttendResponseDto.success(NumOfAttend);
-
-            for (CodingZoneRegister register : registratedClassList) {
-                if (register.getUserEmail().equals(email)) {
-                    String attend = register.getAttendance();
-
-                    if (attend.equals("1")) {
-                        NumOfAttend++;
-                    }
-                    if (attend.equals("0")) {
-                        CodingZoneClass codingZoneClass = register.getCodingZoneClass();
-
-                        LocalDate classDate = LocalDate.parse(codingZoneClass.getClassDate()); // 예: "2024-11-01"
-                        LocalTime classTime = LocalTime.parse(codingZoneClass.getClassTime()); // 예: "10:00:00"
-
-                        ZonedDateTime classDateTime = ZonedDateTime.of(classDate, classTime, ZoneId.of("Asia/Seoul"));
-
-                        // classDateTime이 now보다 과거일 경우 NumOfAttend 감소
-                        if (classDateTime.isBefore(now)) {
-                            NumOfAttend--;
-                        }
-                    }
-                }
-            }
-            return GetCountOfAttendResponseDto.success(NumOfAttend);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-    }
 
     @Override
     public ResponseEntity<? super GetPersAttendListItemResponseDto> getPerAttendList(String email) {

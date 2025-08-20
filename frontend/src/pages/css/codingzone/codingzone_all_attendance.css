@@ -14,8 +14,8 @@
     padding: 10px 0;
     margin-bottom: 10px;
 }
+/*
 
-/* 코딩존1,2 버튼 그룹 (정확히 가운데 정렬) */
 .grade-buttons {
     display: flex;
     justify-content: center;
@@ -23,7 +23,7 @@
     flex: 1;
 }
 
-/* 코딩존 버튼 스타일 */
+
 .grade-buttons button {
     margin: 0 10px;
     padding: 10px 20px;
@@ -33,17 +33,20 @@
     transition: background-color 0.3s;
 }
 
-/* 선택된 버튼 스타일 */
+
 .grade-buttons button.active {
     background-color: #002D56;
     color: white;
 }
 
-/* 비활성 버튼 스타일 */
+
 .grade-buttons button:not(.active) {
     background-color: #e5e5e5;
     color: #8c8c8c;
 }
+*/
+
+
 
 /* 다운로드 버튼 (오른쪽 정렬) */
 .download-button {
@@ -177,6 +180,32 @@
     border-bottom: 1px solid #ccc;
     
 }
+
+.subject-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.subject-button {
+  border: none;
+  outline: none;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: #eef1f4;
+  color: #9aa3af;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .05s ease;
+}
+.subject-button:hover { transform: translateY(-1px); }
+
+.subject-button.active {
+  background: #193d52;
+  color: #fff;
+}
+
 
 
 @media (max-width: 400px) {

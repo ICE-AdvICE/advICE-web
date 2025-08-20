@@ -71,6 +71,26 @@
   background: #efefef;
 }
 
+/* 흰색 박스 */
+.panel-white {
+  margin: 1rem 0 4rem 0;
+  display: flex;
+  width: 68rem;
+  height: 27rem;
+  padding: 8rem 5rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.625rem;
+  border-radius: 20px;
+  background: #ffffff; /* 🔹 흰색 배경 */
+}
+
+/* 전환 애니메이션 */
+.panel-gray,
+.panel-white {
+  transition: background-color 200ms ease, box-shadow 200ms ease;
+}
+
 /* 가운데 문구용 */
 .panel-empty {
   color: rgba(73, 80, 87, 0.75);
@@ -142,7 +162,7 @@
   justify-content: center;
   font-family: sans-serif;
   font-weight: bold;
-  color: #002d56;
+  color: #052940;
 }
 
 .info_time {
@@ -154,7 +174,7 @@
   justify-content: center;
   font-family: sans-serif;
   font-weight: bold;
-  color: #002d56;
+  color: #052940;
 }
 
 .info_bar {
@@ -171,7 +191,7 @@
   justify-content: center;
   font-family: sans-serif;
   font-weight: bold;
-  color: #002d56;
+  color: #052940;
 }
 
 .info_assistant {
@@ -183,7 +203,7 @@
   justify-content: center;
   font-family: sans-serif;
   font-weight: bold;
-  color: #002d56;
+  color: #052940;
 }
 
 .info_status {
@@ -195,7 +215,7 @@
   justify-content: center;
   font-family: sans-serif;
   font-weight: bold;
-  color: #002d56;
+  color: #052940;
 }
 
 .info_data_container {
@@ -228,7 +248,7 @@
   justify-content: center;
   font-family: sans-serif;
   font-weight: bold;
-  color: #002d56;
+  color: #052940;
 }
 
 .info_data_time {
@@ -286,7 +306,7 @@
   justify-content: center;
   font-family: sans-serif;
   font-weight: bold;
-  color: #002d56;
+  color: #052940;
 }
 
 .hr-line {

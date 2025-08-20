@@ -18,7 +18,7 @@ public interface ResponseMessage {
     String BAD_REQUEST = "잘못된 입력 형식";
     String VALIDATION_FAILED = "Validation failed.";
     String DUPLICATE_EMAIL = "Duplicate email.";
-    String NOT_EXISTED_USER = "This user does not exist.";
+    String NOT_EXISTED_USER = "사용자 정보가 없습니다.";
     String NOT_EXISTED_ARTICLE = "This article does not exist.";
     String NOT_EXISTED_COMMET = "Thie comment does not exist.";
     String FULL_CLASS = "This class already full.";

@@ -6,18 +6,32 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
+import java.time.LocalDate;
 import java.util.*;
 
 import com.icehufs.icebreaker.common.ResponseCode;
+
+import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneRegister;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.Subject;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassUpdateRequestDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.request.PostSubjectMappingRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.ClassListResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.ClassListWithRegisteredNumResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.ClassResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.exception.*;
-import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneRegisterRepository;
+import com.icehufs.icebreaker.domain.codingzone.dto.response.SubjectAssistantsResponseDto;
+
+import com.icehufs.icebreaker.domain.codingzone.exception.UnmappedSubjectException;
+import com.icehufs.icebreaker.domain.codingzone.exception.AlreadyExistClassException;
+import com.icehufs.icebreaker.domain.codingzone.exception.DuplicatedClassException;
+import com.icehufs.icebreaker.domain.codingzone.exception.GroupInfNotFoundException;
+import com.icehufs.icebreaker.domain.codingzone.exception.CodingZoneClassNotFoundException;
+import com.icehufs.icebreaker.domain.codingzone.exception.ExistCodingZoneRegisterException;
+import com.icehufs.icebreaker.domain.codingzone.exception.AssistantsNotFoundException;
+import com.icehufs.icebreaker.domain.codingzone.exception.NotExistSubjectException;
+import com.icehufs.icebreaker.domain.codingzone.exception.CodingZoneClassRequestTimeException;
 import com.icehufs.icebreaker.exception.BusinessException;
+import com.icehufs.icebreaker.exception.NotExistedUserException;
+
+import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneRegisterRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +42,7 @@ import com.icehufs.icebreaker.domain.codingzone.domain.entity.GroupInf;
 import com.icehufs.icebreaker.domain.codingzone.dto.object.AssistantInfoDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassAssignRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateRequestDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.SubjectAssistantsResponseDto;
+
 import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneClassRepository;
 import com.icehufs.icebreaker.domain.codingzone.repository.GroupInfRepository;
 import com.icehufs.icebreaker.domain.codingzone.repository.SubjectRepository;
@@ -36,7 +50,6 @@ import com.icehufs.icebreaker.domain.membership.repository.UserRepository;
 
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -275,6 +288,44 @@ public class CodingZoneClassService {
                         c.getSubject().getId() // 필요 시 .getGrade()로 교체
                 ))
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public  Integer getAttend(Integer subjectId, String email) {
+        Integer numOfAttend = 0;
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+
+        if (!userRepository.existsByEmail(email)) throw new NotExistedUserException();
+
+        if (subjectId < 1 || subjectId > 4) throw new NotExistSubjectException();
+
+        List<CodingZoneClass> classes = codingZoneClassRepository.findAllBySubjectId(subjectId);
+        List<CodingZoneRegister> registratedClassList = codingZoneRegisterRepository.findAllByCodingZoneClassIn(classes);
+
+        if (registratedClassList.isEmpty()) return numOfAttend;
+
+        for (CodingZoneRegister register : registratedClassList) {
+            if (register.getUserEmail().equals(email)) {
+                String attend = register.getAttendance();
+
+                if (attend.equals("1")) {
+                    numOfAttend++;
+                }
+                if (attend.equals("0")) {  // 노쇼 확인
+                    CodingZoneClass codingZoneClass = register.getCodingZoneClass();
+
+                    LocalDate classDate = LocalDate.parse(codingZoneClass.getClassDate()); // 예: "2024-11-01"
+                    LocalTime classTime = LocalTime.parse(codingZoneClass.getClassTime()); // 예: "10:00:00"
+
+                    ZonedDateTime classDateTime = ZonedDateTime.of(classDate, classTime, ZoneId.of("Asia/Seoul"));
+
+                    if (classDateTime.isBefore(now)) {
+                        numOfAttend--;
+                    }
+                }
+            }
+        }
+        return numOfAttend;
     }
 }
 

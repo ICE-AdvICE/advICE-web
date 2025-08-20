@@ -9,7 +9,8 @@ const ATTENDANCE_TOGGLE_URL = (registNum) =>
 const DELETE_CLASS_URL = (classNum) =>
   `${DOMAIN}/api/admin/delete-class/${classNum}`;
 
-// 매핑한 전체 과목 리스트 조회 API (subjectName + subjectId)
+
+// 매핑한 전체 과목 리스트 조회 API (subjectName  subjectId)
 export const fetchAllSubjects = async (token, setCookie, navigate) => {
   try {
     const response = await axios.get(`${API_DOMAIN}/subjects`, {
@@ -101,7 +102,8 @@ export const fetchAssistantsBySubjectId = async (
   }
 };
 
-//1. 코딩존 수업 + 기존의 조 등록 API
+
+//1. 코딩존 수업  기존의 조 등록 API
 export const uploadClassForWeek = async (
   groupData,
   token,
@@ -491,5 +493,167 @@ export const toggleAttendanceByRegistNum = async (
       return { code: "TOKEN_EXPIRED", message: "다시 로그인 해주세요." };
     }
     return { code: code ?? "UNKNOWN_ERROR", message: message ?? "오류" };
+  }
+};
+
+// 15. 코딩존 등록 현황에서 단건 리스트 삭제하기(ADMIN : 과사조교)
+
+export const adminDeleteCodingzoneClassByClassNum = async (
+  classNum,
+  token,
+  setCookie,
+  navigate
+) => {
+  try {
+    const res = await axios.delete(
+      `${API_DOMAIN_ADMIN}/codingzones/classes/${classNum}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    const { code, message, data } = res.data || {};
+    return { ok: code === "SU", code, message, data: data ?? null };
+  } catch (error) {
+    if (!error.response) {
+      return {
+        ok: false,
+        code: "NETWORK_ERROR",
+        message: "네트워크 상태를 확인해주세요.",
+        data: null,
+      };
+    }
+    const { code, message } = error.response.data || {};
+
+    // 토큰 만료 → 재발급 후 1회 재시도
+    if (code === "ATE") {
+      const newToken = await refreshTokenRequest(setCookie, token, navigate);
+      if (newToken?.accessToken) {
+        return adminDeleteCodingzoneClassByClassNum(
+          classNum,
+          newToken.accessToken,
+          setCookie,
+          navigate
+        );
+      }
+      // 재발급 실패 → 로그아웃 처리
+      setCookie("accessToken", "", { path: "/", expires: new Date(0) });
+      navigate("/");
+      return {
+        ok: false,
+        code: "TOKEN_EXPIRED",
+        message: "토큰이 만료되었습니다. 다시 로그인해주세요.",
+        data: null,
+      };
+    }
+
+    // 기타 실패 코드 일관 처리
+    return {
+      ok: false,
+      code: code ?? "UNKNOWN_ERROR",
+      message: message ?? "삭제 실패",
+      data: null,
+    };
+  }
+};
+
+// 16. [PUBLIC] 과목 목록 조회 (무인증)
+export const fetchSubjectsPublic = async () => {
+  try {
+    const res = await axios.get(`${API_DOMAIN}/subjects`);
+    return res.data; // { code:"SU", data:{ subjectList:[{subjectId, subjectName}, ...] } }
+  } catch (error) {
+    if (!error.response) {
+      return {
+        code: "NETWORK_ERROR",
+        message: "네트워크 상태를 확인해주세요.",
+      };
+    }
+    return error.response.data;
+  }
+};
+
+// 17. [LOGIN] 과목별 예약가능 수업 조회
+export const fetchClassListBySubjectForUser = async (subjectId, token) => {
+  try {
+    const res = await axios.get(
+      `${API_DOMAIN}/coding-zone/class-list/${subjectId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    return res.data; // { code:"SU", classList:[...], registedClassNum:number }
+  } catch (error) {
+    if (!error.response) {
+      return {
+        code: "NETWORK_ERROR",
+        message: "네트워크 상태를 확인해주세요.",
+      };
+    }
+    return error.response.data;
+  }
+};
+
+// 18. [PUBLIC] 과목별 예약가능 수업 조회(비로그인)
+export const fetchClassListBySubjectPublic = async (subjectId) => {
+  try {
+    const res = await axios.get(
+      `${API_DOMAIN}/coding-zone/public/class-list/${subjectId}`
+    );
+    return res.data; // { code:"SU", classList:[...] }
+  } catch (error) {
+    if (!error.response) {
+      return {
+        code: "NETWORK_ERROR",
+        message: "네트워크 상태를 확인해주세요.",
+      };
+    }
+    return error.response.data;
+  }
+};
+
+// 19. 출석 횟수 조회 API
+export const fetchAttendCountBySubject = async (
+  subjectId,
+  token,
+  setCookie,
+  navigate
+) => {
+  try {
+    const res = await axios.get(
+      `${API_DOMAIN}/coding-zone/count-of-attend/${subjectId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    // 성공 예시: { code:"SU", message:"...", data: 1 }
+    return res.data;
+  } catch (error) {
+    if (!error.response) {
+      return {
+        code: "NETWORK_ERROR",
+        message: "네트워크 상태를 확인해주세요.",
+        data: null,
+      };
+    }
+    const { code, message } = error.response.data || {};
+
+    if (code === "ATE") {
+      // 토큰 재발급 후 1회 재시도
+      const newToken = await refreshTokenRequest(setCookie, token, navigate);
+      if (newToken?.accessToken) {
+        return fetchAttendCountBySubject(
+          subjectId,
+          newToken.accessToken,
+          setCookie,
+          navigate
+        );
+      }
+      setCookie("accessToken", "", { path: "/", expires: new Date(0) });
+      navigate("/");
+      return {
+        code: "TOKEN_EXPIRED",
+        message: "토큰이 만료되었습니다. 다시 로그인해주세요.",
+        data: null,
+      };
+    }
+    return {
+      code: code ?? "UNKNOWN_ERROR",
+      message: message ?? "알 수 없는 오류가 발생했습니다.",
+      data: null,
+    };
   }
 };
