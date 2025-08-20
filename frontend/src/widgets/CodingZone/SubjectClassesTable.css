@@ -1,0 +1,283 @@
+.cz-table-shell {
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.codingzone-body-container .cz-table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+.cz-table-wrap {
+  margin: 0;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  min-height: 400px;
+}
+.cz-table-title {
+  font-weight: 700;
+  font-size: 18px;
+  padding: 16px 18px 6px;
+  text-align: center;
+}
+
+.cz-table-title .subject-name {
+  color: #052940;
+  font-weight: 800;
+  font-size: 20px;
+  margin-right: 6px;
+}
+
+.cz-table-title .title-label {
+  color: #000000;
+  font-weight: 600;
+}
+
+.cz-table-msg {
+  padding: 20px 18px;
+  color: #374151;
+  font-size: 14px;
+}
+.cz-table-msg.error {
+  color: #b91c1c;
+}
+
+.cz-table-scroll {
+  overflow-x: auto;
+  overflow-y: auto;
+}
+.cz-table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.cz-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+.cz-table thead th {
+  background: #052940;
+  color: #fff;
+  padding: 14px 10px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.cz-actions .cz-actions-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cz-table tbody td {
+  padding: 12px 10px;
+  text-align: center;
+  border-top: 1px solid #052940;
+  font-size: 14px;
+  color: #000;
+}
+.cz-table th,
+.cz-table td {
+  vertical-align: middle;
+}
+
+.cz-table th:nth-child(1),
+.cz-table td:nth-child(1) {
+  width: 180px;
+}
+
+.cz-table th:nth-child(2),
+.cz-table td:nth-child(2) {
+  width: 130px;
+}
+.cz-table td:nth-child(2) {
+  font-weight: 600;
+  color: #052940;
+}
+.cz-table th:nth-child(5),
+.cz-table td:nth-child(5) {
+  width: 330px;
+}
+
+.cz-table tbody tr {
+  background: #fff;
+  height: 80px;
+}
+.cz-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.cz-capacity.full {
+  color: #b91c1c;
+}
+
+.cz-btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  background: #d9d9d9;
+  font-size: 14px;
+  color: #000;
+  font-weight: 600;
+}
+
+.cz-btn-danger {
+  width: 33px;
+  height: 33px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border: 1px solid #a8a8a8;
+  border-radius: none;
+  background: #ffffff;
+  color: #a8a8a8;
+  font-size: 30px;
+  font-weight: 200;
+  padding: 0;
+  line-height: 1;
+}
+
+/* 테이블 마지막 칸 자체도 중앙 정렬 */
+.cz-table td:last-child {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 버튼 기본 박스 */
+.cz-btn-danger {
+  position: relative;
+  display: inline-flex;
+  justify-items: center;
+  align-items: center;
+  width: 33px;
+  height: 33px;
+  border: 1px solid #a8a8a8;
+  border-radius: 0;
+  background: #fff;
+  margin-top: 9.8px;
+}
+
+/* X 라인 2개를 기하학적 중앙에 교차시킴 */
+.cz-btn-danger::before,
+.cz-btn-danger::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 2px;
+  background: #a8a8a8;
+  transform-origin: center;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.cz-btn-danger::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+/* 호버/활성화(포커스 포함) 상태 */
+.cz-btn-danger:not(:disabled):hover,
+.cz-btn-danger:not(:disabled):active,
+.cz-btn-danger:not(:disabled):focus-visible {
+  background: #052940;
+  border: none;
+}
+
+/* X 라인 색상 - 기본은 회색 */
+.cz-btn-danger::before,
+.cz-btn-danger::after {
+  background: #a8a8a8;
+}
+
+.cz-btn-danger:not(:disabled):hover::before,
+.cz-btn-danger:not(:disabled):hover::after,
+.cz-btn-danger:not(:disabled):active::before,
+.cz-btn-danger:not(:disabled):active::after,
+.cz-btn-danger:not(:disabled):focus-visible::before,
+.cz-btn-danger:not(:disabled):focus-visible::after {
+  background: #fff; /* 호버/클릭 시 흰색 X */
+}
+
+/* 비활성화 */
+.cz-btn-danger:disabled {
+  background: #a8a8a8;
+  border: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 비활성화 상태의 X */
+.cz-btn-danger:disabled::before,
+.cz-btn-danger:disabled::after {
+  background: #fff;
+}
+.cz-badge {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+}
+.cz-badge.running {
+  background: #1cfff7;
+}
+.cz-badge.done {
+  background: #5e6863;
+  color: #fff;
+}
+.cz-badge.wait {
+  background: #1cff8a;
+}
+
+.return {
+  background-color: #fff;
+  border: 1px solid #a8a8a8;
+  color: #a8a8a8;
+  padding: 5px 12px;
+  border-radius: 5px;
+  transition: color 120ms ease, border-color 120ms ease, box-shadow 120ms ease,
+    background-color 120ms ease;
+}
+.return.return-back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: #fff;
+  border: 1px solid #a8a8a8;
+  color: #a8a8a8;
+  padding: 5px 12px;
+  border-radius: 5px;
+  transition: color 120ms ease, border-color 120ms ease, box-shadow 120ms ease,
+    background-color 120ms ease;
+}
+
+.return.return-back:hover,
+.return.return-back:focus-visible {
+  color: #052940;
+  border-color: #052940;
+  box-shadow: 0 0 0 3px rgba(5, 41, 64, 0.12);
+  background-color: #f1f5f9;
+}
+
+.return.return-back:active {
+  color: #052940;
+  border-color: #052940;
+  background-color: #e6edf2;
+}
+
+.return-back .btn-icon {
+  width: 23px;
+  height: 23px;
+  pointer-events: none;
+}

@@ -26,6 +26,8 @@ import { isWeekendYMD } from "../../shared/lib/date"; // 달력
 import { getColorById } from "../Coding-zone/subjectColors";
 import { fetchCodingzoneSubjectsByDate } from "../../entities/api/CodingZone/AdminApi";
 import SubjectCard from "../../widgets/subjectCard/subjectCard.js";
+import SubjectClassesTable from "../../widgets/CodingZone/SubjectClassesTable";
+import { adminDeleteCodingzoneClassByClassNum } from "../../entities/api/CodingZone/AdminApi.js";
 
 const ClassList = ({
   userReservedClass,
@@ -84,6 +86,15 @@ const CodingMain = () => {
   const [isSubjectsLoading, setIsSubjectsLoading] = useState(false); // ★ NEW
   const [selectedSubjectId, setSelectedSubjectId] = useState(null); // ★ NEW
   const [selectedDateYMD, setSelectedDateYMD] = useState(""); // ★ NEW: YYYY-MM-DD 문자열
+  const [selectedSubjectName, setSelectedSubjectName] = useState("");
+  const [backIcon, setBackIcon] = useState("/leftnone.png");
+  const [refreshing, setRefreshing] = useState(false);
+
+  // ★ 과목 선택 해제 (그리드로 되돌아오기)
+  const clearSubjectSelection = () => {
+    setSelectedSubjectId(null);
+    setSelectedSubjectName("");
+  };
 
   // ★ NEW: 날짜 -> YYYY-MM-DD
   // 기존 dateToYMD를 아래로 교체
@@ -164,8 +175,13 @@ const CodingMain = () => {
       alert("로그인이 필요합니다.");
       return;
     }
-    const result = await deleteClass(classNum, token, setCookie, navigate);
-    if (result) {
+    const result = await adminDeleteCodingzoneClassByClassNum(
+      classNum,
+      token,
+      setCookie,
+      navigate
+    );
+    if (result.ok) {
       alert("수업이 삭제되었습니다.");
       setClassList((prevClassList) => {
         const updatedList = prevClassList.filter(
@@ -179,10 +195,54 @@ const CodingMain = () => {
         return updatedList;
       });
     } else {
-      alert("수업 삭제에 실패했습니다.");
+      switch (result.code) {
+        case "ALREADY_RESERVED_CLASS":
+          alert("이미 예약자가 있는 수업은 삭제할 수 없습니다.");
+          break;
+        case "AF":
+          alert("권한이 없습니다.");
+          break;
+        case "DBE":
+          alert("데이터베이스 오류가 발생했습니다.");
+          break;
+        case "TOKEN_EXPIRED":
+          break;
+        default:
+          alert(result.message ?? "수업 삭제에 실패했습니다.");
+      }
     }
   };
 
+  const refetchSubjectsForDate = async () => {
+    if (!selectedDateYMD || !isAdmin) return;
+    try {
+      setRefreshing(true);
+      const res = await fetchCodingzoneSubjectsByDate(
+        selectedDateYMD,
+        cookies.accessToken,
+        setCookie,
+        navigate
+      );
+      if (res?.code === "SU") {
+        const classesMap = res.data?.classes ?? {};
+        const subs = Object.entries(classesMap).map(([id, name]) => ({
+          id: String(id),
+          name: String(name),
+        }));
+        setSubjects(subs);
+      } else {
+        setSubjects([]);
+      }
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+  const handleEmptyAfterDelete = async () => {
+    setSelectedSubjectId(null);
+    setSelectedSubjectName("");
+    await refetchSubjectsForDate();
+  };
   // 시간 문자열을 분 단위 숫자로 변환하여 정렬
   const timeToNumber = (timeStr) => {
     const [hours, minutes] = timeStr.split(":").map(Number);
@@ -380,6 +440,12 @@ const CodingMain = () => {
     setSelectedDateYMD(dateToYMD(selectedDate));
   }, [selectedDate]);
 
+  // ★ NEW: 날짜가 바뀌면 선택된 과목 초기화 (다른 날짜의 stale subjectId 방지)
+  useEffect(() => {
+    setSelectedSubjectId(null);
+    setSelectedSubjectName("");
+  }, [selectedDateYMD]);
+
   // ★ NEW: EA + 날짜 선택 시 과목 목록 조회
   useEffect(() => {
     if (!isAdmin) return; // EA만 조회
@@ -405,8 +471,16 @@ const CodingMain = () => {
             name: String(name),
           }));
           setSubjects(subs);
+          if (subs.length === 0) {
+            setSelectedSubjectId(null);
+            setSelectedSubjectName("");
+          }
         } else {
+          // ❗요청 실패/에러일 때는 "과목 선택"을 건드리지 말고 유지
+          // (일시적 오류/지연으로 튕기는 현상 방지)
           setSubjects([]);
+          setSelectedSubjectId(null);
+          setSelectedSubjectName("");
         }
       } finally {
         if (!cancelled) setIsSubjectsLoading(false);
@@ -415,7 +489,14 @@ const CodingMain = () => {
     return () => {
       cancelled = true;
     };
-  }, [isAdmin, selectedDateYMD, cookies.accessToken, setCookie, navigate]); // ★ NEW
+  }, [
+    isAdmin,
+    selectedDateYMD,
+    cookies.accessToken,
+    setCookie,
+    navigate,
+    selectedSubjectId,
+  ]); // ★ NEW
 
   return (
     <div className="codingzone-container">
@@ -469,19 +550,26 @@ const CodingMain = () => {
             </Link>
           )}
         </div>
-        {isAdmin && (
-          <div className="panel-gray" style={{ margin: "40px" }}>
-            {!selectedDateYMD ? (
+
+        {isAdmin &&
+          (!selectedDateYMD ? (
+            <div className="panel-block panel-gray">
               <div className="panel-empty">
                 조회하고자 하는 날짜를 입력해주세요.
               </div>
-            ) : isSubjectsLoading ? (
+            </div>
+          ) : isSubjectsLoading ? (
+            <div className="panel-block panel-gray">
               <div className="panel-empty">과목을 불러오는 중…</div>
-            ) : subjects.length === 0 ? (
+            </div>
+          ) : subjects.length === 0 ? (
+            <div className="panel-block panel-gray">
               <div className="panel-empty">
                 현재 날짜에 등록된 코딩존이 없습니다.
               </div>
-            ) : (
+            </div>
+          ) : !selectedSubjectId ? (
+            <div className="panel-block panel-gray">
               <div className={`panel-inner ${gridClass}`}>
                 <div className="subject-grid-inner">
                   {subjects.slice(0, 4).map((s) => (
@@ -489,15 +577,50 @@ const CodingMain = () => {
                       key={s.id}
                       title={s.name}
                       color={getColorById(s.id)}
-                      onClick={() => setSelectedSubjectId(s.id)}
+                      onClick={() => {
+                        setSelectedSubjectId(s.id);
+                        setSelectedSubjectName(s.name);
+                      }}
                     />
                   ))}
                 </div>
               </div>
-            )}
-          </div>
-        )}
+            </div>
+          ) : (
+            <div className="cz-fixed-panel">
+              <div className="cz-fixed-body">
+                <button
+                  className="return return-back"
+                  type="button"
+                  onClick={clearSubjectSelection}
+                  onMouseEnter={() => setBackIcon("/left.png")}
+                  onMouseLeave={() => setBackIcon("/leftnone.png")}
+                  onMouseDown={() => setBackIcon("/left.png")}
+                  onMouseUp={() => setBackIcon("/left.png")}
+                  onFocus={() => setBackIcon("/left.png")}
+                  onBlur={() => setBackIcon("/leftnone.png")}
+                >
+                  <img
+                    src={backIcon}
+                    alt="뒤로가기"
+                    className="btn-icon"
+                    draggable="false"
+                  />
+                  과목 다시 선택하기
+                </button>
 
+                <SubjectClassesTable
+                  selectedDateYMD={selectedDateYMD}
+                  selectedSubjectId={selectedSubjectId}
+                  selectedSubjectName={selectedSubjectName}
+                  accessToken={cookies.accessToken}
+                  setCookie={setCookie}
+                  navigate={navigate}
+                  onEmptyAfterDelete={handleEmptyAfterDelete}
+                />
+              </div>
+            </div>
+          ))}
         {!isAdmin && (
           <div className="codingzone-date">
             {days.map((day, index) => (
