@@ -11,10 +11,8 @@ import InquiryModal from "./InquiryModal";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import {
-  getAttendanceCount,
-  getcodingzoneListRequest,
-} from "../../features/api/CodingzoneApi.js";
+import { getcodingzoneListRequest } from "../../features/api/CodingzoneApi.js";
+import { fetchAttendCountBySubject } from "../../entities/api/CodingZone/AdminApi";
 import {
   deleteCodingZoneClass,
   reserveCodingZoneClass,
@@ -23,8 +21,13 @@ import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigatio
 import BannerSlider from "../../shared/ui/Banner/BannerSlider"; // ✅ 추가(juhui): 슬라이더 컴포넌트
 import CalendarInput from "../../widgets/Calendar/CalendarInput"; // 달력
 import { isWeekendYMD } from "../../shared/lib/date"; // 달력
-import { getColorById } from "../Coding-zone/subjectColors";
-import { fetchCodingzoneSubjectsByDate } from "../../entities/api/CodingZone/AdminApi";
+import { getColorById, saveNameIdMap } from "../Coding-zone/subjectColors";
+import {
+  fetchCodingzoneSubjectsByDate,
+  fetchSubjectsPublic,
+  fetchClassListBySubjectForUser,
+  fetchClassListBySubjectPublic,
+} from "../../entities/api/CodingZone/AdminApi";
 import SubjectCard from "../../widgets/subjectCard/subjectCard.js";
 import SubjectClassesTable from "../../widgets/CodingZone/SubjectClassesTable";
 import { adminDeleteCodingzoneClassByClassNum } from "../../entities/api/CodingZone/AdminApi.js";
@@ -89,7 +92,33 @@ const CodingMain = () => {
   const [selectedSubjectName, setSelectedSubjectName] = useState("");
   const [backIcon, setBackIcon] = useState("/leftnone.png");
   const [refreshing, setRefreshing] = useState(false);
+  // ===== 일반학생 subjectId 기반 흐름 =====
+  const [publicSubjects, setPublicSubjects] = useState([]); // [{subjectId, subjectName}]
+  const [selectedSubjectIdPub, setSelectedSubjectIdPub] = useState(null);
+  const [selectedSubjectNamePub, setSelectedSubjectNamePub] = useState("");
+  const [classListPub, setClassListPub] = useState([]); // 선택 과목 수업 리스트
+  const [loadingPub, setLoadingPub] = useState(false);
+  const [bannerPub, setBannerPub] = useState(null); // "UNAVAILABLE" | "EMPTY" | null
+  const [myReservedPub, setMyReservedPub] = useState(0);
+  const [selectedDayPub, setSelectedDayPub] = useState("");
+  const formatHHmmRangeFromStart = (startTime) => {
+    if (!startTime) return "";
+    const [hh, mm] = startTime.split(":").map(Number);
+    const startHHmm = `${String(hh).padStart(2, "0")}:${String(mm).padStart(
+      2,
+      "0"
+    )}`;
+    const endH = (hh + 1) % 24; // 24시 넘어가면 00시로
+    const endHHmm = `${String(endH).padStart(2, "0")}:${String(mm).padStart(
+      2,
+      "0"
+    )}`;
+    return `${startHHmm} ~ ${endHHmm}`;
+  };
 
+  const filterByDayPub = (day) => {
+    setSelectedDayPub((prev) => (prev === day ? "" : day));
+  };
   // ★ 과목 선택 해제 (그리드로 되돌아오기)
   const clearSubjectSelection = () => {
     setSelectedSubjectId(null);
@@ -164,6 +193,27 @@ const CodingMain = () => {
     };
     fetchUserRole();
   }, [cookies.accessToken]);
+  // 👇 비관리자(학생)용 과목 목록 조회 (/api/v1/subjects)
+  useEffect(() => {
+    if (isAdmin) return; // EA는 달력 기반 별도 흐름
+    (async () => {
+      const res = await fetchSubjectsPublic();
+      if (res?.code === "SU") {
+        const list = res?.data?.subjectList ?? [];
+        setPublicSubjects(list);
+        // 과목명→ID 맵 로컬스토리지 저장 (다른 화면에서 getColorByName 사용 가능)
+        const nameIdMap = {};
+        for (const s of list) {
+          const id = String(s.subjectId ?? s.id ?? "");
+          const nm = String(s.subjectName ?? s.name ?? "").trim();
+          if (id && nm) nameIdMap[nm] = id;
+        }
+        saveNameIdMap(nameIdMap);
+      } else {
+        setPublicSubjects([]);
+      }
+    })();
+  }, [isAdmin]);
 
   // 요일과 슬라이더 설정을 상수로 정의
   const daysOfWeek = ["월요일", "화요일", "수요일", "목요일", "금요일"];
@@ -342,22 +392,32 @@ const CodingMain = () => {
     fetchData();
   }, [cookies.accessToken, grade]);
 
-  // 출석 횟수
+  // 출석 횟수 (과목별): 과목 선택 시마다 최신화
   useEffect(() => {
-    const fetchAttendance = async () => {
-      const token = cookies.accessToken;
-      if (token) {
-        const count = await getAttendanceCount(
-          token,
-          grade,
-          setCookie,
-          navigate
-        );
-        setAttendanceCount(count);
+    const token = cookies.accessToken;
+    if (!token || !selectedSubjectIdPub) {
+      setAttendanceCount(0); // 과목 미선택/비로그인 시 0 표시
+      return;
+    }
+    (async () => {
+      const res = await fetchAttendCountBySubject(
+        selectedSubjectIdPub,
+        token,
+        setCookie,
+        navigate
+      );
+      if (res?.code === "SU") {
+        // 서버가 data에 숫자 반환
+        setAttendanceCount(Number(res.data ?? 0));
+      } else if (res?.code === "TOKEN_EXPIRED") {
+        // 로그아웃 처리됨
+        setAttendanceCount(0);
+      } else {
+        // 그 외 실패는 조용히 0 처리
+        setAttendanceCount(0);
       }
-    };
-    fetchAttendance();
-  }, [cookies.accessToken, grade]);
+    })();
+  }, [cookies.accessToken, selectedSubjectIdPub]);
 
   // 예약 기능 토글
   const handleToggleReservation = async (classItem) => {
@@ -413,6 +473,50 @@ const CodingMain = () => {
         : item
     );
     setClassList(updatedList);
+  };
+
+  // 👇 학생: 과목 선택 핸들러 (subjectId 기준으로 리스트 조회)
+  const handlePickSubjectPublic = async (subjectId, subjectName) => {
+    setSelectedSubjectIdPub(subjectId);
+    setSelectedSubjectNamePub(subjectName);
+    setLoadingPub(true);
+    setBannerPub(null);
+    setClassListPub([]);
+    setMyReservedPub(0);
+    setSelectedDayPub("");
+
+    const token = cookies.accessToken;
+    const api = token
+      ? fetchClassListBySubjectForUser
+      : fetchClassListBySubjectPublic;
+    const res = await api(subjectId, token);
+    setLoadingPub(false);
+
+    if (!res) return;
+    const code = res.code;
+    // ✅ 서버 응답은 { code, message, data: { classList: [], registedClassNum: 0 } } 형태
+    const list = res.data?.classList ?? [];
+    const registed =
+      typeof res.data?.registedClassNum === "number"
+        ? res.data.registedClassNum
+        : 0;
+
+    if (code === "SU") {
+      setClassListPub(Array.isArray(list) ? list : []);
+      setMyReservedPub(registed);
+      // 성공인데 리스트가 비면 EMPTY 배너로 정리
+      if (!list.length) setBannerPub("EMPTY");
+      return;
+    }
+    if (code === "CLASS_UNAVAILABLE_PERIOD") {
+      setBannerPub("UNAVAILABLE");
+      return;
+    }
+    if (code === "NOT_FOUND_CLASS" || code === "NA") {
+      setBannerPub("EMPTY");
+      return;
+    }
+    setBannerPub("EMPTY");
   };
 
   /*출석률 체크바 */
@@ -503,53 +607,76 @@ const CodingMain = () => {
       <CodingZoneNavigation />
       <BannerSlider />
       <div className="codingzone-body-container">
-        <div className="cz-category-top">
-          {isAdmin ? (
-            // 과사 조교(EA)에게만 달력 표시
-            <div className="cz-date-picker">
-              <CalendarInput
-                value={selectedDate}
-                onChange={setSelectedDate}
-                disabledDates={isWeekendYMD} // 주말 비활성
-                placeholder="조회할 날짜를 선택하세요"
-              />
-            </div>
-          ) : (
-            // 학생 조교/일반 학생에게는 기존 버튼 표시
-            <div className="cz-category-date">
-              <button
-                className={`cz-1 ${selectedZone === 1 ? "selected" : ""}`}
-                onClick={() => {
-                  setGrade(1);
-                  setSelectedZone(1);
-                  setSelectedDay("");
-                  setClassList(originalClassList);
-                }}
-              >
-                코딩존 1
-              </button>
-              <button
-                className={`cz-2 ${selectedZone === 2 ? "selected" : ""}`}
-                onClick={() => {
-                  setGrade(2);
-                  setSelectedZone(2);
-                  setSelectedDay("");
-                  setClassList(originalClassList);
-                }}
-              >
-                코딩존 2
-              </button>
-            </div>
-          )}
-          {!isAdmin && (
+        {/* 상단: 출석률 (오른쪽 정렬) */}
+        {!isAdmin && (
+          <div className="cz-topbar">
             <Link
               to="/coding-zone/Codingzone_Attendance"
               className="cz-count-container"
             >
               {cookies.accessToken && renderAttendanceProgress(attendanceCount)}
             </Link>
+          </div>
+        )}
+
+        {/* 하단: 과목칩(중앙) 또는 EA 달력 */}
+        <div className="cz-category-top">
+          {isAdmin ? (
+            <div className="cz-date-picker">
+              <CalendarInput
+                value={selectedDate}
+                onChange={setSelectedDate}
+                disabledDates={isWeekendYMD}
+                placeholder="조회할 날짜를 선택하세요"
+              />
+            </div>
+          ) : (
+            <div className="czp-subject-bar">
+              {publicSubjects.map((s) => {
+                const sid = s.subjectId ?? s.id;
+                const active = selectedSubjectIdPub === sid;
+                const color = getColorById(sid, "#475569");
+                return (
+                  <button
+                    key={sid}
+                    type="button"
+                    className={`czp-chip ${active ? "active" : ""}`}
+                    style={{
+                      backgroundColor: active ? color : "#EFEFEF",
+                      color: active ? "#FFFFFF" : "#ADACAC",
+                      border: "none",
+                    }}
+                    onClick={() =>
+                      handlePickSubjectPublic(sid, s.subjectName ?? s.name)
+                    }
+                  >
+                    {s.subjectName}
+                  </button>
+                );
+              })}
+            </div>
           )}
         </div>
+
+        {/* ▼ 추가: 학생 전용 요일바 (과목 선택 후 표시) */}
+        {!isAdmin && selectedSubjectIdPub && (
+          <div className="czp-weekbar" role="tablist" aria-label="요일 필터">
+            {["월요일", "화요일", "수요일", "목요일", "금요일"].map((d, i) => (
+              <React.Fragment key={d}>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={selectedDayPub === d}
+                  className={`weekbtn ${selectedDayPub === d ? "active" : ""}`}
+                  onClick={() => filterByDayPub(d)}
+                >
+                  {d}
+                </button>
+                {i < 4 && <span className="sep" aria-hidden="true" />}
+              </React.Fragment>
+            ))}{" "}
+          </div>
+        )}
 
         {isAdmin &&
           (!selectedDateYMD ? (
@@ -622,68 +749,106 @@ const CodingMain = () => {
             </div>
           ))}
         {!isAdmin && (
-          <div className="codingzone-date">
-            {days.map((day, index) => (
-              <React.Fragment key={day.name}>
-                <button
-                  onClick={() => filterByDay(day.name)}
-                  className={selectedDay === day.name ? "selected" : ""}
-                >
-                  <p>{day.label}</p>
-                </button>
-                {index < days.length - 1 && <span> | </span>}
-              </React.Fragment>
-            ))}
-          </div>
-        )}
-        {!isAdmin && (
-          <div className="category-name-container">
-            <div className="codingzone-title">
-              <p className="weekDay">요일</p>
-              <p className="weekDate">날짜</p>
-              <p className="weekTime">시간</p>
-              <p className="card-hidden-space"></p>
-              <p className="weeksubject">과목명</p>
-              <p className="weekperson">조교</p>
-              <p className="weekcount">인원</p>
-              {(cookies.accessToken || isAdmin) && isRendered && (
-                <p className="registerbutton"></p>
-              )}
-            </div>
-          </div>
-        )}
-        {!isAdmin && (
-          <div className="codingzone-list">
-            {/* 항상 렌더되도록 유지하고, show/hide는 CSS 클래스 이름으로 제어 */}
-            <picture
-              className={`no-classes-image ${
-                showNoClassesImage ? "visible" : "hidden"
-              }`}
-            >
-              <source srcSet="/Codingzone-noregist.webp" type="image/webp" />
-              <img
-                src="/Codingzone-noregist.png"
-                alt="수업이 없습니다"
-                className="no-classes-img"
-                width="600"
-                height="260"
-                loading="eager"
-                decoding="sync"
-              />
-            </picture>
-            {/* 수업이 있을 경우에만 ClassList 보여줌 */}
-            {!showNoClassesImage && (
-              <ClassList
-                classList={classList}
-                handleCardClick={handleCardClick}
-                handleToggleReservation={handleToggleReservation}
-                isAdmin={isAdmin}
-                onDeleteClick={handleDelete}
-                userReservedClass={userReservedClass}
-                token={token}
-              />
+          <>
+            {/* ① 과목 미선택: 기존 회색 패널 재사용 */}
+            {!selectedSubjectIdPub && (
+              <div className="panel-block panel-gray">
+                <div className="panel-empty">
+                  예약하고자 하는 코딩존을 선택해주세요.
+                </div>
+              </div>
             )}
-          </div>
+
+            {/* ② 로딩 중: 회색 패널로 로딩 표시 (표 헤더 깜빡임 방지) */}
+            {selectedSubjectIdPub && loadingPub && (
+              <div className="panel-block panel-gray">
+                <div className="panel-empty">불러오는 중…</div>
+              </div>
+            )}
+
+            {/* ③ 선택했지만 조회 불가/없음: 회색 패널로 메시지 */}
+            {selectedSubjectIdPub &&
+              !loadingPub &&
+              bannerPub === "UNAVAILABLE" && (
+                <div className="panel-block panel-gray">
+                  <div className="panel-empty">현재 예약 시간이 아닙니다.</div>
+                </div>
+              )}
+            {selectedSubjectIdPub && !loadingPub && bannerPub === "EMPTY" && (
+              <div className="panel-block panel-gray">
+                <div className="panel-empty">해당 코딩존 수업이 없습니다.</div>
+              </div>
+            )}
+
+            {/* ④ 리스트(표): 로딩 끝 + 성공 + 실제 데이터가 있을 때만 렌더 */}
+            {selectedSubjectIdPub &&
+              !loadingPub &&
+              !bannerPub &&
+              classListPub.length > 0 && (
+                <section className="czp-table-wrap">
+                  <div className="czp-table-shell">
+                    <div className="czp-table-scroll">
+                      <table className="czp-table">
+                        <thead>
+                          <tr
+                            style={{
+                              backgroundColor: getColorById(
+                                selectedSubjectIdPub,
+                                "#475569"
+                              ),
+                              color: "#FFFFFF",
+                            }}
+                          >
+                            <th>요일</th>
+                            <th>시간</th>
+                            <th>수업명</th>
+                            <th>조교</th>
+                            <th>인원</th>
+                            <th>상태</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {(selectedDayPub
+                            ? classListPub.filter(
+                                (cls) =>
+                                  (cls.weekDay || "").toLowerCase() ===
+                                  selectedDayPub.toLowerCase()
+                              )
+                            : classListPub
+                          ).map((cls) => {
+                            const mine =
+                              typeof myReservedPub === "number" &&
+                              myReservedPub === cls.classNum;
+                            return (
+                              <tr key={cls.classNum}>
+                                <td>{cls.weekDay}</td>
+                                <td>
+                                  {formatHHmmRangeFromStart(cls.classTime)}
+                                </td>
+                                <td>{cls.className}</td>
+                                <td>{cls.assistantName}</td>
+                                <td>
+                                  {cls.currentNumber} / {cls.maximumNumber}
+                                </td>
+                                <td>
+                                  {cls.currentNumber >= cls.maximumNumber ? (
+                                    <span className="czp-tag full">
+                                      예약불가
+                                    </span>
+                                  ) : (
+                                    <span className="czp-tag ok">예약가능</span>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </section>
+              )}
+          </>
         )}
       </div>
     </div>

@@ -14,6 +14,15 @@ body {
 .codingzone-container {
   min-width: 360px;
 }
+.cz-topbar {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end; /* 오른쪽으로 */
+  align-items: center;
+  margin-bottom: 8px; /* 아래 칩과 간격 */
+  position: relative;
+  right: 13px;
+}
 
 .select-container {
   display: flex;
@@ -75,13 +84,14 @@ body {
 }
 
 .cz-category-top {
+  width: 100%;
   display: flex;
+  justify-content: center; /* 중앙 정렬 */
   align-items: center;
-  justify-content: center;
-  gap: 12px;
-  font-size: 8px;
-  margin-top: -20px;
+  gap: 0; /* 같이 있던 요소 분리했으니 gap 제거해도 OK */
+  margin-top: 0; /* -20px로 올라가 있으면 중앙 정렬이 어긋남 -> 0 권장 */
 }
+
 .cz-category-date {
   display: flex;
   justify-content: center;
@@ -118,10 +128,7 @@ body {
   margin: 0px;
   border-bottom: 2px solid #000;
 }
-.cz-count-container {
-  font-size: 12px;
-  margin-top: 25px;
-}
+
 .codingzone-date {
   display: flex;
   align-items: center;
@@ -273,16 +280,16 @@ body {
   position: static;
 }
 
-
 .cz-count-container {
   display: flex;
   align-items: center;
   cursor: pointer;
   text-decoration: none;
   color: inherit;
-  margin-bottom: 30px;
-  margin-top: px;
+  margin-bottom: -70px;
+  margin-top: 0px;
   margin-left: auto;
+  font-size: 12px;
 }
 
 .attendance-progress-container {
@@ -352,6 +359,185 @@ body {
     margin-bottom: -15px;
     width: 10vw;
   }
+}
+
+/* ####3=== 학생용 표 기본 컨테이너: 회색 패널과 동일 가로폭(부모 100%) === ####*/
+.czp-table-wrap {
+  width: 100%;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* 스크롤 박스(헤더/바디 한 테이블이므로 가로/세로 스크롤만) */
+.czp-table-shell {
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+.czp-table-scroll {
+  overflow-x: auto;
+  overflow-y: auto; /* 필요 시 */
+}
+
+/* 표 레이아웃 */
+.czp-table {
+  width: 100%;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  table-layout: fixed; /* 컬럼 너비 고정 */
+}
+
+/* 헤더 셀 */
+.czp-table thead th {
+  padding: 14px 10px;
+  text-align: center;
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* 바디 셀 */
+.czp-table tbody td {
+  padding: 12px 10px;
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  font-size: 14px;
+  color: #000;
+  vertical-align: middle;
+}
+
+/* 행 높이 및 호버 */
+.czp-table tbody tr {
+  background: #fff;
+  height: 64px;
+}
+.czp-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.czp-table td:nth-child(1),
+.czp-table td:nth-child(3),
+.czp-table td:nth-child(5) {
+  font-weight: 600;
+  color: #052940;
+}
+/* 컬럼 너비(헤더/바디 동일하게 nth-child로 고정) */
+.czp-table th:nth-child(1),
+.czp-table td:nth-child(1) {
+  width: 120px;
+} /* 요일 */
+
+.czp-table th:nth-child(2),
+.czp-table td:nth-child(2) {
+  width: 200px;
+} /* 시간 */
+.czp-table th:nth-child(3),
+.czp-table td:nth-child(3) {
+  width: 1fr;
+} /* 수업명(유동) */
+.czp-table th:nth-child(4),
+.czp-table td:nth-child(4) {
+  width: 160px;
+} /* 조교 */
+.czp-table th:nth-child(5),
+.czp-table td:nth-child(5) {
+  width: 140px;
+} /* 인원 */
+.czp-table th:nth-child(6),
+.czp-table td:nth-child(6) {
+  width: 120px;
+} /* 상태 */
+
+/* 상태 태그 */
+.czp-tag {
+  display: inline-block;
+  padding: 8px 13px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.czp-tag.my {
+  background: #052940;
+  color: #fff;
+}
+.czp-tag.ok {
+  background: #18ff00; /* ✅ 요청한 형광 초록색 */
+  color: #052940; /* 글자색은 기존 그대로 */
+}
+.czp-tag.full {
+  background: #ff4d4f; /* 예약 불가 (빨강) */
+  color: #fff;
+}
+
+/* === 과목 선택 칩(학생용) === */
+.czp-subject-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px;
+  margin: 0px;
+  margin-top: -15px;
+  margin-bottom: 30px;
+}
+
+.czp-chip {
+  padding: 14px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.czp-chip:hover:not(.active) {
+  background: #475569;
+  color: #fff;
+}
+
+/* 활성 상태: 배경/글자색은 JSX에서 subjectId 색으로 주입 */
+.czp-chip.active {
+  font-weight: 600;
+}
+
+/* === 요일바(학생용) === */
+.czp-weekbar {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 60px;
+  margin: 6px 14px 20px 14px;
+}
+.czp-weekbar .weekbtn {
+  background: transparent;
+  border: none;
+  padding: 8px 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  line-height: 1;
+}
+.czp-weekbar .weekbtn:hover:not(.active) {
+  color: #052940;
+}
+.czp-weekbar .weekbtn.active {
+  color: #052940;
+  border-bottom: 2px solid #052940;
+}
+.czp-weekbar .weekbtn:focus-visible {
+  outline: 2px solid #94a3b8;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+/* 세로 구분선 */
+.czp-weekbar .sep {
+  display: inline-block;
+  width: 1px;
+  height: 16px;
+  background: #cbd5e1;
 }
 
 @media (max-width: 465px) {
