@@ -256,42 +256,6 @@ export const downloadAttendanceExcel = async (
     }
   }
 };
-//과목명과 코딩존 번호 매핑불러오는 api
-export const getSubjectMappingList = async (
-  accessToken,
-  setCookie,
-  navigate
-) => {
-  console.log("📌 getSubjectMappingList 호출됨, accessToken:", accessToken);
-  try {
-    const response = await axios.get(
-      `${API_DOMAIN_ADMIN}/subjects`,
-      authorization(accessToken)
-    );
-
-    if (response.data.code === "SU") {
-      return {
-        success: true,
-        message: response.data.message,
-        subjectList: Array.isArray(response.data.data)
-          ? response.data.data
-          : [],
-      };
-    } else {
-      return {
-        success: false,
-        message: response.data.message,
-        subjectList: [],
-      };
-    }
-  } catch (error) {
-    if (!error.response || !error.response.data) {
-      return {
-        success: false,
-        message: "네트워크 오류 또는 서버 응답 없음",
-        subjectList: [],
-      };
-    }
 
 /* -------------------------------------------
  * 5) 출결 엑셀 다운로드 (과목별)
