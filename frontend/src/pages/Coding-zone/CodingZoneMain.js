@@ -479,6 +479,8 @@ const CodingMain = () => {
           // ❗요청 실패/에러일 때는 "과목 선택"을 건드리지 말고 유지
           // (일시적 오류/지연으로 튕기는 현상 방지)
           setSubjects([]);
+          setSelectedSubjectId(null);
+          setSelectedSubjectName("");
         }
       } finally {
         if (!cancelled) setIsSubjectsLoading(false);
