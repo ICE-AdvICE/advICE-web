@@ -2,36 +2,27 @@ package com.icehufs.icebreaker.domain.auth.controller;
 
 
 import com.icehufs.icebreaker.domain.codingzone.service.AttendanceService;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GetListOfGroupInfResponseDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.response.GroupInfUpdateResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.SubjectMappingInfoResponseDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.ReservationStudentDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.response.EntireAttendanceResponseDto;
 import com.icehufs.icebreaker.util.ResponseDto;
-import jakarta.validation.Valid;
 
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import com.icehufs.icebreaker.domain.codingzone.dto.object.SubjectAttendanceListItem;
-import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateRequestDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.request.PatchGroupInfRequestDto;
 import com.icehufs.icebreaker.domain.codingzone.service.CodingZoneService;
 
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -42,33 +33,6 @@ public class EntireAdminController {
 
     private final CodingZoneService codingzoneService;
     private final AttendanceService attendanceService;
-
-    @PostMapping("/upload-group") //특정 (A/B)조 정보 등록 API
-    public ResponseEntity<? super GroupInfUpdateResponseDto> uploadInf(
-        @RequestBody @Valid List<GroupInfUpdateRequestDto> requestBody,
-        @AuthenticationPrincipal String email
-    ) {
-        ResponseEntity<? super GroupInfUpdateResponseDto> response = codingzoneService.uploadInf(requestBody, email);
-        return response;
-    }
-
-    @GetMapping("/get-group/{groupId}") //특정 (A/B)조 정보 반환 API
-    public ResponseEntity<? super GetListOfGroupInfResponseDto> getList(
-        @PathVariable String groupId,
-        @AuthenticationPrincipal String email
-    ) {
-        ResponseEntity<? super GetListOfGroupInfResponseDto> response = codingzoneService.getList(groupId, email);
-        return response;
-    }
-
-    @PatchMapping("/patch-group") //특정 (A/B)조 정보 수정 API
-    public ResponseEntity<? super GroupInfUpdateResponseDto> patchInf(
-        @RequestBody @Valid List<PatchGroupInfRequestDto> requestBody,
-        @AuthenticationPrincipal String email
-    ) {
-        ResponseEntity<? super GroupInfUpdateResponseDto> response = codingzoneService.patchInf(requestBody, email);
-        return response;
-    }
 
     @GetMapping("/codingzones")
     public ResponseEntity<ResponseDto<SubjectMappingInfoResponseDto>> getCodingZonesByDate(@RequestParam("date") String date) {
