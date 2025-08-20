@@ -10,13 +10,13 @@ const ROUTES = {
   attendanceEA: "/coding-zone/attendance/ea",
   attendanceCA: "/coding-zone/attendance/ca",
 
-  attendanceReal: "/coding-zone/Codingzone_Attendance_Real",
+  attendanceReal: "/coding-zone/codingzone-attendance-real",
   // ✅ App.js와 경로 정확히 일치(소문자)
   classRegist: "/coding-zone/coding-class-regist",
-  setting: "/coding-zone/Codingzone_Setting",
+  setting: "/coding-zone/codingzone-setting",
   // ✅ '출결 관리'도 공통 진입점으로 보냄 (EA/CA 모두 사용)
   manager: "/coding-zone/attendance",
-  allAttend: "/coding-zone/Codingzone_All_Attend",
+  allAttend: "/coding-zone/codingzone-all-attend",
 };
 
 const CodingZoneBoardbar = () => {

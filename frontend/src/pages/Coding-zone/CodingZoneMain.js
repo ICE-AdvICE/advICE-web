@@ -727,7 +727,7 @@ const CodingMain = () => {
         {!isAdmin && selectedSubjectIdPub && (
           <div className="cz-topbar">
             <Link
-              to="/coding-zone/Codingzone_Attendance"
+              to="/coding-zone/codingzone-attendance"
               className="cz-count-container"
             >
               {cookies.accessToken && renderAttendanceProgress(attendanceCount)}
