@@ -457,9 +457,30 @@ body {
   font-size: 12px;
   font-weight: 700;
 }
+.czp-tag.clickable {
+  cursor: pointer;
+  user-select: none;
+
+  /* hover/active/focus 전환을 부드럽게 */
+  transition: opacity 0.18s ease-in-out, background-color 0.18s ease-in-out,
+    box-shadow 0.18s ease-in-out, transform 0.06s ease-in-out;
+}
+
+/* 키보드 접근성: 탭 포커스 시 링 보이기 */
+.czp-tag.clickable:focus-visible {
+  outline: 2px solid #94a3b8;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.35) inset;
+}
+
+/* 마우스 다운(눌렀을 때) 느낌 */
+.czp-tag.clickable:active {
+  transform: translateY(1px);
+}
+
 .czp-tag.my {
-  background: #052940;
-  color: #fff;
+  background: #1cfff7;
+  color: #052940;
 }
 .czp-tag.ok {
   background: #18ff00; /* ✅ 요청한 형광 초록색 */
@@ -470,6 +491,17 @@ body {
   color: #fff;
 }
 
+/* 상태별로 hover 시 미세한 톤 변화(원하면 조절) */
+.czp-tag.ok.clickable:hover {
+  background: #052940;
+  color: #fff;
+}
+/* 내 예약/예약취소 (남색) → 살짝 밝아짐 */
+.czp-tag.my.clickable:hover {
+  background-color: #d9d9d9;
+  color: #052940;
+}
+
 /* === 과목 선택 칩(학생용) === */
 .czp-subject-bar {
   display: flex;
@@ -477,7 +509,7 @@ body {
   justify-content: center;
   gap: 25px;
   margin: 0px;
-  margin-top: -15px;
+  margin-top: -1px;
   margin-bottom: 30px;
 }
 
