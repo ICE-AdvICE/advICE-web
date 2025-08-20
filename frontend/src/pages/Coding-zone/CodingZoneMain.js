@@ -32,6 +32,54 @@ import SubjectCard from "../../widgets/subjectCard/subjectCard.js";
 import SubjectClassesTable from "../../widgets/CodingZone/SubjectClassesTable";
 import { adminDeleteCodingzoneClassByClassNum } from "../../entities/api/CodingZone/AdminApi.js";
 
+// ★★★ 학생 표의 "상태" 칸(예약 가능/불가/내 예약) 렌더 + hover 시 텍스트 변경 + 클릭으로 예약/취소
+const ReserveCell = ({ cls, mine, onToggle }) => {
+  const [hover, setHover] = useState(false);
+  const isFull = (cls.currentNumber ?? 0) >= (cls.maximumNumber ?? 0);
+
+  // 예약불가(정원 초과) + 내가 예약한 수업이 아니면 클릭 불가
+  if (isFull && !mine) {
+    return <span className="czp-tag full">예약불가</span>;
+  }
+
+  // 라벨 구성: hover 시 문구 변경
+  const label = mine
+    ? hover
+      ? "예약취소"
+      : "내 예약"
+    : hover
+    ? "예약하기"
+    : "예약가능";
+  const className = `czp-tag ${mine ? "my" : "ok"} clickable`;
+
+  const handleClick = () => {
+    // handleToggleReservation는 isReserved로 분기하므로 넘겨줌
+    onToggle({ ...cls, isReserved: !!mine });
+  };
+
+  const onKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleClick();
+    }
+  };
+
+  return (
+    <span
+      className={className}
+      role="button"
+      tabIndex={0}
+      aria-pressed={mine}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      onClick={handleClick}
+      onKeyDown={onKeyDown}
+    >
+      {label}
+    </span>
+  );
+};
+
 const ClassList = ({
   userReservedClass,
   onDeleteClick,
@@ -406,8 +454,8 @@ const CodingMain = () => {
         setCookie,
         navigate
       );
+      // (신) 서버가 data에 숫자 그대로 반환
       if (res?.code === "SU") {
-        // 서버가 data에 숫자 반환
         setAttendanceCount(Number(res.data ?? 0));
       } else if (res?.code === "TOKEN_EXPIRED") {
         // 로그아웃 처리됨
@@ -428,6 +476,7 @@ const CodingMain = () => {
     }
     try {
       let result;
+      // 이미 내 예약 → 취소
       if (classItem.isReserved) {
         result = await deleteCodingZoneClass(
           token,
@@ -435,32 +484,99 @@ const CodingMain = () => {
           setCookie,
           navigate
         );
-        if (result === true) {
-          alert("예약 취소가 완료되었습니다.");
-          setUserReservedClass(null);
-          await fetchData();
+        switch (result?.code) {
+          case "SU":
+            alert("예약 취소가 완료되었습니다.");
+            setUserReservedClass(null);
+            // ▼ 학생용 표라면: 새로고침 없이 즉시 반영
+            if (selectedSubjectIdPub) {
+              // 현재 행 인원 -1
+              setClassListPub((prev) =>
+                prev.map((c) =>
+                  c.classNum === classItem.classNum
+                    ? {
+                        ...c,
+                        currentNumber: Math.max(0, (c.currentNumber ?? 0) - 1),
+                      }
+                    : c
+                )
+              );
+              // 내 예약 해제
+              setMyReservedPub(0);
+            } else {
+              // 카드뷰(기존 흐름)는 그대로 refetch
+              await fetchData();
+            }
+            break;
+          case "NR":
+            alert("예약되지 않은 수업입니다.");
+            break;
+          case "TOKEN_EXPIRED":
+          case "ATE":
+            alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+            break;
+          case "DBE":
+            alert("데이터베이스 오류가 발생했습니다.");
+            break;
+          default:
+            alert(result?.message ?? "예약 취소에 실패했습니다.");
         }
-      } else {
+      }
+      // 신규 예약
+      else {
         result = await reserveCodingZoneClass(
           token,
           classItem.classNum,
           setCookie,
           navigate
         );
-
-        if (result === "FC") {
-          alert("예약 가능한 인원이 꽉 찼습니다.");
-          await fetchData();
-        } else if (result === true) {
-          alert("예약이 완료되었습니다.");
-          await fetchData();
-        } else {
-          alert("예약에 실패했습니다.");
+        switch (result?.code) {
+          case "SU":
+            alert("예약이 완료되었습니다.");
+            // ▼ 학생용 표라면: 새로고침 없이 즉시 반영
+            if (selectedSubjectIdPub) {
+              setClassListPub((prev) =>
+                prev.map((c) => {
+                  // 방금 예약한 행: 인원 +1
+                  if (c.classNum === classItem.classNum) {
+                    return { ...c, currentNumber: (c.currentNumber ?? 0) + 1 };
+                  }
+                  // 이전에 내가 예약했던 행: 인원 -1 (서버가 중복예약 방지하므로 안전차감)
+                  if (myReservedPub && c.classNum === myReservedPub) {
+                    return {
+                      ...c,
+                      currentNumber: Math.max(0, (c.currentNumber ?? 0) - 1),
+                    };
+                  }
+                  return c;
+                })
+              );
+              // 내 예약 대상 갱신
+              setMyReservedPub(classItem.classNum);
+            } else {
+              // 카드뷰(기존 흐름)는 그대로 refetch
+              await fetchData();
+            }
+            break;
+          case "FC":
+            alert("예약 가능한 인원이 꽉 찼습니다.");
+            break;
+          case "AR":
+            alert("이미 예약한 수업이 있습니다.");
+            break;
+          case "TOKEN_EXPIRED":
+          case "ATE":
+            alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+            break;
+          case "DBE":
+            alert("데이터베이스 오류가 발생했습니다.");
+            break;
+          default:
+            alert(result?.message ?? "예약에 실패했습니다.");
         }
       }
     } catch (error) {
       alert("예약 처리 중 오류가 발생했습니다.");
-      await fetchData();
     }
   };
 
@@ -607,8 +723,8 @@ const CodingMain = () => {
       <CodingZoneNavigation />
       <BannerSlider />
       <div className="codingzone-body-container">
-        {/* 상단: 출석률 (오른쪽 정렬) */}
-        {!isAdmin && (
+        {/* 상단: 출석률 (오른쪽 정렬) — 과목 선택 전에는 숨김 */}
+        {!isAdmin && selectedSubjectIdPub && (
           <div className="cz-topbar">
             <Link
               to="/coding-zone/Codingzone_Attendance"
@@ -618,7 +734,6 @@ const CodingMain = () => {
             </Link>
           </div>
         )}
-
         {/* 하단: 과목칩(중앙) 또는 EA 달력 */}
         <div className="cz-category-top">
           {isAdmin ? (
@@ -831,13 +946,11 @@ const CodingMain = () => {
                                   {cls.currentNumber} / {cls.maximumNumber}
                                 </td>
                                 <td>
-                                  {cls.currentNumber >= cls.maximumNumber ? (
-                                    <span className="czp-tag full">
-                                      예약불가
-                                    </span>
-                                  ) : (
-                                    <span className="czp-tag ok">예약가능</span>
-                                  )}
+                                  <ReserveCell
+                                    cls={cls}
+                                    mine={mine}
+                                    onToggle={handleToggleReservation}
+                                  />
                                 </td>
                               </tr>
                             );
