@@ -5,12 +5,12 @@ import React, { useEffect, useState } from "react";
 
 const ROUTES = {
   codingzone: "/coding-zone",
-  attendenceEntry: "/coding-zone/Codingzone_Attendance", // 분기용(필요시)
-  attendenceReal: "/coding-zone/Codingzone_Attendance_Real", // 학생용
-  manager: "/coding-zone/Codingzone_Manager", // 조교용
-  allAttend: "/coding-zone/Codingzone_All_Attend", // 과사 조교(EA)용
-  classRegist: "/coding-zone/Coding-class-regist", // 보드바-수업 등록 ㅇ
-  setting: "/coding-zone/Codingzone_Setting", // 보드바-코딩존 설정
+  attendenceEntry: "/coding-zone/codingzone-attendance", // 분기용(필요시)
+  attendenceReal: "/coding-zone/codingzone-attendance-real", // 학생용
+  manager: "/coding-zone/codingzone-manager", // 조교용
+  allAttend: "/coding-zone/codingzone-all-attend", // 과사 조교(EA)용
+  classRegist: "/coding-zone/coding-class-regist", // 보드바-수업 등록 ㅇ
+  setting: "/coding-zone/codingzone-setting", // 보드바-코딩존 설정
   attendanceBase: "/coding-zone/attendance",
   attendanceCA: "/coding-zone/attendance/ca", // 학생 조교
   attendanceEA: "/coding-zone/attendance/ea", // 과사 조교
