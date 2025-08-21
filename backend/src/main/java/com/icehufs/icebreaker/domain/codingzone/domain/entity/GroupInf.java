@@ -1,7 +1,6 @@
 package com.icehufs.icebreaker.domain.codingzone.domain.entity;
 
-import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassUpdateRequestDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateRequestDto;
+import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassAssignRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +24,8 @@ public class GroupInf {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
     @Column(name = "class_num")
     private int classNum; // 수업 고유 번호
 
@@ -49,7 +50,7 @@ public class GroupInf {
     @Column(name = "subject_id")
     private int subjectId; // 교과목 매핑 번호
 
-    public GroupInf(GroupInfUpdateRequestDto dto) {
+    public GroupInf(CodingZoneClassAssignRequestDto dto, Integer classNum) {
 
         this.assistantName = dto.getAssistantName();
         this.classTime = dto.getClassTime();
@@ -58,7 +59,7 @@ public class GroupInf {
         this.maximumNumber = dto.getMaximumNumber();
         this.className = dto.getClassName();
         this.subjectId = dto.getSubjectId();
-
+        this.classNum = classNum;
     }
 
     public void update(String assistantName, String groupId, String classTime, String weekDay, Integer maximumNumber, String className, int subjectId) {
