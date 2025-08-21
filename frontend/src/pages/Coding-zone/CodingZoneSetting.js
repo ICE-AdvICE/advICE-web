@@ -46,10 +46,14 @@ const ClassSetting = () => {
     if (result?.ok) {
       // 즉시 UI 반영 (새로고침 필요 없음)
       setExistingMappings((prev) =>
-        prev.filter((x) => String(x.subjectId) !== String(m.subjectId))
+        prev
+          .filter((x) => String(x.subjectId) !== String(m.subjectId))
+          .sort(sortBySubjectId)
       );
       setExistingOrig((prev) =>
-        prev.filter((x) => String(x.subjectId) !== String(m.subjectId))
+        prev
+          .filter((x) => String(x.subjectId) !== String(m.subjectId))
+          .sort(sortBySubjectId)
       );
     } else if (result) {
       if (result.code === "DELETE_NOT_ALLOW") {
@@ -67,24 +71,38 @@ const ClassSetting = () => {
   const [existingOrig, setExistingOrig] = useState([]); // ✅ 원본 스냅샷
   const [loading, setLoading] = useState(false);
 
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState(() => []);
   const [mappingsLoaded, setMappingsLoaded] = useState(false);
 
   useEffect(() => {
-    // ✅ 기본값 선정은 '유지 없음(strict)'으로 해서 1이 자동으로 안 남도록
-    setRows((prev) =>
-      prev.map((r) => {
+    if (!mappingsLoaded) return;
+    setRows((prev) => {
+      const strictListForNew = getAvailableZonesStrict("new");
+
+      if (strictListForNew.length === 0) return [];
+
+      if (prev.length === 0) {
+        return [
+          {
+            id: Date.now(),
+            codingZone: strictListForNew[0],
+            subjectName: "",
+          },
+        ];
+      }
+
+      // 기존 행이 있을 때는 각 행의 기본값/유지 로직 동작
+      return prev.map((r) => {
         const keepList = getAvailableZones(r.id, r.codingZone); // UI 렌더용
         const strictList = getAvailableZonesStrict(r.id); // 기본값 계산용
         const shouldKeep =
           r.codingZone && keepList.includes(String(r.codingZone));
         const next = shouldKeep ? r.codingZone : strictList[0] ?? "";
         return next === r.codingZone ? r : { ...r, codingZone: next };
-      })
-    );
+      });
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [existingMappings]);
-
+  }, [existingMappings, mappingsLoaded]);
   // 깊은 곳에 숨어있는 첫 번째 배열을 찾아서 반환
   const findFirstArray = (v) => {
     if (Array.isArray(v)) return v;
@@ -107,6 +125,17 @@ const ClassSetting = () => {
       m?.subjectName ?? m?.name ?? m?.title ?? m?.label ?? ""
     ),
   });
+  const sortBySubjectId = (a, b) => {
+    const ai = parseInt(a.subjectId, 10);
+    const bi = parseInt(b.subjectId, 10);
+    if (Number.isNaN(ai) || Number.isNaN(bi)) {
+      // 혹시 숫자가 아닌 값이 섞여 있으면 문자열 기준으로도 안전하게
+      return String(a.subjectId).localeCompare(String(b.subjectId), undefined, {
+        numeric: true,
+      });
+    }
+    return ai - bi;
+  };
 
   // 매핑 리스트 불러오기
   const loadMappings = async () => {
@@ -114,12 +143,9 @@ const ClassSetting = () => {
       setLoading(true);
       const res = await fetchAllSubjects(accessToken, setCookie, navigate);
 
-      // 🔍 디버그: 서버가 실제로 뭘 주는지 한 번 찍어보자
-      console.debug("[subjects] raw response:", res);
-
       // 바로 배열이면 성공
       if (Array.isArray(res)) {
-        const list = res.map(normalizeMappingItem);
+        const list = res.map(normalizeMappingItem).sort(sortBySubjectId);
         console.debug("[subjects] parsed list (top-level array):", list);
         setExistingMappings(list);
         setExistingOrig(list);
@@ -303,7 +329,7 @@ const ClassSetting = () => {
             subjectName: p.subjectName,
           })
         );
-        return Array.from(map.values());
+        return Array.from(map.values()).sort(sortBySubjectId);
       });
       setExistingOrig((prev) => {
         // 같은 subjectId가 있으면 덮어쓰기(업데이트), 없으면 추가
@@ -314,7 +340,7 @@ const ClassSetting = () => {
             subjectName: p.subjectName,
           })
         );
-        return Array.from(map.values());
+        return Array.from(map.values()).sort(sortBySubjectId);
       });
       const newId = Date.now();
       const strict = getAvailableZonesStrict(newId);
