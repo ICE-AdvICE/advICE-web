@@ -372,18 +372,20 @@ body {
   width: 100%;
   background: #fff;
   border-radius: 12px;
-  overflow: hidden;
+  /* 툴팁이 테이블 밖으로 나올 수 있게 */
+  overflow: visible;
 }
 
 /* 스크롤 박스(헤더/바디 한 테이블이므로 가로/세로 스크롤만) */
 .czp-table-shell {
   border-radius: 12px;
-  overflow: hidden;
+  /* 툴팁 클리핑 방지 */
+  overflow: visible;
   background: #fff;
 }
 .czp-table-scroll {
-  overflow-x: auto;
-  overflow-y: auto; /* 필요 시 */
+  /* 툴팁이 어느 방향으로도 잘리지 않게 */
+  overflow: visible;
 }
 
 /* 표 레이아웃 */

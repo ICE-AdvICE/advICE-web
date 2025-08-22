@@ -33,9 +33,46 @@ import SubjectClassesTable from "../../widgets/CodingZone/SubjectClassesTable";
 import { adminDeleteCodingzoneClassByClassNum } from "../../entities/api/CodingZone/AdminApi.js";
 
 // ★★★ 학생 표의 "상태" 칸(예약 가능/불가/내 예약) 렌더 + hover 시 텍스트 변경 + 클릭으로 예약/취소
-const ReserveCell = ({ cls, mine, onToggle }) => {
+const ReserveCell = ({ cls, mine, onToggle, loggedIn }) => {
   const [hover, setHover] = useState(false);
   const isFull = (cls.currentNumber ?? 0) >= (cls.maximumNumber ?? 0);
+
+  // 비로그인 사용자는 라벨 고정 및 비상호작용 + 커스텀 툴팁 표시
+  if (!loggedIn) {
+    const tooltipText = isFull
+      ? "정원이 마감되어 예약할 수 없습니다."
+      : "로그인 후 이용 가능합니다.";
+    return (
+      <span
+        className={`czp-tag ${isFull ? "full" : "ok"}`}
+        style={{ position: "relative", display: "inline-block" }}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+      >
+        {isFull ? "예약불가" : "예약가능"}
+        {hover && (
+          <span
+            style={{
+              position: "absolute",
+              top: "-36px" /* 버튼 위쪽에 표시 */,
+              left: "50%",
+              transform: "translateX(-50%)",
+              whiteSpace: "nowrap",
+              background: "rgba(0,0,0,0.8)",
+              color: "#fff",
+              fontSize: "12px",
+              padding: "6px 8px",
+              borderRadius: "4px",
+              zIndex: 1000,
+              pointerEvents: "none",
+            }}
+          >
+            {tooltipText}
+          </span>
+        )}
+      </span>
+    );
+  }
 
   // 예약불가(정원 초과) + 내가 예약한 수업이 아니면 클릭 불가
   if (isFull && !mine) {
@@ -960,6 +997,7 @@ const CodingMain = () => {
                                     cls={cls}
                                     mine={mine}
                                     onToggle={handleToggleReservation}
+                                    loggedIn={!!cookies.accessToken}
                                   />
                                 </td>
                               </tr>
