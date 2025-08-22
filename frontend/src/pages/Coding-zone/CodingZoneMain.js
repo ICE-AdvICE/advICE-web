@@ -727,7 +727,7 @@ const CodingMain = () => {
         {!isAdmin && selectedSubjectIdPub && (
           <div className="cz-topbar">
             <Link
-              to="/coding-zone/Codingzone_Attendance"
+              to="/coding-zone/codingzone-attendance"
               className="cz-count-container"
             >
               {cookies.accessToken && renderAttendanceProgress(attendanceCount)}
@@ -865,13 +865,23 @@ const CodingMain = () => {
           ))}
         {!isAdmin && (
           <>
-            {/* ① 과목 미선택: 기존 회색 패널 재사용 */}
-            {!selectedSubjectIdPub && (
+            {/* ① 과목칩이 있을 때: 선택 전이면 문구만 노출 */}
+            {publicSubjects.length > 0 && !selectedSubjectIdPub && (
               <div className="panel-block panel-gray">
                 <div className="panel-empty">
                   예약하고자 하는 코딩존을 선택해주세요.
                 </div>
               </div>
+            )}
+
+            {/* 과목 버튼이 아예 없을 때만 안내 이미지 표시 */}
+            {publicSubjects.length === 0 && (
+              <img
+                src="/Codingzone-noregist.png"
+                alt="예약 안내 이미지"
+                className="czp-guide-image"
+                style={{ width: "1000px", height: "auto" }}
+              />
             )}
 
             {/* ② 로딩 중: 회색 패널로 로딩 표시 (표 헤더 깜빡임 방지) */}

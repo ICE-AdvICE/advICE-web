@@ -16,7 +16,7 @@ import Banner from "../../shared/ui/Banner/Banner"; // ✅ 추가(juhui): 공통
 import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js"; //코딩존 보드 바(버튼 네개) 컴포넌트
 
 const CodingZoneRegist = () => {
-  const [boxes, setBoxes] = useState([]);
+  const [boxes, setBoxes] = useState(() => [getDefaultRow()]);
   const [groupId, setGroupId] = useState("A");
   const [cookies, setCookie] = useCookies(["accessToken"]);
   const [activeCategory, setActiveCategory] = useState("registerClass");
@@ -29,6 +29,22 @@ const CodingZoneRegist = () => {
   const [subjects, setSubjects] = useState([]);
   const [assistantOptionsMap, setAssistantOptionsMap] = useState({});
   const [assistantLoading, setAssistantLoading] = useState({});
+
+  function getDefaultRow() {
+    const today = new Date();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    const formattedDate = `${month}-${day}`; // MM-DD
+    return {
+      day: "",
+      date: formattedDate,
+      time: "",
+      className: "",
+      assistant: "",
+      maxPers: "",
+      subjectId: "",
+    };
+  }
 
   // 응답 안쪽에 숨어있는 "첫 번째 배열"을 찾아 반환
   const findFirstArray = (v) => {

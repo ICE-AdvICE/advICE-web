@@ -54,7 +54,7 @@ function CodingZoneDefault() {
   }
 
   // 코딩존 조교(CA), 일반 학생 → 출결 확인 페이지
-  return <Navigate to="/coding-zone/Codingzone_Attendance_Real" replace />;
+  return <Navigate to="/coding-zone/codingzone-attendance-real" replace />;
 }
 
 /** 출결관리 공통 진입점: 권한별로 서로 다른 페이지로 보냄 */
@@ -90,7 +90,7 @@ function AttendanceRouter() {
     return <Navigate to="/coding-zone/attendance/ca" replace />;
 
   // 그 외(학생 등) → 내 출결 페이지로
-  return <Navigate to="/coding-zone/Codingzone_Attendance_Real" replace />;
+  return <Navigate to="/coding-zone/codingzone-attendance-real" replace />;
 }
 
 const App = () => {
@@ -110,32 +110,32 @@ const App = () => {
         <Route path="/coding-zone" element={<CodingMain />} />
 
         <Route
-          path="/coding-zone/Coding-class-regist"
+          path="/coding-zone/coding-class-regist"
           element={<CodingClassRegist />}
         />
         <Route
-          path="/coding-zone/Codingzone_Manager"
+          path="/coding-zone/codingzone-manager" // 무슨 경로인지 모르겠음
           element={<CodingZoneAttendanceAssistant />}
         />
         <Route
-          path="/coding-zone/Codingzone_Setting"
+          path="/coding-zone/codingzone-setting"
           element={<CodingZoneSetting />}
         />
 
         {/*기본 진입 시 권한별 분기 */}
         <Route
-          path="/coding-zone/Codingzone_Attendance"
+          path="/coding-zone/codingzone-attendance"
           element={<CodingZoneDefault />}
         />
 
         {/* 실제 출결확인 페이지 */}
         <Route
-          path="/coding-zone/Codingzone_Attendance_Real"
+          path="/coding-zone/codingzone-attendance-real"
           element={<CodingZoneMyAttendance />}
         />
 
         <Route
-          path="/coding-zone/Codingzone_All_Attend"
+          path="/coding-zone/codingzone-all-attend"
           element={<CodingZoneAttendanceManager />}
         />
 
