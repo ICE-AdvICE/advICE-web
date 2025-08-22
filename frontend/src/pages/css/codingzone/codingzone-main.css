@@ -392,6 +392,7 @@ body {
 .czp-table {
   width: 100%;
   border-collapse: separate !important;
+  /* 헤더와 바디가 맞닿도록 간격 제거 */
   border-spacing: 0 !important;
   table-layout: fixed; /* 컬럼 너비 고정 */
 }
@@ -405,9 +406,29 @@ body {
   font-size: 14px;
 }
 
+/* 헤더 모서리 라운드 */
+.czp-table thead th:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+.czp-table thead th:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+/* 헤더 배경이 둥근 모서리에 맞게 잘리도록 */
+.czp-table thead {
+  overflow: hidden;
+}
+
+/* 헤더 하단 라운드가 첫 행 상단 보더에 가려지지 않도록 제거 */
+.czp-table tbody tr:first-child td {
+  border-top: none;
+}
+
 /* 바디 셀 */
 .czp-table tbody td {
-  padding: 12px 10px;
+  padding: 22px 10px;
   text-align: center;
   border-top: 1px solid #e5e7eb;
   font-size: 14px;
@@ -419,6 +440,16 @@ body {
 .czp-table tbody tr {
   background: #fff;
   height: 64px;
+}
+/* 첫 행 윗줄 선 제거: 헤더와 바로 맞닿도록 */
+.czp-table tbody tr:first-child td {
+  border-top: none;
+}
+.czp-table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 10px;
+}
+.czp-table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 10px;
 }
 .czp-table tbody tr:hover {
   background: #f9fafb;
