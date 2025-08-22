@@ -80,7 +80,7 @@ const ReserveCell = ({
     );
   }
 
-  // 예약불가(정원 초과) + 내가 예약한 수업이 아니면 클릭 불가
+  // 예약불가(정원 초과/중복 제한) + 내가 예약한 수업은 예외로 취소 가능
   if ((isFull || disabledBySameSubject) && !mine) {
     const tooltipText = disabledBySameSubject
       ? "이미 진행 중인 예약이 있습니다."
@@ -125,6 +125,7 @@ const ReserveCell = ({
     : hover
     ? "예약하기"
     : "예약 가능";
+  // 내 예약이면 정원과 무관하게 취소 가능해야 하므로 항상 clickable 처리
   const className = `czp-tag ${mine ? "my" : "ok"} clickable`;
 
   const handleClick = () => {
@@ -616,6 +617,9 @@ const CodingMain = () => {
                     ? {
                         ...c,
                         currentNumber: Math.max(0, (c.currentNumber ?? 0) - 1),
+                        isReserved: false,
+                        mine: false,
+                        reserved: false,
                       }
                     : c
                 )
@@ -658,15 +662,24 @@ const CodingMain = () => {
             if (selectedSubjectIdPub) {
               setClassListPub((prev) =>
                 prev.map((c) => {
-                  // 방금 예약한 행: 인원 +1
+                  // 방금 예약한 행: 인원 +1 및 내 예약 표시
                   if (c.classNum === classItem.classNum) {
-                    return { ...c, currentNumber: (c.currentNumber ?? 0) + 1 };
+                    return {
+                      ...c,
+                      currentNumber: (c.currentNumber ?? 0) + 1,
+                      isReserved: true,
+                      mine: true,
+                      reserved: true,
+                    };
                   }
-                  // 이전에 내가 예약했던 행: 인원 -1 (서버가 중복예약 방지하므로 안전차감)
+                  // 이전에 내가 예약했던 행: 인원 -1 및 내 예약 플래그 해제
                   if (myReservedPub && c.classNum === myReservedPub) {
                     return {
                       ...c,
                       currentNumber: Math.max(0, (c.currentNumber ?? 0) - 1),
+                      isReserved: false,
+                      mine: false,
+                      reserved: false,
                     };
                   }
                   return c;
@@ -1068,9 +1081,13 @@ const CodingMain = () => {
                               )
                             : classListPub
                           ).map((cls) => {
-                            const mine =
-                              typeof myReservedPub === "number" &&
-                              myReservedPub === cls.classNum;
+                            const mine = Boolean(
+                              (typeof myReservedPub === "number" &&
+                                myReservedPub === cls.classNum) ||
+                                cls.isReserved === true ||
+                                cls.mine === true ||
+                                cls.reserved === true
+                            );
                             // 동일 주차(같은 주) + 동일 과목 예약 비활성화:
                             // 서버가 subjectId를 내려준다고 가정하고, 동일 과목이면 다른 행은 비활성
                             const disabledBySameSubject =
