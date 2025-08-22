@@ -874,16 +874,14 @@ const CodingMain = () => {
               </div>
             )}
 
-            {/* 과목 버튼(칩)이 아예 없을 때만 안내 이미지 표시 */}
+            {/* 과목 버튼이 아예 없을 때만 안내 이미지 표시 */}
             {publicSubjects.length === 0 && (
-              <div className="panel-block panel-gray">
-                <img
-                  src="/Codingzone-noregist.png"
-                  alt="예약 안내 이미지"
-                  className="czp-guide-image"
-                  style={{ width: "1100px", height: "auto" }}
-                />
-              </div>
+              <img
+                src="/Codingzone-noregist.png"
+                alt="예약 안내 이미지"
+                className="czp-guide-image"
+                style={{ width: "1000px", height: "auto" }}
+              />
             )}
 
             {/* ② 로딩 중: 회색 패널로 로딩 표시 (표 헤더 깜빡임 방지) */}
