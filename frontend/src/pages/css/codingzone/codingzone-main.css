@@ -498,6 +498,10 @@ body {
   background: #ff4d4f; /* 예약 불가 (빨강) */
   color: #fff;
 }
+.czp-tag.disabled {
+  background: #efefef; /* 동일 과목 예약으로 비활성 */
+  color: #adacac;
+}
 
 /* 상태별로 hover 시 미세한 톤 변화(원하면 조절) */
 .czp-tag.ok.clickable:hover {

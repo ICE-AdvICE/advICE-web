@@ -33,7 +33,13 @@ import SubjectClassesTable from "../../widgets/CodingZone/SubjectClassesTable";
 import { adminDeleteCodingzoneClassByClassNum } from "../../entities/api/CodingZone/AdminApi.js";
 
 // ★★★ 학생 표의 "상태" 칸(예약 가능/불가/내 예약) 렌더 + hover 시 텍스트 변경 + 클릭으로 예약/취소
-const ReserveCell = ({ cls, mine, onToggle, loggedIn }) => {
+const ReserveCell = ({
+  cls,
+  mine,
+  onToggle,
+  loggedIn,
+  disabledBySameSubject,
+}) => {
   const [hover, setHover] = useState(false);
   const isFull = (cls.currentNumber ?? 0) >= (cls.maximumNumber ?? 0);
 
@@ -75,8 +81,40 @@ const ReserveCell = ({ cls, mine, onToggle, loggedIn }) => {
   }
 
   // 예약불가(정원 초과) + 내가 예약한 수업이 아니면 클릭 불가
-  if (isFull && !mine) {
-    return <span className="czp-tag full">예약불가</span>;
+  if ((isFull || disabledBySameSubject) && !mine) {
+    const tooltipText = disabledBySameSubject
+      ? "이미 진행 중인 예약이 있습니다."
+      : "정원이 마감되어 예약할 수 없습니다.";
+    return (
+      <span
+        className={`czp-tag ${disabledBySameSubject ? "disabled" : "full"}`}
+        style={{ position: "relative", display: "inline-block" }}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+      >
+        예약불가
+        {hover && (
+          <span
+            style={{
+              position: "absolute",
+              top: "-36px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              whiteSpace: "nowrap",
+              background: "rgba(0,0,0,0.8)",
+              color: "#fff",
+              fontSize: "12px",
+              padding: "6px 8px",
+              borderRadius: "4px",
+              zIndex: 1000,
+              pointerEvents: "none",
+            }}
+          >
+            {tooltipText}
+          </span>
+        )}
+      </span>
+    );
   }
 
   // 라벨 구성: hover 시 문구 변경
@@ -241,6 +279,19 @@ const CodingMain = () => {
     const m = String(dt.getMonth() + 1).padStart(2, "0");
     const d = String(dt.getDate()).padStart(2, "0");
     return `${y}-${m}-${d}`;
+  };
+
+  // ★ 동일 주차 판별: ISO 주차 키(YYYY-WW) 계산
+  const getIsoWeekKey = (dateStr) => {
+    if (!dateStr) return null;
+    const d0 = new Date(dateStr);
+    if (Number.isNaN(d0.getTime())) return null;
+    const d = new Date(Date.UTC(d0.getFullYear(), d0.getMonth(), d0.getDate()));
+    const dayNum = d.getUTCDay() || 7; // 1..7 (월=1, 일=7)
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum); // 해당 주의 목요일
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    const weekNo = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+    return `${d.getUTCFullYear()}-${String(weekNo).padStart(2, "0")}`;
   };
 
   const count = subjects.length; // ★ NEW
@@ -994,6 +1045,34 @@ const CodingMain = () => {
                             const mine =
                               typeof myReservedPub === "number" &&
                               myReservedPub === cls.classNum;
+                            // 동일 주차(같은 주) + 동일 과목 예약 비활성화:
+                            // 서버가 subjectId를 내려준다고 가정하고, 동일 과목이면 다른 행은 비활성
+                            const disabledBySameSubject =
+                              !mine &&
+                              !!myReservedPub &&
+                              Array.isArray(classListPub) &&
+                              (() => {
+                                const myRow = classListPub.find(
+                                  (r) => r.classNum === myReservedPub
+                                );
+                                if (!myRow) return false;
+                                const mySubject =
+                                  myRow.subjectId ?? myRow.subject_id;
+                                const rowSubject =
+                                  cls.subjectId ?? cls.subject_id;
+                                if (
+                                  !(
+                                    mySubject &&
+                                    rowSubject &&
+                                    mySubject === rowSubject
+                                  )
+                                )
+                                  return false;
+                                // 동일 주차 비교
+                                const myWeek = getIsoWeekKey(myRow.classDate);
+                                const rowWeek = getIsoWeekKey(cls.classDate);
+                                return myWeek && rowWeek && myWeek === rowWeek;
+                              })();
                             return (
                               <tr key={cls.classNum}>
                                 <td>{cls.weekDay}</td>
@@ -1011,6 +1090,9 @@ const CodingMain = () => {
                                     mine={mine}
                                     onToggle={handleToggleReservation}
                                     loggedIn={!!cookies.accessToken}
+                                    disabledBySameSubject={
+                                      disabledBySameSubject
+                                    }
                                   />
                                 </td>
                               </tr>
