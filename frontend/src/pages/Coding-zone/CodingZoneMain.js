@@ -55,7 +55,7 @@ const ReserveCell = ({
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
       >
-        {isFull ? "예약불가" : "예약가능"}
+        {isFull ? "정원 마감" : "예약 가능"}
         {hover && (
           <span
             style={{
@@ -92,7 +92,7 @@ const ReserveCell = ({
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
       >
-        예약불가
+        {disabledBySameSubject ? "예약 불가" : "정원 마감"}
         {hover && (
           <span
             style={{
@@ -120,11 +120,11 @@ const ReserveCell = ({
   // 라벨 구성: hover 시 문구 변경
   const label = mine
     ? hover
-      ? "예약취소"
+      ? "예약 취소"
       : "내 예약"
     : hover
     ? "예약하기"
-    : "예약가능";
+    : "예약 가능";
   const className = `czp-tag ${mine ? "my" : "ok"} clickable`;
 
   const handleClick = () => {
@@ -575,6 +575,24 @@ const CodingMain = () => {
       alert("로그인이 필요합니다.");
       return;
     }
+    // 동시성 동기화를 위한 과목 리스트 재조회 함수
+    const refetchClassListForCurrentSubject = async () => {
+      if (!selectedSubjectIdPub) return fetchData();
+      const api = token
+        ? fetchClassListBySubjectForUser
+        : fetchClassListBySubjectPublic;
+      const res = await api(selectedSubjectIdPub, token);
+      if (!res) return;
+      const list = res.data?.classList ?? [];
+      const registed =
+        typeof res.data?.registedClassNum === "number"
+          ? res.data.registedClassNum
+          : 0;
+      if (res.code === "SU") {
+        setClassListPub(Array.isArray(list) ? list : []);
+        setMyReservedPub(registed);
+      }
+    };
     try {
       let result;
       // 이미 내 예약 → 취소
@@ -604,6 +622,8 @@ const CodingMain = () => {
               );
               // 내 예약 해제
               setMyReservedPub(0);
+              // 정합성 확보를 위해 서버 값으로 재동기화
+              await refetchClassListForCurrentSubject();
             } else {
               // 카드뷰(기존 흐름)는 그대로 refetch
               await fetchData();
@@ -654,6 +674,8 @@ const CodingMain = () => {
               );
               // 내 예약 대상 갱신
               setMyReservedPub(classItem.classNum);
+              // 정합성 확보를 위해 서버 값으로 재동기화(동시성 케이스 대비)
+              await refetchClassListForCurrentSubject();
             } else {
               // 카드뷰(기존 흐름)는 그대로 refetch
               await fetchData();
@@ -661,9 +683,13 @@ const CodingMain = () => {
             break;
           case "FC":
             alert("예약 가능한 인원이 꽉 찼습니다.");
+            // 동시성: 다른 사용자에 의해 정원 마감 → 즉시 재조회로 버튼 상태 동기화
+            await refetchClassListForCurrentSubject();
             break;
           case "AR":
             alert("이미 예약한 수업이 있습니다.");
+            // 서버 기준으로 내 예약 대상이 바뀌었을 수 있으니 재조회로 동기화
+            await refetchClassListForCurrentSubject();
             break;
           case "TOKEN_EXPIRED":
           case "ATE":
