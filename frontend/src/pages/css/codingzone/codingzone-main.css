@@ -88,8 +88,7 @@ body {
   display: flex;
   justify-content: center; /* 중앙 정렬 */
   align-items: center;
-  gap: 0; /* 같이 있던 요소 분리했으니 gap 제거해도 OK */
-  margin-top: 0; /* -20px로 올라가 있으면 중앙 정렬이 어긋남 -> 0 권장 */
+  margin-top: -25px;
 }
 
 .cz-category-date {
@@ -274,7 +273,6 @@ body {
   position: absolute;
   top: -9999px;
 }
-
 
 .no-classes-image.visible {
   opacity: 1;
