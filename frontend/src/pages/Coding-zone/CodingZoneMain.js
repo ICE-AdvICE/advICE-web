@@ -300,6 +300,19 @@ const CodingMain = () => {
     })();
   }, [isAdmin]);
 
+  // ★ 학생/비로그인: 과목 목록 로드 후 첫 번째 과목을 기본 선택
+  useEffect(() => {
+    if (isAdmin) return; // 관리자 흐름 제외
+    if (selectedSubjectIdPub) return; // 이미 선택되어 있으면 패스
+    if (!publicSubjects || publicSubjects.length === 0) return;
+    const first = publicSubjects[0];
+    const sid = first.subjectId ?? first.id;
+    const sname = first.subjectName ?? first.name;
+    if (sid) {
+      handlePickSubjectPublic(sid, sname);
+    }
+  }, [isAdmin, publicSubjects, selectedSubjectIdPub]);
+
   // 요일과 슬라이더 설정을 상수로 정의
   const daysOfWeek = ["월요일", "화요일", "수요일", "목요일", "금요일"];
 
