@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "../css/codingzone/codingzone-main.css";
 import "../css/codingzone/codingzone_attend.css";
 import { useCookies } from "react-cookie";
@@ -448,7 +448,7 @@ const CodingMain = () => {
     const [hours, minutes] = timeStr.split(":").map(Number);
     return hours * 60 + minutes;
   };
-  // 수업 목록을 요일과 시간 순으로 정렬
+  // 수업 목록을 요일과 시간 순으로 정렬 (카드뷰 용)
   const sortClassList = (classList) => {
     return classList.sort((a, b) => {
       const dayComparison =
@@ -541,6 +541,29 @@ const CodingMain = () => {
   useEffect(() => {
     fetchData();
   }, [cookies.accessToken, grade]);
+
+  // 표용 정렬/필터 결과 (항상 호출되도록 컴포넌트 최상단에서 useMemo 사용)
+  const sortedClassListPub = useMemo(() => {
+    const base = Array.isArray(classListPub) ? [...classListPub] : [];
+    if (!selectedDayPub) {
+      return base.sort((a, b) => {
+        const dayComparison =
+          daysOfWeek.indexOf(a.weekDay) - daysOfWeek.indexOf(b.weekDay);
+        if (dayComparison !== 0) return dayComparison;
+        return (
+          timeToNumber(a.classTime || "") - timeToNumber(b.classTime || "")
+        );
+      });
+    }
+    const filtered = base.filter(
+      (cls) =>
+        (cls.weekDay || "").toLowerCase() === selectedDayPub.toLowerCase()
+    );
+    return filtered.sort(
+      (a, b) =>
+        timeToNumber(a.classTime || "") - timeToNumber(b.classTime || "")
+    );
+  }, [classListPub, selectedDayPub]);
 
   // 출석 횟수 (과목별): 과목 선택 시마다 최신화
   useEffect(() => {
@@ -1073,14 +1096,7 @@ const CodingMain = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {(selectedDayPub
-                            ? classListPub.filter(
-                                (cls) =>
-                                  (cls.weekDay || "").toLowerCase() ===
-                                  selectedDayPub.toLowerCase()
-                              )
-                            : classListPub
-                          ).map((cls) => {
+                          {sortedClassListPub.map((cls) => {
                             const mine = Boolean(
                               (typeof myReservedPub === "number" &&
                                 myReservedPub === cls.classNum) ||
