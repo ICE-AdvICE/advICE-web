@@ -28,6 +28,7 @@ import {
   fetchClassListBySubjectForUser,
   fetchClassListBySubjectPublic,
 } from "../../entities/api/CodingZone/AdminApi";
+import { getczattendlistRequest } from "../../features/api/CodingzoneApi.js";
 import SubjectCard from "../../widgets/subjectCard/subjectCard.js";
 import SubjectClassesTable from "../../widgets/CodingZone/SubjectClassesTable";
 import { adminDeleteCodingzoneClassByClassNum } from "../../entities/api/CodingZone/AdminApi.js";
@@ -225,6 +226,82 @@ const CodingMain = () => {
   const [bannerPub, setBannerPub] = useState(null); // "UNAVAILABLE" | "EMPTY" | null
   const [myReservedPub, setMyReservedPub] = useState(0);
   const [selectedDayPub, setSelectedDayPub] = useState("");
+  // 세션 고정: 예약 메타를 저장해 과목 전환 간 일관성 유지
+  const RESERVED_META_KEY = "czp_reserved_meta"; // 배열 형태로 저장 [{classNum, subjectId, classDate, classTime, weekDay}]
+  const readReservedMetas = () => {
+    try {
+      const raw = sessionStorage.getItem(RESERVED_META_KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
+      if (parsed && typeof parsed === "object" && parsed.classNum)
+        return [parsed];
+      return [];
+    } catch {
+      return [];
+    }
+  };
+  const writeReservedMetas = (metas) => {
+    try {
+      sessionStorage.setItem(RESERVED_META_KEY, JSON.stringify(metas));
+    } catch {}
+  };
+  const addReservedMeta = (meta) => {
+    const list = readReservedMetas();
+    if (!list.some((m) => Number(m.classNum) === Number(meta.classNum))) {
+      const next = [...list, meta];
+      writeReservedMetas(next);
+      setReservedMetas(next);
+    }
+  };
+  const removeReservedMetaByClassNum = (classNum) => {
+    const list = readReservedMetas();
+    const next = list.filter((m) => Number(m.classNum) !== Number(classNum));
+    writeReservedMetas(next);
+    setReservedMetas(next);
+  };
+  const clearReservedMeta = () => {
+    try {
+      sessionStorage.removeItem(RESERVED_META_KEY);
+      setReservedMetas([]);
+    } catch {}
+  };
+  const readReservedMeta = () => {
+    const list = readReservedMetas();
+    return list.length ? list[0] : null;
+  };
+  // 내 예약 상세 메타(과목/요일/시간) — 다른 과목 충돌 판정에 사용
+  const [myReservedSubjectId, setMyReservedSubjectId] = useState(null);
+  const [myReservedWeekDay, setMyReservedWeekDay] = useState("");
+  const [myReservedClassTime, setMyReservedClassTime] = useState("");
+  const [reservedMetas, setReservedMetas] = useState([]);
+
+  useEffect(() => {
+    setReservedMetas(readReservedMetas());
+  }, []);
+
+  // 로그인 상태에서 서버의 전체 예약 리스트와 세션 메타 동기화
+  useEffect(() => {
+    const token = cookies.accessToken;
+    if (!token) return;
+    (async () => {
+      const res = await getczattendlistRequest(token, setCookie, navigate);
+      if (res?.code === "SU") {
+        const list = res.attendList || [];
+        const metas = list.map((it) => ({
+          classNum: Number(it.registrationId) ? undefined : undefined, // placeholder; classNum 모르면 보수적으로 유지
+          subjectId: undefined,
+          classDate: String(it.classDate || ""),
+          classTime: String(it.classTime || ""),
+          weekDay: "", // 요일은 표 렌더링 시 비교에서 사용하지 않음(같은 과목 주차는 classDate 기준)
+        }));
+        // classNum/subjectId가 없으면 기존 세션 값 유지. 이 동기화는 표시 보조용.
+        const existing = readReservedMetas();
+        writeReservedMetas(existing.length ? existing : []);
+        setReservedMetas(existing);
+      }
+    })();
+  }, [cookies.accessToken]);
   const formatHHmmRangeFromStart = (startTime) => {
     if (!startTime) return "";
     const [hh, mm] = startTime.split(":").map(Number);
@@ -526,6 +603,9 @@ const CodingMain = () => {
         setOriginalClassList(sortedClasses);
         setClassList(sortedClasses);
         setShowNoClassesImage(false);
+        // 세션 저장된 메타 기준으로 화면 표시 고정
+        const meta = readReservedMeta();
+        setMyReservedPub(meta?.classNum ? Number(meta.classNum) : 0);
       } else {
         setOriginalClassList([]);
         setClassList([]);
@@ -599,6 +679,46 @@ const CodingMain = () => {
       alert("로그인이 필요합니다.");
       return;
     }
+    // 예약 전 사전 충돌 검사: 세션 배열 기준(여러 건 고려)
+    if (!classItem.isReserved) {
+      const metas = reservedMetas.length
+        ? reservedMetas
+        : (() => {
+            const m = readReservedMeta();
+            return m ? [m] : [];
+          })();
+      if (metas.length) {
+        const rowSubject = String(
+          classItem.subjectId ?? classItem.subject_id ?? ""
+        );
+        for (const m of metas) {
+          const mySubject = String(m.subjectId ?? "");
+          if (mySubject && rowSubject && mySubject !== rowSubject) {
+            const sameDay =
+              String(m.weekDay || "").toLowerCase() ===
+              String(classItem.weekDay || "").toLowerCase();
+            const sameTime =
+              String(m.classTime || "") === String(classItem.classTime || "");
+            if (sameDay && sameTime) {
+              alert("다른 과목에서 같은 시간에 이미 예약 중입니다.");
+              return;
+            }
+          } else if (mySubject && rowSubject && mySubject === rowSubject) {
+            const myWeek = getIsoWeekKey(m.classDate);
+            const rowWeek = getIsoWeekKey(classItem.classDate);
+            if (
+              myWeek &&
+              rowWeek &&
+              myWeek === rowWeek &&
+              Number(m.classNum || -1) !== Number(classItem.classNum)
+            ) {
+              alert("같은 과목에서 같은 주차에는 하나만 예약할 수 있습니다.");
+              return;
+            }
+          }
+        }
+      }
+    }
     // 동시성 동기화를 위한 과목 리스트 재조회 함수
     const refetchClassListForCurrentSubject = async () => {
       if (!selectedSubjectIdPub) return fetchData();
@@ -647,8 +767,12 @@ const CodingMain = () => {
                     : c
                 )
               );
-              // 내 예약 해제
+              // 내 예약 해제 (복수 예약 메타에서도 제거)
+              removeReservedMetaByClassNum(classItem.classNum);
               setMyReservedPub(0);
+              setMyReservedSubjectId(null);
+              setMyReservedWeekDay("");
+              setMyReservedClassTime("");
               // 정합성 확보를 위해 서버 값으로 재동기화
               await refetchClassListForCurrentSubject();
             } else {
@@ -695,21 +819,22 @@ const CodingMain = () => {
                       reserved: true,
                     };
                   }
-                  // 이전에 내가 예약했던 행: 인원 -1 및 내 예약 플래그 해제
-                  if (myReservedPub && c.classNum === myReservedPub) {
-                    return {
-                      ...c,
-                      currentNumber: Math.max(0, (c.currentNumber ?? 0) - 1),
-                      isReserved: false,
-                      mine: false,
-                      reserved: false,
-                    };
-                  }
+                  // 이전 예약은 유지 (복수 예약 허용 UI) → 변경 없음
                   return c;
                 })
               );
-              // 내 예약 대상 갱신
+              // 내 예약 대상 갱신 + 메타 추가(복수 저장)
+              addReservedMeta({
+                classNum: classItem.classNum,
+                subjectId: selectedSubjectIdPub,
+                classDate: String(classItem.classDate || ""),
+                classTime: String(classItem.classTime || ""),
+                weekDay: String(classItem.weekDay || ""),
+              });
               setMyReservedPub(classItem.classNum);
+              setMyReservedSubjectId(String(selectedSubjectIdPub));
+              setMyReservedWeekDay(String(classItem.weekDay || ""));
+              setMyReservedClassTime(String(classItem.classTime || ""));
               // 정합성 확보를 위해 서버 값으로 재동기화(동시성 케이스 대비)
               await refetchClassListForCurrentSubject();
             } else {
@@ -761,7 +886,9 @@ const CodingMain = () => {
     setLoadingPub(true);
     setBannerPub(null);
     setClassListPub([]);
-    setMyReservedPub(0);
+    // 기존 복수 예약 메타는 유지하여 다른 과목 전환 시에도 '내 예약' 표시 유지
+    const metas = readReservedMetas();
+    setReservedMetas(metas);
     setSelectedDayPub("");
 
     const token = cookies.accessToken;
@@ -781,8 +908,28 @@ const CodingMain = () => {
         : 0;
 
     if (code === "SU") {
-      setClassListPub(Array.isArray(list) ? list : []);
-      setMyReservedPub(registed);
+      const normalized = Array.isArray(list) ? list : [];
+      setClassListPub(normalized);
+      // 세션의 복수 예약 메타를 우선 적용하여 해당 과목의 '내 예약' 표시
+      const metas = readReservedMetas();
+      setReservedMetas(metas);
+      const mineInThisSubject = metas.find(
+        (m) => String(m.subjectId) === String(subjectId)
+      );
+      if (mineInThisSubject) {
+        setMyReservedPub(Number(mineInThisSubject.classNum));
+        setMyReservedSubjectId(String(mineInThisSubject.subjectId));
+        setMyReservedWeekDay(String(mineInThisSubject.weekDay || ""));
+        setMyReservedClassTime(String(mineInThisSubject.classTime || ""));
+      } else {
+        setMyReservedPub(registed);
+        const mineRow = normalized.find((r) => r.classNum === registed);
+        if (mineRow) {
+          setMyReservedSubjectId(subjectId);
+          setMyReservedWeekDay(String(mineRow.weekDay || ""));
+          setMyReservedClassTime(String(mineRow.classTime || ""));
+        }
+      }
       // 성공인데 리스트가 비면 EMPTY 배너로 정리
       if (!list.length) setBannerPub("EMPTY");
       return;
@@ -1097,43 +1244,94 @@ const CodingMain = () => {
                         </thead>
                         <tbody>
                           {sortedClassListPub.map((cls) => {
-                            const mine = Boolean(
+                            // '내 예약'은: (1) 내가 예약한 classNum과 동일하고 (2) subjectId가 확실히 일치할 때만 표시
+                            const myRow = Array.isArray(classListPub)
+                              ? classListPub.find(
+                                  (r) => r.classNum === myReservedPub
+                                )
+                              : undefined;
+                            // 복수 예약: reservedMetas에 해당 classNum이 있으면 모두 "내 예약"
+                            // 또는 서버 registedClassNum과 일치하면 "내 예약"
+                            const mine =
+                              reservedMetas.some(
+                                (m) =>
+                                  Number(m.classNum) === Number(cls.classNum)
+                              ) ||
                               (typeof myReservedPub === "number" &&
-                                myReservedPub === cls.classNum) ||
-                                cls.isReserved === true ||
-                                cls.mine === true ||
-                                cls.reserved === true
-                            );
-                            // 동일 주차(같은 주) + 동일 과목 예약 비활성화:
-                            // 서버가 subjectId를 내려준다고 가정하고, 동일 과목이면 다른 행은 비활성
+                                myReservedPub === cls.classNum);
+                            // 비활성화 규칙:
+                            // - 다른 과목이면서 (요일 AND 시간) 둘 다 같으면 비활성화
+                            // - 같은 과목이면 기존 로직(같은 주) 유지
                             const disabledBySameSubject =
                               !mine &&
-                              !!myReservedPub &&
-                              Array.isArray(classListPub) &&
+                              (reservedMetas.length > 0 || !!myReservedPub) &&
                               (() => {
-                                const myRow = classListPub.find(
-                                  (r) => r.classNum === myReservedPub
+                                const rowSubject = String(
+                                  cls.subjectId ?? cls.subject_id ?? ""
                                 );
-                                if (!myRow) return false;
-                                const mySubject =
-                                  myRow.subjectId ?? myRow.subject_id;
-                                const rowSubject =
-                                  cls.subjectId ?? cls.subject_id;
-                                if (
-                                  !(
-                                    mySubject &&
-                                    rowSubject &&
-                                    mySubject === rowSubject
-                                  )
-                                )
+                                const metas = reservedMetas.length
+                                  ? reservedMetas
+                                  : (() => {
+                                      const m = readReservedMeta();
+                                      if (m) return [m];
+                                      const r = Array.isArray(classListPub)
+                                        ? classListPub.find(
+                                            (r) => r.classNum === myReservedPub
+                                          )
+                                        : undefined;
+                                      if (r)
+                                        return [
+                                          {
+                                            classNum: r.classNum,
+                                            subjectId:
+                                              r.subjectId ?? r.subject_id,
+                                            classDate: String(
+                                              r.classDate || ""
+                                            ),
+                                            classTime: String(
+                                              r.classTime || ""
+                                            ),
+                                            weekDay: String(r.weekDay || ""),
+                                          },
+                                        ];
+                                      return [];
+                                    })();
+                                if (!rowSubject || metas.length === 0)
                                   return false;
-                                // 동일 주차 비교
-                                const myWeek = getIsoWeekKey(myRow.classDate);
-                                const rowWeek = getIsoWeekKey(cls.classDate);
-                                return myWeek && rowWeek && myWeek === rowWeek;
+                                for (const m of metas) {
+                                  const mSubject = String(m.subjectId || "");
+                                  if (!mSubject) continue;
+                                  if (mSubject !== rowSubject) {
+                                    const sameDay =
+                                      String(m.weekDay || "").toLowerCase() ===
+                                      String(cls.weekDay || "").toLowerCase();
+                                    const sameTime =
+                                      String(m.classTime || "") ===
+                                      String(cls.classTime || "");
+                                    if (sameDay && sameTime) return true;
+                                  } else {
+                                    const mWeek = getIsoWeekKey(m.classDate);
+                                    const rWeek = getIsoWeekKey(cls.classDate);
+                                    if (
+                                      mWeek &&
+                                      rWeek &&
+                                      mWeek === rWeek &&
+                                      Number(m.classNum || -1) !==
+                                        Number(cls.classNum)
+                                    )
+                                      return true;
+                                  }
+                                }
+                                return false;
                               })();
                             return (
-                              <tr key={cls.classNum}>
+                              <tr
+                                key={`${cls.classNum}-${
+                                  cls.subjectId ?? cls.subject_id ?? ""
+                                }-${cls.classDate ?? ""}-${
+                                  cls.classTime ?? ""
+                                }`}
+                              >
                                 <td>{cls.weekDay}</td>
                                 <td>
                                   {formatHHmmRangeFromStart(cls.classTime)}
