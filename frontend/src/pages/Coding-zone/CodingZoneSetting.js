@@ -133,7 +133,19 @@ const ClassSetting = () => {
       setLoading(true);
       const res = await fetchAllSubjects(accessToken, setCookie, navigate);
 
-      // 바로 배열이면 성공
+      // 성공 응답 처리 (code: "SU")
+      if (res && res.code === "SU" && res.data && res.data.subjectList) {
+        const list = res.data.subjectList
+          .map(normalizeMappingItem)
+          .sort(sortBySubjectId);
+        console.debug("[subjects] parsed list (success response):", list);
+        setExistingMappings(list);
+        setExistingOrig(list);
+        setMappingsLoaded(true);
+        return;
+      }
+
+      // 바로 배열이면 성공 (기존 호환성)
       if (Array.isArray(res)) {
         const list = res.map(normalizeMappingItem).sort(sortBySubjectId);
         console.debug("[subjects] parsed list (top-level array):", list);
@@ -167,6 +179,11 @@ const ClassSetting = () => {
 
       // 예상치 못한 형태 → 안전하게 비움
       console.warn("[subjects] unexpected response shape; fallback to empty");
+      setExistingMappings([]);
+      setExistingOrig([]);
+      setMappingsLoaded(true);
+    } catch (error) {
+      console.error("[subjects] error loading mappings:", error);
       setExistingMappings([]);
       setExistingOrig([]);
       setMappingsLoaded(true);

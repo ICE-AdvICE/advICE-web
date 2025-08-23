@@ -9,7 +9,6 @@ const ATTENDANCE_TOGGLE_URL = (registNum) =>
 const DELETE_CLASS_URL = (classNum) =>
   `${DOMAIN}/api/admin/delete-class/${classNum}`;
 
-
 // 매핑한 전체 과목 리스트 조회 API (subjectName  subjectId)
 export const fetchAllSubjects = async (token, setCookie, navigate) => {
   try {
@@ -27,6 +26,21 @@ export const fetchAllSubjects = async (token, setCookie, navigate) => {
     }
 
     const { code, message } = error.response.data ?? {};
+
+    if (code === "ATE") {
+      console.warn("🔄 과목 목록: Access Token 만료됨. 토큰 재발급 시도 중...");
+      const newToken = await refreshTokenRequest(setCookie, token, navigate);
+      if (newToken?.accessToken) {
+        return fetchAllSubjects(newToken.accessToken, setCookie, navigate);
+      } else {
+        setCookie("accessToken", "", { path: "/", expires: new Date(0) });
+        navigate("/");
+        return {
+          code: "TOKEN_EXPIRED",
+          message: "토큰이 만료되었습니다. 다시 로그인해주세요.",
+        };
+      }
+    }
 
     switch (code) {
       case "AF":
@@ -74,7 +88,7 @@ export const fetchAssistantsBySubjectId = async (
       };
     }
 
-    const { code } = error.response.data;
+    const { code, message } = error.response.data ?? {};
 
     if (code === "ATE") {
       console.warn(
@@ -98,10 +112,22 @@ export const fetchAssistantsBySubjectId = async (
       }
     }
 
-    return error.response.data;
+    switch (code) {
+      case "DBE":
+        return { code, message: message ?? "데이터베이스 오류" };
+      case "TNF":
+        return {
+          code,
+          message: message ?? "선택한 교과목에 등록된 조교 리스트 없음",
+        };
+      default:
+        return {
+          code: code ?? "UNKNOWN_ERROR",
+          message: message ?? "알 수 없는 오류가 발생했습니다.",
+        };
+    }
   }
 };
-
 
 //1. 코딩존 수업  기존의 조 등록 API
 export const uploadClassForWeek = async (
@@ -554,11 +580,11 @@ export const adminDeleteCodingzoneClassByClassNum = async (
   }
 };
 
-// 16. [PUBLIC] 과목 목록 조회 (무인증)
+// 21. 공개 과목 목록 조회 API (권한 불필요)
 export const fetchSubjectsPublic = async () => {
   try {
-    const res = await axios.get(`${API_DOMAIN}/subjects`);
-    return res.data; // { code:"SU", data:{ subjectList:[{subjectId, subjectName}, ...] } }
+    const response = await axios.get(`${API_DOMAIN}/subjects`);
+    return response.data;
   } catch (error) {
     if (!error.response) {
       return {
@@ -566,7 +592,24 @@ export const fetchSubjectsPublic = async () => {
         message: "네트워크 상태를 확인해주세요.",
       };
     }
-    return error.response.data;
+
+    const { code, message } = error.response.data ?? {};
+
+    switch (code) {
+      case "DBE":
+        return { code, message: message ?? "데이터베이스 오류" };
+      case "NOT_ANY_MAPPINGSET":
+        return {
+          code,
+          message: message ?? "어떠한 매핑 정보도 등록 정보 없음",
+          data: null,
+        };
+      default:
+        return {
+          code: code ?? "UNKNOWN_ERROR",
+          message: message ?? "알 수 없는 오류가 발생했습니다.",
+        };
+    }
   }
 };
 
@@ -655,5 +698,75 @@ export const fetchAttendCountBySubject = async (
       message: message ?? "알 수 없는 오류가 발생했습니다.",
       data: null,
     };
+  }
+};
+
+// 20. 코딩존 수정 API
+export const updateCodingZoneClass = async (
+  classNum,
+  updateData,
+  token,
+  setCookie,
+  navigate
+) => {
+  try {
+    const response = await axios.patch(
+      `${API_DOMAIN_ADMIN}/codingzones/classes/${classNum}`,
+      updateData,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    if (!error.response) {
+      return {
+        code: "NETWORK_ERROR",
+        message: "네트워크 상태를 확인해주세요.",
+      };
+    }
+
+    const { code, message } = error.response.data ?? {};
+
+    if (code === "ATE") {
+      console.warn(
+        "🔄 코딩존 수정: Access Token 만료됨. 토큰 재발급 시도 중..."
+      );
+      const newToken = await refreshTokenRequest(setCookie, token, navigate);
+      if (newToken?.accessToken) {
+        return updateCodingZoneClass(
+          classNum,
+          updateData,
+          newToken.accessToken,
+          setCookie,
+          navigate
+        );
+      } else {
+        setCookie("accessToken", "", { path: "/", expires: new Date(0) });
+        navigate("/");
+        return {
+          code: "TOKEN_EXPIRED",
+          message: "토큰이 만료되었습니다. 다시 로그인해주세요.",
+        };
+      }
+    }
+
+    switch (code) {
+      case "VF":
+        return { code, message: message ?? "유효성 검사 실패" };
+      case "DBE":
+        return { code, message: message ?? "데이터베이스 오류" };
+      case "IDW":
+        return { code, message: message ?? "입력한 날짜가 주말입니다" };
+      case "ALREADY_EXISTED_CLASS":
+        return { code, message: message ?? "이미 등록된 코딩존 수업입니다" };
+      case "NOT_FOUND_CLASS":
+        return { code, message: message ?? "해당 코딩존 수업이 없습니다" };
+      default:
+        return {
+          code: code ?? "UNKNOWN_ERROR",
+          message: message ?? "알 수 없는 오류가 발생했습니다.",
+        };
+    }
   }
 };
