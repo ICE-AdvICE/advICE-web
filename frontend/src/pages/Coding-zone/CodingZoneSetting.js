@@ -16,12 +16,19 @@ import {
   saveIdColorMap,
   getCodingZoneColor,
 } from "./subjectColors";
+import { useRef } from "react";
 
 const ClassSetting = () => {
   const [cookies, setCookie] = useCookies(["accessToken"]);
   const accessToken = cookies.accessToken;
   const navigate = useNavigate();
   const [deletingId, setDeletingId] = useState(null);
+
+  const idSeq = useRef(0);
+  const newRowId = () => {
+    idSeq.current += 1;
+    return `row-${idSeq.current}`;
+  };
 
   // 삭제 핸들러
   const handleDeleteExisting = async (m) => {
@@ -46,10 +53,14 @@ const ClassSetting = () => {
     if (result?.ok) {
       // 즉시 UI 반영 (새로고침 필요 없음)
       setExistingMappings((prev) =>
-        prev.filter((x) => String(x.subjectId) !== String(m.subjectId))
+        prev
+          .filter((x) => String(x.subjectId) !== String(m.subjectId))
+          .sort(sortBySubjectId)
       );
       setExistingOrig((prev) =>
-        prev.filter((x) => String(x.subjectId) !== String(m.subjectId))
+        prev
+          .filter((x) => String(x.subjectId) !== String(m.subjectId))
+          .sort(sortBySubjectId)
       );
     } else if (result) {
       if (result.code === "DELETE_NOT_ALLOW") {
@@ -67,21 +78,18 @@ const ClassSetting = () => {
   const [existingOrig, setExistingOrig] = useState([]); // ✅ 원본 스냅샷
   const [loading, setLoading] = useState(false);
 
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState(() => []);
   const [mappingsLoaded, setMappingsLoaded] = useState(false);
 
   useEffect(() => {
-    // ✅ 기본값 선정은 '유지 없음(strict)'으로 해서 1이 자동으로 안 남도록
-    setRows((prev) =>
-      prev.map((r) => {
-        const keepList = getAvailableZones(r.id, r.codingZone); // UI 렌더용
-        const strictList = getAvailableZonesStrict(r.id); // 기본값 계산용
-        const shouldKeep =
-          r.codingZone && keepList.includes(String(r.codingZone));
-        const next = shouldKeep ? r.codingZone : strictList[0] ?? "";
-        return next === r.codingZone ? r : { ...r, codingZone: next };
-      })
-    );
+    setRows((prev) => {
+      if (prev.length === 0) {
+        const free = getAvailableZonesStrict("new");
+        if (free.length === 0) return [];
+        return [{ id: newRowId(), codingZone: free[0], subjectName: "" }];
+      }
+      return reconcileRows(prev);
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [existingMappings]);
 
@@ -107,6 +115,17 @@ const ClassSetting = () => {
       m?.subjectName ?? m?.name ?? m?.title ?? m?.label ?? ""
     ),
   });
+  const sortBySubjectId = (a, b) => {
+    const ai = parseInt(a.subjectId, 10);
+    const bi = parseInt(b.subjectId, 10);
+    if (Number.isNaN(ai) || Number.isNaN(bi)) {
+      // 혹시 숫자가 아닌 값이 섞여 있으면 문자열 기준으로도 안전하게
+      return String(a.subjectId).localeCompare(String(b.subjectId), undefined, {
+        numeric: true,
+      });
+    }
+    return ai - bi;
+  };
 
   // 매핑 리스트 불러오기
   const loadMappings = async () => {
@@ -114,12 +133,21 @@ const ClassSetting = () => {
       setLoading(true);
       const res = await fetchAllSubjects(accessToken, setCookie, navigate);
 
-      // 🔍 디버그: 서버가 실제로 뭘 주는지 한 번 찍어보자
-      console.debug("[subjects] raw response:", res);
+      // 성공 응답 처리 (code: "SU")
+      if (res && res.code === "SU" && res.data && res.data.subjectList) {
+        const list = res.data.subjectList
+          .map(normalizeMappingItem)
+          .sort(sortBySubjectId);
+        console.debug("[subjects] parsed list (success response):", list);
+        setExistingMappings(list);
+        setExistingOrig(list);
+        setMappingsLoaded(true);
+        return;
+      }
 
-      // 바로 배열이면 성공
+      // 바로 배열이면 성공 (기존 호환성)
       if (Array.isArray(res)) {
-        const list = res.map(normalizeMappingItem);
+        const list = res.map(normalizeMappingItem).sort(sortBySubjectId);
         console.debug("[subjects] parsed list (top-level array):", list);
         setExistingMappings(list);
         setExistingOrig(list);
@@ -154,10 +182,20 @@ const ClassSetting = () => {
       setExistingMappings([]);
       setExistingOrig([]);
       setMappingsLoaded(true);
+    } catch (error) {
+      console.error("[subjects] error loading mappings:", error);
+      setExistingMappings([]);
+      setExistingOrig([]);
+      setMappingsLoaded(true);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    setRows((prev) => reconcileRows(prev));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [existingMappings]);
 
   useEffect(() => {
     if (!accessToken) return;
@@ -165,22 +203,21 @@ const ClassSetting = () => {
   }, [accessToken]);
 
   const handleAddRow = () => {
-    const id = Date.now();
-    const strict = getAvailableZonesStrict(id);
-    const defaultZone = strict[0] ?? "";
-    setRows((prev) => [
-      ...prev,
-      { id, codingZone: defaultZone, subjectName: "" },
-    ]);
+    const id = newRowId();
+    setRows((prev) =>
+      reconcileRows([...prev, { id, codingZone: "", subjectName: "" }])
+    );
   };
 
   const handleRemoveRow = (id) => {
-    setRows(rows.filter((row) => row.id !== id));
+    setRows((prev) => reconcileRows(prev.filter((row) => row.id !== id)));
   };
 
   const handleChange = (id, field, value) => {
-    setRows(
-      rows.map((row) => (row.id === id ? { ...row, [field]: value } : row))
+    setRows((prev) =>
+      reconcileRows(
+        prev.map((row) => (row.id === id ? { ...row, [field]: value } : row))
+      )
     );
   };
 
@@ -195,6 +232,27 @@ const ClassSetting = () => {
   };
 
   const ALL_ZONES = ["1", "2", "3", "4"];
+
+  // 행들을 한 번에 유효/서로-다른 코딩존으로 재배치
+  const reconcileRows = (inputRows) => {
+    const usedByExisting = new Set(
+      (Array.isArray(existingMappings) ? existingMappings : []).map((m) =>
+        String(m.subjectId)
+      )
+    );
+    const chosen = new Set(); // 이번 패스에서 이미 배정한 값
+
+    return inputRows.map((r) => {
+      const desired = String(r.codingZone ?? "");
+      // 이번 행에서 선택 가능한 후보 = 전체 - (서버에 이미 사용중) - (앞서 배정된 값)
+      const allowed = ALL_ZONES.filter(
+        (z) => !usedByExisting.has(z) && !chosen.has(z)
+      );
+      const next = allowed.includes(desired) ? desired : allowed[0] ?? "";
+      if (next) chosen.add(next);
+      return { ...r, codingZone: next };
+    });
+  };
 
   // ✅ 현재 선택값을 '유지'하지 않는 버전 (기본값 계산용)
   const getAvailableZonesStrict = (rowId) => {
@@ -212,22 +270,7 @@ const ClassSetting = () => {
     );
   };
 
-  const getAvailableZones = (rowId, currentValue) => {
-    const safeExisting = Array.isArray(existingMappings)
-      ? existingMappings
-      : [];
-    const usedByExisting = new Set(
-      safeExisting.map((m) => String(m.subjectId))
-    );
-    const usedByOtherNewRows = new Set(
-      rows.filter((r) => r.id !== rowId).map((r) => String(r.codingZone))
-    );
-    return ALL_ZONES.filter(
-      (z) =>
-        !(usedByExisting.has(z) || usedByOtherNewRows.has(z)) ||
-        z === String(currentValue)
-    );
-  };
+  const getAvailableZones = (rowId) => getAvailableZonesStrict(rowId);
 
   //신규 없어도 제출 허용
   const getEditedPayload = () => {
@@ -294,33 +337,30 @@ const ClassSetting = () => {
 
     if (result.success) {
       alert("등록 완료!");
-      // 기존 리스트/원본 모두 병합 갱신
-      setExistingMappings((prev) => {
-        const map = new Map(prev.map((x) => [String(x.subjectId), x]));
+      const nextExisting = (() => {
+        const map = new Map(
+          existingMappings.map((x) => [String(x.subjectId), x])
+        );
         merged.forEach((p) =>
           map.set(String(p.subjectId), {
             subjectId: p.subjectId,
             subjectName: p.subjectName,
           })
         );
-        return Array.from(map.values());
-      });
-      setExistingOrig((prev) => {
-        // 같은 subjectId가 있으면 덮어쓰기(업데이트), 없으면 추가
-        const map = new Map(prev.map((x) => [String(x.subjectId), x]));
-        merged.forEach((p) =>
-          map.set(String(p.subjectId), {
-            subjectId: p.subjectId,
-            subjectName: p.subjectName,
-          })
-        );
-        return Array.from(map.values());
-      });
-      const newId = Date.now();
-      const strict = getAvailableZonesStrict(newId);
-      if (strict.length === 0) {
-        // 전부 사용 중이면 새 입력줄 만들지 않음
+        return Array.from(map.values()).sort(sortBySubjectId);
+      })();
+
+      // 2) existing/원본 동기 갱신
+      setExistingMappings(nextExisting);
+      setExistingOrig(nextExisting);
+
+      // 3) 남은 슬롯으로 "항상 1줄만" 초기화
+      const used = new Set(nextExisting.map((m) => String(m.subjectId)));
+      const free = ALL_ZONES.filter((z) => !used.has(z));
+      if (free.length === 0) {
         setRows([]);
+      } else {
+        setRows([{ id: newRowId(), codingZone: free[0], subjectName: "" }]);
       }
     } else {
       alert(`등록 실패: ${result.message}`);
@@ -380,8 +420,7 @@ const ClassSetting = () => {
                 ))
               )}
               {rows.map((row) => {
-                const opts = getAvailableZones(row.id, row.codingZone); // ← 사용 가능한 코딩존
-
+                const opts = getAvailableZones(row.id);
                 const noOpts = opts.length === 0;
 
                 return (

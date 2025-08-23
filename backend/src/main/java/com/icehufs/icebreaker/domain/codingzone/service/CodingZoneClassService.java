@@ -41,7 +41,6 @@ import com.icehufs.icebreaker.domain.codingzone.domain.entity.CodingZoneClass;
 import com.icehufs.icebreaker.domain.codingzone.domain.entity.GroupInf;
 import com.icehufs.icebreaker.domain.codingzone.dto.object.AssistantInfoDto;
 import com.icehufs.icebreaker.domain.codingzone.dto.request.CodingZoneClassAssignRequestDto;
-import com.icehufs.icebreaker.domain.codingzone.dto.request.GroupInfUpdateRequestDto;
 
 import com.icehufs.icebreaker.domain.codingzone.repository.CodingZoneClassRepository;
 import com.icehufs.icebreaker.domain.codingzone.repository.GroupInfRepository;
@@ -95,11 +94,9 @@ public class CodingZoneClassService {
         for (CodingZoneClassAssignRequestDto assignedClass : dto) {
             Subject subject = subjectRepository.findById(assignedClass.getSubjectId()).orElseThrow(() -> new UnmappedSubjectException());
             CodingZoneClass codingZoneClassEntity = new CodingZoneClass(assignedClass, subject);
-            codingZoneClassRepository.save(codingZoneClassEntity);
+            CodingZoneClass savedClass = codingZoneClassRepository.save(codingZoneClassEntity);
 
-            GroupInfUpdateRequestDto groupDto = new GroupInfUpdateRequestDto(assignedClass);
-            GroupInf groupInf = new GroupInf(groupDto);
-            groupInfRepository.save(groupInf);
+            groupInfRepository.save(new GroupInf(assignedClass, savedClass.getClassNum()));
         }
     }
 
@@ -112,8 +109,7 @@ public class CodingZoneClassService {
         CodingZoneClass existingClass = codingZoneClassRepository.findByClassNum(classNum);
         if(dto.isSameEntity(existingClass)) throw new DuplicatedClassException();
 
-        GroupInf existinfGroup = groupInfRepository.findByAssistantNameAndClassTimeAndClassName
-                (existingClass.getAssistantName(), existingClass.getClassTime(), existingClass.getClassName())
+        GroupInf existinfGroup = groupInfRepository.findByClassNum(existingClass.getClassNum())
                     .orElseThrow(GroupInfNotFoundException::new);
 
         // 수정한 정보가 이미 DB에 저장되어 있는 경우

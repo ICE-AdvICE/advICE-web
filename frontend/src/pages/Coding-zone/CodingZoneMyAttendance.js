@@ -23,9 +23,9 @@ const CodingZoneMyAttendance = () => {
   const [hasNavigated, setHasNavigated] = useState(false); // 중복 navigate 방지
 
   const handlecodingzonemanager = () =>
-    navigate(`/coding-zone/Codingzone_Manager`);
+    navigate(`/coding-zone/codingzone-manager`);
   const handleFullManagement = () =>
-    navigate(`/coding-zone/Codingzone_All_Attend`);
+    navigate(`/coding-zone/codingzone-all-attend`);
   const handleClassRegistration = () =>
     navigate(`/coding-zone/coding-class-regist`);
 

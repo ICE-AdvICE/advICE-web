@@ -2,7 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 19rem;
+  gap: 10rem; /* 기존은 19rem */
 }
 .cz-nav-btn {
   flex: 0 0 auto !important; /* flex:1로 늘어나는 것 방지 */

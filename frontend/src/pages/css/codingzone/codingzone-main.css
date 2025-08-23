@@ -88,8 +88,7 @@ body {
   display: flex;
   justify-content: center; /* 중앙 정렬 */
   align-items: center;
-  gap: 0; /* 같이 있던 요소 분리했으니 gap 제거해도 OK */
-  margin-top: 0; /* -20px로 올라가 있으면 중앙 정렬이 어긋남 -> 0 권장 */
+  margin-top: -25px;
 }
 
 .cz-category-date {
@@ -275,7 +274,6 @@ body {
   top: -9999px;
 }
 
-
 .no-classes-image.visible {
   opacity: 1;
   position: static;
@@ -374,24 +372,27 @@ body {
   width: 100%;
   background: #fff;
   border-radius: 12px;
-  overflow: hidden;
+  /* 툴팁이 테이블 밖으로 나올 수 있게 */
+  overflow: visible;
 }
 
 /* 스크롤 박스(헤더/바디 한 테이블이므로 가로/세로 스크롤만) */
 .czp-table-shell {
   border-radius: 12px;
-  overflow: hidden;
+  /* 툴팁 클리핑 방지 */
+  overflow: visible;
   background: #fff;
 }
 .czp-table-scroll {
-  overflow-x: auto;
-  overflow-y: auto; /* 필요 시 */
+  /* 툴팁이 어느 방향으로도 잘리지 않게 */
+  overflow: visible;
 }
 
 /* 표 레이아웃 */
 .czp-table {
   width: 100%;
   border-collapse: separate !important;
+  /* 헤더와 바디가 맞닿도록 간격 제거 */
   border-spacing: 0 !important;
   table-layout: fixed; /* 컬럼 너비 고정 */
 }
@@ -405,9 +406,29 @@ body {
   font-size: 14px;
 }
 
+/* 헤더 모서리 라운드 */
+.czp-table thead th:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+.czp-table thead th:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+/* 헤더 배경이 둥근 모서리에 맞게 잘리도록 */
+.czp-table thead {
+  overflow: hidden;
+}
+
+/* 헤더 하단 라운드가 첫 행 상단 보더에 가려지지 않도록 제거 */
+.czp-table tbody tr:first-child td {
+  border-top: none;
+}
+
 /* 바디 셀 */
 .czp-table tbody td {
-  padding: 12px 10px;
+  padding: 22px 10px;
   text-align: center;
   border-top: 1px solid #e5e7eb;
   font-size: 14px;
@@ -419,6 +440,16 @@ body {
 .czp-table tbody tr {
   background: #fff;
   height: 64px;
+}
+/* 첫 행 윗줄 선 제거: 헤더와 바로 맞닿도록 */
+.czp-table tbody tr:first-child td {
+  border-top: none;
+}
+.czp-table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 10px;
+}
+.czp-table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 10px;
 }
 .czp-table tbody tr:hover {
   background: #f9fafb;
@@ -497,6 +528,10 @@ body {
 .czp-tag.full {
   background: #ff4d4f; /* 예약 불가 (빨강) */
   color: #fff;
+}
+.czp-tag.disabled {
+  background: #efefef; /* 동일 과목 예약으로 비활성 */
+  color: #adacac;
 }
 
 /* 상태별로 hover 시 미세한 톤 변화(원하면 조절) */

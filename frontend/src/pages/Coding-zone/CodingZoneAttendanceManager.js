@@ -30,11 +30,11 @@ const CodingZoneAttendanceManager = () => {
   const navigate = useNavigate();
   const [selectedButton, setSelectedButton] = useState("attendence");
 
-    // 과목 목록/선택 상태
+  // 과목 목록/선택 상태
   const [subjects, setSubjects] = useState([]);
   const [selectedSubjectId, setSelectedSubjectId] = useState(null);
 
-    // 로딩/오류
+  // 로딩/오류
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
 
@@ -42,7 +42,7 @@ const CodingZoneAttendanceManager = () => {
   const [loadingAttendance, setLoadingAttendance] = useState(false);
 
   const handlecodingzonemanager = () => {
-    navigate(`/coding-zone/Codingzone_Manager`);
+    navigate(`/coding-zone/codingzone-manager`);
   };
 
   const handleClassRegistration = () => {
@@ -105,7 +105,9 @@ const CodingZoneAttendanceManager = () => {
         const list = res.data?.subjectList ?? [];
         console.log("[/subjects] wrapped response:", list);
         setSubjects(list);
-        setSelectedSubjectId(list.length > 0 ? Number(list[0].subjectId) : null);
+        setSelectedSubjectId(
+          list.length > 0 ? Number(list[0].subjectId) : null
+        );
       } else if (res.code === "AF") {
         setErrMsg("권한이 없습니다.");
       } else if (res.code === "NOT_ANY_MAPPINGSET") {
@@ -123,7 +125,6 @@ const CodingZoneAttendanceManager = () => {
 
     run();
   }, [token, setCookie, navigate]);
-  
 
   // 선택 과목 출결 로딩
   useEffect(() => {
@@ -133,12 +134,22 @@ const CodingZoneAttendanceManager = () => {
         return;
       }
 
-      console.log("[CALL] /admin/entire-attendance/", selectedSubjectId, "token?", !!token);
+      console.log(
+        "[CALL] /admin/entire-attendance/",
+        selectedSubjectId,
+        "token?",
+        !!token
+      );
 
       setLoadingAttendance(true);
       setErrMsg("");
 
-      const res = await getEntireAttendanceBySubject(token, selectedSubjectId, setCookie, navigate);
+      const res = await getEntireAttendanceBySubject(
+        token,
+        selectedSubjectId,
+        setCookie,
+        navigate
+      );
 
       setLoadingAttendance(false);
 
@@ -167,29 +178,28 @@ const CodingZoneAttendanceManager = () => {
     run();
   }, [token, selectedSubjectId, setCookie, navigate]);
 
-
-
   const handleDownload = async () => {
     if (!token) {
       alert("로그인 후 이용 가능합니다.");
       return;
     }
-   if (!selectedSubjectId) {
-    alert("과목을 선택해주세요.");
-    return;
-   }
+    if (!selectedSubjectId) {
+      alert("과목을 선택해주세요.");
+      return;
+    }
 
-   const selected = subjects.find(
-     (s) => Number(s.subjectId) === Number(selectedSubjectId)
-   );
-   const subjectName = selected?.subjectName || `codingzone_${selectedSubjectId}`;
-   await downloadAttendanceExcelBySubject(
-     token,
-     Number(selectedSubjectId),
-     subjectName,              
-     setCookie,
-     navigate
-   );
+    const selected = subjects.find(
+      (s) => Number(s.subjectId) === Number(selectedSubjectId)
+    );
+    const subjectName =
+      selected?.subjectName || `codingzone_${selectedSubjectId}`;
+    await downloadAttendanceExcelBySubject(
+      token,
+      Number(selectedSubjectId),
+      subjectName,
+      setCookie,
+      navigate
+    );
   };
 
   return (
@@ -208,13 +218,19 @@ const CodingZoneAttendanceManager = () => {
             {subjects.map((s) => (
               <button
                 key={s.subjectId}
-                className={`subject-button ${selectedSubjectId === s.subjectId ? "active" : ""}`}
+                className={`subject-button ${
+                  selectedSubjectId === s.subjectId ? "active" : ""
+                }`}
                 onClick={() => setSelectedSubjectId(s.subjectId)}
               >
                 {s.subjectName}
               </button>
             ))}
-            {loading && <span style={{ marginLeft: 12, color: "#666" }}>불러오는 중…</span>}
+            {loading && (
+              <span style={{ marginLeft: 12, color: "#666" }}>
+                불러오는 중…
+              </span>
+            )}
           </div>
 
           <button className="download-button" onClick={handleDownload}>
@@ -241,15 +257,19 @@ const CodingZoneAttendanceManager = () => {
         </div>
         <div className="line-container2"></div>
 
-       <div className="info_all_data_container">
+        <div className="info_all_data_container">
           {loadingAttendance && (
-            <div style={{ textAlign: "center", color: "#777", padding: "24px 0" }}>
+            <div
+              style={{ textAlign: "center", color: "#777", padding: "24px 0" }}
+            >
               출결 불러오는 중…
             </div>
           )}
 
           {!loadingAttendance && attendanceList.length === 0 && !errMsg && (
-            <div style={{ textAlign: "center", color: "#777", padding: "24px 0" }}>
+            <div
+              style={{ textAlign: "center", color: "#777", padding: "24px 0" }}
+            >
               표시할 출결 정보가 없습니다.
             </div>
           )}
@@ -257,14 +277,20 @@ const CodingZoneAttendanceManager = () => {
           {attendanceList.map((student, index) => (
             <div key={index}>
               <div className="info_all_data_inner">
-                <div className="info_all_data_studentnum">{student.userStudentNum}</div>
+                <div className="info_all_data_studentnum">
+                  {student.userStudentNum}
+                </div>
                 <div className="info_all_data_name">{student.userName}</div>
                 <div className="info_all_data_email">
                   {(student.userEmail || "").split("@")[0]}
                 </div>
                 <div className="info_all_data_bar"></div>
-                <div className="info_all_data_presentcount">{student.attendance}</div>
-                <div className="info_all_data_absentcount">{student.absence}</div>
+                <div className="info_all_data_presentcount">
+                  {student.attendance}
+                </div>
+                <div className="info_all_data_absentcount">
+                  {student.absence}
+                </div>
               </div>
               <div className="hr-line"></div>{" "}
               {/* Horizontal line after each item */}
