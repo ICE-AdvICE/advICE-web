@@ -55,17 +55,13 @@ public class AuthorityService {
         Authority authority = authorityRepository.findByEmail(email);
         if (authority == null) throw  new BusinessException(ResponseCode.NOT_EXISTED_USER, "권한을 부여할 수  있는 사용자가 존재하지 않습니다.", HttpStatus.UNAUTHORIZED);
 
-        // 메서드 내부 전용 헬퍼 (null 안전 + trim + Y 체크)
-        final java.util.function.Predicate<String> isYes =
-                s -> s != null && "Y".equalsIgnoreCase(s.trim());
-
-        if (isYes.test(authority.getRoleAdmin())) {
+        if ("ROLE_ADMIN".equals(authority.getRoleAdmin())) {
             return new ResponseDto(ResponseCode.ENTIRE_ADMIN, ResponseMessage.ENTIRE_ADMIN);
         }
-        if (isYes.test(authority.getRoleAdminC1())
-                || isYes.test(authority.getRoleAdminC2())
-                || isYes.test(authority.getRoleAdminC3())
-                || isYes.test(authority.getRoleAdminC4())) {
+        if ("ROLE_ADMINC1".equals(authority.getRoleAdminC1())
+                || "ROLE_ADMINC2".equals(authority.getRoleAdminC2())
+                || "ROLE_ADMINC3".equals(authority.getRoleAdminC3())
+                || "ROLE_ADMINC4".equals(authority.getRoleAdminC4())) {
             return new ResponseDto(ResponseCode.CODING_ADMIN, ResponseMessage.CODING_ADMIN);
         }
 
