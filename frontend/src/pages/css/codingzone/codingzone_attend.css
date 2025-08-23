@@ -407,6 +407,10 @@
   margin-left: 0;
 }
 
+.return.return-back {
+  top: 0 !important; /* 덮어쓰기 */
+}
+
 .btn-ghost {
   background: #efefef;
   color: #adacac;
