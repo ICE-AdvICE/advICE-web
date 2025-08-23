@@ -109,8 +109,7 @@ public class CodingZoneClassService {
         CodingZoneClass existingClass = codingZoneClassRepository.findByClassNum(classNum);
         if(dto.isSameEntity(existingClass)) throw new DuplicatedClassException();
 
-        GroupInf existinfGroup = groupInfRepository.findByAssistantNameAndClassTimeAndClassName
-                (existingClass.getAssistantName(), existingClass.getClassTime(), existingClass.getClassName())
+        GroupInf existinfGroup = groupInfRepository.findByClassNum(existingClass.getClassNum())
                     .orElseThrow(GroupInfNotFoundException::new);
 
         // 수정한 정보가 이미 DB에 저장되어 있는 경우
