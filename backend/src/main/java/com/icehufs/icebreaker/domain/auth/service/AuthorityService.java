@@ -22,8 +22,8 @@ public class AuthorityService {
 
     public String giveAuth(String email, HandleAuthRequestDto dto) {
         Authority granteeAuthority = validateGrantorAndGranteeExist(email, dto);
-        boolean hasRole = granteeAuthority.hasRole(dto.getRole());
-        if (hasRole) throw new BusinessException(ResponseCode.PERMITTED_ERROR, "이미 해당 권한을 가진 사용자.", HttpStatus.CONFLICT);
+        granteeAuthority.getClassAdminAuth()
+                .ifPresent(auth -> {throw new BusinessException(ResponseCode.PERMITTED_ERROR, "이미 해당 권한을 가진 사용자.", HttpStatus.CONFLICT);});
         granteeAuthority.grantRole(dto.getRole());
         authorityRepository.save(granteeAuthority);
         return "권한 부여 성공.";
@@ -31,8 +31,8 @@ public class AuthorityService {
 
     public String depriveAuth(String email, HandleAuthRequestDto dto) {
         Authority granteeAuthority = validateGrantorAndGranteeExist(email, dto);
-        boolean hasRole = granteeAuthority.hasRole(dto.getRole());
-        if (!hasRole) throw new BusinessException(ResponseCode.PERMITTED_ERROR, "이미 권한이 없는 사용자", HttpStatus.CONFLICT);
+        granteeAuthority.getClassAdminAuth()
+                .orElseThrow(() -> new BusinessException(ResponseCode.PERMITTED_ERROR, "이미 권한이 없는 사용자", HttpStatus.CONFLICT));
         granteeAuthority.revokeRole(dto.getRole());
         authorityRepository.save(granteeAuthority);
         return "권한 박탈 성공.";
