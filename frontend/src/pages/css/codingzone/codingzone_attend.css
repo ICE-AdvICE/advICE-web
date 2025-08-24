@@ -438,7 +438,6 @@
 /* 표 전체 컨테이너를 학생 테이블과 동일하게 라운드/클리핑 */
 .manager-table-card {
   border-radius: 10px;
-
   overflow: hidden; /* 내부 thead/tbody 모서리를 컨테이너에서 한번에 클립 */
   background: #fff;
 }
@@ -447,7 +446,6 @@
 .manager-table thead {
   position: relative;
   z-index: 2; /* 바디 위 레이어 */
-
   overflow: hidden;
 }
 /* 헤더 배경: 각 셀에 직접 칠해 라운드가 확실히 보이도록 */
@@ -469,6 +467,16 @@
   padding: 18px 24px;
   position: relative;
   z-index: 1; /* 글자가 배경판 위로 */
+}
+
+/* 상단 좌우 라운드 */
+.manager-table thead th:first-child {
+  border-top-left-radius: 10px !important;
+  border-bottom-left-radius: 10px !important; /* 헤더 하단 모서리도 둥글게 */
+}
+.manager-table thead th:last-child {
+  border-top-right-radius: 10px !important;
+  border-bottom-right-radius: 10px !important; /* 헤더 하단 모서리도 둥글게 */
 }
 
 /* 바디는 유지 */
