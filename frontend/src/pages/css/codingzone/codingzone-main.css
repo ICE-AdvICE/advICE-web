@@ -486,12 +486,14 @@ body {
 /* === 과목 선택 칩(학생용) === */
 .czp-subject-bar {
   display: flex;
-  flex-wrap: wrap;
+
   justify-content: center;
   gap: 25px;
   margin: 0px;
   margin-top: -1px;
   margin-bottom: 30px;
+  white-space: nowrap;
+  flex-wrap: nowrap;
 }
 
 .czp-chip {
@@ -563,6 +565,9 @@ body {
     width: 850px;
     height: auto;
   }
+  .czp-subject-bar {
+    transform: scale(0.9);
+  }
 }
 
 @media (max-width: 1024px) {
@@ -576,6 +581,10 @@ body {
   .czp-guide-image {
     width: 700px;
     height: auto;
+  }
+
+  .czp-subject-bar .czp-chip {
+    transform: scale(0.9);
   }
 }
 
@@ -613,6 +622,11 @@ body {
   .czp-guide-image {
     width: 550px;
     height: auto;
+  }
+
+  .czp-subject-bar {
+    transform: scale(0.8);
+    gap: 10px;
   }
 }
 
@@ -659,6 +673,10 @@ body {
   .cz-category-date button:first-child,
   .cz-category-date button:last-child {
     width: 70px;
+  }
+
+  .czp-subject-bar {
+    transform: scale(0.7);
   }
 }
 
