@@ -252,7 +252,7 @@ body {
   cursor: pointer;
   text-decoration: none;
   color: inherit;
-  margin-bottom: -70px;
+
   margin-top: 0px;
   margin-left: auto;
   font-size: 12px;
@@ -613,6 +613,10 @@ body {
     justify-self: center;
     white-space: nowrap;
   }
+
+  .cz-count-container {
+    transform: scale(0.75);
+  }
 }
 
 @media (max-width: 768px) {
@@ -681,6 +685,11 @@ body {
     transform: scale(0.52);
     justify-self: center;
   }
+  .cz-count-container {
+    transform: scale(0.6);
+    margin-bottom: -55px;
+    margin-right: 40%;
+  }
 }
 
 @media (max-width: 480px) {
@@ -741,6 +750,12 @@ body {
     white-space: nowrap;
     transform: scale(0.45);
     justify-self: center;
+  }
+
+  .cz-count-container {
+    transform: scale(0.6);
+    margin-bottom: -55px;
+    margin-right: 39%;
   }
 }
 
