@@ -238,45 +238,12 @@ body {
   padding: 7px 1px;
 }
 
-.no-classes-image {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-  padding-left: 10px;
-  padding-right: 10px;
-  margin-bottom: 0;
-  box-sizing: border-box;
-}
-
 .no-classes-img {
   width: 100%;
   max-width: 600px;
   height: auto;
   aspect-ratio: 46 / 20;
   box-sizing: border-box;
-}
-.no-classes-image.hidden {
-  opacity: 0;
-  pointer-events: none;
-  position: absolute;
-  top: -9999px;
-}
-
-.no-classes-image.visible {
-  opacity: 1;
-  position: static;
-}
-.no-classes-image.hidden {
-  opacity: 0;
-  pointer-events: none;
-  position: absolute;
-  top: -9999px;
-}
-
-.no-classes-image.visible {
-  opacity: 1;
-  position: static;
 }
 
 .cz-count-container {
@@ -336,35 +303,6 @@ body {
 .return.return-back {
   position: relative;
   top: 55px;
-}
-
-@media (max-width: 1000px) {
-  .card-hidden-space {
-    flex: 1 4 0;
-    min-width: 0;
-  }
-  .cz-category-date button {
-    width: 10vw;
-  }
-}
-@media (max-width: 860px) {
-  .cz-category-top {
-    padding: 0 10px;
-    font-size: 8px;
-  }
-
-  .attendance-progress-container {
-    margin-top: -10px;
-    margin-bottom: -20px;
-  }
-  .cz-category-date button {
-    height: 100%;
-    border-color: #d0d5dd;
-    background-color: white;
-    margin-top: -10px;
-    margin-bottom: -15px;
-    width: 10vw;
-  }
 }
 
 /* ####3=== 학생용 표 기본 컨테이너: 회색 패널과 동일 가로폭(부모 100%) === ####*/
@@ -548,12 +486,14 @@ body {
 /* === 과목 선택 칩(학생용) === */
 .czp-subject-bar {
   display: flex;
-  flex-wrap: wrap;
+
   justify-content: center;
   gap: 25px;
   margin: 0px;
   margin-top: -1px;
   margin-bottom: 30px;
+  white-space: nowrap;
+  flex-wrap: nowrap;
 }
 
 .czp-chip {
@@ -615,68 +555,58 @@ body {
   background: #cbd5e1;
 }
 
-@media (max-width: 465px) {
-  .czcard p,
-  .codingzone-title p,
-  .codingzone-date button {
-    font-size: 12px;
-  }
-  .card-reservation,
-  .card-delete {
-    font-size: 12px;
-  }
-  .cz-category-date button:first-child,
-  .cz-category-date button:last-child {
-    width: 50px;
-  }
+.czp-guide-image {
+  width: 1000px;
+  height: "auto";
 }
-@media (max-width: 395px) {
-  .czcard p,
-  .codingzone-title p,
-  .codingzone-date button {
-    font-size: 12px;
+
+@media (max-width: 1280px) {
+  .czp-guide-image {
+    width: 850px;
+    height: auto;
+  }
+  .czp-subject-bar {
+    transform: scale(0.9);
   }
 }
 
-@media (max-width: 600px) {
-  .codingzone-top-container {
-    padding: 10px 10px; /* 상하 20px, 좌우 10px의 패딩 */
+@media (max-width: 1024px) {
+  .card-hidden-space {
+    flex: 1 4 0;
+    min-width: 0;
+  }
+  .cz-category-date button {
+    width: 10vw;
+  }
+  .czp-guide-image {
+    width: 700px;
+    height: auto;
   }
 
-  .codingzonetop2-image {
-    max-width: calc(100%); /* 컨테이너 너비에서 20px(좌우 패딩)을 빼준 값 */
-  }
-  .cz-category-date button:first-child,
-  .cz-category-date button:last-child {
-    width: 70px;
+  .czp-subject-bar .czp-chip {
+    transform: scale(0.9);
   }
 }
-
-/*수업 없을때 뜨는 이미지 이미지 조정*/
-@media (max-width: 768px) {
-  .no-classes-image {
-    margin-bottom: 15px;
-  }
-
-  .no-classes-img {
-    max-width: 80%;
-  }
-}
-
-/* 모바일 화면 크기 */
-@media (max-width: 480px) {
-  .no-classes-image {
-    margin-bottom: 10px;
-  }
-
-  .no-classes-img {
-    max-width: 100%;
-  }
-}
-
-/*출석 프로그래스 바*/
 
 @media (max-width: 768px) {
+  .cz-category-top {
+    padding: 0 10px;
+    font-size: 8px;
+  }
+
+  .attendance-progress-container {
+    margin-top: -10px;
+    margin-bottom: -20px;
+  }
+  .cz-category-date button {
+    height: 100%;
+    border-color: #d0d5dd;
+    background-color: white;
+    margin-top: -10px;
+    margin-bottom: -15px;
+    width: 10vw;
+  }
+
   .attendance-progress-container {
     max-width: 100px;
   }
@@ -687,6 +617,16 @@ body {
 
   .attendance-label {
     font-size: 0.8rem;
+  }
+
+  .czp-guide-image {
+    width: 550px;
+    height: auto;
+  }
+
+  .czp-subject-bar {
+    transform: scale(0.8);
+    gap: 10px;
   }
 }
 
@@ -702,5 +642,48 @@ body {
 
   .attendance-label {
     font-size: 0.7rem;
+  }
+
+  .czcard p,
+  .codingzone-title p,
+  .codingzone-date button {
+    font-size: 12px;
+  }
+  .card-reservation,
+  .card-delete {
+    font-size: 12px;
+  }
+  .cz-category-date button:first-child,
+  .cz-category-date button:last-child {
+    width: 50px;
+  }
+
+  .czp-guide-image {
+    width: 400px;
+    height: auto;
+  }
+
+  .codingzone-top-container {
+    padding: 10px 10px; /* 상하 20px, 좌우 10px의 패딩 */
+  }
+
+  .codingzonetop2-image {
+    max-width: calc(100%); /* 컨테이너 너비에서 20px(좌우 패딩)을 빼준 값 */
+  }
+  .cz-category-date button:first-child,
+  .cz-category-date button:last-child {
+    width: 70px;
+  }
+
+  .czp-subject-bar {
+    transform: scale(0.7);
+  }
+}
+
+@media (max-width: 395px) {
+  .czcard p,
+  .codingzone-title p,
+  .codingzone-date button {
+    font-size: 12px;
   }
 }

@@ -36,7 +36,7 @@
 /* ≤ 1280px 반응형 */
 @media (max-width: 1280px) {
   .select-container {
-    gap: 15.5rem;
+    gap: 12rem;
   }
   .cz-nav-btn.btn-codingzone,
   .cz-nav-btn.btn-attendence,
@@ -48,7 +48,8 @@
 /* ≤ 1024px 반응형 */
 @media (max-width: 1024px) {
   .select-container {
-    gap: 12rem;
+    gap: 9.5rem;
+    transform: scale(0.95);
   }
   .cz-nav-btn.btn-codingzone,
   .cz-nav-btn.btn-attendence,
@@ -60,7 +61,8 @@
 /* ≤ 768px 반응형 */
 @media (max-width: 768px) {
   .select-container {
-    gap: 9.3rem;
+    gap: 8rem;
+    transform: scale(0.9);
   }
   .cz-nav-btn.btn-codingzone,
   .cz-nav-btn.btn-attendence,
@@ -73,6 +75,7 @@
 @media (max-width: 480px) {
   .select-container {
     gap: 4rem;
+    transform: scale(0.9);
   }
   .cz-nav-btn.btn-codingzone,
   .cz-nav-btn.btn-attendence,
