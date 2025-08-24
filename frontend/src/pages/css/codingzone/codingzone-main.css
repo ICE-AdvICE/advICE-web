@@ -411,7 +411,7 @@ body {
 } /* 시간 */
 .czp-table th:nth-child(3),
 .czp-table td:nth-child(3) {
-  width: 1fr;
+  width: 250px;
 } /* 수업명(유동) */
 .czp-table th:nth-child(4),
 .czp-table td:nth-child(4) {
@@ -586,6 +586,33 @@ body {
   .czp-subject-bar .czp-chip {
     transform: scale(0.9);
   }
+
+  .czp-weekbar {
+    margin: 0 14px 4px 14px; /* 기존 20px → 4px로 축소 (원하면 0으로) */
+    padding-bottom: 0;
+  }
+
+  /* 표 래퍼 쪽 기본 여백/UA margin 차단 */
+  .czp-table-wrap,
+  .czp-table-shell,
+  .czp-table-scroll,
+  .czp-table {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* scale로 줄일 때 위쪽 기준으로 줄어들게(시각적 간격 최소화) */
+  .czp-weekbar,
+  .czp-table {
+    transform-origin: top center;
+  }
+
+  .czp-weekbar,
+  .czp-table {
+    transform: scale(0.75);
+    justify-self: center;
+    white-space: nowrap;
+  }
 }
 
 @media (max-width: 768px) {
@@ -625,8 +652,34 @@ body {
   }
 
   .czp-subject-bar {
-    transform: scale(0.8);
+    transform: scale(0.7);
     gap: 10px;
+  }
+
+  .czp-weekbar {
+    gap: 35px;
+    white-space: nowrap;
+    transform: scale(0.8);
+  }
+  .czp-table {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    transform: scale(0.6);
+    justify-self: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .czp-weekbar {
+    gap: 35px;
+    white-space: nowrap;
+    transform: scale(0.7);
+  }
+  .czp-table {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    transform: scale(0.52);
+    justify-self: center;
   }
 }
 
@@ -678,6 +731,17 @@ body {
   .czp-subject-bar {
     transform: scale(0.7);
   }
+
+  .czp-weekbar {
+    gap: 40px;
+    transform: scale(0.55);
+  }
+  .czp-table {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    transform: scale(0.45);
+    justify-self: center;
+  }
 }
 
 @media (max-width: 395px) {
@@ -685,5 +749,25 @@ body {
   .codingzone-title p,
   .codingzone-date button {
     font-size: 12px;
+  }
+  .czp-table-wrap {
+    margin: 0;
+    padding: 0;
+  }
+
+  .czp-subject-bar {
+    transform: scale(0.5);
+  }
+
+  .czp-weekbar {
+    gap: 35px;
+    transform: scale(0.55);
+    margin-bottom: 0px;
+  }
+  .czp-table {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    transform: scale(0.35);
+    justify-self: center;
   }
 }
