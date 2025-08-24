@@ -615,7 +615,9 @@ body {
   }
 
   .cz-count-container {
-    transform: scale(0.75);
+    transform: scale(0.7);
+    margin-bottom: -60px;
+    margin-right: 90px;
   }
 }
 
