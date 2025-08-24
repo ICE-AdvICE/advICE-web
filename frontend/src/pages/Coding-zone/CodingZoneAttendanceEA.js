@@ -50,6 +50,27 @@ const CodingZoneAttendanceAssistant = () => {
   const [students, setStudents] = useState([]); // ★ 학생 리스트
   const [isStudentsLoading, setIsStudentsLoading] = useState(false); // ★ 학생 로딩
 
+  function BackButton({ label = "뒤로가기", onClick }) {
+    const [icon, setIcon] = React.useState("/leftnone.png");
+
+    return (
+      <button
+        type="button"
+        className="return return-back"
+        onClick={onClick}
+        onMouseEnter={() => setIcon("/left.png")}
+        onMouseLeave={() => setIcon("/leftnone.png")}
+        onMouseDown={() => setIcon("/left.png")}
+        onMouseUp={() => setIcon("/left.png")}
+        onFocus={() => setIcon("/left.png")}
+        onBlur={() => setIcon("/leftnone.png")}
+      >
+        <img src={icon} alt="" className="btn-icon" draggable="false" />
+        {label}
+      </button>
+    );
+  }
+
   const count = subjects.length;
   const gridClass =
     count === 4
@@ -361,9 +382,8 @@ const CodingZoneAttendanceAssistant = () => {
             </div>
 
             <div className="cz-classes-back">
-              <button
-                type="button"
-                className="btn-ghost"
+              <BackButton
+                label="과목 다시 선택하기"
                 onClick={() => {
                   setSelectedSubjectId(null);
                   setSelectedSubjectName("");
@@ -371,11 +391,8 @@ const CodingZoneAttendanceAssistant = () => {
                   setSelectedClassNum(null);
                   setStudents([]);
                 }}
-              >
-                ← 뒤로가기
-              </button>
+              />
             </div>
-
             <div className="manager-table-card">
               {isClassesLoading ? (
                 <div className="panel-gray">
@@ -427,17 +444,13 @@ const CodingZoneAttendanceAssistant = () => {
             </div>
 
             <div className="cz-classes-back">
-              <button
-                type="button"
-                className="btn-ghost"
+              <BackButton
+                label="수업 목록으로 돌아가기"
                 onClick={() => {
-                  // ← 수업 목록으로
                   setSelectedClassNum(null);
                   setStudents([]);
                 }}
-              >
-                ← 뒤로가기
-              </button>
+              />
             </div>
 
             <div className="manager-table-card">

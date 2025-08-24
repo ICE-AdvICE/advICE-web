@@ -55,18 +55,16 @@ public class AuthorityService {
         Authority authority = authorityRepository.findByEmail(email);
         if (authority == null) throw  new BusinessException(ResponseCode.NOT_EXISTED_USER, "권한을 부여할 수  있는 사용자가 존재하지 않습니다.", HttpStatus.UNAUTHORIZED);
 
-        String entireAdmin = authority.getRoleAdmin();
-        String codingC1Admin = authority.getRoleAdminC1();
-        String codingC2Admin = authority.getRoleAdminC2();
-        String codingC3Admin = authority.getRoleAdminC3();
-        String codingC4Admin = authority.getRoleAdminC4();
-
-        if (!"NULL".equals(entireAdmin)) {
+        if ("ROLE_ADMIN".equals(authority.getRoleAdmin())) {
             return new ResponseDto(ResponseCode.ENTIRE_ADMIN, ResponseMessage.ENTIRE_ADMIN);
         }
-        if (!"NULL".equals(codingC1Admin) || !"NULL".equals(codingC2Admin) || !"NULL".equals(codingC3Admin)|| !"NULL".equals(codingC4Admin)) {
+        if ("ROLE_ADMINC1".equals(authority.getRoleAdminC1())
+                || "ROLE_ADMINC2".equals(authority.getRoleAdminC2())
+                || "ROLE_ADMINC3".equals(authority.getRoleAdminC3())
+                || "ROLE_ADMINC4".equals(authority.getRoleAdminC4())) {
             return new ResponseDto(ResponseCode.CODING_ADMIN, ResponseMessage.CODING_ADMIN);
         }
+
         return new ResponseDto(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
     }
 }
