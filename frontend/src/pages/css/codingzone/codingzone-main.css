@@ -238,45 +238,12 @@ body {
   padding: 7px 1px;
 }
 
-.no-classes-image {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-  padding-left: 10px;
-  padding-right: 10px;
-  margin-bottom: 0;
-  box-sizing: border-box;
-}
-
 .no-classes-img {
   width: 100%;
   max-width: 600px;
   height: auto;
   aspect-ratio: 46 / 20;
   box-sizing: border-box;
-}
-.no-classes-image.hidden {
-  opacity: 0;
-  pointer-events: none;
-  position: absolute;
-  top: -9999px;
-}
-
-.no-classes-image.visible {
-  opacity: 1;
-  position: static;
-}
-.no-classes-image.hidden {
-  opacity: 0;
-  pointer-events: none;
-  position: absolute;
-  top: -9999px;
-}
-
-.no-classes-image.visible {
-  opacity: 1;
-  position: static;
 }
 
 .cz-count-container {
@@ -285,7 +252,7 @@ body {
   cursor: pointer;
   text-decoration: none;
   color: inherit;
-  margin-bottom: -70px;
+
   margin-top: 0px;
   margin-left: auto;
   font-size: 12px;
@@ -336,35 +303,6 @@ body {
 .return.return-back {
   position: relative;
   top: 55px;
-}
-
-@media (max-width: 1000px) {
-  .card-hidden-space {
-    flex: 1 4 0;
-    min-width: 0;
-  }
-  .cz-category-date button {
-    width: 10vw;
-  }
-}
-@media (max-width: 860px) {
-  .cz-category-top {
-    padding: 0 10px;
-    font-size: 8px;
-  }
-
-  .attendance-progress-container {
-    margin-top: -10px;
-    margin-bottom: -20px;
-  }
-  .cz-category-date button {
-    height: 100%;
-    border-color: #d0d5dd;
-    background-color: white;
-    margin-top: -10px;
-    margin-bottom: -15px;
-    width: 10vw;
-  }
 }
 
 /* ####3=== 학생용 표 기본 컨테이너: 회색 패널과 동일 가로폭(부모 100%) === ####*/
@@ -473,7 +411,7 @@ body {
 } /* 시간 */
 .czp-table th:nth-child(3),
 .czp-table td:nth-child(3) {
-  width: 1fr;
+  width: 250px;
 } /* 수업명(유동) */
 .czp-table th:nth-child(4),
 .czp-table td:nth-child(4) {
@@ -548,12 +486,14 @@ body {
 /* === 과목 선택 칩(학생용) === */
 .czp-subject-bar {
   display: flex;
-  flex-wrap: wrap;
+
   justify-content: center;
   gap: 25px;
   margin: 0px;
   margin-top: -1px;
   margin-bottom: 30px;
+  white-space: nowrap;
+  flex-wrap: nowrap;
 }
 
 .czp-chip {
@@ -615,68 +555,91 @@ body {
   background: #cbd5e1;
 }
 
-@media (max-width: 465px) {
-  .czcard p,
-  .codingzone-title p,
-  .codingzone-date button {
-    font-size: 12px;
-  }
-  .card-reservation,
-  .card-delete {
-    font-size: 12px;
-  }
-  .cz-category-date button:first-child,
-  .cz-category-date button:last-child {
-    width: 50px;
-  }
+.czp-guide-image {
+  width: 1000px;
+  height: "auto";
 }
-@media (max-width: 395px) {
-  .czcard p,
-  .codingzone-title p,
-  .codingzone-date button {
-    font-size: 12px;
+
+@media (max-width: 1280px) {
+  .czp-guide-image {
+    width: 850px;
+    height: auto;
+  }
+  .czp-subject-bar {
+    transform: scale(0.9);
   }
 }
 
-@media (max-width: 600px) {
-  .codingzone-top-container {
-    padding: 10px 10px; /* 상하 20px, 좌우 10px의 패딩 */
+@media (max-width: 1024px) {
+  .card-hidden-space {
+    flex: 1 4 0;
+    min-width: 0;
+  }
+  .cz-category-date button {
+    width: 10vw;
+  }
+  .czp-guide-image {
+    width: 700px;
+    height: auto;
   }
 
-  .codingzonetop2-image {
-    max-width: calc(100%); /* 컨테이너 너비에서 20px(좌우 패딩)을 빼준 값 */
+  .czp-subject-bar .czp-chip {
+    transform: scale(0.9);
   }
-  .cz-category-date button:first-child,
-  .cz-category-date button:last-child {
-    width: 70px;
+
+  .czp-weekbar {
+    margin: 0 14px 4px 14px; /* 기존 20px → 4px로 축소 (원하면 0으로) */
+    padding-bottom: 0;
+  }
+
+  /* 표 래퍼 쪽 기본 여백/UA margin 차단 */
+  .czp-table-wrap,
+  .czp-table-shell,
+  .czp-table-scroll,
+  .czp-table {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* scale로 줄일 때 위쪽 기준으로 줄어들게(시각적 간격 최소화) */
+  .czp-weekbar,
+  .czp-table {
+    transform-origin: top center;
+  }
+
+  .czp-weekbar,
+  .czp-table {
+    transform: scale(0.75);
+    justify-self: center;
+    white-space: nowrap;
+  }
+
+  .cz-count-container {
+    transform: scale(0.7);
+    margin-bottom: -60px;
+    margin-right: 90px;
   }
 }
 
-/*수업 없을때 뜨는 이미지 이미지 조정*/
 @media (max-width: 768px) {
-  .no-classes-image {
-    margin-bottom: 15px;
+  .cz-category-top {
+    padding: 0 10px;
+    font-size: 8px;
   }
 
-  .no-classes-img {
-    max-width: 80%;
+  .attendance-progress-container {
+    margin-top: -10px;
+    margin-bottom: -20px;
   }
-}
-
-/* 모바일 화면 크기 */
-@media (max-width: 480px) {
-  .no-classes-image {
-    margin-bottom: 10px;
+  .cz-category-date button {
+    height: 100%;
+    border-color: #d0d5dd;
+    background-color: white;
+    margin-top: -10px;
+    margin-bottom: -15px;
+    width: 10vw;
   }
 
-  .no-classes-img {
-    max-width: 100%;
-  }
-}
-
-/*출석 프로그래스 바*/
-
-@media (max-width: 768px) {
   .attendance-progress-container {
     max-width: 100px;
   }
@@ -687,6 +650,47 @@ body {
 
   .attendance-label {
     font-size: 0.8rem;
+  }
+
+  .czp-guide-image {
+    width: 550px;
+    height: auto;
+  }
+
+  .czp-subject-bar {
+    transform: scale(0.7);
+    gap: 10px;
+  }
+
+  .czp-weekbar {
+    gap: 35px;
+    white-space: nowrap;
+    transform: scale(0.8);
+  }
+  .czp-table {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    transform: scale(0.6);
+    justify-self: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .czp-weekbar {
+    gap: 35px;
+    white-space: nowrap;
+    transform: scale(0.7);
+  }
+  .czp-table {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    transform: scale(0.52);
+    justify-self: center;
+  }
+  .cz-count-container {
+    transform: scale(0.6);
+    margin-bottom: -55px;
+    margin-right: 40%;
   }
 }
 
@@ -702,5 +706,85 @@ body {
 
   .attendance-label {
     font-size: 0.7rem;
+  }
+
+  .czcard p,
+  .codingzone-title p,
+  .codingzone-date button {
+    font-size: 12px;
+  }
+  .card-reservation,
+  .card-delete {
+    font-size: 12px;
+  }
+  .cz-category-date button:first-child,
+  .cz-category-date button:last-child {
+    width: 50px;
+  }
+
+  .czp-guide-image {
+    width: 400px;
+    height: auto;
+  }
+
+  .codingzone-top-container {
+    padding: 10px 10px; /* 상하 20px, 좌우 10px의 패딩 */
+  }
+
+  .codingzonetop2-image {
+    max-width: calc(100%); /* 컨테이너 너비에서 20px(좌우 패딩)을 빼준 값 */
+  }
+  .cz-category-date button:first-child,
+  .cz-category-date button:last-child {
+    width: 70px;
+  }
+
+  .czp-subject-bar {
+    transform: scale(0.7);
+  }
+
+  .czp-weekbar {
+    gap: 40px;
+    transform: scale(0.55);
+  }
+  .czp-table {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    transform: scale(0.45);
+    justify-self: center;
+  }
+
+  .cz-count-container {
+    transform: scale(0.6);
+    margin-bottom: -55px;
+    margin-right: 39%;
+  }
+}
+
+@media (max-width: 395px) {
+  .czcard p,
+  .codingzone-title p,
+  .codingzone-date button {
+    font-size: 12px;
+  }
+  .czp-table-wrap {
+    margin: 0;
+    padding: 0;
+  }
+
+  .czp-subject-bar {
+    transform: scale(0.5);
+  }
+
+  .czp-weekbar {
+    gap: 35px;
+    transform: scale(0.55);
+    margin-bottom: 0px;
+  }
+  .czp-table {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    transform: scale(0.35);
+    justify-self: center;
   }
 }
