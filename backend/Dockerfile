@@ -22,6 +22,9 @@ FROM openjdk:17-jdk-slim
 ENV TZ=Asia/Seoul
 RUN ln -sf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+# JVM에 headless 설정 추가
+ENV JAVA_TOOL_OPTIONS="-Djava.awt.headless=true"
+
 # 8. 작업 디렉토리 설정
 WORKDIR /app
 
