@@ -32,7 +32,7 @@ RUN apt-get update && apt-get install -y \
     libxext6 \
     libfontconfig1 \
  && rm -rf /var/lib/apt/lists/*
- 
+
 # 8. 작업 디렉토리 설정
 WORKDIR /app
 
