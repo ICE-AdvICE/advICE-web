@@ -32,4 +32,4 @@ WORKDIR /app
 COPY --from=builder /app/build/libs/*.jar app.jar
 
 # 10. .env 파일이 존재할 경우 환경 변수로 로드 (기본적으로 /app/.env 경로 사용)
-CMD ["sh", "-c", "java -jar app.jar"]
+CMD ["java", "-jar", "app.jar"]
