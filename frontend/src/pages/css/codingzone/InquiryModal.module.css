@@ -2,7 +2,7 @@
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 1050;
+    z-index: 12000;
     width: 100vw;
     height: 100vh;
     background-color: rgba(202, 202, 202, 0.6);
@@ -27,7 +27,7 @@
     box-sizing: border-box;
     position: relative;
     pointer-events: auto;
-    z-index: 1051;
+    z-index: 12001;
     max-height: 80vh;
     overflow-y: auto;
     font-family: sans-serif;  
