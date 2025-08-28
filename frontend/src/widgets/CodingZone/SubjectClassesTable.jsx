@@ -29,6 +29,7 @@ export default function SubjectClassesTable({
   const [editOpen, setEditOpen] = useState(false);
   const [editSubmitting, setEditSubmitting] = useState(false);
   const [editTarget, setEditTarget] = useState(null);
+  const [isHovered, setIsHovered] = useState(false);
   const inFlightRef = useRef(false);
 
   useEffect(() => {
@@ -295,6 +296,32 @@ export default function SubjectClassesTable({
         <span className="subject-name">{selectedSubjectName}</span>
         <span className="title-label"> 코딩존 등록 현황</span>
       </h3>
+
+      {/* 과목 다시 선택하기 버튼 - 로딩 완료 후에만 표시 */}
+      {!loading && (
+        <div style={{ textAlign: "left", marginBottom: "15px" }}>
+          <button
+            className="return return-back"
+            type="button"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            onClick={() => {
+              // 부모 컴포넌트에 과목 선택 해제 요청
+              if (typeof onEmptyAfterDelete === "function") {
+                onEmptyAfterDelete();
+              }
+            }}
+          >
+            <img
+              src={isHovered ? "/left.png" : "/leftnone.png"}
+              alt="뒤로가기"
+              className="btn-icon"
+              draggable="false"
+            />
+            과목 다시 선택하기
+          </button>
+        </div>
+      )}
 
       {loading && <div className="cz-table-msg">불러오는 중…</div>}
       {err && !loading && <div className="cz-table-msg error">{err}</div>}

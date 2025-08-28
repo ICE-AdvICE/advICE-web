@@ -1263,24 +1263,8 @@ const CodingMain = () => {
           ) : selectedSubjectId ? (
             <div className="cz-fixed-panel">
               <div className="cz-fixed-body">
-                <button
-                  className="return return-back"
-                  type="button"
-                  onClick={clearSubjectSelection}
-                >
-                  <img
-                    src="/left.png"
-                    alt="뒤로가기"
-                    className="btn-icon"
-                    draggable="false"
-                  />
-                  과목 다시 선택하기
-                </button>
-
                 <SubjectClassesTable
-                  key={`${selectedSubjectId || "none"}-${
-                    selectedDateYMD || "none"
-                  }`}
+                  key={`admin-${selectedSubjectId || "none"}`}
                   selectedDateYMD={selectedDateYMD}
                   selectedSubjectId={selectedSubjectId}
                   selectedSubjectName={selectedSubjectName}

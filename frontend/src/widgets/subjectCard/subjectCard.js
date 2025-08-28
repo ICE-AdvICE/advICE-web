@@ -7,7 +7,6 @@ export default function SubjectCard({
   color, // hover/active 색상 (예: getColorById(id))
   onClick,
   className = "",
-  ...rest
 }) {
   return (
     <button
@@ -15,7 +14,6 @@ export default function SubjectCard({
       className={`subject-card ${className}`}
       style={{ "--hover-color": color || "#1A3F57" }}
       onClick={onClick}
-      {...rest}
     >
       <div className="subject-top">{subtitle}</div>
       <div className="subject-title" title={title}>
