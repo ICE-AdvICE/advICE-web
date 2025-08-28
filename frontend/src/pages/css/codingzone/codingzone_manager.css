@@ -50,6 +50,30 @@
   flex-shrink: 0;
   border-radius: 10px;
   background: #f0f0f0;
+  cursor: not-allowed;
+  position: relative;
+}
+
+.btn_manager_attendance-disabled:hover,
+.btn_manager_absence-disabled:hover {
+  background: #e0e0e0;
+}
+
+.btn_manager_attendance-disabled:hover::after,
+.btn_manager_absence-disabled:hover::after {
+  content: "수업 날짜 전에는 출석 처리를 할 수 없습니다";
+  position: absolute;
+  top: -36px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  font-size: 12px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  z-index: 1000;
+  pointer-events: none;
 }
 
 .btn_manager_attendance,

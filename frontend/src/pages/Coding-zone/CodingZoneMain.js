@@ -749,7 +749,8 @@ const CodingMain = () => {
       setAttendanceCount(0); // 과목 미선택/비로그인 시 0 표시
       return;
     }
-    (async () => {
+
+    const fetchAttendance = async () => {
       const res = await fetchAttendCountBySubject(
         selectedSubjectIdPub,
         token,
@@ -766,7 +767,38 @@ const CodingMain = () => {
         // 그 외 실패는 조용히 0 처리
         setAttendanceCount(0);
       }
-    })();
+    };
+
+    fetchAttendance();
+
+    // 출결 업데이트 이벤트 감지하여 즉시 갱신 (단, 버튼이 활성화된 경우만)
+    const handleAttendanceUpdate = (event) => {
+      if (event.detail.subjectId === selectedSubjectIdPub) {
+        // 현재 시간이 수업 시작 시간 이후인지 확인
+        const now = new Date();
+        const classDateTime = new Date(
+          `${event.detail.classDate}T${event.detail.classTime}`
+        );
+        const canUpdate = now >= classDateTime;
+
+        if (canUpdate) {
+          console.log(
+            "출결 업데이트 감지 (버튼 활성화 상태), 출석률 즉시 갱신"
+          );
+          fetchAttendance();
+        } else {
+          console.log(
+            "출결 업데이트 감지 (버튼 비활성화 상태), 출석률 갱신 건너뜀"
+          );
+        }
+      }
+    };
+
+    window.addEventListener("attendanceUpdated", handleAttendanceUpdate);
+
+    return () => {
+      window.removeEventListener("attendanceUpdated", handleAttendanceUpdate);
+    };
   }, [cookies.accessToken, selectedSubjectIdPub]);
 
   // 예약 기능 토글
@@ -1044,7 +1076,9 @@ const CodingMain = () => {
 
   /*출석률 체크바 */
   const renderAttendanceProgress = (count) => {
-    const cappedCount = Math.min(count, 4);
+    // 출석 횟수가 음수면 0으로 처리
+    const safeCount = Math.max(0, count);
+    const cappedCount = Math.min(safeCount, 4);
     const percentage = (cappedCount / 4) * 100;
     return (
       <div className="attendance-progress-container">
