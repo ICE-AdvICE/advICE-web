@@ -1,6 +1,7 @@
 .cz-table-shell {
   border-radius: 12px;
-  overflow: hidden;
+  /* 툴팁 클리핑 방지 */
+  overflow: visible;
   background: #fff;
 }
 
@@ -10,14 +11,28 @@
 }
 
 .cz-table-wrap {
-  margin: 0;
+  width: 100%;
   background: #fff;
   border-radius: 12px;
-  overflow: hidden;
+  /* 툴팁이 테이블 밖으로 나올 수 있게 */
+  overflow: visible;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 0px;
   min-height: 400px;
+  animation: fadeIn 0.3s ease-out;
+  margin-top: 39px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .cz-table-title {
   font-weight: 700;
@@ -42,32 +57,62 @@
   padding: 20px 18px;
   color: #374151;
   font-size: 14px;
+  animation: fadeIn 0.3s ease-out;
 }
 .cz-table-msg.error {
   color: #b91c1c;
 }
 
 .cz-table-scroll {
-  overflow-x: auto;
-  overflow-y: auto;
+  /* 테이블이 잘리지 않도록 */
+  overflow: auto;
 }
 .cz-table {
-  border-collapse: separate !important;
-  border-spacing: 0 !important;
-  width: 100%;
-  table-layout: fixed;
+  width: 1110px; /* 바디 컬럼 너비의 합계 (200+160+160+140+250+80+120) */
+  min-width: 1110px; /* 최소 너비 보장 */
+  border-collapse: separate !important; /* border 표시를 위해 */
+  border-spacing: 0 !important; /* 셀 간격 제거 */
+  table-layout: fixed; /* 컬럼 너비 고정 */
+}
+
+/* 첫 행 윗줄 선 제거: 헤더와 바로 맞닿도록 */
+.cz-table tbody tr:first-child td {
+  border-top: none;
 }
 
 .cz-table tbody tr:last-child td {
   border-bottom: 0;
 }
+
+/* 마지막 행 하단 모서리 둥글게 */
+.cz-table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 10px;
+}
+.cz-table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 10px;
+}
 .cz-table thead th {
-  background: #052940;
-  color: #fff;
   padding: 14px 10px;
   text-align: center;
+  color: #fff;
   font-weight: 600;
   font-size: 14px;
+  background: #052940;
+}
+
+/* 헤더 모서리 라운드 */
+.cz-table thead th:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+.cz-table thead th:nth-child(6) {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+/* 헤더 배경이 둥근 모서리에 맞게 잘리도록 */
+.cz-table thead {
+  overflow: hidden;
 }
 
 .cz-actions .cz-actions-inner {
@@ -77,45 +122,75 @@
 }
 
 .cz-table tbody td {
-  padding: 12px 10px;
+  padding: 22px 0px;
   text-align: center;
-  border-top: 1px solid #052940;
+  border-top: 1px solid #e5e7eb;
   font-size: 14px;
   color: #000;
+  vertical-align: middle;
 }
 .cz-table th,
 .cz-table td {
   vertical-align: middle;
 }
 
+/* 컬럼 너비(헤더/바디 동일하게 nth-child로 고정) */
 .cz-table th:nth-child(1),
 .cz-table td:nth-child(1) {
-  width: 180px;
+  width: 200px; /* 시간 */
 }
 
 .cz-table th:nth-child(2),
 .cz-table td:nth-child(2) {
-  width: 130px;
+  width: 160px; /* 조교 */
 }
-.cz-table td:nth-child(2) {
-  font-weight: 600;
-  color: #052940;
+
+.cz-table th:nth-child(3),
+.cz-table td:nth-child(3) {
+  width: 160px; /* 조 정보 */
 }
+
+.cz-table th:nth-child(4),
+.cz-table td:nth-child(4) {
+  width: 140px; /* 인원 */
+}
+
 .cz-table th:nth-child(5),
 .cz-table td:nth-child(5) {
-  width: 330px;
+  width: 250px; /* 등록상태 (수정 버튼 포함) */
+}
+
+.cz-table th:nth-child(6) {
+  width: 60px; /* 삭제 버튼 - 헤더 너비 0 */
+}
+.cz-table td:nth-child(6) {
+  width: 80px; /* 삭제 버튼 - 바디 너비 유지 */
+}
+
+.cz-table td:nth-child(7) {
+  width: 120px; /* 수정 버튼 - 바디 너비 유지 */
 }
 
 .cz-table tbody tr {
   background: #fff;
-  height: 80px;
+  height: 64px;
 }
 .cz-table tbody tr:hover {
   background: #f9fafb;
 }
 
+/* 호버 영역을 전체 행으로 확장 */
+.cz-table tbody tr {
+  position: relative;
+}
+
+.cz-table tbody tr:hover {
+  background: #f9fafb; /* 직접 hover 배경색 적용 */
+}
+
 .cz-capacity.full {
   color: #b91c1c;
+  font-weight: 600;
 }
 
 .cz-btn {
@@ -145,11 +220,9 @@
   line-height: 1;
 }
 
-/* 테이블 마지막 칸 자체도 중앙 정렬 */
+/* 테이블 마지막 칸 중앙 정렬 제거 */
 .cz-table td:last-child {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  text-align: center;
 }
 
 /* 버튼 기본 박스 */
@@ -163,7 +236,7 @@
   border: 1px solid #a8a8a8;
   border-radius: 0;
   background: #fff;
-  margin-top: 9.8px;
+  margin: 0; /* margin 제거 */
 }
 
 /* X 라인 2개를 기하학적 중앙에 교차시킴 */
@@ -258,8 +331,7 @@
   color: #a8a8a8;
   padding: 5px 12px;
   border-radius: 5px;
-  transition: color 120ms ease, border-color 120ms ease, box-shadow 120ms ease,
-    background-color 120ms ease;
+  transition: all 0.15s ease;
 }
 
 .return.return-back:hover,

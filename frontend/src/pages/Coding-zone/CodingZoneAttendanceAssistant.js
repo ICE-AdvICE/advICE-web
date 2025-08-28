@@ -131,6 +131,29 @@ const CodingZoneAttendanceAssistant = () => {
     return `${hours}:${minutes}`;
   };
 
+  // 과거 날짜와 오늘은 활성화, 미래 날짜만 비활성화
+  const canUpdateAttendance = (classDate) => {
+    const now = new Date();
+    const today = now.toISOString().split("T")[0];
+
+    console.log("canUpdateAttendance 체크:", {
+      classDate,
+      today,
+      isFuture: classDate > today,
+      result: classDate > today ? false : true,
+    });
+
+    // 미래 날짜만 비활성화
+    if (classDate > today) {
+      console.log("미래 날짜 감지 - 비활성화:", classDate);
+      return false;
+    }
+
+    // 과거 날짜와 오늘은 항상 활성화
+    console.log("과거/오늘 날짜 - 활성화:", classDate);
+    return true;
+  };
+
   return (
     <div>
       <div className="codingzone-container">
@@ -153,6 +176,14 @@ const CodingZoneAttendanceAssistant = () => {
               const koreaDate = new Date(
                 utcDate.getTime() + 9 * 60 * 60 * 1000
               ); // Correctly adjust for Korean timezone
+
+              console.log("DatePicker onChange:", {
+                originalDate: date,
+                utcDate,
+                koreaDate,
+                formattedDate: koreaDate.toISOString().split("T")[0],
+              });
+
               setSelectedDate(koreaDate);
             }}
             dateFormat="yyyy/MM/dd"
@@ -204,40 +235,164 @@ const CodingZoneAttendanceAssistant = () => {
                             출석
                           </button>
 
-                          <button
-                            className="btn_manager_absence-disabled"
-                            onClick={() => handleAttendanceUpdate(student, "0")}
-                          >
-                            결석
-                          </button>
+                          {(() => {
+                            const canUpdate = canUpdateAttendance(
+                              selectedDate.toISOString().split("T")[0]
+                            );
+                            const buttonClass = `btn_manager_absence${
+                              canUpdate ? "" : "-disabled"
+                            }`;
+                            console.log("결석 버튼 클래스 (출석 상태):", {
+                              canUpdate,
+                              buttonClass,
+                              selectedDate: selectedDate
+                                .toISOString()
+                                .split("T")[0],
+                            });
+                            return (
+                              <button
+                                className={buttonClass}
+                                onClick={() =>
+                                  canUpdate &&
+                                  handleAttendanceUpdate(student, "0")
+                                }
+                                disabled={!canUpdate}
+                                title={
+                                  !canUpdate
+                                    ? "수업 날짜 전에는 출석 처리를 할 수 없습니다."
+                                    : ""
+                                }
+                              >
+                                결석
+                              </button>
+                            );
+                          })()}
                         </>
                       ) : student.attendance === "0" ? (
                         <>
-                          <button
-                            className="btn_manager_attendance-disabled"
-                            onClick={() => handleAttendanceUpdate(student, "1")}
-                          >
-                            출석
-                          </button>
-                          <button className="btn_manager_absence" disabled>
-                            결석
-                          </button>
+                          {(() => {
+                            const canUpdate = canUpdateAttendance(
+                              selectedDate.toISOString().split("T")[0]
+                            );
+                            const buttonClass = `btn_manager_attendance${
+                              canUpdate ? "" : "-disabled"
+                            }`;
+                            console.log("출석 버튼 클래스 (결석 상태):", {
+                              canUpdate,
+                              buttonClass,
+                              selectedDate: selectedDate
+                                .toISOString()
+                                .split("T")[0],
+                            });
+                            return (
+                              <button
+                                className={buttonClass}
+                                onClick={() =>
+                                  canUpdate &&
+                                  handleAttendanceUpdate(student, "1")
+                                }
+                                disabled={!canUpdate}
+                                title={
+                                  !canUpdate
+                                    ? "수업 날짜 전에는 출석 처리를 할 수 없습니다."
+                                    : ""
+                                }
+                              >
+                                출석
+                              </button>
+                            );
+                          })()}
+                          {(() => {
+                            const canUpdate = canUpdateAttendance(
+                              selectedDate.toISOString().split("T")[0]
+                            );
+                            const buttonClass = `btn_manager_absence${
+                              canUpdate ? "" : "-disabled"
+                            }`;
+                            console.log("결석 버튼 클래스 (결석 상태):", {
+                              canUpdate,
+                              buttonClass,
+                              selectedDate: selectedDate
+                                .toISOString()
+                                .split("T")[0],
+                            });
+                            return (
+                              <button
+                                className={buttonClass}
+                                disabled={!canUpdate}
+                              >
+                                결석
+                              </button>
+                            );
+                          })()}
                         </>
                       ) : (
                         <>
                           {/* 초기 미표기 상태일 때도 토글로 변경 */}
-                          <button
-                            className="btn_manager_attendance-disabled"
-                            onClick={() => handleAttendanceUpdate(student, "1")}
-                          >
-                            출석
-                          </button>
-                          <button
-                            className="btn_manager_absence-disabled"
-                            onClick={() => handleAttendanceUpdate(student, "0")}
-                          >
-                            결석
-                          </button>
+                          {(() => {
+                            const canUpdate = canUpdateAttendance(
+                              selectedDate.toISOString().split("T")[0]
+                            );
+                            const buttonClass = `btn_manager_attendance${
+                              canUpdate ? "" : "-disabled"
+                            }`;
+                            console.log("출석 버튼 클래스 (미표기 상태):", {
+                              canUpdate,
+                              buttonClass,
+                              selectedDate: selectedDate
+                                .toISOString()
+                                .split("T")[0],
+                            });
+                            return (
+                              <button
+                                className={buttonClass}
+                                onClick={() =>
+                                  canUpdate &&
+                                  handleAttendanceUpdate(student, "1")
+                                }
+                                disabled={!canUpdate}
+                                title={
+                                  !canUpdate
+                                    ? "수업 날짜 전에는 출석 처리를 할 수 없습니다."
+                                    : ""
+                                }
+                              >
+                                출석
+                              </button>
+                            );
+                          })()}
+                          {(() => {
+                            const canUpdate = canUpdateAttendance(
+                              selectedDate.toISOString().split("T")[0]
+                            );
+                            const buttonClass = `btn_manager_absence${
+                              canUpdate ? "" : "-disabled"
+                            }`;
+                            console.log("결석 버튼 클래스 (미표기 상태):", {
+                              canUpdate,
+                              buttonClass,
+                              selectedDate: selectedDate
+                                .toISOString()
+                                .split("T")[0],
+                            });
+                            return (
+                              <button
+                                className={buttonClass}
+                                onClick={() =>
+                                  canUpdate &&
+                                  handleAttendanceUpdate(student, "0")
+                                }
+                                disabled={!canUpdate}
+                                title={
+                                  !canUpdate
+                                    ? "수업 날짜 전에는 출석 처리를 할 수 없습니다."
+                                    : ""
+                                }
+                              >
+                                결석
+                              </button>
+                            );
+                          })()}
                         </>
                       )}
                     </div>
