@@ -486,9 +486,9 @@ const CodingZoneRegist = () => {
                 />
                 <button
                   onClick={() => removeBox2(index)}
-                  class="custom-btn btn-6"
+                  className="custom-btn btn-6"
                 >
-                  X
+                  <span className="delete-icon">X</span>
                 </button>
               </div>
             ))}

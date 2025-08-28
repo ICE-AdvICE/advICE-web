@@ -6,7 +6,7 @@
 
 .setting-label {
   display: flex;
-  height: 60px;
+  height: 53px;
   padding: 20px 7.7rem;
   align-items: center;
   gap: 11.7rem;
@@ -89,9 +89,8 @@
 
 .form-table .delete-btn,
 .form-table td:last-child > button {
-  height: 40px;
+  height: 38px;
   padding: 0 12px;
-  border-radius: 4px;
 }
 
 .subject-cell {
@@ -104,7 +103,6 @@
   height: 40px; /* ← 같은 높이로 고정 */
   padding: 0 12px; /* 상하 0, 좌우만 */
   border: 1px solid #000;
-  border-radius: 0; /* 각진 모서리 */
   box-sizing: border-box; /* 패딩 포함 크기계산 */
   font: 16px/1.2 "Pretendard", sans-serif; /* 폰트/라인하이트 통일 */
   flex: 1 1 auto; /* 남은 공간을 채움 */
@@ -123,12 +121,17 @@ select {
 
 .delete-btn {
   margin: 0 0 0 5px;
-  width: px;
-  height: 35px;
+  height: 38px;
   flex-shrink: 0;
   aspect-ratio: 1/1;
+  line-height: 38px;
   border: 1px solid #a8a8a8bf; /* 버튼 외곽선 색 */
   color: #a8a8a8bf;
+  font-size: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
   background: transparent; /* 기본 배경 투명 */
   position: relative; /* before/after 절대 위치를 위해 필요 */
 }
@@ -136,7 +139,11 @@ select {
 .delete-btn:hover {
   color: #ffffff; /* 호버 시 텍스트 색 변경 */
   background: #052940; /* 호버 시 배경 투명 */
-  box-shadow: none; /* 박스 그림자 제거 */
+}
+
+.delete-btn1 {
+  display: inline-block;
+  transform: translate(-0.5px, -0.5px); /* ← 위로 -1px, 오른쪽으로 -1px */
 }
 
 .button-group {
