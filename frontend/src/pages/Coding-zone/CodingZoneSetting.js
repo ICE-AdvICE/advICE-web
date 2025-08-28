@@ -416,7 +416,11 @@ const ClassSetting = () => {
                         onClick={() => handleDeleteExisting(m)}
                         disabled={String(deletingId) === String(m.subjectId)}
                       >
-                        {deletingId === m.subjectId ? "삭제중…" : "X"}
+                        {deletingId === m.subjectId ? (
+                          "삭제중…"
+                        ) : (
+                          <span className="delete-btn1">X</span>
+                        )}
                       </button>
                     </td>
                   </tr>
@@ -461,7 +465,7 @@ const ClassSetting = () => {
                         className="delete-btn"
                         onClick={() => handleRemoveRow(row.id)}
                       >
-                        X
+                        <span className="delete-btn1">X</span>
                       </button>
                     </td>
                   </tr>

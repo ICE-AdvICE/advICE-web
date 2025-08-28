@@ -409,26 +409,21 @@
 /* 테이블 자체는 배경/라운드 없음 */
 .manager-table {
   width: 1140px;
-  border-collapse: separate;
   border-spacing: 0;
   table-layout: fixed;
   background: transparent !important; /* ← 테이블 배경 제거 */
-  border-radius: 0 !important; /* ← 라운드 제거 */
 }
 
 /* 표 전체 컨테이너를 학생 테이블과 동일하게 라운드/클리핑 */
 .manager-table-card {
   border-radius: 10px;
-  overflow: hidden; /* 내부 thead/tbody 모서리를 컨테이너에서 한번에 클립 */
   background: #fff;
   margin-bottom: 100px; /* 기본 여백을 100px로 설정 */
 }
 
-/* ✅ 헤더 바(타이틀)만 둥글게: thead에 배경판을 깔아줌 */
 .manager-table thead {
   position: relative;
   z-index: 2; /* 바디 위 레이어 */
-  overflow: hidden;
 }
 /* 헤더 배경: 각 셀에 직접 칠해 라운드가 확실히 보이도록 */
 .manager-table thead::before {
@@ -440,7 +435,7 @@
 .manager-table thead th:first-child,
 .manager-table thead th:last-child {
   background: #052940 !important; /* 헤더 셀에 직접 적용 */
-  border-radius: 0 !important;
+
   color: #ffffff;
   font-weight: 700;
   font-size: 16px;
@@ -458,7 +453,7 @@
 }
 .manager-table thead th:last-child {
   border-top-right-radius: 10px !important;
-  border-bottom-right-radius: 10px !important; /* 헤더 하단 모서리도 둥글게 */
+  border-bottom-right-radius: 10px !important;
 }
 
 /* 바디는 유지 */

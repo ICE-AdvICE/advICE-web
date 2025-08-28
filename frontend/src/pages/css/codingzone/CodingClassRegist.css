@@ -161,6 +161,7 @@
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
+  border-radius: 10px;
 }
 
 .Agroup-button.active,
@@ -345,9 +346,13 @@
 
 .btn-6 {
   margin: 0 0 0 5px;
+  padding-top: -1px;
   width: px;
-  height: 35px;
+  height: 38px;
   flex-shrink: 0;
+  font-size: 25px;
+  align-items: center;
+  justify-content: center;
   aspect-ratio: 1/1;
   border: 1px solid #a8a8a8bf; /* 버튼 외곽선 색 */
   color: #a8a8a8bf;
@@ -384,6 +389,11 @@
 .btn-6:hover:after {
   width: 100%; /* 호버 시 가로 길이 100%로 확장 */
   transition: 800ms ease all;
+}
+
+.delete-icon {
+  display: inline-block;
+  transform: translate(0.4px, -2px); /* ← 위로 -1px, 오른쪽으로 -1px */
 }
 
 .class-submit-button {
@@ -430,7 +440,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  height: 59px;
+  height: 53px;
   padding: 0 1px 0 2px;
   justify-content: center;
   align-items: center;
