@@ -116,204 +116,181 @@
   display: none;
 }
 
-.line-container1 {
-  width: 100%;
-  max-width: 920px;
-  height: 1.5px;
-  background-color: #818181;
-  margin: -10px auto;
-  justify-content: center;
-  display: flex;
+/* 코딩존 예약 페이지와 정확히 동일한 디자인 적용 */
+.separator2 {
+  background-color: #a5a5a5;
+  height: 1px;
 }
 
-.line-container2 {
-  width: 100%;
-  max-width: 920px;
-  height: 1.5px;
-  background-color: #dcdada;
-  margin: -10px auto;
-  justify-content: center;
-  display: flex;
+.separator {
+  height: 1px;
+  background-color: #a5a5a5;
 }
 
-.info-container {
-  width: 100%;
-  justify-content: center;
+.main-category-name-container2 {
+  position: relative;
   display: flex;
+  flex-direction: column;
+  height: 59px;
+  padding: 0 1px 0 2px;
+  justify-content: center;
+  align-items: center;
+  align-self: stretch;
+  border-radius: 10px;
+  background: #052940;
   margin: 10px auto;
-  padding: 10px 0;
-}
-
-.info_inner {
   width: calc(100% - 20px);
   max-width: 920px;
+}
+
+.element-title2 {
   display: flex;
-  height: 40px;
-  margin: -10px auto;
-  background-color: rgb(243, 242, 242);
-}
-
-.info_date {
-  width: 110px;
-  height: 100%;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: sans-serif;
-  font-weight: bold;
-  color: #052940;
-}
-
-.info_time {
-  width: 110px;
-  height: 100%;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: sans-serif;
-  font-weight: bold;
-  color: #052940;
-}
-
-.info_bar {
-  flex: 1 8 0;
-  width: 200px;
-}
-
-.info_classname {
-  width: 260px;
-  height: 100%;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: sans-serif;
-  font-weight: bold;
-  color: #052940;
-}
-
-.info_assistant {
-  width: 120px;
-  height: 100%;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: sans-serif;
-  font-weight: bold;
-  color: #052940;
-}
-
-.info_status {
-  width: 120px;
-  height: 100%;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: sans-serif;
-  font-weight: bold;
-  color: #052940;
-}
-
-.info_data_container {
   width: 100%;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+  height: 35px;
+  color: #fff;
+  text-align: center;
+  font-family: Inter;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 51%; /* 10.2px */
+  letter-spacing: -0.4px;
+}
+
+.part1-element-title2 {
+  display: flex;
+  width: 30rem;
+  height: 20px;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  flex: 6; /* 30% */
+  flex-direction: row; /* 플렉스 아이템들을 가로로 배치 */
+  white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
+}
+
+.part1-element-title2 p {
+  flex: 2; /* 각 p 태그가 공간을 균등하게 차지하도록 설정 */
+  margin: 0 4px;
+  text-align: center; /* 텍스트를 가운데 정렬 */
+}
+
+.weekDay2,
+.weekTime2,
+.classDate2,
+.assistent2 {
+  display: inline-block; /* 요소들을 inline-block으로 설정 */
+}
+
+.part2-element-title2 {
+  display: flex;
+  width: 25rem;
+  height: 20px;
+  padding: 10px;
   justify-content: center;
-  display: column;
+  align-items: center;
+  flex-shrink: 0;
+  flex: 5; /* 30% */
+  flex-direction: row; /* 플렉스 아이템들을 가로로 배치 */
+  white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
+}
+
+.part2-element-title2 p {
+  flex: 2; /* 각 p 태그가 공간을 균등하게 차지하도록 설정 */
+  margin: 0 5px;
+  text-align: center; /* 텍스트를 가운데 정렬 */
+}
+
+.part3-element-title2 {
+  display: flex;
+  width: 30rem;
+  height: 20px;
+  align-items: center;
+  gap: 15px;
+  flex-shrink: 0;
+  flex: 4; /* 30% */
+  flex-direction: row; /* 플렉스 아이템들을 가로로 배치 */
+  white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
+}
+
+.part3-element-title2 p {
+  flex: 1;
+  margin: 0 5px;
+  text-align: center; /* 텍스트를 가운데 정렬 */
+}
+
+.grade2 {
+  display: inline-block;
+}
+
+.maxPers2 {
+  display: inline-block;
+  margin-right: 10% !important;
+}
+
+.class-input-container {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
   margin: 10px auto;
   padding: 10px 0;
   min-height: 200px;
 }
 
-.info_data_inner {
+.class-input-box {
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
   width: calc(100% - 20px);
   max-width: 920px;
-  margin: 0 auto;
+  margin: 0 auto 10px auto;
   height: 40px;
   text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.info_data_date {
-  width: 110px;
+.class-input-box > .Day-input,
+.class-input-box > .Time-input,
+.class-input-box > .Assistant-input {
+  min-width: 0;
+  white-space: nowrap;
+  flex: 3.63; /* Day, Time, Assistent 입력필드의 비율 설정 */
   height: 100%;
-  text-align: center;
-  text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: sans-serif;
-  font-weight: bold;
+  color: #848484;
+}
+
+.class-input-box > .ClassName-input {
+  min-width: 0;
+  white-space: nowrap;
+  flex: 10; /* ClassName 입력필드의 비율 설정 */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  color: #848484;
+}
+
+.class-input-box > .MaxPers-input {
+  min-width: 0;
+  white-space: nowrap;
+  flex: 3; /* Grade, MaxPers 입력필드의 비율 설정 */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
   color: #052940;
-}
-
-.info_data_time {
-  width: 110px;
-  height: 100%;
-  text-align: center;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: sans-serif;
-  color: #848484;
-}
-
-.info_data_bar {
-  flex: 1 8 0;
-  width: 200px;
-  height: 100%;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: sans-serif;
-}
-
-.info_data_classname {
-  width: 260px;
-  height: 100%;
-  text-align: center;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: sans-serif;
-  color: #848484;
-}
-
-.info_data_assistant {
-  width: 120px;
-  height: 100%;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: sans-serif;
-  color: #848484;
-}
-
-.info_data_status {
-  width: 120px;
-  height: 100%;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: sans-serif;
   font-weight: bold;
-  color: #052940;
-}
-
-.hr-line {
-  border-bottom: 1px solid #ccc;
-  margin: 10px auto;
-  width: 100%;
-  max-width: 920px;
 }
 
 .empty-list-message {
@@ -444,6 +421,7 @@
   border-radius: 10px;
   overflow: hidden; /* 내부 thead/tbody 모서리를 컨테이너에서 한번에 클립 */
   background: #fff;
+  margin-bottom: 100px; /* 기본 여백을 100px로 설정 */
 }
 
 /* ✅ 헤더 바(타이틀)만 둥글게: thead에 배경판을 깔아줌 */
@@ -468,7 +446,7 @@
   font-size: 16px;
   line-height: 1;
   text-align: center;
-  padding: 18px 24px;
+  padding: 20px 24px;
   position: relative;
   z-index: 1; /* 글자가 배경판 위로 */
 }
@@ -485,7 +463,7 @@
 
 /* 바디는 유지 */
 .manager-table tbody td {
-  padding: 22px 24px;
+  padding: 35px 0px;
   text-align: center;
   font-size: 16px;
   color: #0b1f2a;
@@ -499,7 +477,14 @@
 }
 .manager-table tbody td:first-child {
   text-align: center;
-  font-weight: 700;
+  font-weight: 600;
+  color: #052940;
+}
+
+.manager-table tbody td:nth-child(3) {
+  text-align: center;
+  font-weight: 600;
+  color: #052940;
 }
 /* 모든 행 아래 구분선 */
 .manager-table tbody tr td {
@@ -523,7 +508,7 @@
 }
 
 .manager-table tbody tr:hover td {
-  background: #e7e7e7;
+  background: #f9fafb; /* 일반 학생 표와 동일한 hover 색상 */
 }
 
 /* (옵션) 세로도 가운데로 */
@@ -540,6 +525,123 @@
   .manager-table tbody td {
     font-size: 14px;
     padding: 16px;
+  }
+}
+
+/* 일반 학생 출결 표 반응형 */
+@media (max-width: 1200px) {
+  .manager-table {
+    width: 960px !important;
+    max-width: 100%;
+  }
+
+  .manager-table-card {
+    width: 95%;
+    margin: 0 auto;
+    margin-top: -10px !important; /* 출결 확인 버튼과 표 사이 간격 줄이기 */
+  }
+
+  /* 헤더와 바디 높이 조정 */
+  .manager-table thead th {
+    padding: 17px 20px !important;
+    font-size: 15px !important;
+  }
+
+  .manager-table tbody td {
+    padding: 30px 0px !important;
+    font-size: 14px !important;
+  }
+
+  /* 출결 버튼 반응형 (진행중, 출석, 결석 모두 포함) */
+  .manager-table tbody td span {
+    padding: 9px 20px !important;
+    font-size: 14px !important;
+  }
+
+  .manager-table-card {
+    margin-bottom: 100px !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .manager-table {
+    width: 795px !important;
+    max-width: 100%;
+  }
+
+  /* 헤더와 바디 높이 조정 */
+  .manager-table thead th {
+    padding: 14px 16px !important;
+    font-size: 14px !important;
+  }
+
+  .manager-table tbody td {
+    padding: 25px 0px !important;
+    font-size: 13px !important;
+  }
+
+  /* 출결 버튼 반응형 (진행중, 출석, 결석 모두 포함) */
+  .manager-table tbody td span {
+    padding: 9px 16px !important;
+    font-size: 12px !important;
+  }
+
+  .manager-table-card {
+    margin-bottom: 80px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .manager-table {
+    width: 671px !important;
+    max-width: 100%;
+  }
+
+  .manager-table thead th {
+    padding: 14px 8px !important;
+    font-size: 13px !important;
+  }
+
+  .manager-table tbody td {
+    padding: 20px 0px !important;
+    font-size: 12px !important;
+  }
+
+  /* 출결 버튼 반응형 (진행중, 출석, 결석 모두 포함) */
+  .manager-table tbody td span {
+    padding: 8px 15px !important;
+    font-size: 11px !important;
+  }
+
+  .manager-table-card {
+    margin-bottom: 60px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .manager-table {
+    width: 423px !important;
+    max-width: 100%;
+  }
+
+  .manager-table thead th {
+    padding: 10px 6px !important;
+    font-size: 10px !important;
+  }
+
+  .manager-table tbody td {
+    padding: 17px 0px !important;
+    font-size: 9px !important;
+  }
+
+  /* 출결 버튼 반응형 (진행중, 출석, 결석 모두 포함) */
+  .manager-table tbody td span {
+    padding: 6px 9px !important;
+    font-size: 9px !important;
+  }
+
+  .manager-table-card {
+    margin-bottom: 40px !important;
   }
 }
 
