@@ -363,15 +363,12 @@
   color: #052940;
 }
 
-.cz-classes {
-  height: 600px;
-}
-
 /* 표 섹션 래퍼가 가운데 폭을 갖고, 내부는 좌우 여백만 */
 .cz-classes {
   max-width: 1140px;
   margin: 24px auto 56px;
   padding: 0 16px;
+  /* height: 600px; 제거 - 동적 크기 조절을 위해 */
 }
 
 /* ← 전체 과목 보기 버튼 줄: 왼쪽 정렬 고정 */
@@ -408,7 +405,7 @@
 /* ===== 코딩존 수업 표 ===== */
 /* 테이블 자체는 배경/라운드 없음 */
 .manager-table {
-  width: 1140px;
+  width: 1100px;
   border-spacing: 0;
   table-layout: fixed;
   background: transparent !important; /* ← 테이블 배경 제거 */
@@ -458,7 +455,7 @@
 
 /* 바디는 유지 */
 .manager-table tbody td {
-  padding: 35px 0px;
+  padding: 30px 0px !important;
   text-align: center;
   font-size: 16px;
   color: #0b1f2a;
@@ -729,4 +726,48 @@
   .panel-empty {
     font-size: 17px;
   }
+}
+
+/* 헤더 모서리 라운드 수정 */
+.cz-table thead th:first-child {
+  border-top-left-radius: 10px;
+}
+
+.cz-table thead th:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px !important; /* 헤더 하단 모서리도 둥글게 */
+}
+
+.cz-table thead {
+  overflow: hidden;
+}
+
+.cz-table thead th {
+  padding: 15px 24px !important;
+  text-align: center !important;
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px !important;
+  background: #052940;
+  border: none;
+}
+
+/* 테이블 컨트롤 버튼들을 위한 스타일 (코딩존 등록 현황과 동일) */
+.table-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 1100px;
+  margin: 0 auto 20px auto;
+  padding: 0 20px;
+}
+
+/* cz-table 바디 부분 스타일 */
+.cz-table tbody td {
+  padding: 30px 0px !important;
+}
+
+/* cz-classes 컨테이너 푸터 간격 조정 */
+.cz-classes {
+  margin-bottom: 100px !important;
 }
