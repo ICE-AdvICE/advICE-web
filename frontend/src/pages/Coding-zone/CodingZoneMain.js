@@ -216,7 +216,6 @@ const CodingMain = () => {
   const [selectedSubjectId, setSelectedSubjectId] = useState(null); // ★ NEW
   const [selectedDateYMD, setSelectedDateYMD] = useState(""); // ★ NEW: YYYY-MM-DD 문자열
   const [selectedSubjectName, setSelectedSubjectName] = useState("");
-  const [backIcon, setBackIcon] = useState("/leftnone.png");
   const [refreshing, setRefreshing] = useState(false);
   const [allSubjects, setAllSubjects] = useState([]); // 전체 과목 매핑(항상 노출용)
   // ===== 일반학생 subjectId 기반 흐름 =====
@@ -1268,15 +1267,9 @@ const CodingMain = () => {
                   className="return return-back"
                   type="button"
                   onClick={clearSubjectSelection}
-                  onMouseEnter={() => setBackIcon("/left.png")}
-                  onMouseLeave={() => setBackIcon("/leftnone.png")}
-                  onMouseDown={() => setBackIcon("/left.png")}
-                  onMouseUp={() => setBackIcon("/left.png")}
-                  onFocus={() => setBackIcon("/left.png")}
-                  onBlur={() => setBackIcon("/leftnone.png")}
                 >
                   <img
-                    src={backIcon}
+                    src="/left.png"
                     alt="뒤로가기"
                     className="btn-icon"
                     draggable="false"
