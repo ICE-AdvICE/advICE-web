@@ -13,9 +13,10 @@ import { useNavigate } from "react-router-dom";
 import InquiryModal from "./InquiryModal.js";
 import { getczauthtypetRequest } from "../../shared/api/AuthApi.js";
 import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네이게이션 바 컴포넌트
-import Banner from "../../shared/ui/Banner/Banner"; // ✅ 추가(juhui): 공통 배너 컴포넌트 적용
+import Banner from "../../shared/ui/Banner/Banner";
 import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js"; //코딩존 보드 바(버튼 네개) 컴포넌트
 import { fetchAllSubjects } from "../../entities/api/CodingZone/AdminApi.js"; //(NEW)수업 매핑 정보 API 연동
+import { getColorById } from "./subjectColors.js";
 
 const CodingZoneAttendanceManager = () => {
   const [authMessage, setAuthMessage] = useState("");
@@ -215,17 +216,26 @@ const CodingZoneAttendanceManager = () => {
       <div className="centered-content">
         <div className="allattendance_buttons">
           <div className="subject-buttons">
-            {subjects.map((s) => (
-              <button
-                key={s.subjectId}
-                className={`subject-button ${
-                  selectedSubjectId === s.subjectId ? "active" : ""
-                }`}
-                onClick={() => setSelectedSubjectId(s.subjectId)}
-              >
-                {s.subjectName}
-              </button>
-            ))}
+            {subjects.map((s) => {
+              const sid = s.subjectId;
+              const active = selectedSubjectId === sid;
+              const color = getColorById(sid, "#475569");
+              return (
+                <button
+                  key={sid}
+                  type="button"
+                  className={`subject-select-chip ${active ? "active" : ""}`}
+                  style={{
+                    backgroundColor: active ? color : "#EFEFEF",
+                    color: active ? "#FFFFFF" : "#ADACAC",
+                    border: "none",
+                  }}
+                  onClick={() => setSelectedSubjectId(s.subjectId)}
+                >
+                  {s.subjectName}
+                </button>
+              );
+            })}
             {loading && (
               <span style={{ marginLeft: 12, color: "#666" }}>
                 불러오는 중…
@@ -245,57 +255,62 @@ const CodingZoneAttendanceManager = () => {
 
         <div className="line-container1"></div>
 
-        <div className="info-all_container">
-          <div className="info_all_inner">
-            <div className="info_all_studentnum">학번</div>
-            <div className="info_all_name">이름</div>
-            <div className="info_all_emali">이메일</div>
-            <div className="info_all_bar"></div>
-            <div className="info_all_presentcount">출석</div>
-            <div className="info_all_absentcount">결석</div>
+        {/* 실제 table 태그를 사용한 전체 출결 표 */}
+        <div className="czp-table-wrap">
+          <div className="czp-table-shell">
+            <div className="czp-table-scroll">
+              <table className="czp-table" style={{ width: "1100px" }}>
+                <thead>
+                  {(() => {
+                    const headerColor = selectedSubjectId
+                      ? getColorById(selectedSubjectId, "#475569")
+                      : "#475569";
+                    console.log("Selected Subject ID:", selectedSubjectId);
+                    console.log("Header Color:", headerColor);
+                    return (
+                      <tr
+                        style={{
+                          backgroundColor: headerColor,
+                          color: "#FFFFFF",
+                        }}
+                      >
+                        <th style={{ width: "15%" }}>학번</th>
+                        <th style={{ width: "15%" }}>이름</th>
+                        <th style={{ width: "25%" }}>이메일</th>
+                        <th style={{ width: "15%" }}>출석</th>
+                        <th style={{ width: "15%" }}>결석</th>
+                      </tr>
+                    );
+                  })()}
+                </thead>
+                <tbody>
+                  {loadingAttendance ? (
+                    <tr>
+                      <td colSpan="5" className="czp-table-msg">
+                        출결 불러오는 중…
+                      </td>
+                    </tr>
+                  ) : attendanceList.length === 0 && !errMsg ? (
+                    <tr>
+                      <td colSpan="5" className="czp-table-msg">
+                        표시할 출결 정보가 없습니다.
+                      </td>
+                    </tr>
+                  ) : (
+                    attendanceList.map((student, index) => (
+                      <tr key={index}>
+                        <td>{student.userStudentNum}</td>
+                        <td>{student.userName}</td>
+                        <td>{(student.userEmail || "").split("@")[0]}</td>
+                        <td>{student.attendance}</td>
+                        <td>{student.absence}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-        <div className="line-container2"></div>
-
-        <div className="info_all_data_container">
-          {loadingAttendance && (
-            <div
-              style={{ textAlign: "center", color: "#777", padding: "24px 0" }}
-            >
-              출결 불러오는 중…
-            </div>
-          )}
-
-          {!loadingAttendance && attendanceList.length === 0 && !errMsg && (
-            <div
-              style={{ textAlign: "center", color: "#777", padding: "24px 0" }}
-            >
-              표시할 출결 정보가 없습니다.
-            </div>
-          )}
-
-          {attendanceList.map((student, index) => (
-            <div key={index}>
-              <div className="info_all_data_inner">
-                <div className="info_all_data_studentnum">
-                  {student.userStudentNum}
-                </div>
-                <div className="info_all_data_name">{student.userName}</div>
-                <div className="info_all_data_email">
-                  {(student.userEmail || "").split("@")[0]}
-                </div>
-                <div className="info_all_data_bar"></div>
-                <div className="info_all_data_presentcount">
-                  {student.attendance}
-                </div>
-                <div className="info_all_data_absentcount">
-                  {student.absence}
-                </div>
-              </div>
-              <div className="hr-line"></div>{" "}
-              {/* Horizontal line after each item */}
-            </div>
-          ))}
         </div>
       </div>
     </div>

@@ -74,49 +74,6 @@
   margin-right: 8px;
 }
 
-/* 테이블 스타일 - 과사조교 수업 등록 페이지와 동일 */
-.regist-table-card {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  margin-bottom: 200px;
-}
-
-.regist-table {
-  width: 1100px;
-  border-collapse: collapse;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.regist-table thead {
-  background-color: #052940;
-  color: white;
-}
-
-.regist-table thead th {
-  padding: 20px 0px;
-  text-align: center;
-  font-weight: 600;
-  font-size: 16px;
-  border: none;
-}
-
-.regist-table tbody td {
-  padding: 30px 0px;
-  text-align: center;
-  border-bottom: 1px solid #e0e0e0;
-  vertical-align: middle;
-}
-
-.regist-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-.regist-table tbody tr:hover {
-  background-color: #f8f9fa;
-}
-
 /* 전체 출결 데이터 컨테이너 */
 .info-all_container {
   width: 100%;
@@ -220,31 +177,190 @@
   border-bottom: 1px solid #ccc;
 }
 
+/* ===== cz-table 스타일 추가 ===== */
+/* 테이블 컨테이너 */
+.cz-table-shell {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 100px;
+}
+
+.cz-table-scroll {
+  overflow-x: auto;
+  border-radius: 10px;
+  background: #fff;
+}
+
+/* 테이블 기본 스타일 */
+.cz-table {
+  width: 1100px;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+/* 테이블 헤더 */
+.cz-table thead th {
+  padding: 20px 24px;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+  background: #052940 !important; /* !important 추가하여 인라인 스타일이 적용되도록 */
+  border: none;
+}
+
+/* 동적 헤더 색상을 위한 클래스 */
+.cz-table-header {
+  background: inherit !important;
+}
+
+/* 헤더 모서리 라운드 */
+.cz-table thead th:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.cz-table thead th:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+/* 테이블 바디 */
+.cz-table tbody td {
+  padding: 30px 0px;
+  text-align: center;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+  color: #000;
+  vertical-align: middle;
+}
+
+.cz-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.cz-table tbody tr:hover td {
+  background: #f9fafb;
+}
+
+/* 메시지 스타일 */
+.cz-table-msg {
+  padding: 40px 20px;
+  text-align: center;
+  color: #777;
+  font-size: 14px;
+}
+
+/* ===== 과목 선택 버튼 스타일 (코딩존 메인 페이지와 동일) ===== */
 .subject-buttons {
   display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
+  margin-top: -25px;
 }
 
-.subject-button {
+/* subject-select-chip 스타일 (코딩존 메인 페이지와 동일) */
+.subject-select-chip {
+  padding: 14px 24px;
   border: none;
-  outline: none;
-  padding: 10px 16px;
-  border-radius: 12px;
-  background: #eef1f4;
-  color: #9aa3af;
-  font-weight: 600;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
   cursor: pointer;
-  transition: transform 0.05s ease;
-}
-.subject-button:hover {
-  transform: translateY(-1px);
+  transition: all 0.2s ease;
+  margin-right: 25px; /* 버튼 사이 갭 */
+  margin-top: 40px;
+  margin-bottom: 10px;
 }
 
-.subject-button.active {
-  background: #193d52;
+.subject-select-chip:hover:not(.active) {
+  background: #475569;
   color: #fff;
+}
+
+/* 활성 상태: 배경/글자색은 JSX에서 subjectId 색으로 주입 */
+.subject-select-chip.active {
+  font-weight: 600;
+}
+
+/* ===== czp-table 스타일 추가 (코딩존 메인 페이지와 동일) ===== */
+.czp-table-wrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 100px;
+}
+
+.czp-table-shell {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.czp-table-scroll {
+  overflow-x: auto;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.czp-table {
+  width: 1100px;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+/* 헤더 셀 */
+.czp-table thead th {
+  padding: 14px 10px;
+  text-align: center;
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* 헤더 모서리 라운드 */
+.czp-table thead th:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.czp-table thead th:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+/* 헤더 배경이 둥근 모서리에 맞게 잘리도록 */
+.czp-table thead {
+  overflow: hidden;
+}
+
+/* 바디 셀 */
+.czp-table tbody td {
+  padding: 22px 10px;
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  font-size: 14px;
+  color: #000;
+  vertical-align: middle;
+}
+
+/* 행 높이 및 호버 */
+.czp-table tbody tr {
+  background: #fff;
+  height: 64px;
+}
+
+.czp-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* 메시지 스타일 */
+.czp-table-msg {
+  padding: 40px 20px;
+  text-align: center;
+  color: #777;
+  font-size: 14px;
 }
 
 @media (max-width: 400px) {
