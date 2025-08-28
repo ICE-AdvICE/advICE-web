@@ -107,10 +107,10 @@ public class CodingZoneClassService {
         // 수정한 정보가 기존의 정보와 동일할 때 예외처리
         // 수정하고자 하는 코딩존 수업의 고유번호를 가져와서 DB확인
         CodingZoneClass existingClass = codingZoneClassRepository.findByClassNum(classNum);
-        if(dto.isSameEntity(existingClass)) throw new DuplicatedClassException();
-
         GroupInf existinfGroup = groupInfRepository.findByClassNum(existingClass.getClassNum())
                     .orElseThrow(GroupInfNotFoundException::new);
+
+        if(dto.isSameEntity(existingClass) && existinfGroup.getGroupId().equals(dto.getGroupId())) throw new DuplicatedClassException();
 
         // 수정한 정보가 이미 DB에 저장되어 있는 경우
         boolean isDuplicate = codingZoneClassRepository
