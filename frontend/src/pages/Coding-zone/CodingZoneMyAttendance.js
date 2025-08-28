@@ -31,7 +31,13 @@ const CodingZoneMyAttendance = () => {
 
   const formatTime = (timeString) => {
     const [hours, minutes] = timeString.split(":");
-    return `${hours}:${minutes}`;
+    const startTime = `${hours}:${minutes}`;
+
+    // 시작시간에서 1시간을 더해서 끝시간 계산
+    const endHours = parseInt(hours) + 1;
+    const endTime = `${endHours.toString().padStart(2, "0")}:${minutes}`;
+
+    return `${startTime}~${endTime}`;
   };
 
   const formatDate = (dateString) => {
@@ -115,49 +121,83 @@ const CodingZoneMyAttendance = () => {
         <CodingZoneBoardbar />
       </div>
 
-      <div className="line-container1"></div>
-
-      <div className="info-container">
-        <div className="info_inner">
-          <div className="info_date">날짜</div>
-          <div className="info_time">시간</div>
-          <div className="info_bar"></div>
-          <div className="info_classname">과목명</div>
-          <div className="info_assistant">조교</div>
-          <div className="info_status">출결</div>
-        </div>
-      </div>
-
-      <div className="line-container2"></div>
-
-      <div className="info_data_container">
+      {/* 실제 table 태그를 사용한 출결 관리 표 */}
+      <div
+        className="manager-table-card"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          width: "100%",
+          marginBottom: "100px",
+        }}
+      >
         {attendList.length > 0 ? (
-          attendList.map((item, index) => (
-            <div key={index}>
-              <div className="info_data_inner">
-                <div className="info_data_date">
-                  {formatDate(item.classDate)}
-                </div>
-                <div className="info_data_time">
-                  {formatTime(item.classTime)}
-                </div>
-                <div className="info_data_bar"></div>
-                <div className="info_data_classname">{item.className}</div>
-                <div className="info_data_assistant">{item.assistantName}</div>
-                <div className="info_data_status">
-                  {isFutureDate(item.classDate, item.classTime)
-                    ? "진행중"
-                    : item.attendance === "1"
-                    ? "Y"
-                    : "N"}
-                </div>
-              </div>
-              <div className="hr-line"></div>
-            </div>
-          ))
+          <table className="manager-table" style={{ width: "1100px" }}>
+            <thead>
+              <tr>
+                <th style={{ width: "12%" }}>날짜</th>
+                <th style={{ width: "19.9%" }}>시간</th>
+                <th style={{ width: "32%" }}>과목명</th>
+                <th style={{ width: "15%" }}>조교</th>
+                <th style={{ width: "15%" }}>출결</th>
+              </tr>
+            </thead>
+            <tbody>
+              {attendList.map((item, index) => (
+                <tr key={index}>
+                  <td>{formatDate(item.classDate)}</td>
+                  <td>{formatTime(item.classTime)}</td>
+                  <td>{item.className}</td>
+                  <td>{item.assistantName}</td>
+                  <td>
+                    {isFutureDate(item.classDate, item.classTime) ? (
+                      <span
+                        style={{
+                          backgroundColor: "#f0f0f0",
+                          color: "#052940",
+                          padding: "10px 21px",
+                          borderRadius: "10px",
+                          fontSize: "15px",
+                          fontWeight: "600",
+                        }}
+                      >
+                        진행중
+                      </span>
+                    ) : item.attendance === "1" ? (
+                      <span
+                        style={{
+                          backgroundColor: "#1CFF8A",
+                          color: "#052940",
+                          padding: "10px 21px",
+                          borderRadius: "10px",
+                          fontSize: "15px",
+                          fontWeight: "500",
+                        }}
+                      >
+                        출석
+                      </span>
+                    ) : (
+                      <span
+                        style={{
+                          backgroundColor: "#FF6969",
+                          color: "#ffffff",
+                          padding: "10px 21px",
+                          borderRadius: "10px",
+                          fontSize: "15px",
+                          fontWeight: "600",
+                        }}
+                      >
+                        결석
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         ) : (
-          <div className="empty-list-message">
-            신청한 수업 리스트가 없습니다.
+          <div className="panel-gray">
+            <div className="panel-empty">신청한 수업 리스트가 없습니다.</div>
           </div>
         )}
       </div>
