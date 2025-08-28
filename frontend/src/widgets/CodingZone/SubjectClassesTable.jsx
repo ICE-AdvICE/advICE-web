@@ -78,14 +78,14 @@ export default function SubjectClassesTable({
     return () => {
       ignore = true;
     };
-  }, [
-    selectedDateYMD,
-    selectedSubjectId,
-    accessToken,
-    setCookie,
-    navigate,
-    seedRows,
-  ]);
+  }, [selectedSubjectId, accessToken, setCookie, navigate, seedRows]);
+
+  // 날짜가 변경될 때 과목 선택 초기화 (단, 과목이 이미 선택된 상태가 아닐 때만)
+  useEffect(() => {
+    if (typeof onEmptyAfterDelete === "function" && !selectedSubjectId) {
+      onEmptyAfterDelete();
+    }
+  }, [selectedDateYMD, onEmptyAfterDelete, selectedSubjectId]);
 
   // 강력 새로고침: 현재 날짜/과목 기준으로 서버에서 다시 불러오기
   const reloadRows = async ({ silent = false } = {}) => {
@@ -345,7 +345,6 @@ export default function SubjectClassesTable({
                   <th>인원</th>
                   <th>등록상태</th>
                   <th></th> {/* ← 삭제(X) */}
-                  <th></th> {/* ← 수정 버튼 */}
                 </tr>
               </thead>
               <tbody>

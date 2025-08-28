@@ -1195,6 +1195,13 @@ const CodingMain = () => {
                     setSelectedDate(null);
                     return;
                   }
+
+                  // 날짜가 변경되면 과목 선택 초기화
+                  if (ymd !== selectedDateYMD) {
+                    setSelectedSubjectId(null);
+                    setSelectedSubjectName("");
+                  }
+
                   setSelectedDateYMD(ymd);
                   try {
                     const d = new Date(ymd);
