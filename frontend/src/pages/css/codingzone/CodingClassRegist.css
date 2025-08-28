@@ -204,10 +204,23 @@
   background: rgba(64, 155, 157, 0.75);
 }
 
+.btn-5:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #efefef;
+  border-color: #efefef;
+  color: #666666;
+}
+
+.btn-5:disabled:hover {
+  background: #efefef;
+  border-color: #efefef;
+}
+
 .btn-6 {
   margin: 0 0 0 3px;
-  height: 33px;
-  width: 33px;
+  height: 36px;
+  width: 36px;
   flex-shrink: 0;
   font-size: 25px;
   display: flex;
@@ -415,7 +428,7 @@
 
 /* 바디는 유지 */
 .regist-table tbody td {
-  padding: 30px 0px;
+  padding: 28px 0px;
   text-align: center;
   font-size: 15px;
   color: #0b1f2a;

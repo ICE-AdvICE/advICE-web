@@ -439,10 +439,13 @@ const CodingZoneRegist = () => {
                         }
                         style={{
                           width: "90%",
-                          padding: "8px",
+                          padding: "12px 8px",
                           border: "1px solid #cfd8e3",
                           borderRadius: "5px",
                           fontSize: "14px",
+                          paddingLeft: "9px",
+                          paddingRight: "9px",
+                          textAlign: "center",
                         }}
                       >
                         <option value="">요일 선택</option>
@@ -467,7 +470,7 @@ const CodingZoneRegist = () => {
                         }
                         style={{
                           width: "90%",
-                          padding: "8px",
+                          padding: "11px 8px",
                           border: "1px solid #cfd8e3",
                           borderRadius: "5px",
                           fontSize: "14px",
@@ -484,10 +487,13 @@ const CodingZoneRegist = () => {
                         }
                         style={{
                           width: "90%",
-                          padding: "8px",
+                          padding: "12px 8px",
                           border: "1px solid #cfd8e3",
                           borderRadius: "5px",
                           fontSize: "14px",
+                          paddingLeft: "9px",
+                          paddingRight: "9px",
+                          textAlign: "center",
                         }}
                       >
                         <option value="">시간 선택</option>
@@ -514,10 +520,13 @@ const CodingZoneRegist = () => {
                         }
                         style={{
                           width: "90%",
-                          padding: "8px",
+                          padding: "12px 8px",
                           border: "1px solid #cfd8e3",
                           borderRadius: "5px",
                           fontSize: "14px",
+                          paddingLeft: "9px",
+                          paddingRight: "9px",
+                          textAlign: "center",
                         }}
                       >
                         <option value="">과목 선택</option>
@@ -541,10 +550,13 @@ const CodingZoneRegist = () => {
                         disabled={!box.subjectId || assistantLoading[index]}
                         style={{
                           width: "90%",
-                          padding: "8px",
+                          padding: "12px 8px",
                           border: "1px solid #cfd8e3",
                           borderRadius: "5px",
                           fontSize: "14px",
+                          paddingLeft: "9px",
+                          paddingRight: "9px",
+                          textAlign: "center",
                         }}
                       >
                         {!box.subjectId ? (
@@ -580,7 +592,7 @@ const CodingZoneRegist = () => {
                         }
                         style={{
                           width: "90%",
-                          padding: "8px",
+                          padding: "11px 8px",
                           border: "1px solid #cfd8e3",
                           borderRadius: "5px",
                           fontSize: "14px",
