@@ -89,7 +89,7 @@
 
 .form-table .delete-btn,
 .form-table td:last-child > button {
-  height: 40px;
+  height: 38px;
   padding: 0 12px;
 }
 
@@ -127,7 +127,7 @@ select {
   line-height: 38px;
   border: 1px solid #a8a8a8bf; /* 버튼 외곽선 색 */
   color: #a8a8a8bf;
-  font-size: 24px;
+  font-size: 25px;
   display: flex;
   align-items: center;
   justify-content: center;

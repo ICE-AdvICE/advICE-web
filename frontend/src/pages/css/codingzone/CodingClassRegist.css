@@ -348,9 +348,9 @@
   margin: 0 0 0 5px;
   padding-top: -1px;
   width: px;
-  height: 35px;
+  height: 38px;
   flex-shrink: 0;
-  font-size: 22px;
+  font-size: 25px;
   align-items: center;
   justify-content: center;
   aspect-ratio: 1/1;
@@ -393,7 +393,7 @@
 
 .delete-icon {
   display: inline-block;
-  transform: translate(0.5px, -2px); /* ← 위로 -1px, 오른쪽으로 -1px */
+  transform: translate(0.4px, -2px); /* ← 위로 -1px, 오른쪽으로 -1px */
 }
 
 .class-submit-button {
