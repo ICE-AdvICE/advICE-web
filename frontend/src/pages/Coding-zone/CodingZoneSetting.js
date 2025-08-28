@@ -81,18 +81,6 @@ const ClassSetting = () => {
   const [rows, setRows] = useState(() => []);
   const [mappingsLoaded, setMappingsLoaded] = useState(false);
 
-  useEffect(() => {
-    setRows((prev) => {
-      if (prev.length === 0) {
-        const free = getAvailableZonesStrict("new");
-        if (free.length === 0) return [];
-        return [{ id: newRowId(), codingZone: free[0], subjectName: "" }];
-      }
-      return reconcileRows(prev);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [existingMappings]);
-
   // 깊은 곳에 숨어있는 첫 번째 배열을 찾아서 반환
   const findFirstArray = (v) => {
     if (Array.isArray(v)) return v;
@@ -193,14 +181,28 @@ const ClassSetting = () => {
   };
 
   useEffect(() => {
-    setRows((prev) => reconcileRows(prev));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [existingMappings]);
-
-  useEffect(() => {
     if (!accessToken) return;
     loadMappings();
   }, [accessToken]);
+
+  useEffect(() => {
+    if (!mappingsLoaded) return; // 서버 매핑 다 받아오기 전엔 아무 것도 안 함
+
+    setRows((prev) => {
+      const free = getAvailableZonesStrict("new");
+
+      // 남는 존이 없으면 추가행 자체 비우기
+      if (free.length === 0) return [];
+
+      // 기존 행이 없으면 1줄만 만들어 주기
+      if (prev.length === 0) {
+        return [{ id: newRowId(), codingZone: free[0], subjectName: "" }];
+      }
+
+      // 기존 행이 있으면 유효성만 재조정
+      return reconcileRows(prev);
+    });
+  }, [mappingsLoaded, existingMappings]);
 
   const handleAddRow = () => {
     const id = newRowId();
