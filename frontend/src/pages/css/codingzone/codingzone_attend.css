@@ -407,6 +407,10 @@
   margin-left: 0;
 }
 
+.return.return-back {
+  top: 0 !important; /* 덮어쓰기 */
+}
+
 .btn-ghost {
   background: #efefef;
   color: #adacac;
@@ -442,7 +446,6 @@
 .manager-table thead {
   position: relative;
   z-index: 2; /* 바디 위 레이어 */
-  border-radius: 10px;
   overflow: hidden;
 }
 /* 헤더 배경: 각 셀에 직접 칠해 라운드가 확실히 보이도록 */
@@ -516,7 +519,7 @@
 }
 
 .manager-table tbody tr:hover td {
-  background: #f8fafc;
+  background: #e7e7e7;
 }
 
 /* (옵션) 세로도 가운데로 */

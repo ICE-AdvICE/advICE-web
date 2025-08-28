@@ -17,7 +17,7 @@ public interface GroupInfRepository extends JpaRepository<GroupInf, Integer> {
 
     void deleteByGroupId(String groupId);
 
-    Optional<GroupInf> findByAssistantNameAndClassTimeAndClassName(String assistantName, String classTime, String className);
+    Optional<GroupInf> findByClassNum(int clasNum);
 
     void delete(GroupInf group);
 }

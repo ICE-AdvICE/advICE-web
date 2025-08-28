@@ -1190,7 +1190,6 @@ const CodingMain = () => {
                 src="/Codingzone-noregist.png"
                 alt="예약 안내 이미지"
                 className="czp-guide-image"
-                style={{ width: "1000px", height: "auto" }}
               />
             )}
 
