@@ -15,7 +15,6 @@
   position: relative; /* ✅ 기준점 */
   display: inline-block; /* 버튼 크기만큼만 차지 */
   overflow: visible;
-  top: -5px;
 }
 
 .cal-box {

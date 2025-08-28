@@ -121,6 +121,7 @@ const ClassSetting = () => {
       setLoading(true);
       const res = await fetchAllSubjects(accessToken, setCookie, navigate);
 
+      // 바로 배열이면 성공
       // 성공 응답 처리 (code: "SU")
       if (res && res.code === "SU" && res.data && res.data.subjectList) {
         const list = res.data.subjectList

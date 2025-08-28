@@ -1,8 +1,8 @@
 .subject-card {
   /* 기본 스타일 */
   --hover-color: #1a3f57; /* JS에서 style로 덮어씀 */
-  background: #fff;
-  color: #0f2a3a; /* 본문 글자색 */
+  background: #fff !important;
+  color: #0f2a3a !important; /* 본문 글자색 */
   border: none;
   border-radius: 22px;
   min-width: 400px;
@@ -16,8 +16,6 @@
   text-align: left;
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
   cursor: pointer;
-  transition: background-color 0.18s, color 0.18s, transform 0.18s,
-    box-shadow 0.18s;
   appearance: none;
 }
 .subject-grid-inner {
@@ -91,17 +89,22 @@
 .subject-card:hover,
 .subject-card:active,
 .subject-card.is-active {
-  background: var(--hover-color);
-  color: #fff;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
+  background: var(--hover-color, #1a3f57) !important;
+  color: #fff !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15) !important;
 }
 
 .subject-card:hover .subject-top,
 .subject-card:hover .subject-title,
 .subject-card.is-active .subject-top,
 .subject-card.is-active .subject-title {
-  color: #fff;
+  color: #fff !important;
+}
+
+/* hover 해제 시 명시적으로 기본 상태 정의 */
+.subject-card:not(:hover):not(:active):not(.is-active) .subject-top,
+.subject-card:not(:hover):not(:active):not(.is-active) .subject-title {
+  color: #244455 !important;
 }
 
 /* hover 시 화살표 버튼을 반전(배경 흰색, 아이콘 색 = hover 컬러) */

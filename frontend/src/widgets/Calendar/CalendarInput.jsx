@@ -93,11 +93,17 @@ export default function CalendarInput({
      - uncontrolled이면 내부값 갱신 + 부모에게 알림 
      - 선택 후 팝오버 닫기 */
   const handleSelect = (next) => {
-    if (isControlled) onChange?.(next);
+    // 동일 날짜 클릭 시 선택 해제 토글
+    const willClear = selected && next && String(selected) === String(next);
+    const finalValue = willClear ? "" : next;
+    if (isControlled) onChange?.(finalValue);
     else {
-      setInner(next);
-      onChange?.(next);
+      setInner(finalValue);
+      onChange?.(finalValue);
     }
+
+    // 날짜 선택 후 팝오버 자동으로 닫기
+    setOpenSafe(false);
   };
 
   const displayText = selected ? selected.replaceAll("-", " / ") : "";

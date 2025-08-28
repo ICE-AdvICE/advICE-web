@@ -650,6 +650,76 @@ export const fetchClassListBySubjectPublic = async (subjectId) => {
   }
 };
 
+// 20. 코딩존 등록 정보 수정(ADMIN : 과사조교)
+// PATCH /api/admin/codingzones/classes/{classNum}
+export const adminUpdateCodingzoneClassByClassNum = async (
+  classNum,
+  payload,
+  token,
+  setCookie,
+  navigate
+) => {
+  console.log(
+    "[AdminApi] adminUpdateCodingzoneClassByClassNum 호출, classNum:",
+    classNum,
+    "payload:",
+    payload
+  );
+  try {
+    console.log("[AdminApi] axios.patch 시작");
+    const res = await axios.patch(
+      `${API_DOMAIN_ADMIN}/codingzones/classes/${classNum}`,
+      payload,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    console.log("[AdminApi] axios.patch 완료, 응답:", res.data);
+    // 성공 예시: { code: "SU", message: "코딩존 정보 수정 성공.", data: null }
+    const { code, message, data } = res.data || {};
+    const result = { ok: code === "SU", code, message, data: data ?? null };
+    console.log("[AdminApi] 최종 반환값:", result);
+    return result;
+  } catch (error) {
+    console.error("[AdminApi] axios.patch 에러:", error);
+    if (!error.response) {
+      console.log("[AdminApi] 네트워크 에러");
+      return {
+        ok: false,
+        code: "NETWORK_ERROR",
+        message: "네트워크 상태를 확인해주세요.",
+        data: null,
+      };
+    }
+    console.log("[AdminApi] 서버 응답 에러:", error.response.data);
+    const { code, message } = error.response.data || {};
+    if (code === "ATE") {
+      const newToken = await refreshTokenRequest(setCookie, token, navigate);
+      if (newToken?.accessToken) {
+        return adminUpdateCodingzoneClassByClassNum(
+          classNum,
+          payload,
+          newToken.accessToken,
+          setCookie,
+          navigate
+        );
+      }
+      setCookie("accessToken", "", { path: "/", expires: new Date(0) });
+      navigate("/");
+      return {
+        ok: false,
+        code: "TOKEN_EXPIRED",
+        message: "토큰이 만료되었습니다. 다시 로그인해주세요.",
+        data: null,
+      };
+    }
+    return {
+      ok: false,
+      code: code ?? "UNKNOWN_ERROR",
+      message: message ?? "수정 실패",
+      data: null,
+    };
+  }
+};
+
 // 19. 출석 횟수 조회 API
 export const fetchAttendCountBySubject = async (
   subjectId,

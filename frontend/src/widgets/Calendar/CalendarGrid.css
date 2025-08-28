@@ -4,8 +4,8 @@
 .cal-popover {
   position: absolute;
   top: calc(100% + var(--calendar-gap));
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
   z-index: 9999;
 
   border: 1.2px solid #052940;

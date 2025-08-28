@@ -13,6 +13,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import { getcodingzoneListRequest } from "../../features/api/CodingzoneApi.js";
 import { fetchAttendCountBySubject } from "../../entities/api/CodingZone/AdminApi";
+import { fetchAllSubjects as fetchAllSubjectsAdmin } from "../../entities/api/CodingZone/AdminApi";
 import {
   deleteCodingZoneClass,
   reserveCodingZoneClass,
@@ -215,8 +216,8 @@ const CodingMain = () => {
   const [selectedSubjectId, setSelectedSubjectId] = useState(null); // ★ NEW
   const [selectedDateYMD, setSelectedDateYMD] = useState(""); // ★ NEW: YYYY-MM-DD 문자열
   const [selectedSubjectName, setSelectedSubjectName] = useState("");
-  const [backIcon, setBackIcon] = useState("/leftnone.png");
   const [refreshing, setRefreshing] = useState(false);
+  const [allSubjects, setAllSubjects] = useState([]); // 전체 과목 매핑(항상 노출용)
   // ===== 일반학생 subjectId 기반 흐름 =====
   const [publicSubjects, setPublicSubjects] = useState([]); // [{subjectId, subjectName}]
   const [selectedSubjectIdPub, setSelectedSubjectIdPub] = useState(null);
@@ -266,6 +267,15 @@ const CodingMain = () => {
       setReservedMetas([]);
     } catch {}
   };
+
+  // 모든 코딩존 관련 sessionStorage 데이터 정리
+  const clearAllCodingZoneStorage = () => {
+    try {
+      sessionStorage.removeItem(RESERVED_META_KEY);
+      sessionStorage.removeItem("cz_admin_seed");
+      setReservedMetas([]);
+    } catch {}
+  };
   const readReservedMeta = () => {
     const list = readReservedMetas();
     return list.length ? list[0] : null;
@@ -278,12 +288,21 @@ const CodingMain = () => {
 
   useEffect(() => {
     setReservedMetas(readReservedMetas());
+
+    // 컴포넌트 언마운트 시 sessionStorage 정리
+    return () => {
+      clearAllCodingZoneStorage();
+    };
   }, []);
 
   // 로그인 상태에서 서버의 전체 예약 리스트와 세션 메타 동기화
   useEffect(() => {
     const token = cookies.accessToken;
-    if (!token) return;
+    if (!token) {
+      // 토큰이 없으면 예약 메타데이터 초기화
+      clearAllCodingZoneStorage();
+      return;
+    }
     (async () => {
       const res = await getczattendlistRequest(token, setCookie, navigate);
       if (res?.code === "SU") {
@@ -295,10 +314,11 @@ const CodingMain = () => {
           classTime: String(it.classTime || ""),
           weekDay: "", // 요일은 표 렌더링 시 비교에서 사용하지 않음(같은 과목 주차는 classDate 기준)
         }));
-        // classNum/subjectId가 없으면 기존 세션 값 유지. 이 동기화는 표시 보조용.
-        const existing = readReservedMetas();
-        writeReservedMetas(existing.length ? existing : []);
-        setReservedMetas(existing);
+        // 새로운 사용자로 로그인했을 때 기존 sessionStorage 데이터 완전 정리
+        clearAllCodingZoneStorage();
+        // 서버에서 받은 예약 데이터로 새로 설정
+        writeReservedMetas(metas);
+        setReservedMetas(metas);
       }
     })();
   }, [cookies.accessToken]);
@@ -322,8 +342,26 @@ const CodingMain = () => {
   };
   // ★ 과목 선택 해제 (그리드로 되돌아오기)
   const clearSubjectSelection = () => {
+    // 과목 선택 해제 + 필요 시 시드(subjectId) 카드 주입
     setSelectedSubjectId(null);
     setSelectedSubjectName("");
+    try {
+      const raw = sessionStorage.getItem("cz_admin_seed");
+      if (!raw) return;
+      const obj = JSON.parse(raw);
+      const key = String(obj?.k || "");
+      const idx = key.lastIndexOf("-");
+      const sid = idx > 0 ? key.slice(0, idx) : "";
+      const date = idx > 0 ? key.slice(idx + 1) : "";
+      if (date && date === selectedDateYMD && sid) {
+        const src = allSubjects.find((s) => String(s.id) === sid);
+        const nameToUse = src ? src.name : sid;
+        setSubjects((prev) => {
+          if (prev.some((p) => String(p.id) === sid)) return prev;
+          return [...prev, { id: sid, name: nameToUse }];
+        });
+      }
+    } catch {}
   };
 
   // ★ NEW: 날짜 -> YYYY-MM-DD
@@ -387,6 +425,8 @@ const CodingMain = () => {
       setIsRendered(true);
     } else {
       setIsRendered(false);
+      // 토큰이 없어지면 (로그아웃) sessionStorage 정리
+      clearAllCodingZoneStorage();
     }
   }, [cookies.accessToken]);
 
@@ -403,6 +443,10 @@ const CodingMain = () => {
         } else if (response === "CA") {
           setUserRole("CA");
         }
+      } else {
+        // 토큰이 없으면 사용자 역할 초기화
+        setIsAdmin(false);
+        setUserRole(null);
       }
     };
     fetchUserRole();
@@ -428,6 +472,59 @@ const CodingMain = () => {
       }
     })();
   }, [isAdmin]);
+
+  // EA: 전체 과목 매핑을 한 번 가져와 항상 드롭다운에 사용
+  useEffect(() => {
+    if (!isAdmin) return;
+    (async () => {
+      try {
+        let list = [];
+        // 1) 관리자용 전체 과목 시도
+        if (cookies.accessToken) {
+          const res1 = await fetchAllSubjectsAdmin(
+            cookies.accessToken,
+            setCookie,
+            navigate
+          );
+          if (res1?.code === "SU") {
+            const arr1 = Array.isArray(res1.data)
+              ? res1.data
+              : Array.isArray(res1.data?.subjectList)
+              ? res1.data.subjectList
+              : [];
+            list = arr1
+              .map((s) => ({
+                id: String(s.subjectId ?? s.id ?? s.value ?? s.key ?? ""),
+                name: String(
+                  s.subjectName ?? s.name ?? s.label ?? s.text ?? ""
+                ),
+              }))
+              .filter((x) => x.id && x.name);
+          }
+        }
+        // 2) 실패/빈 결과면 퍼블릭 과목으로 폴백
+        if (!list.length) {
+          const res2 = await fetchSubjectsPublic();
+          if (res2?.code === "SU") {
+            const arr2 = Array.isArray(res2.data)
+              ? res2.data
+              : Array.isArray(res2.data?.subjectList)
+              ? res2.data.subjectList
+              : [];
+            list = arr2
+              .map((s) => ({
+                id: String(s.subjectId ?? s.id ?? ""),
+                name: String(s.subjectName ?? s.name ?? ""),
+              }))
+              .filter((x) => x.id && x.name);
+          }
+        }
+        setAllSubjects(list);
+      } catch {
+        setAllSubjects([]);
+      }
+    })();
+  }, [isAdmin, cookies.accessToken, setCookie, navigate]);
 
   // ★ 학생/비로그인: 과목 목록 로드 후 첫 번째 과목을 기본 선택
   useEffect(() => {
@@ -652,7 +749,8 @@ const CodingMain = () => {
       setAttendanceCount(0); // 과목 미선택/비로그인 시 0 표시
       return;
     }
-    (async () => {
+
+    const fetchAttendance = async () => {
       const res = await fetchAttendCountBySubject(
         selectedSubjectIdPub,
         token,
@@ -669,7 +767,38 @@ const CodingMain = () => {
         // 그 외 실패는 조용히 0 처리
         setAttendanceCount(0);
       }
-    })();
+    };
+
+    fetchAttendance();
+
+    // 출결 업데이트 이벤트 감지하여 즉시 갱신 (단, 버튼이 활성화된 경우만)
+    const handleAttendanceUpdate = (event) => {
+      if (event.detail.subjectId === selectedSubjectIdPub) {
+        // 현재 시간이 수업 시작 시간 이후인지 확인
+        const now = new Date();
+        const classDateTime = new Date(
+          `${event.detail.classDate}T${event.detail.classTime}`
+        );
+        const canUpdate = now >= classDateTime;
+
+        if (canUpdate) {
+          console.log(
+            "출결 업데이트 감지 (버튼 활성화 상태), 출석률 즉시 갱신"
+          );
+          fetchAttendance();
+        } else {
+          console.log(
+            "출결 업데이트 감지 (버튼 비활성화 상태), 출석률 갱신 건너뜀"
+          );
+        }
+      }
+    };
+
+    window.addEventListener("attendanceUpdated", handleAttendanceUpdate);
+
+    return () => {
+      window.removeEventListener("attendanceUpdated", handleAttendanceUpdate);
+    };
   }, [cookies.accessToken, selectedSubjectIdPub]);
 
   // 예약 기능 토글
@@ -947,7 +1076,9 @@ const CodingMain = () => {
 
   /*출석률 체크바 */
   const renderAttendanceProgress = (count) => {
-    const cappedCount = Math.min(count, 4);
+    // 출석 횟수가 음수면 0으로 처리
+    const safeCount = Math.max(0, count);
+    const cappedCount = Math.min(safeCount, 4);
     const percentage = (cappedCount / 4) * 100;
     return (
       <div className="attendance-progress-container">
@@ -970,11 +1101,7 @@ const CodingMain = () => {
     setSelectedDateYMD(dateToYMD(selectedDate));
   }, [selectedDate]);
 
-  // ★ NEW: 날짜가 바뀌면 선택된 과목 초기화 (다른 날짜의 stale subjectId 방지)
-  useEffect(() => {
-    setSelectedSubjectId(null);
-    setSelectedSubjectName("");
-  }, [selectedDateYMD]);
+  // 날짜 변경 시에도 과목 선택은 유지 (요청사항 반영)
 
   // ★ NEW: EA + 날짜 선택 시 과목 목록 조회
   useEffect(() => {
@@ -996,21 +1123,64 @@ const CodingMain = () => {
         if (cancelled) return;
         if (res?.code === "SU") {
           const classesMap = res.data?.classes ?? {};
-          const subs = Object.entries(classesMap).map(([id, name]) => ({
+          let subs = Object.entries(classesMap).map(([id, name]) => ({
             id: String(id),
             name: String(name),
           }));
-          setSubjects(subs);
-          if (subs.length === 0) {
-            setSelectedSubjectId(null);
-            setSelectedSubjectName("");
+          // 선택된 과목이 목록에 없으면 동적으로 추가(카드 보이도록)
+          if (selectedSubjectId) {
+            const exist = subs.some(
+              (s) => String(s.id) === String(selectedSubjectId)
+            );
+            if (!exist) {
+              // allSubjects에서 이름 찾고, 없으면 기존 상태에서 찾기
+              const src =
+                allSubjects.find(
+                  (s) => String(s.id) === String(selectedSubjectId)
+                ) ||
+                subjects.find(
+                  (s) => String(s.id) === String(selectedSubjectId)
+                );
+              const nameToUse = src
+                ? src.name
+                : String(selectedSubjectName || selectedSubjectId);
+              subs = [
+                ...subs,
+                { id: String(selectedSubjectId), name: nameToUse },
+              ];
+            }
           }
+          setSubjects(subs);
+          // 선택 과목은 유지. 빈 결과라도 당장 초기화하지 않음(편집 직후 레이스 방지)
         } else {
-          // ❗요청 실패/에러일 때는 "과목 선택"을 건드리지 말고 유지
-          // (일시적 오류/지연으로 튕기는 현상 방지)
-          setSubjects([]);
-          setSelectedSubjectId(null);
-          setSelectedSubjectName("");
+          // 실패 시에도: 시드/선택 과목을 카드에 노출하여 바로 선택 가능하게 함
+          let subs = [];
+          try {
+            const raw = sessionStorage.getItem("cz_admin_seed");
+            if (raw) {
+              const obj = JSON.parse(raw);
+              const key = String(obj?.k || "");
+              const idx = key.lastIndexOf("-");
+              const sidStr = idx > 0 ? key.slice(0, idx) : ""; // subjectId
+              const ymd = idx > 0 ? key.slice(idx + 1) : ""; // date
+              if (ymd === selectedDateYMD && sidStr) {
+                const src = allSubjects.find((s) => String(s.id) === sidStr);
+                subs = [{ id: sidStr, name: src ? src.name : sidStr }];
+              }
+            }
+          } catch {}
+          if (!subs.length && selectedSubjectId) {
+            const src =
+              allSubjects.find(
+                (s) => String(s.id) === String(selectedSubjectId)
+              ) ||
+              subjects.find((s) => String(s.id) === String(selectedSubjectId));
+            const nameToUse = src
+              ? src.name
+              : String(selectedSubjectName || selectedSubjectId);
+            subs = [{ id: String(selectedSubjectId), name: nameToUse }];
+          }
+          setSubjects(subs);
         }
       } finally {
         if (!cancelled) setIsSubjectsLoading(false);
@@ -1026,6 +1196,8 @@ const CodingMain = () => {
     setCookie,
     navigate,
     selectedSubjectId,
+    selectedSubjectName,
+    allSubjects,
   ]); // ★ NEW
 
   return (
@@ -1049,8 +1221,27 @@ const CodingMain = () => {
           {isAdmin ? (
             <div className="cz-date-picker">
               <CalendarInput
-                value={selectedDate}
-                onChange={setSelectedDate}
+                value={selectedDateYMD}
+                onChange={(ymd) => {
+                  // 빈 값(해제) 처리: 상태를 명확히 초기화
+                  if (!ymd) {
+                    setSelectedDateYMD("");
+                    setSelectedDate(null);
+                    return;
+                  }
+
+                  // 날짜가 변경되면 과목 선택 초기화
+                  if (ymd !== selectedDateYMD) {
+                    setSelectedSubjectId(null);
+                    setSelectedSubjectName("");
+                  }
+
+                  setSelectedDateYMD(ymd);
+                  try {
+                    const d = new Date(ymd);
+                    if (!Number.isNaN(d.getTime())) setSelectedDate(d);
+                  } catch {}
+                }}
                 disabledDates={isWeekendYMD}
                 placeholder="조회할 날짜를 선택하세요"
               />
@@ -1110,6 +1301,94 @@ const CodingMain = () => {
                 조회하고자 하는 날짜를 입력해주세요.
               </div>
             </div>
+          ) : selectedSubjectId ? (
+            <div className="cz-fixed-panel">
+              <div className="cz-fixed-body">
+                <SubjectClassesTable
+                  key={`admin-${selectedSubjectId || "none"}`}
+                  selectedDateYMD={selectedDateYMD}
+                  selectedSubjectId={selectedSubjectId}
+                  selectedSubjectName={selectedSubjectName}
+                  accessToken={cookies.accessToken}
+                  setCookie={setCookie}
+                  navigate={navigate}
+                  subjectOptions={allSubjects}
+                  onEmptyAfterDelete={handleEmptyAfterDelete}
+                  onDateChanged={(nextYMD, nextSubjectId, seed) => {
+                    // 날짜가 바뀌면 새 날짜로 즉시 이동 + 필요 시 과목도 동기화
+                    try {
+                      const d = new Date(nextYMD);
+                      if (!Number.isNaN(d.getTime())) setSelectedDate(d);
+                    } catch {}
+                    setSelectedDateYMD(nextYMD);
+                    if (
+                      nextSubjectId &&
+                      String(nextSubjectId) !== String(selectedSubjectId)
+                    ) {
+                      setSelectedSubjectId(String(nextSubjectId));
+                      const hit = subjects.find(
+                        (s) => String(s.id) === String(nextSubjectId)
+                      );
+                      if (hit) setSelectedSubjectName(hit.name);
+                      else {
+                        // 날짜별 과목 목록에 없으면 동적으로 추가하여 바로 이동 가능하게 함
+                        const src = allSubjects.find(
+                          (s) => String(s.id) === String(nextSubjectId)
+                        );
+                        const nameToUse = src
+                          ? src.name
+                          : String(nextSubjectId);
+                        setSubjects((prev) => {
+                          const exists = prev.some(
+                            (p) => String(p.id) === String(nextSubjectId)
+                          );
+                          if (exists) return prev;
+                          return [
+                            ...prev,
+                            { id: String(nextSubjectId), name: nameToUse },
+                          ];
+                        });
+                        setSelectedSubjectName(nameToUse);
+                      }
+                    }
+                    // 서버가 아직 비어 있어도 사용자에게 변경이 보이도록 시드 1건 전달
+                    if (seed) {
+                      // 시드는 해당 테이블로 내려보낸다: SubjectClassesTable props에 seedRows 추가 필요
+                      // 현재 SubjectClassesTable 인스턴스는 key로 재마운트되므로 seedRows 전달 포함
+                      // 이 콜백에서는 상태만 준비하면 됨
+                      // 상태 보관은 간단히 sessionStorage를 사용해 전달
+                      try {
+                        sessionStorage.setItem(
+                          "cz_admin_seed",
+                          JSON.stringify({
+                            k: `${String(
+                              nextSubjectId || selectedSubjectId
+                            )}-${nextYMD}`,
+                            row: seed,
+                          })
+                        );
+                      } catch {}
+                    }
+                  }}
+                  seedRows={(() => {
+                    try {
+                      const raw = sessionStorage.getItem("cz_admin_seed");
+                      if (!raw) return [];
+                      const obj = JSON.parse(raw);
+                      const expectedKey = `${String(
+                        selectedSubjectId
+                      )}-${selectedDateYMD}`;
+                      if (obj?.k === expectedKey && obj?.row) {
+                        // 일회성으로 소비하고 제거
+                        sessionStorage.removeItem("cz_admin_seed");
+                        return [obj.row];
+                      }
+                    } catch {}
+                    return [];
+                  })()}
+                />
+              </div>
+            </div>
           ) : isSubjectsLoading ? (
             <div className="panel-block panel-gray">
               <div className="panel-empty">과목을 불러오는 중…</div>
@@ -1120,7 +1399,7 @@ const CodingMain = () => {
                 현재 날짜에 등록된 코딩존이 없습니다.
               </div>
             </div>
-          ) : !selectedSubjectId ? (
+          ) : (
             <div className="panel-block panel-gray">
               <div className={`panel-inner ${gridClass}`}>
                 <div className="subject-grid-inner">
@@ -1136,40 +1415,6 @@ const CodingMain = () => {
                     />
                   ))}
                 </div>
-              </div>
-            </div>
-          ) : (
-            <div className="cz-fixed-panel">
-              <div className="cz-fixed-body">
-                <button
-                  className="return return-back"
-                  type="button"
-                  onClick={clearSubjectSelection}
-                  onMouseEnter={() => setBackIcon("/left.png")}
-                  onMouseLeave={() => setBackIcon("/leftnone.png")}
-                  onMouseDown={() => setBackIcon("/left.png")}
-                  onMouseUp={() => setBackIcon("/left.png")}
-                  onFocus={() => setBackIcon("/left.png")}
-                  onBlur={() => setBackIcon("/leftnone.png")}
-                >
-                  <img
-                    src={backIcon}
-                    alt="뒤로가기"
-                    className="btn-icon"
-                    draggable="false"
-                  />
-                  과목 다시 선택하기
-                </button>
-
-                <SubjectClassesTable
-                  selectedDateYMD={selectedDateYMD}
-                  selectedSubjectId={selectedSubjectId}
-                  selectedSubjectName={selectedSubjectName}
-                  accessToken={cookies.accessToken}
-                  setCookie={setCookie}
-                  navigate={navigate}
-                  onEmptyAfterDelete={handleEmptyAfterDelete}
-                />
               </div>
             </div>
           ))}
