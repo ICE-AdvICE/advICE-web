@@ -372,14 +372,18 @@
 }
 
 .cz-classes-title {
-  font-size: 20px;
+  font-size: 18px;
+  font-weight: 700;
+  margin-top: 25px;
+  margin-bottom: 9px;
 }
 
 .cz-classes-title .subject-name {
-  font-size: 22px; /* ← 이름만 크게 */
-  font-weight: 800; /* 굵게 유지(원하면 700/600으로 조절) */
+  font-size: 20px; /* ← 이름만 크게 */
+  font-weight: 700; /* 굵게 유지(원하면 700/600으로 조절) */
   margin-right: 6px; /* 이름과 '코딩존 현황' 사이 간격 */
   line-height: 1; /* 줄높이 튐 방지 */
+  color: #052940;
 }
 
 .cz-classes {
