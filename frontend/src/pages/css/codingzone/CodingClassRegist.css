@@ -244,7 +244,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  background: #002d56;
+  background: #052940;
   box-shadow: -1px -1px 5px 0px #fff, 7px 7px 20px 0px #0003,
     4px 4px 5px 0px #0002;
   transition: 400ms ease all;
@@ -319,16 +319,16 @@
 .class-submit-button2 button {
   height: 45%;
   width: 100%;
-  border-color: #002d56; /* 회색 테두리 색상 */
-  border: 1px solid #002d56;
+  border-color: #052940; /* 회색 테두리 색상 */
+  border: 1px solid #052940;
   background-color: white;
   font-family: "Inter", sans-serif;
   font-size: 15px;
-  color: #002d56; /* 텍스트 색상 설정 */
+  color: #052940; /* 텍스트 색상 설정 */
 }
 .class-submit-button2 button:hover {
   color: white;
-  background-color: #002d56; /* 배경 색상 변경 */
+  background-color: #052940; /* 배경 색상 변경 */
   border-color: white; /* 테두리 색상 변경 */
 }
 

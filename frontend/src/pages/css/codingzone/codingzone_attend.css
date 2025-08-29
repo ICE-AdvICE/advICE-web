@@ -637,6 +637,60 @@
   }
 }
 
+@media (max-width: 390px) {
+  .manager-table {
+    width: 370px !important;
+    max-width: 100%;
+  }
+
+  .manager-table thead th {
+    padding: 10px 6px !important;
+    font-size: 10px !important;
+  }
+
+  .manager-table tbody td {
+    padding: 17px 0px !important;
+    font-size: 9px !important;
+  }
+
+  /* 출결 버튼 반응형 (진행중, 출석, 결석 모두 포함) */
+  .manager-table tbody td span {
+    padding: 6px 9px !important;
+    font-size: 9px !important;
+  }
+
+  .manager-table-card {
+    margin-bottom: 40px !important;
+  }
+}
+
+@media (max-width: 375px) {
+  .manager-table {
+    width: 350px !important;
+    max-width: 100%;
+  }
+
+  .manager-table thead th {
+    padding: 10px 6px !important;
+    font-size: 10px !important;
+  }
+
+  .manager-table tbody td {
+    padding: 17px 0px !important;
+    font-size: 9px !important;
+  }
+
+  /* 출결 버튼 반응형 (진행중, 출석, 결석 모두 포함) */
+  .manager-table tbody td span {
+    padding: 6px 9px !important;
+    font-size: 9px !important;
+  }
+
+  .manager-table-card {
+    margin-bottom: 40px !important;
+  }
+}
+
 @media (max-width: 1920px) {
   .banner_img_container .banner,
   .banner_img_container_icebreaker .banner,
