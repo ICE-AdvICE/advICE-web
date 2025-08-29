@@ -3,18 +3,18 @@
   "name": "AdvICE",
   "icons": [
     {
-      "src": "icons/icon-192x192_v2.png",
+      "src": "icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icons/icon-512x512_v2.png",
+      "src": "icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
   ],
   "start_url": "/?source=pwa",
   "display": "standalone",
-  "theme_color": "#1e88e5",
+  "theme_color": "#002D56",
   "background_color": "#ffffff"
 }
