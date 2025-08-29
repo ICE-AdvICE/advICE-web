@@ -374,7 +374,7 @@ const CodingZoneAttendanceAssistant = () => {
           />
         </div>
         {/* ====== 과목 카드 그리드 (panel-gray 안) ====== */}
-        {selectedDateYMD && (
+        {selectedDateYMD && !selectedSubjectId && (
           <div className="panel-gray" style={{ marginBottom: "100px" }}>
             {isSubjectsLoading ? (
               <div className="panel-empty">과목을 불러오는 중…</div>
