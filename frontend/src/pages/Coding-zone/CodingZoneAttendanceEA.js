@@ -374,13 +374,9 @@ const CodingZoneAttendanceAssistant = () => {
           />
         </div>
         {/* ====== 과목 카드 그리드 (panel-gray 안) ====== */}
-        {!selectedSubjectId && (
+        {selectedDateYMD && (
           <div className="panel-gray" style={{ marginBottom: "100px" }}>
-            {!selectedDateYMD ? (
-              <div className="panel-empty">
-                조회하고자 하는 날짜를 입력해주세요.
-              </div>
-            ) : isSubjectsLoading ? (
+            {isSubjectsLoading ? (
               <div className="panel-empty">과목을 불러오는 중…</div>
             ) : subjects.length === 0 ? (
               <div className="panel-empty">
