@@ -17,7 +17,7 @@ const HomePage = () => {
     navigate('/article-main');
   };
   const handlereservationClick = () => {
-    window.location.href = 'https://open.kakao.com/o/giOS427b';
+    window.location.href = '/';
   };
   const handlefeedbackClick = () => {
     window.location.href = 'https://open.kakao.com/o/swnIYgKg';
@@ -69,8 +69,8 @@ const HomePage = () => {
           <button onClick={handleMoreClick} className="btn icebreaker">ICEbreaker</button>
         </div>
         <div className="service-box study-box">
-          <p>정보통신공학과 스터디룸<br /> 예약 오픈채팅방 입니다.</p>
-          <button onClick={handlereservationClick} className="btn study">Study Room</button>
+          <p>준비중...<br />잠시만 기다려주세요!</p>
+          <button onClick={handlereservationClick} className="btn study">COMING SOON</button>
         </div>
       </div>
       <div className='feedback-container'>
