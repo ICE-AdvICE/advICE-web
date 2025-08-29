@@ -376,16 +376,7 @@ const CodingZoneRegist = () => {
       return (
         <>
           {/* 버튼들을 표 바로 위에 배치 */}
-          <div
-            className="table-controls"
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              width: "1100px",
-              margin: "0 auto 20px auto",
-            }}
-          >
+          <div className="table-controls">
             <button className={`reset-button`} onClick={handleResetSemester}>
               학기 초기화
             </button>
