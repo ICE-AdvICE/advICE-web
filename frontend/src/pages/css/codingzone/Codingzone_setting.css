@@ -4,210 +4,29 @@
   font-family: "Pretendard", sans-serif;
 }
 
-.setting-label {
+/* 테이블 액션 버튼들을 위한 스타일 */
+.table-action-buttons {
   display: flex;
-  height: 53px;
-  padding: 20px 7.7rem;
-  align-items: center;
-  gap: 11.7rem;
-  align-self: stretch;
-  border-radius: 10px;
-  background: #052940;
-  color: #fff;
-  text-align: center;
-  font-family: Inter;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-}
-
-.column-label1 {
-  width: 30%;
-  text-align: center;
-}
-.column-label2 {
-  width: 100%;
-  text-align: center;
-}
-
-.setting-table-container {
-  margin-top: 10px;
-}
-
-.form-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-}
-
-.form-table td {
-  padding: 10px;
-  vertical-align: middle; /* 테이블 내부 세로 정렬 안정화 */
-}
-
-.form-table tr > td:first-child {
-  /* 코딩존 컬럼 */
-  width: 34%;
-}
-.form-table tr > td:last-child {
-  /* 과목명 컬럼 */
-  width: 100%;
-}
-
-/* 2) 표 안의 모든 input/select 높이·패딩·테두리 통일  */
-.form-table select {
-  height: 40px;
-  padding: 0 12px;
-  border: 1px solid #000;
-  border-radius: 0;
-  box-sizing: border-box;
-  font: 16px/1.2 "Pretendard", sans-serif;
-}
-
-.form-table input[type="text"] {
-  height: 40px;
-  padding: 0 12px 0 0;
-  border: 1px solid #000;
-  border-radius: 0;
-  box-sizing: border-box;
-  font: 16px/1.2 "Pretendard", sans-serif;
-}
-
-.form-table input[disabled],
-.form-table input[readonly] {
-  height: 40px;
-  padding: 0 12px;
-  border: 1px solid #f5f5f5;
-  border-radius: 0;
-  box-sizing: border-box;
-  background: #f5f5f5; /* 회색 배경만 */
-  color: #555;
-  width: 100%;
-  text-align: center;
-}
-
-.form-table .delete-btn,
-.form-table td:last-child > button {
-  height: 38px;
-  padding: 0 12px;
-}
-
-.subject-cell {
-  display: flex;
+  justify-content: flex-end;
   align-items: center;
   gap: 8px;
+  margin-top: 10px;
+  width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.subject-cell input[type="text"] {
-  height: 40px; /* ← 같은 높이로 고정 */
-  padding: 0 12px; /* 상하 0, 좌우만 */
-  border: 1px solid #000;
-  box-sizing: border-box; /* 패딩 포함 크기계산 */
-  font: 16px/1.2 "Pretendard", sans-serif; /* 폰트/라인하이트 통일 */
-  flex: 1 1 auto; /* 남은 공간을 채움 */
-  padding-left: 10px; /* 필요시 0~6px 정도로 조절 */
+/* 등록된 행 스타일 */
+.registered-row {
+  background-color: #f8f9fa;
 }
 
-.subject-cell input[type="text"]::placeholder {
-  text-indent: 0;
+.registered-row input[disabled] {
+  background-color: #f5f5f5;
+  color: #666;
+  font-weight: 500;
 }
 
-select {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #000;
-}
-
-.delete-btn {
-  margin: 0 0 0 5px;
-  height: 38px;
-  flex-shrink: 0;
-  aspect-ratio: 1/1;
-  line-height: 38px;
-  border: 1px solid #a8a8a8bf; /* 버튼 외곽선 색 */
-  color: #a8a8a8bf;
-  font-size: 25px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  background: transparent; /* 기본 배경 투명 */
-  position: relative; /* before/after 절대 위치를 위해 필요 */
-}
-
-.delete-btn:hover {
-  color: #ffffff; /* 호버 시 텍스트 색 변경 */
-  background: #052940; /* 호버 시 배경 투명 */
-}
-
-.delete-btn1 {
-  display: inline-block;
-  transform: translate(-0.5px, -0.5px); /* ← 위로 -1px, 오른쪽으로 -1px */
-}
-
-.button-group {
-  display: flex;
-  align-items: center;
-  position: relative;
-  height: 8%;
-  width: 100%;
-  gap: 15px;
-  justify-content: flex-end;
-}
-
-.add-btn {
-  display: inline-flex;
-  padding: 16px 20px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 10px;
-  background: #409b9d;
-  border: 1px solid #409b9d;
-  color: #fff;
-  text-align: center;
-  font-family: Pretendard;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 51%; /* 10.2px */
-  letter-spacing: -0.4px;
-}
-.add-btn:hover {
-  border-radius: 10px;
-  background: rgba(64, 155, 157, 0.75);
-}
-
-.submit-btn {
-  display: inline-flex;
-  padding: 16px 20px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 10px;
-  background: #052940;
-  border: 1px solid #052940;
-  color: #fff;
-  text-align: center;
-  font-family: Pretendard;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 51%; /* 10.2px */
-  letter-spacing: -0.4px;
-}
-.submit-btn:hover {
-  border-radius: 10px;
-  background: #052940;
-  opacity: 0.75;
-}
-
-.add-btn:disabled,
-.add-btn:disabled:hover,
-.add-btn:disabled:active {
-  opacity: 0.6;
-  cursor: not-allowed;
-  box-shadow: none;
-  background: rgba(64, 155, 157, 0.6); /* 취향껏 */
+.registered-row:hover {
+  background-color: #e9ecef;
 }

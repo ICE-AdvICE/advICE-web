@@ -17,7 +17,7 @@
   color: #1d6527;
   text-align: center;
   font-family: Inter;
-  font-size: 15px;
+  font-size: 14px;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
@@ -26,6 +26,7 @@
   flex-shrink: 0;
   border-radius: 10px;
   background: #a8ffb7;
+  border: none;
 }
 
 .btn_manager_absence {
@@ -37,10 +38,11 @@
   color: #e31b14;
   text-align: center;
   font-family: Inter;
-  font-size: 15px;
+  font-size: 14px;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+  border: none;
 }
 
 .btn_manager_attendance-disabled,
@@ -50,8 +52,9 @@
   flex-shrink: 0;
   border-radius: 10px;
   background: #f0f0f0;
-  cursor: not-allowed;
+  cursor: pointer;
   position: relative;
+  border: none;
 }
 
 .btn_manager_attendance-disabled:hover,
@@ -59,22 +62,32 @@
   background: #e0e0e0;
 }
 
-.btn_manager_attendance-disabled:hover::after,
-.btn_manager_absence-disabled:hover::after {
-  content: "수업 날짜 전에는 출석 처리를 할 수 없습니다";
+/* 커스텀 툴팁 스타일 - 미래 날짜일 때만 표시 */
+.btn_manager_attendance-disabled.future-date:hover::after,
+.btn_manager_absence-disabled.future-date:hover::after {
+  content: "수업 날짜 이전에는 출석 처리를 할 수 없습니다.";
   position: absolute;
-  top: -36px;
+  top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  white-space: nowrap;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
   font-size: 12px;
-  padding: 6px 8px;
-  border-radius: 4px;
-  z-index: 1000;
+  white-space: nowrap;
+  z-index: 999999 !important;
+  margin-top: 8px;
+  font-family: Inter, sans-serif;
+  line-height: 1.4;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   pointer-events: none;
+  width: auto;
+  max-width: 300px;
+  overflow: visible !important;
 }
+
+/* 툴팁 제거 - ::after 가상 요소 삭제 */
 
 .btn_manager_attendance,
 .btn_manager_attendance-disabled {
@@ -137,7 +150,7 @@
   justify-content: center;
   font-family: sans-serif;
   font-weight: bold;
-  color: #002d56;
+  color: #052940;
 }
 
 .info_manager_studentnum {
@@ -149,7 +162,7 @@
   justify-content: center;
   font-family: sans-serif;
   font-weight: bold;
-  color: #002d56;
+  color: #052940;
 }
 
 .info_manager_bar {
@@ -166,7 +179,7 @@
   justify-content: center;
   font-family: sans-serif;
   font-weight: bold;
-  color: #002d56;
+  color: #052940;
 }
 
 .info_manager_status {
@@ -178,7 +191,7 @@
   justify-content: center;
   font-family: sans-serif;
   font-weight: bold;
-  color: #002d56;
+  color: #052940;
 }
 
 .info_manager_container {
@@ -223,7 +236,7 @@
   justify-content: center;
   font-family: sans-serif;
   font-weight: bold;
-  color: #002d56;
+  color: #052940;
 }
 
 .info_manager_data_studentnum {
@@ -269,7 +282,7 @@
   justify-content: center;
   font-family: sans-serif;
   font-weight: bold;
-  color: #002d56;
+  color: #052940;
 }
 
 .hr_manager_line {
@@ -280,19 +293,28 @@
 }
 
 .hr_manager_line_thick {
-  border-bottom: 2px solid #002d56; /* 굵은 선으로 설정 */
+  border-bottom: 2px solid #052940; /* 굵은 선으로 설정 */
   margin: 10px auto;
   width: 100%;
   max-width: 920px;
 }
 
 .date_manager_title {
-  width: 920px;
-  margin: 20px auto 30px;
-  font-size: 25px;
-  font-weight: bold;
-  color: #002d56;
   text-align: center;
+  margin: 50px auto 40px;
+}
+
+.date_numbers {
+  color: #052940;
+  font-size: 22px;
+  font-weight: 700;
+  margin-right: 8px;
+}
+
+.reservation_text {
+  color: #000;
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .czm_manager_container {
@@ -324,6 +346,31 @@
 .custom_manager_datepicker .cal-input__field {
   width: 100%;
   min-width: 0;
+}
+
+/* 학생 조교 페이지 테이블 컨테이너 */
+.cz-table-shell {
+  overflow: visible !important;
+  position: relative;
+  width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.cz-table-scroll {
+  overflow: visible !important;
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.cz-table {
+  width: 1100px !important;
+  table-layout: fixed;
+  margin: 0 auto;
+  overflow: visible !important;
 }
 
 @media (max-width: 920px) {

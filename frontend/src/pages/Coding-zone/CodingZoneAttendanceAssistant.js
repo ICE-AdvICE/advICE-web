@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import "../css/codingzone/codingzone-main.css";
 import "../css/codingzone/codingzone_manager.css";
 import "../css/codingzone/codingzone_attend.css";
 import "../css/codingzone/CodingClassRegist.css";
 import "../../shared/ui/boardbar/CodingZoneBoardbar.css";
+import "../../widgets/CodingZone/SubjectClassesTable.css";
 import { getCodingzoneReservedListByDate } from "../../features/api/Admin/Codingzone/ClassApi.js";
 import { getczauthtypetRequest } from "../../shared/api/AuthApi.js";
 
@@ -17,6 +16,8 @@ import { getczattendlistRequest } from "../../features/api/CodingzoneApi.js";
 import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네비게이션 바 컴포넌트
 import Banner from "../../shared/ui/Banner/Banner"; // ✅ 추가(juhui): 공통 배너 컴포넌트 적용
 import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js"; //코딩존 보드 바(버튼 네개) 컴포넌트
+import CalendarInput from "../../widgets/Calendar/CalendarInput";
+import { isWeekendYMD } from "../../shared/lib/date";
 
 const CodingZoneAttendanceAssistant = () => {
   const [attendList, setAttendList] = useState([]);
@@ -26,17 +27,15 @@ const CodingZoneAttendanceAssistant = () => {
   const [activeButton, setActiveButton] = useState("manage");
   const token = cookies.accessToken;
   const navigate = useNavigate();
-  const [selectedDate, setSelectedDate] = useState(new Date());
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const now = new Date();
-      const currentDate = new Date(selectedDate);
-      console.log("Checking date:", now, currentDate); // Debugging log
-    }, 10000); // Check every 10 seconds for debugging
-
-    return () => clearInterval(timer); // Clear the timer when the component unmounts
-  }, [selectedDate]);
+  // 날짜 관련 상태 추가 (CalendarInput용)
+  const dateToYMD = (d) => {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  };
+  const [selectedDateYMD, setSelectedDateYMD] = useState(dateToYMD(new Date()));
 
   useEffect(() => {
     fetchAuthType();
@@ -45,7 +44,7 @@ const CodingZoneAttendanceAssistant = () => {
 
   useEffect(() => {
     fetchReservedList();
-  }, [token, selectedDate]);
+  }, [token, selectedDateYMD]);
 
   const fetchAuthType = async () => {
     const response = await getczauthtypetRequest(token, setCookie, navigate);
@@ -88,20 +87,25 @@ const CodingZoneAttendanceAssistant = () => {
   };
 
   const fetchReservedList = async () => {
-    const formattedDate = selectedDate.toISOString().split("T")[0];
     const response = await getCodingzoneReservedListByDate(
       token,
-      formattedDate,
+      selectedDateYMD,
       setCookie,
       navigate
     );
     if (response && response.code === "SU") {
-      setReservedList(
-        (response.data ?? []).sort((a, b) =>
-          a.classTime.localeCompare(b.classTime)
-        )
-      );
+      // response.data가 배열인지 확인
+      const data = response.data;
+      if (Array.isArray(data)) {
+        setReservedList(
+          data.sort((a, b) => a.classTime.localeCompare(b.classTime))
+        );
+      } else {
+        console.error("response.data is not an array:", data);
+        setReservedList([]);
+      }
     } else if (response && response.code === "NU") {
+      setReservedList([]);
     } else {
       console.error(response.message);
       setReservedList([]);
@@ -112,17 +116,48 @@ const CodingZoneAttendanceAssistant = () => {
     const current = String(student.attendance ?? "");
     if (current === target) return; // 이미 같은 상태면 무시
 
-    const res = await toggleAttendanceByRegistNum(
-      student.registrationId,
-      token,
-      setCookie,
-      navigate
+    // 낙관적 업데이트: UI를 먼저 업데이트
+    const previousAttendance = student.attendance;
+    setReservedList((prevList) =>
+      prevList.map((s) =>
+        s.registrationId === student.registrationId
+          ? { ...s, attendance: target }
+          : s
+      )
     );
 
-    if (res?.code === "SU") {
-      await fetchReservedList(); // 갱신
-    } else {
-      alert(res?.message ?? "출결 처리 중 오류가 발생했습니다.");
+    try {
+      const res = await toggleAttendanceByRegistNum(
+        student.registrationId,
+        token,
+        setCookie,
+        navigate
+      );
+
+      if (res?.code !== "SU") {
+        // API 실패 시 원래 상태로 되돌리기
+        setReservedList((prevList) =>
+          prevList.map((s) =>
+            s.registrationId === student.registrationId
+              ? { ...s, attendance: previousAttendance }
+              : s
+          )
+        );
+
+        if (res?.message) {
+          alert(res.message);
+        }
+      }
+    } catch (error) {
+      // 에러 발생 시 원래 상태로 되돌리기
+      setReservedList((prevList) =>
+        prevList.map((s) =>
+          s.registrationId === student.registrationId
+            ? { ...s, attendance: previousAttendance }
+            : s
+        )
+      );
+      alert("출결 처리 중 오류가 발생했습니다.");
     }
   };
 
@@ -134,23 +169,34 @@ const CodingZoneAttendanceAssistant = () => {
   // 과거 날짜와 오늘은 활성화, 미래 날짜만 비활성화
   const canUpdateAttendance = (classDate) => {
     const now = new Date();
-    const today = now.toISOString().split("T")[0];
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // 오늘 자정
 
-    console.log("canUpdateAttendance 체크:", {
-      classDate,
-      today,
-      isFuture: classDate > today,
-      result: classDate > today ? false : true,
+    // 날짜를 YYYY-MM-DD 형식의 문자열로 변환하여 비교
+    const classDateStr = classDate;
+    const todayStr = today.toISOString().split("T")[0];
+
+    console.log("canUpdateAttendance 디버깅:", {
+      classDate: classDateStr,
+      today: todayStr,
+      classDateType: typeof classDateStr,
+      todayType: typeof todayStr,
     });
 
-    // 미래 날짜만 비활성화
-    if (classDate > today) {
-      console.log("미래 날짜 감지 - 비활성화:", classDate);
+    // 미래 날짜만 비활성화 (과거 날짜와 오늘은 활성화)
+    const isFutureDate = classDateStr > todayStr;
+
+    console.log("날짜 비교 결과:", {
+      classDate: classDateStr,
+      today: todayStr,
+      isFuture: isFutureDate,
+    });
+
+    if (isFutureDate) {
+      console.log("미래 날짜 감지 - 출석/결석 버튼 비활성화:", classDateStr);
       return false;
     }
 
-    // 과거 날짜와 오늘은 항상 활성화
-    console.log("과거/오늘 날짜 - 활성화:", classDate);
+    console.log("과거/오늘 날짜 - 출석/결석 버튼 활성화:", classDateStr);
     return true;
   };
 
@@ -167,250 +213,205 @@ const CodingZoneAttendanceAssistant = () => {
 
       <div className="reserved_manager-list-container">
         <div className="czm_manager_container">
-          <DatePicker
-            selected={selectedDate}
-            onChange={(date) => {
-              const utcDate = new Date(
-                Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-              );
-              const koreaDate = new Date(
-                utcDate.getTime() + 9 * 60 * 60 * 1000
-              ); // Correctly adjust for Korean timezone
-
-              console.log("DatePicker onChange:", {
-                originalDate: date,
-                utcDate,
-                koreaDate,
-                formattedDate: koreaDate.toISOString().split("T")[0],
-              });
-
-              setSelectedDate(koreaDate);
-            }}
-            dateFormat="yyyy/MM/dd"
+          <CalendarInput
+            value={selectedDateYMD}
+            onChange={setSelectedDateYMD}
+            disabledDates={isWeekendYMD}
+            placeholder="날짜를 선택하세요"
             className="custom_manager_datepicker"
           />
         </div>
         <h3 className="date_manager_title">
-          {`${selectedDate.getFullYear()}/${
-            selectedDate.getMonth() + 1
-          }/${selectedDate.getDate()} 예약 리스트`}
+          <span className="date_numbers">
+            {selectedDateYMD
+              ? `${selectedDateYMD.split("-")[0]}/${
+                  selectedDateYMD.split("-")[1]
+                }/${selectedDateYMD.split("-")[2]}`
+              : "날짜를 선택하세요"}
+          </span>
+          <span className="reservation_text"> 예약 리스트</span>
         </h3>
-
-        <div className="line-manager-container1">{/* 실선 영역 */}</div>
-
-        <div className="info-manager-container">
-          <div className="info_manager_inner">
-            <div className="info_manager_name">이름</div>
-            <div className="info_manager_studentnum ">학번</div>
-            <div className="info_manager_bar"></div>
-            <div className="info_manager_time ">시간</div>
-            <div className="info_manager_status">출결</div>
+        {/* ====== 과목 카드 그리드 (panel-gray 안) ====== */}
+        {!selectedDateYMD ? (
+          <div className="panel-gray" style={{ marginBottom: "100px" }}>
+            <div className="panel-empty">
+              조회하고자 하는 날짜를 입력해주세요.
+            </div>
           </div>
-        </div>
-        <div className="line-manager-container2">{/* 실선 영역 */}</div>
+        ) : reservedList.length === 0 ? (
+          <div className="panel-gray" style={{ marginBottom: "100px" }}>
+            <div className="panel-empty">
+              현재 날짜에 등록된 코딩존이 없습니다.
+            </div>
+          </div>
+        ) : (
+          <div className="cz-table-shell">
+            <div className="cz-table-scroll">
+              <table className="cz-table">
+                <thead>
+                  <tr className="cz-table-header">
+                    <th style={{ width: "25%" }}>시간</th>
+                    <th style={{ width: "25%" }}>학생명</th>
+                    <th style={{ width: "25%" }}>학번</th>
+                    <th style={{ width: "25%" }}>출결</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reservedList.map((student, index) => (
+                    <tr key={index} className="clickable-row">
+                      <td>{formatTime(student.classTime)}</td>
+                      <td>{student.userName}</td>
+                      <td>{student.userStudentNum}</td>
+                      <td>
+                        {(() => {
+                          const canUpdate =
+                            canUpdateAttendance(selectedDateYMD);
 
-        <div className="info_manager_container">
-          {reservedList.length > 0 ? (
-            reservedList.map((student, index, array) => {
-              const isNextTimeBlockDifferent =
-                index === array.length - 1 ||
-                student.classTime !== array[index + 1].classTime;
-              return (
-                <div key={index}>
-                  <div className="info_manager_data_inner">
-                    <div className="info_manager_data_name">
-                      {student.userName}
-                    </div>
-                    <div className="info_manager_data_studentnum">
-                      {student.userStudentNum}
-                    </div>
-                    <div className="info_manager_data_bar"></div>
-                    <div className="info_manager_data_time">
-                      {formatTime(student.classTime)}
-                    </div>
-                    <div className="info_manager_data_status">
-                      {student.attendance === "1" ? (
-                        <>
-                          <button className="btn_manager_attendance" disabled>
-                            출석
-                          </button>
-
-                          {(() => {
-                            const canUpdate = canUpdateAttendance(
-                              selectedDate.toISOString().split("T")[0]
-                            );
-                            const buttonClass = `btn_manager_absence${
-                              canUpdate ? "" : "-disabled"
-                            }`;
-                            console.log("결석 버튼 클래스 (출석 상태):", {
-                              canUpdate,
-                              buttonClass,
-                              selectedDate: selectedDate
-                                .toISOString()
-                                .split("T")[0],
-                            });
+                          if (student.attendance === "1") {
                             return (
-                              <button
-                                className={buttonClass}
-                                onClick={() =>
-                                  canUpdate &&
-                                  handleAttendanceUpdate(student, "0")
-                                }
-                                disabled={!canUpdate}
-                                title={
-                                  !canUpdate
-                                    ? "수업 날짜 전에는 출석 처리를 할 수 없습니다."
-                                    : ""
-                                }
-                              >
-                                결석
-                              </button>
+                              <>
+                                <button
+                                  className={
+                                    canUpdate
+                                      ? "btn_manager_attendance"
+                                      : "btn_manager_attendance-disabled future-date"
+                                  }
+                                  onClick={(e) =>
+                                    canUpdate
+                                      ? handleAttendanceUpdate(student, "1")
+                                      : null
+                                  }
+                                  disabled={!canUpdate}
+                                  title={
+                                    !canUpdate
+                                      ? "수업 날짜 이전에는 출석 처리를 할 수 없습니다."
+                                      : ""
+                                  }
+                                >
+                                  출석
+                                </button>
+                                <button
+                                  className={
+                                    canUpdate
+                                      ? "btn_manager_absence-disabled"
+                                      : "btn_manager_absence-disabled future-date"
+                                  }
+                                  onClick={(e) =>
+                                    canUpdate
+                                      ? handleAttendanceUpdate(student, "0")
+                                      : null
+                                  }
+                                  disabled={!canUpdate}
+                                  title={
+                                    !canUpdate
+                                      ? "수업 날짜 이전에는 출석 처리를 할 수 없습니다."
+                                      : ""
+                                  }
+                                >
+                                  결석
+                                </button>
+                              </>
                             );
-                          })()}
-                        </>
-                      ) : student.attendance === "0" ? (
-                        <>
-                          {(() => {
-                            const canUpdate = canUpdateAttendance(
-                              selectedDate.toISOString().split("T")[0]
-                            );
-                            const buttonClass = `btn_manager_attendance${
-                              canUpdate ? "" : "-disabled"
-                            }`;
-                            console.log("출석 버튼 클래스 (결석 상태):", {
-                              canUpdate,
-                              buttonClass,
-                              selectedDate: selectedDate
-                                .toISOString()
-                                .split("T")[0],
-                            });
+                          } else if (student.attendance === "0") {
                             return (
-                              <button
-                                className={buttonClass}
-                                onClick={() =>
-                                  canUpdate &&
-                                  handleAttendanceUpdate(student, "1")
-                                }
-                                disabled={!canUpdate}
-                                title={
-                                  !canUpdate
-                                    ? "수업 날짜 전에는 출석 처리를 할 수 없습니다."
-                                    : ""
-                                }
-                              >
-                                출석
-                              </button>
+                              <>
+                                <button
+                                  className={
+                                    canUpdate
+                                      ? "btn_manager_attendance-disabled"
+                                      : "btn_manager_attendance-disabled future-date"
+                                  }
+                                  onClick={(e) =>
+                                    canUpdate
+                                      ? handleAttendanceUpdate(student, "1")
+                                      : null
+                                  }
+                                  disabled={!canUpdate}
+                                  title={
+                                    !canUpdate
+                                      ? "수업 날짜 이전에는 출석 처리를 할 수 없습니다."
+                                      : ""
+                                  }
+                                >
+                                  출석
+                                </button>
+                                <button
+                                  className={
+                                    canUpdate
+                                      ? "btn_manager_absence"
+                                      : "btn_manager_absence-disabled future-date"
+                                  }
+                                  onClick={(e) =>
+                                    canUpdate
+                                      ? handleAttendanceUpdate(student, "0")
+                                      : null
+                                  }
+                                  disabled={!canUpdate}
+                                  title={
+                                    !canUpdate
+                                      ? "수업 날짜 이전에는 출석 처리를 할 수 없습니다."
+                                      : ""
+                                  }
+                                >
+                                  결석
+                                </button>
+                              </>
                             );
-                          })()}
-                          {(() => {
-                            const canUpdate = canUpdateAttendance(
-                              selectedDate.toISOString().split("T")[0]
-                            );
-                            const buttonClass = `btn_manager_absence${
-                              canUpdate ? "" : "-disabled"
-                            }`;
-                            console.log("결석 버튼 클래스 (결석 상태):", {
-                              canUpdate,
-                              buttonClass,
-                              selectedDate: selectedDate
-                                .toISOString()
-                                .split("T")[0],
-                            });
+                          } else {
                             return (
-                              <button
-                                className={buttonClass}
-                                disabled={!canUpdate}
-                              >
-                                결석
-                              </button>
+                              <>
+                                <button
+                                  className={
+                                    canUpdate
+                                      ? "btn_manager_attendance"
+                                      : "btn_manager_attendance-disabled future-date"
+                                  }
+                                  onClick={() =>
+                                    canUpdate
+                                      ? handleAttendanceUpdate(student, "1")
+                                      : null
+                                  }
+                                  disabled={!canUpdate}
+                                  title={
+                                    !canUpdate
+                                      ? "수업 날짜 이전에는 출석 처리를 할 수 없습니다."
+                                      : ""
+                                  }
+                                >
+                                  출석
+                                </button>
+                                <button
+                                  className={
+                                    canUpdate
+                                      ? "btn_manager_absence"
+                                      : "btn_manager_absence-disabled future-date"
+                                  }
+                                  onClick={() =>
+                                    canUpdate
+                                      ? handleAttendanceUpdate(student, "0")
+                                      : null
+                                  }
+                                  disabled={!canUpdate}
+                                  title={
+                                    !canUpdate
+                                      ? "수업 날짜 이전에는 출석 처리를 할 수 없습니다."
+                                      : ""
+                                  }
+                                >
+                                  결석
+                                </button>
+                              </>
                             );
-                          })()}
-                        </>
-                      ) : (
-                        <>
-                          {/* 초기 미표기 상태일 때도 토글로 변경 */}
-                          {(() => {
-                            const canUpdate = canUpdateAttendance(
-                              selectedDate.toISOString().split("T")[0]
-                            );
-                            const buttonClass = `btn_manager_attendance${
-                              canUpdate ? "" : "-disabled"
-                            }`;
-                            console.log("출석 버튼 클래스 (미표기 상태):", {
-                              canUpdate,
-                              buttonClass,
-                              selectedDate: selectedDate
-                                .toISOString()
-                                .split("T")[0],
-                            });
-                            return (
-                              <button
-                                className={buttonClass}
-                                onClick={() =>
-                                  canUpdate &&
-                                  handleAttendanceUpdate(student, "1")
-                                }
-                                disabled={!canUpdate}
-                                title={
-                                  !canUpdate
-                                    ? "수업 날짜 전에는 출석 처리를 할 수 없습니다."
-                                    : ""
-                                }
-                              >
-                                출석
-                              </button>
-                            );
-                          })()}
-                          {(() => {
-                            const canUpdate = canUpdateAttendance(
-                              selectedDate.toISOString().split("T")[0]
-                            );
-                            const buttonClass = `btn_manager_absence${
-                              canUpdate ? "" : "-disabled"
-                            }`;
-                            console.log("결석 버튼 클래스 (미표기 상태):", {
-                              canUpdate,
-                              buttonClass,
-                              selectedDate: selectedDate
-                                .toISOString()
-                                .split("T")[0],
-                            });
-                            return (
-                              <button
-                                className={buttonClass}
-                                onClick={() =>
-                                  canUpdate &&
-                                  handleAttendanceUpdate(student, "0")
-                                }
-                                disabled={!canUpdate}
-                                title={
-                                  !canUpdate
-                                    ? "수업 날짜 전에는 출석 처리를 할 수 없습니다."
-                                    : ""
-                                }
-                              >
-                                결석
-                              </button>
-                            );
-                          })()}
-                        </>
-                      )}
-                    </div>
-                  </div>
-                  <div
-                    className={
-                      isNextTimeBlockDifferent
-                        ? "hr_manager_line_thick"
-                        : "hr_manager_line"
-                    }
-                  ></div>
-                </div>
-              );
-            })
-          ) : (
-            <p className="no-reservations">예약된 리스트가 없습니다.</p>
-          )}
-        </div>
+                          }
+                        })()}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,10 +1,10 @@
 //과사 조교님 버전 출결관리
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import "../css/codingzone/codingzone-main.css";
 import "../css/codingzone/codingzone_manager.css";
 import "../css/codingzone/codingzone_attend.css";
+import "../../widgets/CodingZone/SubjectClassesTable.css";
 import "../css/codingzone/CodingClassRegist.css";
 import "../../shared/ui/boardbar/CodingZoneBoardbar.css";
 import { getczauthtypetRequest } from "../../shared/api/AuthApi.js";
@@ -49,6 +49,7 @@ const CodingZoneAttendanceAssistant = () => {
   const [selectedClassNum, setSelectedClassNum] = useState(null); // ★ 클릭된 수업
   const [students, setStudents] = useState([]); // ★ 학생 리스트
   const [isStudentsLoading, setIsStudentsLoading] = useState(false); // ★ 학생 로딩
+  const [icon, setIcon] = useState("/leftnone.png"); // 아이콘 상태
 
   function BackButton({ label = "뒤로가기", onClick }) {
     const [icon, setIcon] = React.useState("/leftnone.png");
@@ -261,17 +262,49 @@ const CodingZoneAttendanceAssistant = () => {
   const handleToggleAttendance = async (e, student, target) => {
     e?.preventDefault?.();
     e?.stopPropagation?.();
-    if ((student.attendance ?? "") === target) return; // 같은 상태면 무시
-    const res = await toggleAttendanceByRegistNum(
-      student.registrationId,
-      token,
-      setCookie,
-      navigate
+
+    // 낙관적 업데이트: UI를 먼저 업데이트
+    const previousAttendance = student.attendance;
+    setStudents((prevStudents) =>
+      prevStudents.map((s) =>
+        s.registrationId === student.registrationId
+          ? { ...s, attendance: target }
+          : s
+      )
     );
-    if (res?.code === "SU" && selectedClassNum) {
-      await loadStudents(selectedClassNum);
-    } else if (res?.message) {
-      alert(res.message);
+
+    try {
+      const res = await toggleAttendanceByRegistNum(
+        student.registrationId,
+        token,
+        setCookie,
+        navigate
+      );
+
+      if (res?.code !== "SU") {
+        // API 실패 시 원래 상태로 되돌리기
+        setStudents((prevStudents) =>
+          prevStudents.map((s) =>
+            s.registrationId === student.registrationId
+              ? { ...s, attendance: previousAttendance }
+              : s
+          )
+        );
+
+        if (res?.message) {
+          alert(res.message);
+        }
+      }
+    } catch (error) {
+      // 에러 발생 시 원래 상태로 되돌리기
+      setStudents((prevStudents) =>
+        prevStudents.map((s) =>
+          s.registrationId === student.registrationId
+            ? { ...s, attendance: previousAttendance }
+            : s
+        )
+      );
+      alert("출결 처리 중 오류가 발생했습니다.");
     }
   };
   const fetchAuthType = async () => {
@@ -341,13 +374,9 @@ const CodingZoneAttendanceAssistant = () => {
           />
         </div>
         {/* ====== 과목 카드 그리드 (panel-gray 안) ====== */}
-        {!selectedSubjectId && (
-          <div className="panel-gray">
-            {!selectedDateYMD ? (
-              <div className="panel-empty">
-                조회하고자 하는 날짜를 입력해주세요.
-              </div>
-            ) : isSubjectsLoading ? (
+        {selectedDateYMD && !selectedSubjectId && (
+          <div className="panel-gray" style={{ marginBottom: "100px" }}>
+            {isSubjectsLoading ? (
               <div className="panel-empty">과목을 불러오는 중…</div>
             ) : subjects.length === 0 ? (
               <div className="panel-empty">
@@ -376,14 +405,23 @@ const CodingZoneAttendanceAssistant = () => {
         {/* 2) 수업 리스트 */}
         {selectedSubjectId && !selectedClassNum && (
           <div className="cz-classes">
-            <div className="cz-classes-title">
-              <strong className="subject-name">{selectedSubjectName}</strong>{" "}
-              코딩존 현황
-            </div>
+            {/* 과목 타이틀 */}
+            <h3 className="cz-table-title">
+              <span className="subject-name">{selectedSubjectName}</span>
+              <span className="title-label"> 코딩존 현황</span>
+            </h3>
 
-            <div className="cz-classes-back">
-              <BackButton
-                label="과목 다시 선택하기"
+            {/* 버튼들을 표 바로 위에 배치 */}
+            <div className="table-controls">
+              <button
+                className="return return-back"
+                type="button"
+                onMouseEnter={() => setIcon("/left.png")}
+                onMouseLeave={() => setIcon("/leftnone.png")}
+                onMouseDown={() => setIcon("/left.png")}
+                onMouseUp={() => setIcon("/left.png")}
+                onFocus={() => setIcon("/left.png")}
+                onBlur={() => setIcon("/leftnone.png")}
                 onClick={() => {
                   setSelectedSubjectId(null);
                   setSelectedSubjectName("");
@@ -391,48 +429,50 @@ const CodingZoneAttendanceAssistant = () => {
                   setSelectedClassNum(null);
                   setStudents([]);
                 }}
-              />
+              >
+                <img src={icon} alt="" className="btn-icon" draggable="false" />
+                과목 다시 선택하기
+              </button>
             </div>
-            <div className="manager-table-card">
-              {isClassesLoading ? (
-                <div className="panel-gray">
-                  <div className="panel-empty" style={{ margin: 0 }}>
-                    수업을 불러오는 중…
-                  </div>
-                </div>
-              ) : classes.length === 0 ? (
-                <div className="panel-gray">
-                  <div className="panel-empty" style={{ margin: 0 }}>
-                    해당 과목에 등록된 코딩존이 없습니다.
-                  </div>
-                </div>
-              ) : (
-                <table className="manager-table">
-                  <thead>
-                    <tr>
-                      <th style={{ width: "33%" }}>조교명</th>
-                      <th style={{ width: "20%" }}>조 정보</th>
-                      <th>시간</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {classes.map((c) => (
-                      <tr
-                        key={c.classNum}
-                        className={`clickable-row ${
-                          selectedClassNum === c.classNum ? "is-active" : ""
-                        }`}
-                        onClick={() => handleClassClick(c)} // ★ 수업 클릭 → 학생 리스트
-                      >
-                        <td>{c.assistantName || "-"}</td>
-                        <td>{c.groupId || "-"}</td>
-                        <td>{formatTime(c.classTime)}</td>
+
+            {/* 실제 table 태그를 사용한 수업 등록 표 */}
+            {isClassesLoading ? (
+              <div className="cz-table-msg">수업을 불러오는 중…</div>
+            ) : classes.length === 0 ? (
+              <div className="cz-table-msg error">
+                해당 과목에 등록된 코딩존이 없습니다.
+              </div>
+            ) : (
+              <div className="cz-table-shell">
+                <div className="cz-table-scroll">
+                  <table className="cz-table" style={{ width: "1100px" }}>
+                    <thead>
+                      <tr className="cz-table-header">
+                        <th style={{ width: "33%" }}>시간</th>
+                        <th style={{ width: "33%" }}>조교명</th>
+                        <th style={{ width: "34%" }}>조 정보</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
+                    </thead>
+                    <tbody>
+                      {classes.map((c) => (
+                        <tr
+                          key={c.classNum}
+                          className={`clickable-row ${
+                            selectedClassNum === c.classNum ? "is-active" : ""
+                          }`}
+                          onClick={() => handleClassClick(c)}
+                          style={{ cursor: "pointer" }}
+                        >
+                          <td>{formatTime(c.classTime)}</td>
+                          <td>{c.assistantName || "-"}</td>
+                          <td>{c.groupId || "-"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </div>
         )}
         {/* 3) 학생 리스트: 수업을 고른 뒤에 보임 */}
@@ -490,7 +530,9 @@ const CodingZoneAttendanceAssistant = () => {
                             <>
                               <button
                                 className="btn_manager_attendance"
-                                disabled
+                                onClick={(e) =>
+                                  handleToggleAttendance(e, st, "1")
+                                }
                               >
                                 출석
                               </button>
@@ -513,20 +555,25 @@ const CodingZoneAttendanceAssistant = () => {
                               >
                                 출석
                               </button>
-                              <button className="btn_manager_absence" disabled>
+                              <button
+                                className="btn_manager_absence"
+                                onClick={(e) =>
+                                  handleToggleAttendance(e, st, "0")
+                                }
+                              >
                                 결석
                               </button>
                             </>
                           ) : (
                             <>
                               <button
-                                className="btn_manager_attendance-disabled"
+                                className="btn_manager_attendance"
                                 onClick={() => handleToggleAttendance(st, "1")}
                               >
                                 출석
                               </button>
                               <button
-                                className="btn_manager_absence-disabled"
+                                className="btn_manager_absence"
                                 onClick={() => handleToggleAttendance(st, "0")}
                               >
                                 결석
