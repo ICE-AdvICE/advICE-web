@@ -1521,13 +1521,7 @@ const CodingMain = () => {
               <img
                 src="/Codingzone-noregist.png"
                 alt="예약 안내 이미지"
-                style={{
-                  width: "100%",
-                  maxWidth: "800px",
-                  height: "auto",
-                  display: "block",
-                  margin: "0 auto",
-                }}
+                className="codingzone-owl"
               />
             )}
 
@@ -1551,12 +1545,7 @@ const CodingMain = () => {
               <img
                 src="/Codingzone-noregist.png"
                 alt="해당 코딩존 수업이 없습니다"
-                style={{
-                  width: "800px",
-                  height: "auto",
-                  display: "block",
-                  margin: "40px auto",
-                }}
+                className="codingzone-owl"
               />
             )}
 
