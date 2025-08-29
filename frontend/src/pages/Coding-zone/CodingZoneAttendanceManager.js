@@ -12,11 +12,12 @@ import "../../shared/ui/boardbar/CodingZoneBoardbar.css";
 import { useNavigate } from "react-router-dom";
 import InquiryModal from "./InquiryModal.js";
 import { getczauthtypetRequest } from "../../shared/api/AuthApi.js";
-import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네이게이션 바 컴포넌트
+import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js";
 import Banner from "../../shared/ui/Banner/Banner";
-import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js"; //코딩존 보드 바(버튼 네개) 컴포넌트
-import { fetchAllSubjects } from "../../entities/api/CodingZone/AdminApi.js"; //(NEW)수업 매핑 정보 API 연동
-import { getColorById } from "./subjectColors.js";
+import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js";
+import { fetchAllSubjects } from "../../entities/api/CodingZone/AdminApi.js";
+import SubjectCard from "../../widgets/subjectCard/subjectCard.js";
+import { getColorById } from "../Coding-zone/subjectColors";
 
 const CodingZoneAttendanceManager = () => {
   const [authMessage, setAuthMessage] = useState("");
@@ -57,11 +58,10 @@ const CodingZoneAttendanceManager = () => {
         switch (response.code) {
           case "CA":
             setShowAdminButton(true);
-
             break;
           case "EA":
             setShowRegisterClassButton(true);
-            setShowManageAllButton(true); // Also show '전체 관리' for EA
+            setShowManageAllButton(true);
             break;
           case "NU":
             alert("로그인 시간이 만료되었습니다. 다시 로그인 해주세요.");
@@ -70,7 +70,6 @@ const CodingZoneAttendanceManager = () => {
           case "DBE":
             alert("데이터베이스 오류입니다.");
             break;
-
           default:
             setShowAdminButton(false);
             setShowManageAllButton(false);
@@ -93,7 +92,6 @@ const CodingZoneAttendanceManager = () => {
 
       if (!res) return;
 
-      // 1) 실제로 배열로 바로 내려오는 경우 (예: [{subjectId, subjectName}, ...])
       if (Array.isArray(res)) {
         console.log("[/subjects] array response:", res);
         setSubjects(res);
@@ -101,7 +99,6 @@ const CodingZoneAttendanceManager = () => {
         return;
       }
 
-      // 2) 문서대로 code/data 래핑되어 오는 경우
       if (res.code === "SU") {
         const list = res.data?.subjectList ?? [];
         console.log("[/subjects] wrapped response:", list);
@@ -127,7 +124,6 @@ const CodingZoneAttendanceManager = () => {
     run();
   }, [token, setCookie, navigate]);
 
-  // 선택 과목 출결 로딩
   useEffect(() => {
     const run = async () => {
       if (!selectedSubjectId) {
@@ -169,7 +165,6 @@ const CodingZoneAttendanceManager = () => {
       } else if (res.code === "NETWORK_ERROR") {
         setErrMsg(res.message || "네트워크 오류입니다.");
       } else if (res.code === "TOKEN_EXPIRED") {
-        // 재발급 실패로 홈 이동된 상태
         return;
       } else {
         setErrMsg(res.message || "알 수 없는 오류가 발생했습니다.");
@@ -203,46 +198,20 @@ const CodingZoneAttendanceManager = () => {
     );
   };
 
+  // 과목 그리드 레이아웃 계산
+  const gridClass = subjects.length <= 2 ? "cols-2" : "cols-2x2";
+
   return (
     <div>
       <div className="codingzone-container">
         <CodingZoneNavigation />
         <Banner src="/codingzone_attendance3.png" />
-        {/* ✅ 추가(juhui) : 기존 이미지 태그를 Banner 컴포넌트로 대체하여 코드 모듈화 및 재사용성 향상 */}
       </div>
       <div className="cza_button_container" style={{ textAlign: "center" }}>
         <CodingZoneBoardbar />
       </div>
       <div className="centered-content">
         <div className="allattendance_buttons">
-          <div className="subject-buttons">
-            {subjects.map((s) => {
-              const sid = s.subjectId;
-              const active = selectedSubjectId === sid;
-              const color = getColorById(sid, "#475569");
-              return (
-                <button
-                  key={sid}
-                  type="button"
-                  className={`subject-select-chip ${active ? "active" : ""}`}
-                  style={{
-                    backgroundColor: active ? color : "#EFEFEF",
-                    color: active ? "#FFFFFF" : "#ADACAC",
-                    border: "none",
-                  }}
-                  onClick={() => setSelectedSubjectId(s.subjectId)}
-                >
-                  {s.subjectName}
-                </button>
-              );
-            })}
-            {loading && (
-              <span style={{ marginLeft: 12, color: "#666" }}>
-                불러오는 중…
-              </span>
-            )}
-          </div>
-
           <button className="download-button" onClick={handleDownload}>
             <img
               src="/excell_img.png"
@@ -255,63 +224,97 @@ const CodingZoneAttendanceManager = () => {
 
         <div className="line-container1"></div>
 
-        {/* 실제 table 태그를 사용한 전체 출결 표 */}
-        <div className="czp-table-wrap">
-          <div className="czp-table-shell">
-            <div className="czp-table-scroll">
-              <table className="czp-table" style={{ width: "1100px" }}>
-                <thead>
-                  {(() => {
-                    const headerColor = selectedSubjectId
-                      ? getColorById(selectedSubjectId, "#475569")
-                      : "#475569";
-                    console.log("Selected Subject ID:", selectedSubjectId);
-                    console.log("Header Color:", headerColor);
-                    return (
-                      <tr
-                        style={{
-                          backgroundColor: headerColor,
-                          color: "#FFFFFF",
-                        }}
-                      >
-                        <th style={{ width: "15%" }}>학번</th>
-                        <th style={{ width: "15%" }}>이름</th>
-                        <th style={{ width: "25%" }}>이메일</th>
-                        <th style={{ width: "15%" }}>출석</th>
-                        <th style={{ width: "15%" }}>결석</th>
-                      </tr>
-                    );
-                  })()}
-                </thead>
-                <tbody>
-                  {loadingAttendance ? (
-                    <tr>
-                      <td colSpan="5" className="czp-table-msg">
-                        출결 불러오는 중…
-                      </td>
-                    </tr>
-                  ) : attendanceList.length === 0 && !errMsg ? (
-                    <tr>
-                      <td colSpan="5" className="czp-table-msg">
-                        표시할 출결 정보가 없습니다.
-                      </td>
-                    </tr>
-                  ) : (
-                    attendanceList.map((student, index) => (
-                      <tr key={index}>
-                        <td>{student.userStudentNum}</td>
-                        <td>{student.userName}</td>
-                        <td>{(student.userEmail || "").split("@")[0]}</td>
-                        <td>{student.attendance}</td>
-                        <td>{student.absence}</td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+        {/* 학생 예약페이지와 동일한 과목 선택 구조 */}
+        {loading ? (
+          <div className="panel-block panel-gray">
+            <div className="panel-empty">과목을 불러오는 중…</div>
           </div>
-        </div>
+        ) : subjects.length === 0 ? (
+          <div className="panel-block panel-gray">
+            <div className="panel-empty">등록된 코딩존 과목이 없습니다.</div>
+          </div>
+        ) : (
+          <div className="czp-subject-bar">
+            {subjects.map((s) => {
+              const sid = s.subjectId;
+              const active = selectedSubjectId === sid;
+              const color = getColorById(sid, "#475569");
+              return (
+                <button
+                  key={sid}
+                  type="button"
+                  className={`czp-chip ${active ? "active" : ""}`}
+                  style={{
+                    backgroundColor: active ? color : "#EFEFEF",
+                    color: active ? "#FFFFFF" : "#ADACAC",
+                    border: "none",
+                  }}
+                  onClick={() => setSelectedSubjectId(sid)}
+                >
+                  {s.subjectName}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* 출결 정보 테이블 - 일반 학생과 동일한 구조 */}
+        {selectedSubjectId && (
+          <section className="czp-table-wrap">
+            <div className="czp-table-shell">
+              <div className="czp-table-scroll">
+                <table className="czp-table" style={{ width: "1100px" }}>
+                  <thead>
+                    <tr
+                      style={{
+                        backgroundColor: getColorById(
+                          selectedSubjectId,
+                          "#475569"
+                        ),
+                        color: "#FFFFFF",
+                      }}
+                    >
+                      <th>학번</th>
+                      <th>이름</th>
+                      <th>이메일</th>
+                      <th>출석</th>
+                      <th>결석</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {loadingAttendance ? (
+                      <tr>
+                        <td colSpan={5}>
+                          <div className="panel-empty" style={{ margin: 0 }}>
+                            출결 불러오는 중…
+                          </div>
+                        </td>
+                      </tr>
+                    ) : attendanceList.length === 0 ? (
+                      <tr>
+                        <td colSpan={5}>
+                          <div className="panel-student" style={{ margin: 0 }}>
+                            표시할 출결 정보가 없습니다.
+                          </div>
+                        </td>
+                      </tr>
+                    ) : (
+                      attendanceList.map((student, index) => (
+                        <tr key={index}>
+                          <td>{student.userStudentNum}</td>
+                          <td>{student.userName}</td>
+                          <td>{(student.userEmail || "").split("@")[0]}</td>
+                          <td>{student.attendance}</td>
+                          <td>{student.absence}</td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );
