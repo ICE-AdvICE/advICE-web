@@ -262,17 +262,49 @@ const CodingZoneAttendanceAssistant = () => {
   const handleToggleAttendance = async (e, student, target) => {
     e?.preventDefault?.();
     e?.stopPropagation?.();
-    if ((student.attendance ?? "") === target) return; // 같은 상태면 무시
-    const res = await toggleAttendanceByRegistNum(
-      student.registrationId,
-      token,
-      setCookie,
-      navigate
+
+    // 낙관적 업데이트: UI를 먼저 업데이트
+    const previousAttendance = student.attendance;
+    setStudents((prevStudents) =>
+      prevStudents.map((s) =>
+        s.registrationId === student.registrationId
+          ? { ...s, attendance: target }
+          : s
+      )
     );
-    if (res?.code === "SU" && selectedClassNum) {
-      await loadStudents(selectedClassNum);
-    } else if (res?.message) {
-      alert(res.message);
+
+    try {
+      const res = await toggleAttendanceByRegistNum(
+        student.registrationId,
+        token,
+        setCookie,
+        navigate
+      );
+
+      if (res?.code !== "SU") {
+        // API 실패 시 원래 상태로 되돌리기
+        setStudents((prevStudents) =>
+          prevStudents.map((s) =>
+            s.registrationId === student.registrationId
+              ? { ...s, attendance: previousAttendance }
+              : s
+          )
+        );
+
+        if (res?.message) {
+          alert(res.message);
+        }
+      }
+    } catch (error) {
+      // 에러 발생 시 원래 상태로 되돌리기
+      setStudents((prevStudents) =>
+        prevStudents.map((s) =>
+          s.registrationId === student.registrationId
+            ? { ...s, attendance: previousAttendance }
+            : s
+        )
+      );
+      alert("출결 처리 중 오류가 발생했습니다.");
     }
   };
   const fetchAuthType = async () => {
@@ -502,7 +534,9 @@ const CodingZoneAttendanceAssistant = () => {
                             <>
                               <button
                                 className="btn_manager_attendance"
-                                disabled
+                                onClick={(e) =>
+                                  handleToggleAttendance(e, st, "1")
+                                }
                               >
                                 출석
                               </button>
@@ -525,20 +559,25 @@ const CodingZoneAttendanceAssistant = () => {
                               >
                                 출석
                               </button>
-                              <button className="btn_manager_absence" disabled>
+                              <button
+                                className="btn_manager_absence"
+                                onClick={(e) =>
+                                  handleToggleAttendance(e, st, "0")
+                                }
+                              >
                                 결석
                               </button>
                             </>
                           ) : (
                             <>
                               <button
-                                className="btn_manager_attendance-disabled"
+                                className="btn_manager_attendance"
                                 onClick={() => handleToggleAttendance(st, "1")}
                               >
                                 출석
                               </button>
                               <button
-                                className="btn_manager_absence-disabled"
+                                className="btn_manager_absence"
                                 onClick={() => handleToggleAttendance(st, "0")}
                               >
                                 결석
