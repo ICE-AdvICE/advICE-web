@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import '../css/MainPage/MainPage.css';
-import { AppInstallPrompt } from '../../shared/ui/AppInstallPrompt'; 
 
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from "react-cookie";
@@ -17,7 +16,7 @@ const HomePage = () => {
     navigate('/article-main');
   };
   const handlereservationClick = () => {
-    window.location.href = 'https://open.kakao.com/o/giOS427b';
+    window.location.href = '/';
   };
   const handlefeedbackClick = () => {
     window.location.href = 'https://open.kakao.com/o/swnIYgKg';
@@ -69,8 +68,8 @@ const HomePage = () => {
           <button onClick={handleMoreClick} className="btn icebreaker">ICEbreaker</button>
         </div>
         <div className="service-box study-box">
-          <p>정보통신공학과 스터디룸<br /> 예약 오픈채팅방 입니다.</p>
-          <button onClick={handlereservationClick} className="btn study">Study Room</button>
+          <p>준비중...<br />잠시만 기다려주세요!</p>
+          <button onClick={handlereservationClick} className="btn study">COMING SOON</button>
         </div>
       </div>
       <div className='feedback-container'>
@@ -78,7 +77,6 @@ const HomePage = () => {
           서비스 이용하시는데 불편한 점이나 요청사항이 있으신가요?
         </button>
       </div>
-       <AppInstallPrompt />
     </div>
   );
 };

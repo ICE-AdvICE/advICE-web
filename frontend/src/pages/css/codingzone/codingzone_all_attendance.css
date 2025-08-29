@@ -1,18 +1,18 @@
 .centered-content {
-    text-align: center;
+  text-align: center;
 }
 
 /* 코딩존1,2 버튼과 다운로드 버튼을 배치하는 컨테이너 */
 .allattendance_buttons {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative; /* 다운로드 버튼을 오른쪽에 위치시키기 위해 설정 */
-    width: 100%;
-    max-width: 920px;
-    margin: 0 auto;
-    padding: 10px 0;
-    margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative; /* 다운로드 버튼을 오른쪽에 위치시키기 위해 설정 */
+  width: 100%;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 10px 0;
+  margin-bottom: 10px;
 }
 /*
 
@@ -46,54 +46,51 @@
 }
 */
 
-
-
 /* 다운로드 버튼 (오른쪽 정렬) */
 .download-button {
-    position: absolute;
-    right: 0;
-    display: flex;
-    align-items: center;
-    background-color: #6FA687;
-    color: white;
-    font-size: 16px;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    border-radius: 0px;
+  position: absolute;
+  right: 0;
+  display: flex;
+  align-items: center;
+  background-color: #6fa687;
+  color: white;
+  font-size: 16px;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  border-radius: 0px;
 }
 
 /* 다운로드 버튼 호버 효과 */
 .download-button:hover {
-    background-color: #1A7341;
+  background-color: #1a7341;
 }
 
 /* 다운로드 아이콘 스타일 */
 .download-icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
 }
-
 
 /* 전체 출결 데이터 컨테이너 */
 .info-all_container {
-    width: 100%;
-    justify-content: center;
-    display: flex;
-    margin: 10px auto;
-    padding: 10px 0;
+  width: 100%;
+  justify-content: center;
+  display: flex;
+  margin: 10px auto;
+  padding: 10px 0;
 }
 
 /* 출결 정보 테이블 */
 .info_all_inner {
-    width: calc(100% - 20px);
-    max-width: 920px;
-    display: flex;
-    height: 40px;
-    margin: -10px auto;
-    background-color: rgb(243, 242, 242);
+  width: calc(100% - 20px);
+  max-width: 920px;
+  display: flex;
+  height: 40px;
+  margin: -10px auto;
+  background-color: rgb(243, 242, 242);
 }
 
 /* 각 컬럼 스타일 */
@@ -102,48 +99,48 @@
 .info_all_emali,
 .info_all_presentcount,
 .info_all_absentcount {
-    width: 140px;
-    height: 100%;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: sans-serif;
-    font-weight: bold;
-    color: #002D56;
+  width: 140px;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: #002d56;
 }
 
 /* 이메일 컬럼은 조금 더 넓게 설정 */
 .info_all_emali {
-    width: 260px;
+  width: 260px;
 }
 
 /* 구분선 */
 .info_all_bar {
-    flex: 1 8 0;
-    width: 140px;
+  flex: 1 8 0;
+  width: 140px;
 }
 
 /* 출결 데이터 리스트 컨테이너 */
 .info_all_data_container {
-    width: 100%;
-    justify-content: center;
-    display: column;
-    margin: 10px auto;
-    padding: 10px 0;
-    min-height: 200px;
+  width: 100%;
+  justify-content: center;
+  display: column;
+  margin: 10px auto;
+  padding: 10px 0;
+  min-height: 200px;
 }
 
 /* 출결 데이터 행 스타일 */
 .info_all_data_inner {
-    width: calc(100% - 20px);
-    max-width: 920px;
-    margin: 0 auto;
-    height: 40px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  width: calc(100% - 20px);
+  max-width: 920px;
+  margin: 0 auto;
+  height: 40px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* 출결 데이터 컬럼 스타일 */
@@ -152,103 +149,261 @@
 .info_all_data_email,
 .info_all_data_presentcount,
 .info_all_data_absentcount {
-    width: 140px;
-    height: 100%;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: sans-serif;
-    font-weight: bold;
-    color: #002D56;
+  width: 140px;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: #002d56;
 }
 
 /* 이메일 컬럼 */
 .info_all_data_email {
-    width: 260px;
-    color: #848484;
+  width: 260px;
+  color: #848484;
 }
 
 /* 구분선 */
 .info_all_data_bar {
-    flex: 1 8 0;
-    width: 140px;
+  flex: 1 8 0;
+  width: 140px;
 }
 
 /* 줄 스타일 */
 .hr-line {
-    border-bottom: 1px solid #ccc;
-    
+  border-bottom: 1px solid #ccc;
 }
 
+/* ===== cz-table 스타일 추가 ===== */
+/* 테이블 컨테이너 */
+.cz-table-shell {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 100px;
+}
+
+.cz-table-scroll {
+  overflow-x: auto;
+  border-radius: 10px;
+  background: #fff;
+}
+
+/* 테이블 기본 스타일 */
+.cz-table {
+  width: 1100px;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+/* 테이블 헤더 */
+.cz-table thead th {
+  padding: 20px 24px;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+  background: #052940 !important; /* !important 추가하여 인라인 스타일이 적용되도록 */
+  border: none;
+}
+
+/* 동적 헤더 색상을 위한 클래스 */
+.cz-table-header {
+  background: inherit !important;
+}
+
+/* 헤더 모서리 라운드 */
+.cz-table thead th:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.cz-table thead th:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+/* 테이블 바디 */
+.cz-table tbody td {
+  padding: 30px 0px;
+  text-align: center;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+  color: #000;
+  vertical-align: middle;
+}
+
+.cz-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.cz-table tbody tr:hover td {
+  background: #f9fafb;
+}
+
+/* 메시지 스타일 */
+.cz-table-msg {
+  padding: 40px 20px;
+  text-align: center;
+  color: #777;
+  font-size: 14px;
+}
+
+/* ===== 과목 선택 버튼 스타일 (코딩존 메인 페이지와 동일) ===== */
 .subject-buttons {
   display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
+  margin-top: -25px;
 }
 
-.subject-button {
+/* subject-select-chip 스타일 (코딩존 메인 페이지와 동일) */
+.subject-select-chip {
+  padding: 14px 24px;
   border: none;
-  outline: none;
-  padding: 10px 16px;
-  border-radius: 12px;
-  background: #eef1f4;
-  color: #9aa3af;
-  font-weight: 600;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
   cursor: pointer;
-  transition: transform .05s ease;
+  transition: all 0.2s ease;
+  margin-right: 25px; /* 버튼 사이 갭 */
+  margin-top: 40px;
+  margin-bottom: 10px;
 }
-.subject-button:hover { transform: translateY(-1px); }
 
-.subject-button.active {
-  background: #193d52;
+.subject-select-chip:hover:not(.active) {
+  background: #475569;
   color: #fff;
 }
 
+/* 활성 상태: 배경/글자색은 JSX에서 subjectId 색으로 주입 */
+.subject-select-chip.active {
+  font-weight: 600;
+}
 
+/* ===== czp-table 스타일 추가 (코딩존 메인 페이지와 동일) ===== */
+.czp-table-wrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 100px;
+}
+
+.czp-table-shell {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.czp-table-scroll {
+  overflow-x: auto;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.czp-table {
+  width: 1100px;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+/* 헤더 셀 */
+.czp-table thead th {
+  padding: 14px 10px;
+  text-align: center;
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* 헤더 모서리 라운드 */
+.czp-table thead th:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.czp-table thead th:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+/* 헤더 배경이 둥근 모서리에 맞게 잘리도록 */
+.czp-table thead {
+  overflow: hidden;
+}
+
+/* 바디 셀 */
+.czp-table tbody td {
+  padding: 22px 10px;
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  font-size: 14px;
+  color: #000;
+  vertical-align: middle;
+}
+
+/* 행 높이 및 호버 */
+.czp-table tbody tr {
+  background: #fff;
+  height: 64px;
+}
+
+.czp-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* 메시지 스타일 */
+.czp-table-msg {
+  padding: 40px 20px;
+  text-align: center;
+  color: #777;
+  font-size: 14px;
+}
 
 @media (max-width: 400px) {
-    .allattendance_buttons {
-        flex-direction: column; /* 작은 화면에서는 세로 정렬 */
-        align-items: center;
-    }
+  .allattendance_buttons {
+    flex-direction: column; /* 작은 화면에서는 세로 정렬 */
+    align-items: center;
+  }
 
-    .grade-buttons {
-        justify-content: center;
-        width: 100%;
-    }
+  .grade-buttons {
+    justify-content: center;
+    width: 100%;
+  }
 
-    .grade-buttons button {
-        padding: 8px 16px; /* 버튼 크기 조정 */
-        font-size: 14px;
-    }
+  .grade-buttons button {
+    padding: 8px 16px; /* 버튼 크기 조정 */
+    font-size: 14px;
+  }
 
-    .download-button {
-        position: static; /* 고정 위치 해제 */
-        width: auto; /* 자동 너비 조정 */
-        max-width: 90%; /* 너무 커지지 않도록 제한 */
-        justify-content: center;
-        margin-right: 10px; /* 오른쪽 마진 유지 */
-    }
+  .download-button {
+    position: static; /* 고정 위치 해제 */
+    width: auto; /* 자동 너비 조정 */
+    max-width: 90%; /* 너무 커지지 않도록 제한 */
+    justify-content: center;
+    margin-right: 10px; /* 오른쪽 마진 유지 */
+  }
 }
 
 @media (max-width: 940px) {
-    .download-button {
-        position: static; /* 고정 위치 해제 */
-        width: auto; /* 자동 너비 조정 */
-        max-width: 90%; /* 너무 커지지 않도록 제한 */
-        justify-content: center;
-        margin-right: 10px; /* 오른쪽 마진 유지 */
-    }
+  .download-button {
+    position: static; /* 고정 위치 해제 */
+    width: auto; /* 자동 너비 조정 */
+    max-width: 90%; /* 너무 커지지 않도록 제한 */
+    justify-content: center;
+    margin-right: 10px; /* 오른쪽 마진 유지 */
+  }
 }
 
 @media (max-width: 768px) {
-    .download-button {
-        position: static;
-        width: auto;
-        max-width: 90%;
-        justify-content: center;
-        margin-right: 10px;
-    }
+  .download-button {
+    position: static;
+    width: auto;
+    max-width: 90%;
+    justify-content: center;
+    margin-right: 10px;
+  }
 }

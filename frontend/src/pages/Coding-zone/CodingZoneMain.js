@@ -1467,7 +1467,7 @@ const CodingMain = () => {
                 <section className="czp-table-wrap">
                   <div className="czp-table-shell">
                     <div className="czp-table-scroll">
-                      <table className="czp-table">
+                      <table className="czp-table" style={{ width: "1100px" }}>
                         <thead>
                           <tr
                             style={{

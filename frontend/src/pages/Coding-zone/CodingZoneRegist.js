@@ -375,133 +375,252 @@ const CodingZoneRegist = () => {
     if (activeCategory === "registerClass") {
       return (
         <>
-          <div className="main-category-name-container2">
-            <div className="separator2"></div>
-            <div className="element-title2">
-              <div className="part1-element-title2">
-                <p className="weekDay2">요일</p>
-                <p className="classDate2">날짜</p>
-                <p className="weekTime2">시간</p>
-              </div>
-              <div className="part2-element-title2">
-                <p className="className2">과목명</p>
-              </div>
-              <div className="part3-element-title2">
-                <p className="assistent2">조교</p>
-                <p className="maxPers2">인원</p>
-              </div>
-            </div>
-            <div className="separator"></div>
-          </div>
-          <div className="class-input-container">
-            {boxes.map((box, index) => (
-              <div key={index} className="class-input-box">
-                <select
-                  className="Day-input"
-                  value={box.day}
-                  onChange={(e) => handleChange(index, "day", e.target.value)}
-                >
-                  <option value="">요일 선택</option>
-                  <option value="월요일">MON</option>
-                  <option value="화요일">TUE</option>
-                  <option value="수요일">WED</option>
-                  <option value="목요일">THU</option>
-                  <option value="금요일">FRI</option>
-                </select>
-                <input
-                  className={`Date-input ${
-                    box.date && !isValidDate(box.date) ? "invalid-date" : ""
-                  }`}
-                  placeholder="ex) 03-17"
-                  value={box.date}
-                  onChange={(e) => handleChange(index, "date", e.target.value)}
-                />
-                <select
-                  className="Time-input"
-                  value={box.time}
-                  onChange={(e) => handleChange(index, "time", e.target.value)}
-                >
-                  <option value="">시간 선택</option>
-                  <option value="09:00:00">09:00</option>
-                  <option value="10:00:00">10:00</option>
-                  <option value="11:00:00">11:00</option>
-                  <option value="12:00:00">12:00</option>
-                  <option value="13:00:00">13:00</option>
-                  <option value="14:00:00">14:00</option>
-                  <option value="15:00:00">15:00</option>
-                  <option value="16:00:00">16:00</option>
-                  <option value="17:00:00">17:00</option>
-                  <option value="18:00:00">18:00</option>
-                  <option value="19:00:00">19:00</option>
-                  <option value="20:00:00">20:00</option>
-                </select>
-                <select
-                  className="ClassName-input"
-                  value={box.subjectId || ""}
-                  onChange={(e) => handleSubjectChange(index, e.target.value)}
-                >
-                  <option value="">과목 선택</option>
-                  {subjects.map((subject) => (
-                    <option key={subject.subjectId} value={subject.subjectId}>
-                      {subject.subjectName}
-                    </option>
-                  ))}
-                </select>
-                <select
-                  className="Assistant-input"
-                  value={box.assistant || ""}
-                  onChange={(e) =>
-                    handleChange(index, "assistant", e.target.value)
-                  }
-                  disabled={!box.subjectId || assistantLoading[index]}
-                >
-                  {!box.subjectId ? (
-                    <option value="">먼저 과목을 선택하세요</option>
-                  ) : assistantLoading[index] ? (
-                    <option value="">불러오는 중...</option>
-                  ) : (assistantOptionsMap[index] || []).length === 0 ? (
-                    <option value="">해당 과목의 조교가 없습니다</option>
-                  ) : (
-                    <>
-                      <option value="">조교 선택</option>
-                      {(assistantOptionsMap[index] || []).map((name, i) => (
-                        <option key={i} value={name}>
-                          {name}
-                        </option>
-                      ))}
-                    </>
-                  )}
-                </select>
-
-                <input
-                  className="MaxPers-input"
-                  type="number"
-                  placeholder="MaxPer"
-                  min="1"
-                  step="1"
-                  value={box.maxPers}
-                  onChange={(e) =>
-                    handleChange(index, "maxPers", e.target.value)
-                  }
-                />
-                <button
-                  onClick={() => removeBox2(index)}
-                  class="custom-btn btn-6"
-                >
-                  X
-                </button>
-              </div>
-            ))}
-          </div>
-          <div className="button-area2">
-            <div>
-              <button onClick={addBox} class="custom-btn btn-5">
-                추가
+          {/* 버튼들을 표 바로 위에 배치 */}
+          <div
+            className="table-controls"
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "1100px",
+              margin: "0 auto 20px auto",
+            }}
+          >
+            <button className={`reset-button`} onClick={handleResetSemester}>
+              학기 초기화
+            </button>
+            <div style={{ display: "flex", gap: "10px" }}>
+              <button
+                className={`Agroup-button ${groupId === "A" ? "active" : ""}`}
+                onClick={() => setGroupId("A")}
+              >
+                A 조
+              </button>
+              <button
+                className={`Bgroup-button ${groupId === "B" ? "active" : ""}`}
+                onClick={() => setGroupId("B")}
+              >
+                B 조
               </button>
             </div>
-            <div className="class-submit-button">
-              <button onClick={handleSubmit}>등록</button>
-            </div>
+          </div>
+
+          {/* 실제 table 태그를 사용한 수업 등록 표 */}
+          <div
+            className="regist-table-card"
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              width: "100%",
+              marginBottom: "100px",
+            }}
+          >
+            <table className="regist-table" style={{ width: "1100px" }}>
+              <thead>
+                <tr>
+                  <th style={{ width: "12%" }}>요일</th>
+                  <th style={{ width: "12%" }}>날짜</th>
+                  <th style={{ width: "12%" }}>시간</th>
+                  <th style={{ width: "32%" }}>과목명</th>
+                  <th style={{ width: "20%" }}>조교</th>
+                  <th style={{ width: "12%" }}>인원</th>
+                  <th style={{ width: "5%" }}></th>
+                </tr>
+              </thead>
+              <tbody>
+                {boxes.map((box, index) => (
+                  <tr key={index}>
+                    <td>
+                      <select
+                        className="Day-input"
+                        value={box.day}
+                        onChange={(e) =>
+                          handleChange(index, "day", e.target.value)
+                        }
+                        style={{
+                          width: "90%",
+                          padding: "12px 8px",
+                          border: "1px solid #cfd8e3",
+                          borderRadius: "5px",
+                          fontSize: "14px",
+                          paddingLeft: "9px",
+                          paddingRight: "9px",
+                          textAlign: "center",
+                        }}
+                      >
+                        <option value="">요일 선택</option>
+                        <option value="월요일">MON</option>
+                        <option value="화요일">TUE</option>
+                        <option value="수요일">WED</option>
+                        <option value="목요일">THU</option>
+                        <option value="금요일">FRI</option>
+                      </select>
+                    </td>
+                    <td>
+                      <input
+                        className={`Date-input ${
+                          box.date && !isValidDate(box.date)
+                            ? "invalid-date"
+                            : ""
+                        }`}
+                        placeholder="ex) 03-17"
+                        value={box.date}
+                        onChange={(e) =>
+                          handleChange(index, "date", e.target.value)
+                        }
+                        style={{
+                          width: "90%",
+                          padding: "11px 8px",
+                          border: "1px solid #cfd8e3",
+                          borderRadius: "5px",
+                          fontSize: "14px",
+                          textAlign: "center",
+                        }}
+                      />
+                    </td>
+                    <td>
+                      <select
+                        className="Time-input"
+                        value={box.time}
+                        onChange={(e) =>
+                          handleChange(index, "time", e.target.value)
+                        }
+                        style={{
+                          width: "90%",
+                          padding: "12px 8px",
+                          border: "1px solid #cfd8e3",
+                          borderRadius: "5px",
+                          fontSize: "14px",
+                          paddingLeft: "9px",
+                          paddingRight: "9px",
+                          textAlign: "center",
+                        }}
+                      >
+                        <option value="">시간 선택</option>
+                        <option value="09:00:00">09:00</option>
+                        <option value="10:00:00">10:00</option>
+                        <option value="11:00:00">11:00</option>
+                        <option value="12:00:00">12:00</option>
+                        <option value="13:00:00">13:00</option>
+                        <option value="14:00:00">14:00</option>
+                        <option value="15:00:00">15:00</option>
+                        <option value="16:00:00">16:00</option>
+                        <option value="17:00:00">17:00</option>
+                        <option value="18:00:00">18:00</option>
+                        <option value="19:00:00">19:00</option>
+                        <option value="20:00:00">20:00</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select
+                        className="ClassName-input"
+                        value={box.subjectId || ""}
+                        onChange={(e) =>
+                          handleSubjectChange(index, e.target.value)
+                        }
+                        style={{
+                          width: "90%",
+                          padding: "12px 8px",
+                          border: "1px solid #cfd8e3",
+                          borderRadius: "5px",
+                          fontSize: "14px",
+                          paddingLeft: "9px",
+                          paddingRight: "9px",
+                          textAlign: "center",
+                        }}
+                      >
+                        <option value="">과목 선택</option>
+                        {subjects.map((subject) => (
+                          <option
+                            key={subject.subjectId}
+                            value={subject.subjectId}
+                          >
+                            {subject.subjectName}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                    <td>
+                      <select
+                        className="Assistant-input"
+                        value={box.assistant || ""}
+                        onChange={(e) =>
+                          handleChange(index, "assistant", e.target.value)
+                        }
+                        disabled={!box.subjectId || assistantLoading[index]}
+                        style={{
+                          width: "90%",
+                          padding: "12px 8px",
+                          border: "1px solid #cfd8e3",
+                          borderRadius: "5px",
+                          fontSize: "14px",
+                          paddingLeft: "9px",
+                          paddingRight: "9px",
+                          textAlign: "center",
+                        }}
+                      >
+                        {!box.subjectId ? (
+                          <option value="">먼저 과목을 선택하세요</option>
+                        ) : assistantLoading[index] ? (
+                          <option value="">불러오는 중...</option>
+                        ) : (assistantOptionsMap[index] || []).length === 0 ? (
+                          <option value="">해당 과목의 조교가 없습니다</option>
+                        ) : (
+                          <>
+                            <option value="">조교 선택</option>
+                            {(assistantOptionsMap[index] || []).map(
+                              (name, i) => (
+                                <option key={i} value={name}>
+                                  {name}
+                                </option>
+                              )
+                            )}
+                          </>
+                        )}
+                      </select>
+                    </td>
+                    <td>
+                      <input
+                        className="MaxPers-input"
+                        type="number"
+                        placeholder="MaxPer"
+                        min="1"
+                        step="1"
+                        value={box.maxPers}
+                        onChange={(e) =>
+                          handleChange(index, "maxPers", e.target.value)
+                        }
+                        style={{
+                          width: "90%",
+                          padding: "11px 8px",
+                          border: "1px solid #cfd8e3",
+                          borderRadius: "5px",
+                          fontSize: "14px",
+                          textAlign: "center",
+                        }}
+                      />
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => removeBox2(index)}
+                        className="custom-btn btn-6"
+                      >
+                        <span className="delete-icon">X</span>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {/* 추가와 등록 버튼을 표의 우측 하단에 배치 */}
+          <div className="table-action-buttons">
+            <button onClick={addBox} className="custom-btn btn-5">
+              추가
+            </button>
+            <button onClick={handleSubmit} className="custom-btn btn-submit">
+              등록
+            </button>
           </div>
         </>
       );
@@ -517,27 +636,6 @@ const CodingZoneRegist = () => {
         <div className="main-body-container">
           <div className="cza_button_container" style={{ textAlign: "center" }}>
             <CodingZoneBoardbar />
-          </div>
-          <div className="category-bar">
-            <div className="inner-category-bar">
-              <button className={`reset-button`} onClick={handleResetSemester}>
-                학기 초기화
-              </button>
-            </div>
-            <div className="inner-category-bar2">
-              <button
-                className={`Agroup-button ${groupId === "A" ? "active" : ""}`}
-                onClick={() => setGroupId("A")}
-              >
-                A 조
-              </button>
-              <button
-                className={`Bgroup-button ${groupId === "B" ? "active" : ""}`}
-                onClick={() => setGroupId("B")}
-              >
-                B 조
-              </button>
-            </div>
           </div>
           {renderActiveSection()}
         </div>

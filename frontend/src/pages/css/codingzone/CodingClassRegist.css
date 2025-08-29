@@ -5,70 +5,9 @@
   flex-direction: column;
 }
 
-/* ---------------------이후 요소 수정 및 통일 필요------------------*/
-.header-select-container {
-  display: flex;
-  position: relative;
-  justify-content: space-around;
-  margin-bottom: 1%;
-  padding-right: 8%;
-  padding-left: 8%;
-}
-.header-select-container button {
-  background-color: white;
-  border: none !important;
-  color: #bfbfbf;
-  font-weight: bold;
-}
-.header-select-container span {
-  padding: 1%;
-}
-.header-select-container button:hover {
-  color: #002d56;
-  cursor: pointer;
-}
+/* 기존 커스텀 레이아웃 관련 CSS 제거 - 테이블로 대체됨 */
 
-.img-container {
-  width: 100%;
-  display: flex;
-  position: relative;
-}
-
-.codingzonetop-image {
-  width: 100%;
-  position: absolute;
-  height: 26vw;
-  background-size: cover;
-}
-
-.main-category-bar {
-  margin-bottom: 1%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 5vw;
-  width: 65vw;
-  font-size: 1vw;
-  padding: 0 12%;
-}
-.main-category-bar button {
-  height: 80%;
-  width: 50%;
-  border: 1px solid #d0d5dd;
-  background-color: white;
-  font-size: 15px;
-  color: #bfbfbf;
-}
-.main-category-bar button:hover {
-  color: #002d56;
-  background-color: white;
-  border-color: #002d56;
-}
-.main-span {
-  padding-right: 1%;
-  padding-left: 1%;
-}
-/* ---------------------여기까지 요소 수정 및 통일 필요------------------*/
+/* 기존 main-category-bar 관련 CSS 제거 - 테이블로 대체됨 */
 
 .main-body-container {
   width: 100%;
@@ -92,17 +31,25 @@
 .reset-button {
   display: flex;
   width: 130px;
-  height: 59px;
-  padding: 19px 16px 20px 16px;
+  height: 45px;
+  padding: 12px 16px;
   justify-content: center;
   align-items: center;
-  border-radius: 10px;
+  border-radius: 8px;
   background: #efefef;
+  border: 1px solid #d0d5dd;
+  color: #666;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .reset-button:hover {
-  background-color: red !important;
-  border-color: white !important;
+  background-color: #ff4444;
+  border-color: #ff4444;
+  color: white;
 }
 
 .category-bar button {
@@ -149,176 +96,90 @@
 
 .Agroup-button,
 .Bgroup-button {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  background-color: #efefef; /* 기본 */
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  display: flex;
   width: 70px;
-  padding: 19px 8px 20px 8px;
+  height: 45px;
+  padding: 12px 16px;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  background-color: #efefef;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
   justify-content: center;
   align-items: center;
-  flex-shrink: 0;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.Agroup-button:hover,
+.Bgroup-button:hover {
+  background-color: #e0e0e0;
+  border-color: #b0b0b0;
 }
 
 .Agroup-button.active,
 .Bgroup-button.active {
   background-color: #052940;
+  border-color: #052940;
   color: #fff;
 }
 
-.separator {
-  height: 1px; /* 높이를 10픽셀로 설정 */
-  background-color: #a5a5a5; /* 배경색을 회색으로 설정 */
-}
-.main-category-name-container {
-  position: relative;
+/* 테이블 컨트롤 버튼들을 위한 스타일 */
+.table-controls {
   display: flex;
-  flex-direction: column;
-  height: 45px;
-}
-
-.element-title {
-  display: flex;
-  width: 100%;
-  flex-direction: row;
-  align-items: center;
-  position: relative;
-  height: 35px; /* 고정된 높이로 변경 */
-}
-
-.part1-element-title {
-  display: flex; /* 플렉스 컨테이너로 설정 */
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  height: 90%;
-  width: 100%;
-  flex: 5; /* 부모 컨테이너 내에서 비율 설정 */
-  flex-direction: row; /* 플렉스 아이템들을 가로로 배치 */
-  white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
-}
-.part1-element-title p {
-  flex: 1; /* 각 p 태그가 공간을 균등하게 차지하도록 설정 */
-  margin: 0 5px;
-  text-align: center; /* 텍스트를 가운데 정렬 */
-}
-
-.weekDay,
-.weekTime,
-.assistent {
-  display: inline-block; /* 요소들을 inline-block으로 설정 */
-  /* 오른쪽에 20px의 공간을 추가 */
-}
-/* 마지막 요소의 경우 마진을 0으로 설정하여 여분의 공간을 제거 */
-.assistent {
-  margin-left: 1%;
-}
-
-.part2-element-title {
-  display: flex; /* 플렉스 컨테이너로 설정 */
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  height: 90%;
-  width: 100%;
-  flex: 4; /* 30% */
-  flex-direction: row; /* 플렉스 아이템들을 가로로 배치 */
-  white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
-}
-.part2-element-title p {
-  flex: 1; /* 각 p 태그가 공간을 균등하게 차지하도록 설정 */
-  margin: 0 5px;
-  text-align: center; /* 텍스트를 가운데 정렬 */
-}
-.className {
-  margin-right: 70%;
-}
-
-.part3-element-title {
-  display: flex; /* 플렉스 컨테이너로 설정 */
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  height: 90%;
-  width: 100%;
-  flex: 3; /* 30% */
-  flex-direction: row; /* 플렉스 아이템들을 가로로 배치 */
-  white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
-}
-.part3-element-title p {
-  flex: 1; /* 각 p 태그가 공간을 균등하게 차지하도록 설정 */
-  margin: 0 5px;
-  text-align: center; /* 텍스트를 가운데 정렬 */
-}
-.grade {
-  display: inline-block;
-}
-.maxPers {
-  display: inline-block;
-  padding-right: 20%;
-}
-
-.class-input-container {
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  align-items: center;
-}
-.class-input-box {
-  flex-direction: row;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  position: relative;
-  width: 100%;
-  margin-top: 1%;
-  margin-bottom: 1%;
-}
-
-.class-input-box > .Day-input,
-.class-input-box > .Time-input,
-.class-input-box > .Date-input,
-.class-input-box > .Assistant-input {
-  min-width: 0;
-  white-space: nowrap;
-  flex: 3.63; /* Day, Time, Assistent 입력필드의 비율 설정 */
-}
-
-.class-input-box > .ClassName-input {
-  min-width: 0;
-  white-space: nowrap;
-  flex: 10; /* ClassName 입력필드의 비율 설정 */
-}
-
-.class-input-box > .Grade-input,
-.class-input-box > .MaxPers-input {
-  min-width: 0;
-  white-space: nowrap;
-  flex: 3; /* Grade, MaxPers 입력필드의 비율 설정 */
-}
-.class-input-box input {
-  margin-right: 5px;
-  padding: 5px;
-}
-.MaxPers-input {
-  margin-right: 0 !important;
-}
-.class-input-box select {
-  margin-right: 5px;
-  padding: 7.5px;
-}
-
-.button-area {
-  display: flex;
-  align-items: center;
-  position: relative;
-  height: 8%;
-  width: 100%;
   justify-content: space-between;
+  align-items: center;
+  width: 1100px;
+  margin: 0 auto 20px auto;
+  padding: 0 20px;
 }
+
+/* 테이블 액션 버튼들을 위한 스타일 */
+.table-action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 등록 버튼 스타일 */
+.btn-submit {
+  display: inline-flex;
+  padding: 16px 20px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  background: #052940;
+  border: 1px solid #052940;
+  color: #fff;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 51%;
+  letter-spacing: -0.4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-submit:hover {
+  background-color: #052940bf;
+  border-color: #052940bf;
+  transform: translateY(-1px);
+}
+
+/* 기존 separator 관련 CSS 제거 - 테이블로 대체됨 */
+/* 기존 커스텀 레이아웃 관련 CSS 제거 - 테이블로 대체됨 */
+
+/* 기존 커스텀 입력 박스 관련 CSS 제거 - 테이블로 대체됨 */
+
 .btn-5 {
   display: inline-flex;
   padding: 16px 20px;
@@ -331,9 +192,9 @@
   color: #fff;
   text-align: center;
   font-family: Pretendard;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 700;
+  font-size: 16px;
+
+  font-weight: 600;
   line-height: 51%; /* 10.2px */
   letter-spacing: -0.4px;
 }
@@ -343,12 +204,28 @@
   background: rgba(64, 155, 157, 0.75);
 }
 
+.btn-5:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #efefef;
+  border-color: #efefef;
+  color: #666666;
+}
+
+.btn-5:disabled:hover {
+  background: #efefef;
+  border-color: #efefef;
+}
+
 .btn-6 {
-  margin: 0 0 0 5px;
-  width: px;
-  height: 35px;
+  margin: 0 0 0 3px;
+  height: 36px;
+  width: 36px;
   flex-shrink: 0;
-  aspect-ratio: 1/1;
+  font-size: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid #a8a8a8bf; /* 버튼 외곽선 색 */
   color: #a8a8a8bf;
   background: transparent; /* 기본 배경 투명 */
@@ -384,6 +261,12 @@
 .btn-6:hover:after {
   width: 100%; /* 호버 시 가로 길이 100%로 확장 */
   transition: 800ms ease all;
+}
+
+.delete-icon {
+  display: inline-block;
+  transform: none; /* X를 정확히 중앙에 위치시킴 */
+  font-weight: lighter;
 }
 
 .class-submit-button {
@@ -424,135 +307,6 @@
   border-color: white; /* 테두리 색상 변경 */
 }
 
-/*수업 등록 요소*/
-
-.main-category-name-container2 {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  height: 59px;
-  padding: 0 1px 0 2px;
-  justify-content: center;
-  align-items: center;
-  align-self: stretch;
-  border-radius: 10px;
-  background: #052940;
-}
-
-.element-title2 {
-  display: flex;
-  width: 100%;
-  flex-direction: row;
-  align-items: center;
-  position: relative;
-  height: 35px;
-  color: #fff;
-  text-align: center;
-  font-family: Inter;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 51%; /* 10.2px */
-  letter-spacing: -0.4px;
-}
-
-.part1-element-title2 {
-  display: flex;
-  width: 30rem;
-  height: 20px;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-  flex: 6; /* 30% */
-  flex-direction: row; /* 플렉스 아이템들을 가로로 배치 */
-  white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
-}
-.part1-element-title2 p {
-  flex: 2; /* 각 p 태그가 공간을 균등하게 차지하도록 설정 */
-  margin: 0 4px;
-  text-align: center; /* 텍스트를 가운데 정렬 */
-}
-.weekDay2,
-.weekTime2,
-.classDate2,
-.assistent2 {
-  display: inline-block; /* 요소들을 inline-block으로 설정 */
-}
-
-.part2-element-title2 {
-  display: flex;
-  width: 25rem;
-  height: 20px;
-  padding: 10px;
-  justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
-  flex: 5; /* 30% */
-  flex-direction: row; /* 플렉스 아이템들을 가로로 배치 */
-  white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */ /* 텍스트가 줄 바꿈되지 않도록 설정 */
-}
-.part2-element-title2 p {
-  flex: 2; /* 각 p 태그가 공간을 균등하게 차지하도록 설정 */
-  margin: 0 5px;
-  text-align: center; /* 텍스트를 가운데 정렬 */
-}
-
-.part3-element-title2 {
-  display: flex;
-  width: 30rem;
-  height: 20px;
-  align-items: center;
-  gap: 15px;
-  flex-shrink: 0;
-  flex: 4; /* 30% */
-  flex-direction: row; /* 플렉스 아이템들을 가로로 배치 */
-  white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
-}
-.part3-element-title2 p {
-  flex: 1;
-  margin: 0 5px;
-  text-align: center; /* 텍스트를 가운데 정렬 */
-}
-.grade2 {
-  display: inline-block;
-}
-.maxPers2 {
-  display: inline-block;
-  margin-right: 10% !important;
-}
-
-.button-area2 {
-  display: flex;
-  align-items: center;
-  position: relative;
-  height: 8%;
-  width: 100%;
-  gap: 15px;
-  justify-content: flex-end;
-}
-
-.add-button-container2 button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: transparent; /* 배경색 제거 */
-  border: none;
-  cursor: pointer; /* 커서 스타일 변경 */
-  width: 60px; /* 버튼의 너비 설정 */
-  height: 60px; /* 버튼의 높이 설정 */
-  padding: 10px; /* 버튼 내부 패딩 조정 */
-  transition: transform 0.3s ease; /* 애니메이션 효과 추가 */
-}
-
-.add-button-container2 button:hover {
-  transform: scale(1.1); /* 버튼이 10% 커지게 설정 */
-}
-
-.add-button-container2 svg {
-  width: 24px; /* SVG 아이콘의 크기 조정 */
-  height: 24px;
-}
-
 .class-submit-button2 {
   margin-top: 1%;
   margin-bottom: 1%;
@@ -577,8 +331,27 @@
   background-color: #002d56; /* 배경 색상 변경 */
   border-color: white; /* 테두리 색상 변경 */
 }
-.invalid-date {
-  border: 2px solid red;
+
+.add-button-container2 button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent; /* 배경색 제거 */
+  border: none;
+  cursor: pointer; /* 커서 스타일 변경 */
+  width: 60px; /* 버튼의 너비 설정 */
+  height: 60px; /* 버튼의 높이 설정 */
+  padding: 10px; /* 버튼 내부 패딩 조정 */
+  transition: transform 0.3s ease; /* 애니메이션 효과 추가 */
+}
+
+.add-button-container2 button:hover {
+  transform: scale(1.1); /* 버튼이 10% 커지게 설정 */
+}
+
+.add-button-container2 svg {
+  width: 24px; /* SVG 아이콘의 크기 조정 */
+  height: 24px;
 }
 
 .remove-button {
@@ -594,6 +367,219 @@
 
 .remove-button:hover svg {
   transform: scale(1.2); /* 마우스 오버 시 SVG 크기 증가 */
+}
+
+/* 기존 button-area2 관련 CSS 제거 - table-action-buttons로 대체됨 */
+
+.invalid-date {
+  border: 2px solid red;
+}
+
+/* ===== 코딩존 수업 등록 표 ===== */
+/* 테이블 자체는 배경/라운드 없음 */
+.regist-table {
+  width: 1100px;
+  border-spacing: 0;
+  table-layout: fixed;
+  background: transparent !important; /* ← 테이블 배경 제거 */
+}
+
+/* 표 전체 컨테이너를 학생 테이블과 동일하게 라운드/클리핑 */
+.regist-table-card {
+  border-radius: 10px;
+  background: #fff;
+  margin-bottom: 10px !important; /* 기본 여백을 100px로 설정 */
+}
+
+.regist-table thead {
+  position: relative;
+  z-index: 2; /* 바디 위 레이어 */
+}
+/* 헤더 배경: 각 셀에 직접 칠해 라운드가 확실히 보이도록 */
+.regist-table thead::before {
+  display: none;
+}
+
+/* 헤더 셀은 투명 배경 + 글자만 흰색 */
+.regist-table thead th,
+.regist-table thead th:first-child,
+.regist-table thead th:last-child {
+  background: #052940 !important; /* 헤더 셀에 직접 적용 */
+
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1;
+  text-align: center;
+  padding: 20px 24px;
+  position: relative;
+  z-index: 1; /* 글자가 배경판 위로 */
+}
+
+/* 상단 좌우 라운드 */
+.regist-table thead th:first-child {
+  border-top-left-radius: 10px !important;
+  border-bottom-left-radius: 10px !important; /* 헤더 하단 모서리도 둥글게 */
+}
+.regist-table thead th:last-child {
+  border-top-right-radius: 10px !important;
+  border-bottom-right-radius: 10px !important;
+}
+
+/* 바디는 유지 */
+.regist-table tbody td {
+  padding: 28px 0px;
+  text-align: center;
+  font-size: 15px;
+  color: #0b1f2a;
+  background: #ffffff;
+}
+.regist-table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 10px;
+}
+.regist-table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 10px;
+}
+.regist-table tbody td:first-child {
+  text-align: center;
+  font-weight: 600;
+  color: #052940;
+}
+
+.regist-table tbody td:nth-child(4) {
+  text-align: center;
+  font-weight: 600;
+  color: #052940;
+}
+/* 모든 행 아래 구분선 */
+.regist-table tbody tr td {
+  border-bottom: 1px solid #cfd8e3 !important;
+}
+
+/* 헤더와 바디가 맞닿을 때 첫 행 상단 보더가 헤더 라운드를 가리지 않도록 제거 */
+.regist-table tbody tr:first-child td {
+  border-top: none !important;
+}
+
+/* 마지막 행은 하단 보더 제거 + 라운드 노출 */
+.regist-table tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* 바디 레이어는 헤더보다 아래 */
+.regist-table tbody {
+  position: relative;
+  z-index: 1;
+}
+
+.regist-table tbody tr:hover td {
+  background: #f9fafb; /* 일반 학생 표와 동일한 hover 색상 */
+}
+
+/* (옵션) 세로도 가운데로 */
+.regist-table td {
+  vertical-align: middle;
+}
+
+/* 반응형: 모바일에서 여백과 글자 조금 축소 */
+@media (max-width: 768px) {
+  .regist-table thead th {
+    font-size: 14px;
+    padding: 14px 16px;
+  }
+  .regist-table tbody td {
+    font-size: 14px;
+    padding: 16px;
+  }
+}
+
+/* 과사조교 수업 등록 표 반응형 */
+@media (max-width: 1200px) {
+  .regist-table {
+    width: 960px !important;
+    max-width: 100%;
+  }
+
+  .regist-table-card {
+    width: 95%;
+    margin: 0 auto;
+    margin-bottom: 100px !important;
+  }
+
+  /* 헤더와 바디 높이 조정 */
+  .regist-table thead th {
+    padding: 17px 20px !important;
+    font-size: 15px !important;
+  }
+
+  .regist-table tbody td {
+    padding: 30px 0px !important;
+    font-size: 14px !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .regist-table {
+    width: 795px !important;
+    max-width: 100%;
+  }
+
+  /* 헤더와 바디 높이 조정 */
+  .regist-table thead th {
+    padding: 14px 16px !important;
+    font-size: 14px !important;
+  }
+
+  .regist-table tbody td {
+    padding: 25px 0px !important;
+    font-size: 13px !important;
+  }
+
+  .regist-table-card {
+    margin-bottom: 80px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .regist-table {
+    width: 671px !important;
+    max-width: 100%;
+  }
+
+  .regist-table thead th {
+    padding: 14px 8px !important;
+    font-size: 13px !important;
+  }
+
+  .regist-table tbody td {
+    padding: 20px 0px !important;
+    font-size: 12px !important;
+  }
+
+  .regist-table-card {
+    margin-bottom: 60px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .regist-table {
+    width: 423px !important;
+    max-width: 100%;
+  }
+
+  .regist-table thead th {
+    padding: 10px 6px !important;
+    font-size: 10px !important;
+  }
+
+  .regist-table tbody td {
+    padding: 17px 0px !important;
+    font-size: 9px !important;
+  }
+
+  .regist-table-card {
+    margin-bottom: 40px !important;
+  }
 }
 
 @media (max-width: 1500px) {

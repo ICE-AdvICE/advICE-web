@@ -74,7 +74,7 @@ body {
 }
 
 .codingzone-body-container {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 37.5px auto;
   padding: 0 10px 10px 10px;
   margin-bottom: 100px;
@@ -334,6 +334,11 @@ body {
   border-radius: 12px;
   /* 툴팁이 테이블 밖으로 나올 수 있게 */
   overflow: visible;
+  /* 가로 스크롤 완전 차단 */
+  overflow-x: hidden;
+  /* 테이블 중앙 정렬 */
+  display: flex;
+  justify-content: center;
 }
 
 /* 스크롤 박스(헤더/바디 한 테이블이므로 가로/세로 스크롤만) */
@@ -342,15 +347,19 @@ body {
   /* 툴팁 클리핑 방지 */
   overflow: visible;
   background: #fff;
+  /* 가로 스크롤 완전 차단 */
+  overflow-x: hidden;
 }
 .czp-table-scroll {
   /* 툴팁이 어느 방향으로도 잘리지 않게 */
   overflow: visible;
+  /* 가로 스크롤 제거 */
+  overflow-x: hidden;
 }
 
 /* 표 레이아웃 */
 .czp-table {
-  width: 100%;
+  width: 1100px;
   border-collapse: separate !important;
   /* 헤더와 바디가 맞닿도록 간격 제거 */
   border-spacing: 0 !important;

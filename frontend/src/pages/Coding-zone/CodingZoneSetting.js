@@ -381,106 +381,175 @@ const ClassSetting = () => {
           <div className="cza_button_container" style={{ textAlign: "center" }}>
             <CodingZoneBoardbar />
           </div>
-          <div className="setting-label">
-            <span className="column-label1">코딩존</span>
-            <span className="column-label2">과목명</span>
-          </div>
-          <div className="setting-table-container">
-            <table className="form-table">
-              {/* 이미 등록된 매핑: 항상 리스트에 남김(읽기 전용) */}
-              {loading ? (
+
+          {/* 코딩존 설정 표 */}
+          <div
+            className="regist-table-card"
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              width: "100%",
+              marginBottom: "100px",
+            }}
+          >
+            <table className="regist-table" style={{ width: "1100px" }}>
+              <thead>
                 <tr>
-                  <td colSpan={2} style={{ textAlign: "center" }}>
-                    불러오는 중…
-                  </td>
+                  <th style={{ width: "30%", textAlign: "center" }}></th>
+                  <th style={{ width: "20%", textAlign: "center" }}>코딩존</th>
+                  <th style={{ width: "70%", textAlign: "center" }}>과목명</th>
+                  <th style={{ width: "13%", textAlign: "center" }}></th>
+                  <th style={{ width: "20%", textAlign: "center" }}></th>
                 </tr>
-              ) : (
-                existingMappings.map((m) => (
-                  <tr
-                    key={`existing-${m.subjectId}`}
-                    className="registered-row"
-                  >
-                    <td>
-                      <input value={m.subjectId} disabled />
-                    </td>
-                    <td className="subject-cell">
-                      <input
-                        type="text"
-                        value={m.subjectName}
-                        onChange={(e) =>
-                          handleExistingChange(m.subjectId, e.target.value)
-                        }
-                      />
-                      <button
-                        className="delete-btn"
-                        onClick={() => handleDeleteExisting(m)}
-                        disabled={String(deletingId) === String(m.subjectId)}
-                      >
-                        {deletingId === m.subjectId ? "삭제중…" : "X"}
-                      </button>
+              </thead>
+              <tbody>
+                {/* 이미 등록된 매핑: 항상 리스트에 남김(읽기 전용) */}
+                {loading ? (
+                  <tr>
+                    <td colSpan={5} style={{ textAlign: "center" }}>
+                      불러오는 중…
                     </td>
                   </tr>
-                ))
-              )}
-              {rows.map((row) => {
-                const opts = getAvailableZones(row.id);
-                const noOpts = opts.length === 0;
+                ) : (
+                  existingMappings.map((m) => (
+                    <tr
+                      key={`existing-${m.subjectId}`}
+                      className="registered-row"
+                    >
+                      <td style={{ textAlign: "center" }}></td>
+                      <td style={{ textAlign: "center" }}>
+                        <input
+                          value={m.subjectId}
+                          disabled
+                          style={{
+                            width: "90%",
+                            padding: "8px 8px",
+                            border: "1px solid #cfd8e3",
+                            borderRadius: "5px",
+                            fontSize: "16px",
+                            textAlign: "center",
+                            backgroundColor: "#f5f5f5",
+                            color: "#052940",
+                            fontWeight: "500",
+                          }}
+                        />
+                      </td>
+                      <td style={{ textAlign: "center" }}>
+                        <input
+                          type="text"
+                          value={m.subjectName}
+                          onChange={(e) =>
+                            handleExistingChange(m.subjectId, e.target.value)
+                          }
+                          style={{
+                            width: "90%",
+                            padding: "11px 8px",
+                            border: "1px solid #cfd8e3",
+                            borderRadius: "5px",
+                            fontSize: "14px",
+                            textAlign: "center",
+                          }}
+                        />
+                      </td>
+                      <td style={{ textAlign: "center" }}>
+                        <button
+                          className="custom-btn btn-6"
+                          onClick={() => handleDeleteExisting(m)}
+                          disabled={String(deletingId) === String(m.subjectId)}
+                        >
+                          {deletingId === m.subjectId ? (
+                            "삭제중…"
+                          ) : (
+                            <span className="delete-icon">X</span>
+                          )}
+                        </button>
+                      </td>
+                      <td style={{ textAlign: "center" }}></td>
+                    </tr>
+                  ))
+                )}
 
-                return (
-                  <tr key={row.id}>
-                    <td>
-                      <select
-                        value={noOpts ? "" : row.codingZone} // 옵션 없으면 빈 값
-                        onChange={(e) =>
-                          handleChange(row.id, "codingZone", e.target.value)
-                        }
-                        disabled={noOpts} // 옵션 없으면 비활성
-                      >
-                        {noOpts ? (
-                          <option value="">사용 가능한 코딩존 없음</option>
-                        ) : (
-                          opts.map((z) => (
-                            <option key={z} value={z}>
-                              {z}
-                            </option>
-                          ))
-                        )}
-                      </select>
-                    </td>
+                {/* 새로운 행들 */}
+                {rows.map((row) => {
+                  const opts = getAvailableZones(row.id);
+                  const noOpts = opts.length === 0;
 
-                    <td className="subject-cell">
-                      <input
-                        type="text"
-                        placeholder="과목명을 입력해주세요.."
-                        value={row.subjectName}
-                        onChange={(e) =>
-                          handleChange(row.id, "subjectName", e.target.value)
-                        }
-                      />
-                      <button
-                        className="delete-btn"
-                        onClick={() => handleRemoveRow(row.id)}
-                      >
-                        X
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
+                  return (
+                    <tr key={row.id}>
+                      <td style={{ textAlign: "center" }}></td>
+                      <td style={{ textAlign: "center" }}>
+                        <select
+                          value={noOpts ? "" : row.codingZone}
+                          onChange={(e) =>
+                            handleChange(row.id, "codingZone", e.target.value)
+                          }
+                          disabled={noOpts}
+                          style={{
+                            width: "90%",
+                            padding: "12px 8px",
+                            border: "1px solid #cfd8e3",
+                            borderRadius: "5px",
+                            fontSize: "14px",
+                            textAlign: "center",
+                          }}
+                        >
+                          {noOpts ? (
+                            <option value="">사용 가능한 코딩존 없음</option>
+                          ) : (
+                            opts.map((z) => (
+                              <option key={z} value={z}>
+                                {z}
+                              </option>
+                            ))
+                          )}
+                        </select>
+                      </td>
+                      <td style={{ textAlign: "center" }}>
+                        <input
+                          type="text"
+                          placeholder="과목명을 입력해주세요.."
+                          value={row.subjectName}
+                          onChange={(e) =>
+                            handleChange(row.id, "subjectName", e.target.value)
+                          }
+                          style={{
+                            width: "90%",
+                            padding: "11px 8px",
+                            border: "1px solid #cfd8e3",
+                            borderRadius: "5px",
+                            fontSize: "14px",
+                            textAlign: "center",
+                          }}
+                        />
+                      </td>
+                      <td style={{ textAlign: "center" }}>
+                        <button
+                          className="custom-btn btn-6"
+                          onClick={() => handleRemoveRow(row.id)}
+                        >
+                          <span className="delete-icon">X</span>
+                        </button>
+                      </td>
+                      <td style={{ textAlign: "center" }}></td>
+                    </tr>
+                  );
+                })}
+              </tbody>
             </table>
+          </div>
 
-            <div className="button-group">
-              <button
-                className="add-btn"
-                onClick={handleAddRow}
-                disabled={getAvailableZonesStrict("new").length === 0}
-              >
-                추가
-              </button>
-              <button className="submit-btn" onClick={handleSubmit}>
-                등록
-              </button>
-            </div>
+          {/* 추가와 등록 버튼을 표의 우측 하단에 배치 */}
+          <div className="table-action-buttons">
+            <button
+              className="custom-btn btn-5"
+              onClick={handleAddRow}
+              disabled={getAvailableZonesStrict("new").length === 0}
+            >
+              추가
+            </button>
+            <button className="custom-btn btn-submit" onClick={handleSubmit}>
+              등록
+            </button>
           </div>
         </div>
       </div>
