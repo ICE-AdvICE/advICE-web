@@ -591,6 +591,13 @@ body {
   height: "auto";
 }
 
+.codingzone-owl {
+  width: 800px;
+  height: "auto";
+  display: "block";
+  margin: "40px auto";
+}
+
 @media (max-width: 1280px) {
   .czp-guide-image {
     width: 850px;
@@ -598,6 +605,11 @@ body {
   }
   .czp-subject-bar {
     transform: scale(0.9);
+  }
+
+  .codingzone-owl {
+    width: 650px;
+    height: auto;
   }
 }
 
@@ -649,6 +661,11 @@ body {
     transform: scale(0.7);
     margin-bottom: -60px;
     margin-right: 90px;
+  }
+
+  .codingzone-owl {
+    width: 550px;
+    height: auto;
   }
 }
 
@@ -704,6 +721,11 @@ body {
     transform: scale(0.6);
     justify-self: center;
   }
+
+  .codingzone-owl {
+    width: 500px;
+    height: auto;
+  }
 }
 
 @media (max-width: 600px) {
@@ -722,6 +744,10 @@ body {
     transform: scale(0.6);
     margin-bottom: -55px;
     margin-right: 40%;
+  }
+  .codingzone-owl {
+    width: 450px;
+    height: auto;
   }
 }
 
@@ -790,9 +816,14 @@ body {
     margin-bottom: -55px;
     margin-right: 39%;
   }
+
+  .codingzone-owl {
+    width: 360px;
+    height: auto;
+  }
 }
 
-@media (max-width: 395px) {
+@media (max-width: 390px) {
   .czcard p,
   .codingzone-title p,
   .codingzone-date button {
@@ -817,5 +848,17 @@ body {
     white-space: nowrap;
     transform: scale(0.35);
     justify-self: center;
+  }
+
+  .codingzone-owl {
+    width: 270px;
+    height: auto;
+  }
+}
+
+@media (max-width: 375px) {
+  .codingzone-owl {
+    width: 255px;
+    height: auto;
   }
 }
