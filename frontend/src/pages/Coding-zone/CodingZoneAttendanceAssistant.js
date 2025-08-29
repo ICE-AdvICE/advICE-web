@@ -35,7 +35,7 @@ const CodingZoneAttendanceAssistant = () => {
     const day = String(d.getDate()).padStart(2, "0");
     return `${y}-${m}-${day}`;
   };
-  const [selectedDateYMD, setSelectedDateYMD] = useState(dateToYMD(new Date()));
+  const [selectedDateYMD, setSelectedDateYMD] = useState(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -233,7 +233,10 @@ const CodingZoneAttendanceAssistant = () => {
         <div className="czm_manager_container">
           <CalendarInput
             value={selectedDateYMD}
-            onChange={setSelectedDateYMD}
+            onChange={(date) => {
+              // 빈 문자열이 전달되면 null로 변환하여 UI가 사라지지 않도록 함
+              setSelectedDateYMD(date === "" ? null : date);
+            }}
             disabledDates={isWeekendYMD}
             placeholder="날짜를 선택하세요"
             className="custom_manager_datepicker"
