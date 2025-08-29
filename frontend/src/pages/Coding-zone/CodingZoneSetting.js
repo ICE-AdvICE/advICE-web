@@ -203,7 +203,7 @@ const ClassSetting = () => {
       // 기존 행이 있으면 유효성만 재조정
       return reconcileRows(prev);
     });
-  }, [mappingsLoaded, existingMappings]);
+  }, [mappingsLoaded]); // existingMappings 의존성 제거
 
   const handleAddRow = () => {
     const id = newRowId();
@@ -340,6 +340,8 @@ const ClassSetting = () => {
 
     if (result.success) {
       alert("등록 완료!");
+
+      // 1) existing/원본 동기 갱신
       const nextExisting = (() => {
         const map = new Map(
           existingMappings.map((x) => [String(x.subjectId), x])
@@ -353,11 +355,10 @@ const ClassSetting = () => {
         return Array.from(map.values()).sort(sortBySubjectId);
       })();
 
-      // 2) existing/원본 동기 갱신
       setExistingMappings(nextExisting);
       setExistingOrig(nextExisting);
 
-      // 3) 남은 슬롯으로 "항상 1줄만" 초기화
+      // 2) 남은 슬롯으로 "항상 1줄만" 초기화 (useEffect 재실행 방지)
       const used = new Set(nextExisting.map((m) => String(m.subjectId)));
       const free = ALL_ZONES.filter((z) => !used.has(z));
       if (free.length === 0) {
