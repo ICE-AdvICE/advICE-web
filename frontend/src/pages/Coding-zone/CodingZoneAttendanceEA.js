@@ -87,7 +87,7 @@ const CodingZoneAttendanceAssistant = () => {
     const day = String(d.getDate()).padStart(2, "0");
     return `${y}-${m}-${day}`;
   };
-  const [selectedDateYMD, setSelectedDateYMD] = useState(dateToYMD(new Date()));
+  const [selectedDateYMD, setSelectedDateYMD] = useState(null);
 
   useEffect(() => {
     fetchAuthType();
@@ -367,16 +367,23 @@ const CodingZoneAttendanceAssistant = () => {
         <div className="czm_manager_container">
           <CalendarInput
             value={selectedDateYMD}
-            onChange={setSelectedDateYMD} // 같은 날짜 다시 클릭하면 null로 해제됨
+            onChange={(date) => {
+              // 빈 문자열이 전달되면 null로 변환하여 UI가 사라지지 않도록 함
+              setSelectedDateYMD(date === "" ? null : date);
+            }}
             disabledDates={isWeekendYMD} // 주말 비활성
             placeholder="날짜를 선택하세요"
             className="custom_manager_datepicker" // 기존 클래스 재사용 가능
           />
         </div>
         {/* ====== 과목 카드 그리드 (panel-gray 안) ====== */}
-        {selectedDateYMD && !selectedSubjectId && (
+        {!selectedSubjectId && (
           <div className="panel-gray" style={{ marginBottom: "100px" }}>
-            {isSubjectsLoading ? (
+            {!selectedDateYMD ? (
+              <div className="panel-empty">
+                조회하고자 하는 날짜를 입력해주세요.
+              </div>
+            ) : isSubjectsLoading ? (
               <div className="panel-empty">과목을 불러오는 중…</div>
             ) : subjects.length === 0 ? (
               <div className="panel-empty">

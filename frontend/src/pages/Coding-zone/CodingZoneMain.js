@@ -48,8 +48,8 @@ const ReserveCell = ({
   // 비로그인 사용자는 라벨 고정 및 비상호작용 + 커스텀 툴팁 표시
   if (!loggedIn) {
     const tooltipText = isFull
-      ? "정원이 마감되어 예약할 수 없습니다."
-      : "로그인 후 이용 가능합니다.";
+      ? "정원이 마감되었습니다."
+      : "로그인 후 가능합니다.";
     return (
       <span
         className={`czp-tag ${isFull ? "full" : "ok"}`}
@@ -307,21 +307,68 @@ const CodingMain = () => {
       const res = await getczattendlistRequest(token, setCookie, navigate);
       if (res?.code === "SU") {
         const list = res.attendList || [];
-        const metas = list.map((it) => ({
-          classNum: Number(it.registrationId) ? undefined : undefined, // placeholder; classNum 모르면 보수적으로 유지
-          subjectId: undefined,
-          classDate: String(it.classDate || ""),
-          classTime: String(it.classTime || ""),
-          weekDay: "", // 요일은 표 렌더링 시 비교에서 사용하지 않음(같은 과목 주차는 classDate 기준)
-        }));
-        // 새로운 사용자로 로그인했을 때 기존 sessionStorage 데이터 완전 정리
-        clearAllCodingZoneStorage();
-        // 서버에서 받은 예약 데이터로 새로 설정
-        writeReservedMetas(metas);
-        setReservedMetas(metas);
+        // getczattendlistRequest는 subjectId와 weekDay를 제공하지 않으므로
+        // 현재 선택된 과목이 있다면 해당 과목의 예약 상태를 직접 조회
+        if (selectedSubjectIdPub) {
+          try {
+            const classRes = await fetchClassListBySubjectForUser(
+              selectedSubjectIdPub,
+              token
+            );
+            if (classRes?.code === "SU") {
+              const registed =
+                typeof classRes.data?.registedClassNum === "number"
+                  ? classRes.data.registedClassNum
+                  : 0;
+              if (registed > 0) {
+                // 현재 과목에 예약이 있으면 해당 정보로 메타 구성
+                const classList = classRes.data?.classList || [];
+                const reservedClass = classList.find(
+                  (c) => c.classNum === registed
+                );
+                if (reservedClass) {
+                  const meta = {
+                    classNum: registed,
+                    subjectId: selectedSubjectIdPub,
+                    classDate: String(reservedClass.classDate || ""),
+                    classTime: String(reservedClass.classTime || ""),
+                    weekDay: String(reservedClass.weekDay || ""),
+                  };
+                  writeReservedMetas([meta]);
+                  setReservedMetas([meta]);
+                  setMyReservedPub(registed);
+                  setMyReservedSubjectId(String(selectedSubjectIdPub));
+                  setMyReservedWeekDay(String(reservedClass.weekDay || ""));
+                  setMyReservedClassTime(String(reservedClass.classTime || ""));
+                  return;
+                }
+              }
+            }
+          } catch (error) {
+            console.warn("현재 과목 예약 상태 조회 실패:", error);
+          }
+        }
+
+        // 기본적으로는 기존 sessionStorage 데이터 유지
+        const existingMetas = readReservedMetas();
+        if (existingMetas.length > 0) {
+          setReservedMetas(existingMetas);
+          // 현재 과목에 대한 예약 상태 복원
+          if (selectedSubjectIdPub) {
+            const currentMeta = existingMetas.find(
+              (m) => String(m.subjectId) === String(selectedSubjectIdPub)
+            );
+            if (currentMeta) {
+              setMyReservedPub(Number(currentMeta.classNum));
+              setMyReservedSubjectId(String(currentMeta.subjectId));
+              setMyReservedWeekDay(String(currentMeta.weekDay || ""));
+              setMyReservedClassTime(String(currentMeta.classTime || ""));
+            }
+          }
+        }
       }
     })();
-  }, [cookies.accessToken]);
+  }, [cookies.accessToken, selectedSubjectIdPub]);
   const formatHHmmRangeFromStart = (startTime) => {
     if (!startTime) return "";
     const [hh, mm] = startTime.split(":").map(Number);
@@ -538,6 +585,30 @@ const CodingMain = () => {
       handlePickSubjectPublic(sid, sname);
     }
   }, [isAdmin, publicSubjects, selectedSubjectIdPub]);
+
+  // 과목 선택 변경 시 예약 상태 동기화
+  useEffect(() => {
+    if (isAdmin || !selectedSubjectIdPub) return;
+
+    // 현재 선택된 과목에 대한 예약 상태 확인
+    const metas = readReservedMetas();
+    const currentSubjectMeta = metas.find(
+      (m) => String(m.subjectId) === String(selectedSubjectIdPub)
+    );
+
+    if (currentSubjectMeta) {
+      setMyReservedPub(Number(currentSubjectMeta.classNum));
+      setMyReservedSubjectId(String(currentSubjectMeta.subjectId));
+      setMyReservedWeekDay(String(currentSubjectMeta.weekDay || ""));
+      setMyReservedClassTime(String(currentSubjectMeta.classTime || ""));
+    } else {
+      // 해당 과목에 예약이 없으면 초기화
+      setMyReservedPub(0);
+      setMyReservedSubjectId(null);
+      setMyReservedWeekDay("");
+      setMyReservedClassTime("");
+    }
+  }, [selectedSubjectIdPub, isAdmin]);
 
   // 요일과 슬라이더 설정을 상수로 정의
   const daysOfWeek = ["월요일", "화요일", "수요일", "목요일", "금요일"];
@@ -1039,26 +1110,42 @@ const CodingMain = () => {
     if (code === "SU") {
       const normalized = Array.isArray(list) ? list : [];
       setClassListPub(normalized);
-      // 세션의 복수 예약 메타를 우선 적용하여 해당 과목의 '내 예약' 표시
+
+      // 서버 응답과 세션 메타를 모두 고려하여 예약 상태 복원
+      let finalReservedPub = registed;
+      let finalSubjectId = subjectId;
+      let finalWeekDay = "";
+      let finalClassTime = "";
+
+      // 1. 세션의 복수 예약 메타에서 해당 과목 찾기
       const metas = readReservedMetas();
       setReservedMetas(metas);
       const mineInThisSubject = metas.find(
         (m) => String(m.subjectId) === String(subjectId)
       );
+
       if (mineInThisSubject) {
-        setMyReservedPub(Number(mineInThisSubject.classNum));
-        setMyReservedSubjectId(String(mineInThisSubject.subjectId));
-        setMyReservedWeekDay(String(mineInThisSubject.weekDay || ""));
-        setMyReservedClassTime(String(mineInThisSubject.classTime || ""));
-      } else {
-        setMyReservedPub(registed);
+        // 세션 메타에 있으면 우선 사용
+        finalReservedPub = Number(mineInThisSubject.classNum);
+        finalSubjectId = String(mineInThisSubject.subjectId);
+        finalWeekDay = String(mineInThisSubject.weekDay || "");
+        finalClassTime = String(mineInThisSubject.classTime || "");
+      } else if (registed > 0) {
+        // 서버 응답에 예약 정보가 있으면 사용
+        finalReservedPub = registed;
         const mineRow = normalized.find((r) => r.classNum === registed);
         if (mineRow) {
-          setMyReservedSubjectId(subjectId);
-          setMyReservedWeekDay(String(mineRow.weekDay || ""));
-          setMyReservedClassTime(String(mineRow.classTime || ""));
+          finalWeekDay = String(mineRow.weekDay || "");
+          finalClassTime = String(mineRow.classTime || "");
         }
       }
+
+      // 최종 상태 설정
+      setMyReservedPub(finalReservedPub);
+      setMyReservedSubjectId(finalSubjectId);
+      setMyReservedWeekDay(finalWeekDay);
+      setMyReservedClassTime(finalClassTime);
+
       // 성공인데 리스트가 비면 EMPTY 배너로 정리
       if (!list.length) setBannerPub("EMPTY");
       return;
@@ -1434,7 +1521,7 @@ const CodingMain = () => {
               <img
                 src="/Codingzone-noregist.png"
                 alt="예약 안내 이미지"
-                className="czp-guide-image"
+                className="codingzone-owl"
               />
             )}
 
@@ -1453,10 +1540,13 @@ const CodingMain = () => {
                   <div className="panel-empty">현재 예약 시간이 아닙니다.</div>
                 </div>
               )}
+            {/* ④ 코딩존 수업이 없을 때: 이미지 표시 */}
             {selectedSubjectIdPub && !loadingPub && bannerPub === "EMPTY" && (
-              <div className="panel-block panel-gray">
-                <div className="panel-empty">해당 코딩존 수업이 없습니다.</div>
-              </div>
+              <img
+                src="/Codingzone-noregist.png"
+                alt="해당 코딩존 수업이 없습니다"
+                className="codingzone-owl"
+              />
             )}
 
             {/* ④ 리스트(표): 로딩 끝 + 성공 + 실제 데이터가 있을 때만 렌더 */}

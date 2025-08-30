@@ -16,8 +16,7 @@ import { getczattendlistRequest } from "../../features/api/CodingzoneApi.js";
 import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네비게이션 바 컴포넌트
 import Banner from "../../shared/ui/Banner/Banner"; // ✅ 추가(juhui): 공통 배너 컴포넌트 적용
 import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js"; //코딩존 보드 바(버튼 네개) 컴포넌트
-import CalendarInput from "../../widgets/Calendar/CalendarInput";
-import { isWeekendYMD } from "../../shared/lib/date";
+import CalendarInput from "../../widgets/Calendar/CalendarInput"; // 캘린더 입력 컴포넌트
 
 const CodingZoneAttendanceAssistant = () => {
   const [attendList, setAttendList] = useState([]);
@@ -35,7 +34,17 @@ const CodingZoneAttendanceAssistant = () => {
     const day = String(d.getDate()).padStart(2, "0");
     return `${y}-${m}-${day}`;
   };
-  const [selectedDateYMD, setSelectedDateYMD] = useState(dateToYMD(new Date()));
+  const [selectedDateYMD, setSelectedDateYMD] = useState(null);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const now = new Date();
+      const currentDate = new Date(selectedDateYMD);
+      console.log("Checking date:", now, currentDate); // Debugging log
+    }, 10000); // Check every 10 seconds for debugging
+
+    return () => clearInterval(timer); // Clear the timer when the component unmounts
+  }, [selectedDateYMD]);
 
   useEffect(() => {
     fetchAuthType();
@@ -87,6 +96,7 @@ const CodingZoneAttendanceAssistant = () => {
   };
 
   const fetchReservedList = async () => {
+    const formattedDate = selectedDateYMD;
     const response = await getCodingzoneReservedListByDate(
       token,
       selectedDateYMD,
@@ -191,6 +201,7 @@ const CodingZoneAttendanceAssistant = () => {
       isFuture: isFutureDate,
     });
 
+    // 과거와 현재 날짜는 항상 활성화
     if (isFutureDate) {
       console.log("미래 날짜 감지 - 출석/결석 버튼 비활성화:", classDateStr);
       return false;
@@ -198,6 +209,12 @@ const CodingZoneAttendanceAssistant = () => {
 
     console.log("과거/오늘 날짜 - 출석/결석 버튼 활성화:", classDateStr);
     return true;
+  };
+
+  const isWeekendYMD = (dateYMD) => {
+    const date = new Date(dateYMD);
+    const dayOfWeek = date.getDay();
+    return dayOfWeek === 0 || dayOfWeek === 6; // 0: 일요일, 6: 토요일
   };
 
   return (
@@ -215,7 +232,10 @@ const CodingZoneAttendanceAssistant = () => {
         <div className="czm_manager_container">
           <CalendarInput
             value={selectedDateYMD}
-            onChange={setSelectedDateYMD}
+            onChange={(date) => {
+              // 빈 문자열이 전달되면 null로 변환하여 UI가 사라지지 않도록 함
+              setSelectedDateYMD(date === "" ? null : date);
+            }}
             disabledDates={isWeekendYMD}
             placeholder="날짜를 선택하세요"
             className="custom_manager_datepicker"
@@ -366,7 +386,7 @@ const CodingZoneAttendanceAssistant = () => {
                                       ? "btn_manager_attendance"
                                       : "btn_manager_attendance-disabled future-date"
                                   }
-                                  onClick={() =>
+                                  onClick={(e) =>
                                     canUpdate
                                       ? handleAttendanceUpdate(student, "1")
                                       : null
@@ -386,7 +406,7 @@ const CodingZoneAttendanceAssistant = () => {
                                       ? "btn_manager_absence"
                                       : "btn_manager_absence-disabled future-date"
                                   }
-                                  onClick={() =>
+                                  onClick={(e) =>
                                     canUpdate
                                       ? handleAttendanceUpdate(student, "0")
                                       : null
