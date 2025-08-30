@@ -122,6 +122,7 @@
   height: 400px;
   display: flex;
   flex-direction: column;
+  min-height: 400px;
 }
 
 /* 헤더 */
@@ -132,7 +133,8 @@
 .edit-modal .modal-body {
   height: auto;
   padding: 18px 22px 20px;
-  overflow: auto;
+  overflow: visible;
+  flex: 1;
 }
 
 /* 남색 헤더 바 (라벨) */
@@ -183,6 +185,20 @@
 /* 푸터 */
 .edit-modal .modal-footer {
   padding: 23px 35px;
+}
+
+/* EditModal 전용 푸터 */
+.edit-modal-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #052940;
+  padding: 15px 35px;
+  margin-top: 20px;
+  background-color: #fff;
+  position: relative;
+  z-index: 1;
 }
 
 /* 하단 버튼 */

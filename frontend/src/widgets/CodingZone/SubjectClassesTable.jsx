@@ -22,6 +22,7 @@ export default function SubjectClassesTable({
   onEmptyAfterDelete,
   onDateChanged,
   seedRows = [],
+  isEditing = false, // 수정 중인지 여부
 }) {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -33,10 +34,8 @@ export default function SubjectClassesTable({
   const inFlightRef = useRef(false);
 
   useEffect(() => {
-    // 시드 데이터가 있으면 먼저 즉시 표시 (서버 재조회는 아래서 별도 수행)
-    if (Array.isArray(seedRows) && seedRows.length > 0) {
-      setRows(seedRows);
-    }
+    // 일반적인 데이터 로딩 로직
+
     let ignore = false;
     const run = async () => {
       if (!selectedDateYMD || !selectedSubjectId) return;
@@ -78,7 +77,14 @@ export default function SubjectClassesTable({
     return () => {
       ignore = true;
     };
-  }, [selectedSubjectId, accessToken, setCookie, navigate, seedRows]);
+  }, [
+    selectedSubjectId,
+    selectedDateYMD,
+    accessToken,
+    setCookie,
+    navigate,
+    seedRows,
+  ]);
 
   // 날짜가 변경될 때 과목 선택 초기화 (단, 과목이 이미 선택된 상태가 아닐 때만)
   useEffect(() => {
@@ -436,26 +442,18 @@ export default function SubjectClassesTable({
               String(payload.subjectId) !== String(selectedSubjectId);
 
             if (dateChanged || subjectChanged) {
-              // 현재 리스트에서 제거하고, 부모에 알림(새 날짜/과목으로 이동 + 시드 전달)
+              // 날짜나 과목이 변경된 경우: 현재 페이지에 머물러 있음
+              // 1. UI 정리
               setRows((prev) =>
                 prev.filter((it) => it.classNum !== editTarget.classNum)
               );
               setEditOpen(false);
               setEditTarget(null);
-              if (typeof onDateChanged === "function") {
-                const seed = {
-                  classNum: editTarget.classNum,
-                  classDate: newDate,
-                  classTime: payload.classTime,
-                  assistantName: payload.assistantName,
-                  maximumNumber: payload.maximumNumber,
-                  groupId: payload.groupId,
-                  className: payload.className,
-                  currentNumber: 0,
-                };
-                onDateChanged(newDate, payload?.subjectId, seed);
-              }
-              alert("수정이 완료되었습니다.");
+
+              // 2. 사용자에게 안내
+              alert(
+                "수정이 완료되었습니다. 확인하시려면 변경된 날짜/과목으로 이동해주세요."
+              );
             } else {
               // 동일 날짜/과목: 현재 리스트 항목만 즉시 갱신
               setRows((prev) =>

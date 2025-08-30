@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import CommonModal from "./CommonModal";
-import "./CommonModal.css";
 import "./EditModal.css";
 import {
   fetchAssistantsBySubjectId,
@@ -341,242 +339,268 @@ function EditModal({
   console.log("EditModal 렌더링 중, isOpen:", isOpen);
 
   return (
-    <div className="edit-modal">
-      <CommonModal
-        isOpen={isOpen}
-        closeModal={onClose}
-        title="AdvICE"
-        closeType="icon"
-        disableOverlayClose={true}
-        showFooterLogo={true}
-        rootClassName="edit-modal-root"
-        contentClassName="edit-modal-content"
-      >
-        {/* 폼은 단 하나! */}
-        <form id="edit-form" onSubmit={submit} noValidate>
-          {/* 헤더 바 */}
-          <div className="edit-grid-head">
-            <span>조</span>
-            <span>요일</span>
-            <span>날짜</span>
-            <span>시간</span>
-            <span>과목명</span>
-            <span>조교명</span>
-            <span>인원</span>
-          </div>
+    <div className="edit-modal-overlay" onClick={onClose}>
+      <div className="edit-modal" onClick={(e) => e.stopPropagation()}>
+        {/* 헤더 */}
+        <div className="edit-modal-header">
+          <h2 className="edit-modal-title">AdvICE</h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="edit-modal-x-button"
+            aria-label="닫기"
+            title="닫기"
+          >
+            ✕
+          </button>
+        </div>
 
-          {/* 입력 라인 */}
-          <div className="edit-grid-row">
-            {/* 조 */}
-            <select
-              id="edit-groupId"
-              name="groupId"
-              value={form.groupId}
-              onChange={(e) => {
-                const next = (e.target.value || "").trim().toUpperCase();
-                console.log("[EditModal] groupId change ->", next);
-                update("groupId", next);
-                onDirty?.();
-              }}
-              required
-            >
-              <option value="" disabled>
-                {" "}
-                -{" "}
-              </option>
-              <option value="A">A</option>
-              <option value="B">B</option>
-            </select>
+        {/* 바디 */}
+        <div className="edit-modal-body">
+          {/* 폼은 단 하나! */}
+          <form id="edit-form" onSubmit={submit} noValidate>
+            <div className="edit-table-container">
+              <table className="edit-table">
+                <thead>
+                  <tr>
+                    <th>조</th>
+                    <th>요일</th>
+                    <th>날짜</th>
+                    <th>시간</th>
+                    <th>과목명</th>
+                    <th>조교명</th>
+                    <th>인원</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    {/* 조 */}
+                    <td>
+                      <select
+                        id="edit-groupId"
+                        name="groupId"
+                        value={form.groupId}
+                        onChange={(e) => {
+                          const next = (e.target.value || "")
+                            .trim()
+                            .toUpperCase();
+                          console.log("[EditModal] groupId change ->", next);
+                          update("groupId", next);
+                        }}
+                        required
+                      >
+                        <option value="" disabled>
+                          {" "}
+                          -{" "}
+                        </option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                      </select>
+                    </td>
 
-            {/* 요일 (표시 전용: 날짜로부터 자동 계산됨) */}
-            <select
-              value={form.weekDay}
-              disabled
-              aria-readonly="true"
-              title="날짜에 따라 자동으로 결정됩니다"
-            >
-              <option value="" disabled>
-                요일 선택
-              </option>
-              {form.weekDay && !WEEK_OPTIONS.includes(form.weekDay) && (
-                <option value={form.weekDay}>{form.weekDay} (현재값)</option>
-              )}
-              {WEEK_OPTIONS.map((w) => (
-                <option key={w} value={w}>
-                  {w}
-                </option>
-              ))}
-            </select>
+                    {/* 요일 (표시 전용: 날짜로부터 자동 계산됨) */}
+                    <td>
+                      <select
+                        value={form.weekDay}
+                        disabled
+                        aria-readonly="true"
+                        title="날짜에 따라 자동으로 결정됩니다"
+                      >
+                        <option value="" disabled>
+                          요일 선택
+                        </option>
+                        {form.weekDay &&
+                          !WEEK_OPTIONS.includes(form.weekDay) && (
+                            <option value={form.weekDay}>
+                              {form.weekDay} (현재값)
+                            </option>
+                          )}
+                        {WEEK_OPTIONS.map((w) => (
+                          <option key={w} value={w}>
+                            {w}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
 
-            {/* 날짜 (MM-DD) */}
-            <input
-              type="text"
-              id="edit-classDate"
-              name="classDate"
-              placeholder="MM-DD"
-              value={form.classDate}
-              onChange={(e) => {
-                update("classDate", e.target.value);
-                // 날짜가 바뀌면 요일 자동 반영
-                const api = toApiDate(e.target.value);
-                update("weekDay", weekDayFromDate(api));
-                onDirty?.(); // ⬅️ 추가
-              }}
-              pattern="^(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$"
-              title="날짜는 MM-DD 형식으로 입력하세요. 예: 03-15"
-              required
-            />
+                    {/* 날짜 (MM-DD) */}
+                    <td>
+                      <input
+                        type="text"
+                        id="edit-classDate"
+                        name="classDate"
+                        placeholder="MM-DD"
+                        value={form.classDate}
+                        onChange={(e) => {
+                          update("classDate", e.target.value);
+                          // 날짜가 바뀌면 요일 자동 반영
+                          const api = toApiDate(e.target.value);
+                          update("weekDay", weekDayFromDate(api));
+                        }}
+                        pattern="^(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$"
+                        title="날짜는 MM-DD 형식으로 입력하세요. 예: 03-15"
+                        required
+                      />
+                    </td>
 
-            {/* 시간 (HH:MM) */}
-            <select
-              id="edit-classTime"
-              name="classTime"
-              value={form.classTime}
-              onChange={(e) => {
-                update("classTime", e.target.value);
-                onDirty?.(); // ⬅️ 추가;
-              }}
-              required
-            >
-              <option value="" disabled>
-                시간 선택
-              </option>
-              {[
-                "09:00",
-                "09:30",
-                "10:00",
-                "10:30",
-                "11:00",
-                "11:30",
-                "12:00",
-                "12:30",
-                "13:00",
-                "13:30",
-                "14:00",
-                "14:30",
-                "15:00",
-                "15:30",
-                "16:00",
-                "16:30",
-                "17:00",
-                "17:30",
-              ].map((t) => (
-                <option key={t} value={t}>
-                  {t}
-                </option>
-              ))}
-            </select>
+                    {/* 시간 (HH:MM) */}
+                    <td>
+                      <select
+                        id="edit-classTime"
+                        name="classTime"
+                        value={form.classTime}
+                        onChange={(e) => {
+                          update("classTime", e.target.value);
+                        }}
+                        required
+                      >
+                        <option value="" disabled>
+                          시간 선택
+                        </option>
+                        {[
+                          "09:00",
+                          "10:00",
+                          "11:00",
+                          "12:00",
+                          "13:00",
+                          "14:00",
+                          "15:00",
+                          "16:00",
+                          "17:00",
+                          "18:00",
+                          "19:00",
+                          "20:00",
+                        ].map((t) => (
+                          <option key={t} value={t}>
+                            {t}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
 
-            {/* 과목 */}
-            <select
-              value={subjectId}
-              onChange={(e) => {
-                const sid = e.target.value;
-                setSubjectId(sid);
-                // 과목 바뀌면 조교 초기화 + 과목명 동기화
-                update("assistantName", "");
-                const picked = subjects.find((s) => idEq(getId(s), sid));
-                update("className", picked ? picked.name : "");
-                onDirty?.(); // ⬅️ 추가// 과목 바뀌면 조교 초기화
-              }}
-              required
-            >
-              <option value="" disabled>
-                과목 선택
-              </option>
-              {subjectId &&
-                !subjects.some((s) => idEq(getId(s), subjectId)) && (
-                  <option value={subjectId}></option>
-                )}
-              {subjects.map((s) => (
-                <option key={getId(s)} value={getId(s)}>
-                  {getName(s)}
-                </option>
-              ))}
-            </select>
+                    {/* 과목 */}
+                    <td>
+                      <select
+                        value={subjectId}
+                        onChange={(e) => {
+                          const sid = e.target.value;
+                          setSubjectId(sid);
+                          // 과목 바뀌면 조교 초기화 + 과목명 동기화
+                          update("assistantName", "");
+                          const picked = subjects.find((s) =>
+                            idEq(getId(s), sid)
+                          );
+                          update("className", picked ? picked.name : "");
+                        }}
+                        required
+                      >
+                        <option value="" disabled>
+                          과목 선택
+                        </option>
+                        {subjectId &&
+                          !subjects.some((s) => idEq(getId(s), subjectId)) && (
+                            <option value={subjectId}></option>
+                          )}
+                        {subjects.map((s) => (
+                          <option key={getId(s)} value={getId(s)}>
+                            {getName(s)}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
 
-            {/* 조교 */}
-            <select
-              value={form.assistantName}
-              onChange={(e) => {
-                update("assistantName", e.target.value);
-                onDirty?.();
-              }}
-              id="edit-assistantName"
-              name="assistantName"
-              required
-            >
-              {/* 항상 명확한 placeholder 제공 (선택 전 value="") */}
-              <option value="" disabled>
-                {subjectId ? "조교를 선택하세요" : "과목을 먼저 선택하세요"}
-              </option>
+                    {/* 조교 */}
+                    <td>
+                      <select
+                        value={form.assistantName}
+                        onChange={(e) => {
+                          update("assistantName", e.target.value);
+                        }}
+                        id="edit-assistantName"
+                        name="assistantName"
+                        required
+                      >
+                        {/* 항상 명확한 placeholder 제공 (선택 전 value="") */}
+                        <option value="" disabled>
+                          {subjectId
+                            ? "조교를 선택하세요"
+                            : "과목을 먼저 선택하세요"}
+                        </option>
 
-              {subjectId && assistantsLoading && (
-                <option value="" disabled>
-                  조교 불러오는 중...
-                </option>
-              )}
-              {subjectId && !assistantsLoading && assistants.length === 0 && (
-                <option value="" disabled>
-                  등록된 조교 없음
-                </option>
-              )}
-              {form.assistantName &&
-                !assistants.includes(form.assistantName) && (
-                  <option value={form.assistantName}>
-                    {form.assistantName} (현재값)
-                  </option>
-                )}
-              {assistants.map((name) => (
-                <option key={name} value={name}>
-                  {name}
-                </option>
-              ))}
-            </select>
+                        {subjectId && assistantsLoading && (
+                          <option value="" disabled>
+                            조교 불러오는 중...
+                          </option>
+                        )}
+                        {subjectId &&
+                          !assistantsLoading &&
+                          assistants.length === 0 && (
+                            <option value="" disabled>
+                              등록된 조교 없음
+                            </option>
+                          )}
+                        {form.assistantName &&
+                          !assistants.includes(form.assistantName) && (
+                            <option value={form.assistantName}>
+                              {form.assistantName} (현재값)
+                            </option>
+                          )}
+                        {assistants.map((name) => (
+                          <option key={name} value={name}>
+                            {name}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
 
-            {/* 인원 */}
-            <select
-              id="edit-maximumNumber"
-              name="maximumNumber"
-              value={form.maximumNumber}
-              onChange={(e) => {
-                update("maximumNumber", e.target.value);
-                onDirty?.();
-              }}
-              required
-            >
-              <option value="" disabled>
-                인원 선택
-              </option>
-              {Array.from({ length: 20 }, (_, i) => String(i + 1)).map((n) => (
-                <option key={n} value={n}>
-                  {n}
-                </option>
-              ))}
-            </select>
-          </div>
+                    {/* 인원 */}
+                    <td>
+                      <input
+                        type="number"
+                        id="edit-maximumNumber"
+                        name="maximumNumber"
+                        placeholder="인원 입력"
+                        value={form.maximumNumber}
+                        onChange={(e) => {
+                          update("maximumNumber", e.target.value);
+                        }}
+                        min="1"
+                        max="50"
+                        required
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
-          {assistantsErr && (
-            <p className="form-error" style={{ marginTop: 8 }}>
-              조교 목록을 불러오지 못했습니다: {assistantsErr}
-            </p>
-          )}
+            {assistantsErr && (
+              <p className="form-error" style={{ marginTop: 8 }}>
+                조교 목록을 불러오지 못했습니다: {assistantsErr}
+              </p>
+            )}
+          </form>
+        </div>
 
-          {/* 제출 버튼: 폼 내부에 위치 */}
-          <div className="edit-actions" style={{ marginTop: 12 }}>
-            <button
-              type="button"
-              className="btn-submit"
-              onClick={(e) => {
-                console.log("수정 완료 버튼 직접 클릭됨!");
-                submit(e);
-              }}
-            >
-              수정 완료
-            </button>
-          </div>
-        </form>
-      </CommonModal>
+        {/* 푸터 */}
+        <div className="edit-modal-footer">
+          <img
+            src="/header-name.png"
+            alt="School Header"
+            className="edit-modal-logo"
+          />
+          <button
+            type="button"
+            onClick={(e) => {
+              console.log("수정 완료 버튼 직접 클릭됨!");
+              submit(e);
+            }}
+            className="edit-modal-close-button"
+          >
+            수정 완료
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
