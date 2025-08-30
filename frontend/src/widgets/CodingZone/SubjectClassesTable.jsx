@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   fetchClassesBySubjectAndDate,
   adminDeleteCodingzoneClassByClassNum,
@@ -10,6 +16,7 @@ import {
 } from "../../shared/lib/codingzoneStatus";
 import "./SubjectClassesTable.css";
 import EditModal from "../../shared/components/Modal/EditModal.jsx";
+import AlertModal from "../../shared/components/Modal/AlertModal.js";
 
 export default function SubjectClassesTable({
   selectedDateYMD, // "YYYY-MM-DD"
@@ -31,6 +38,8 @@ export default function SubjectClassesTable({
   const [editSubmitting, setEditSubmitting] = useState(false);
   const [editTarget, setEditTarget] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [alertModalOpen, setAlertModalOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
   const inFlightRef = useRef(false);
 
   useEffect(() => {
@@ -158,7 +167,7 @@ export default function SubjectClassesTable({
 
   // 주기적 자동 새로고침 (사용자 개입 없이 최신 상태 유지)
   useEffect(() => {
-    const POLL_MS = 500; // 매우 짧은 간격 폴링
+    const POLL_MS = 10000; // 10초 간격으로 폴링 간격 늘림
     let timer = null;
     const start = () => {
       if (timer) return;
@@ -293,6 +302,11 @@ export default function SubjectClassesTable({
       };
     });
   }, [rows, selectedDateYMD, selectedSubjectName, selectedSubjectId]);
+
+  // 모달 관련 함수들을 useCallback으로 최적화
+  const handleCloseAlertModal = useCallback(() => {
+    setAlertModalOpen(false);
+  }, []);
 
   if (!selectedSubjectId || !selectedDateYMD) return null;
 
@@ -447,13 +461,18 @@ export default function SubjectClassesTable({
               setRows((prev) =>
                 prev.filter((it) => it.classNum !== editTarget.classNum)
               );
+
+              // 2. 수정 모달 먼저 닫기
               setEditOpen(false);
               setEditTarget(null);
 
-              // 2. 사용자에게 안내
-              alert(
-                "수정이 완료되었습니다. 확인하시려면 변경된 날짜/과목으로 이동해주세요."
-              );
+              // 3. 약간의 지연 후 AlertModal 표시 (수정 모달이 완전히 닫힌 후)
+              setTimeout(() => {
+                setAlertMessage(
+                  "수정이 완료되었습니다.<br style={{ marginBottom: '8px' }}/>변경사항을 확인하고 싶으시다면 변경된 날짜/과목으로 이동해주세요."
+                );
+                setAlertModalOpen(true);
+              }, 100);
             } else {
               // 동일 날짜/과목: 현재 리스트 항목만 즉시 갱신
               setRows((prev) =>
@@ -471,9 +490,16 @@ export default function SubjectClassesTable({
                     : it
                 )
               );
+
+              // 2. 수정 모달 먼저 닫기
               setEditOpen(false);
               setEditTarget(null);
-              alert("수정이 완료되었습니다.");
+
+              // 3. 약간의 지연 후 AlertModal 표시 (수정 모달이 완전히 닫힌 후)
+              setTimeout(() => {
+                setAlertMessage("수정이 완료되었습니다.");
+                setAlertModalOpen(true);
+              }, 100);
             }
 
             // 백그라운드 동기화: 실패해도 롤백하지 않음
@@ -503,6 +529,19 @@ export default function SubjectClassesTable({
           accessToken={accessToken}
           submitting={editSubmitting}
         />
+      )}
+
+      {/* AlertModal 추가 - 조건부 렌더링으로 성능 최적화 */}
+      {alertModalOpen && (
+        <AlertModal
+          isOpen={alertModalOpen}
+          onClose={handleCloseAlertModal}
+          title="AdvICE"
+          confirmText="확인"
+          onConfirm={handleCloseAlertModal}
+        >
+          {alertMessage}
+        </AlertModal>
       )}
     </section>
   );
