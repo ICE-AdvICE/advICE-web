@@ -349,9 +349,7 @@ const ClassSetting = () => {
 
     if (result.success) {
       // 커스텀 모달로 성공 메시지 표시
-      setAlertMessage(
-        "입력하신 정보가 성공적으로 등록되었습니다.<br style={{ marginBottom: '8px' }}/>등록 현황은 코딩존 예약 페이지에서 확인하실 수 있습니다."
-      );
+      setAlertMessage("입력하신 정보가 성공적으로 등록되었습니다.");
       setAlertModalOpen(true);
 
       // 디버깅을 위한 로그

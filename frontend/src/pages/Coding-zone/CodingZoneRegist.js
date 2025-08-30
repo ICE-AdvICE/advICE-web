@@ -642,9 +642,11 @@ const CodingZoneRegist = () => {
       {/* AlertModal 추가 */}
       {alertModalOpen && (
         <AlertModal
-          message={alertMessage}
+          isOpen={alertModalOpen}
           onClose={() => setAlertModalOpen(false)}
-        />
+        >
+          {alertMessage}
+        </AlertModal>
       )}
     </div>
   );
