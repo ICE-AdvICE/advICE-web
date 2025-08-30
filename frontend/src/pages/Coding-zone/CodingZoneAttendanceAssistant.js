@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import "../css/codingzone/codingzone-main.css";
 import "../css/codingzone/codingzone_manager.css";
 import "../css/codingzone/codingzone_attend.css";
 import "../css/codingzone/CodingClassRegist.css";
 import "../../shared/ui/boardbar/CodingZoneBoardbar.css";
+import "../../widgets/CodingZone/SubjectClassesTable.css";
 import { getCodingzoneReservedListByDate } from "../../features/api/Admin/Codingzone/ClassApi.js";
 import { getczauthtypetRequest } from "../../shared/api/AuthApi.js";
 
@@ -100,7 +99,7 @@ const CodingZoneAttendanceAssistant = () => {
     const formattedDate = selectedDateYMD;
     const response = await getCodingzoneReservedListByDate(
       token,
-      formattedDate,
+      selectedDateYMD,
       setCookie,
       navigate
     );
