@@ -1,3 +1,135 @@
+/* EditModal 전체 오버레이 */
+.edit-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* EditModal 메인 컨테이너 */
+.edit-modal {
+  background: white;
+  width: 1200px;
+  height: 400px;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+/* EditModal 헤더 */
+.edit-modal-header {
+  padding: 60px 0 15px;
+  text-align: center;
+  border-bottom: 1px solid #052940;
+  position: relative;
+  background-color: #efefef;
+}
+
+.edit-modal-title {
+  margin: 0;
+  font-size: 30px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* EditModal X 버튼 */
+.edit-modal-x-button {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 26px;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.edit-modal-x-button:hover {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+/* EditModal 바디 */
+.edit-modal-body {
+  flex: 0.8;
+  height: auto;
+  padding: 20px 22px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 0;
+  position: relative;
+}
+
+/* 폼 전체를 중앙에 배치 */
+.edit-modal-body form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 0 40px;
+  box-sizing: border-box;
+}
+
+/* EditModal 푸터 */
+.edit-modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 23px 35px;
+  border-top: 1px solid #052940;
+
+  flex: 0.25;
+}
+
+.edit-modal-logo {
+  width: 140px;
+  height: auto;
+}
+
+.edit-modal-close-button {
+  background: #052940;
+  color: white;
+  border: none;
+  padding: 6px 22px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: normal;
+  font-size: 15px;
+  min-width: 110px;
+  height: 40px;
+}
+
+.edit-modal-close-button:hover {
+  opacity: 0.75;
+}
+
+/* 기존 스타일들 */
 .edit-modal .modal-content,
 .edit-modal-content {
   width: 1100px;
@@ -26,6 +158,193 @@
 }
 
 .edit-modal .edit-actions .btn-submit {
-  background: #0f2c44;
+  background: #052940;
   color: #fff;
+}
+
+/* EditModal에서 CommonModal 푸터가 제대로 표시되도록 스타일 조정 */
+.edit-modal .modal-footer,
+.edit-modal-content .modal-footer {
+  /* CommonModal의 기본 푸터 스타일을 유지하면서 EditModal에 맞게 조정 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 23px 35px;
+  border-top: 1px solid #e0e0e0;
+}
+
+/* 테이블 컨테이너 */
+.edit-table-container {
+  width: 100%;
+  max-width: 1200px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+}
+
+/* 테이블 스타일 */
+.edit-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: white;
+  table-layout: fixed;
+}
+
+/* 각 열의 너비 설정 */
+.edit-table th:nth-child(1),
+.edit-table td:nth-child(1) {
+  width: 8%;
+} /* 조 */
+.edit-table th:nth-child(2),
+.edit-table td:nth-child(2) {
+  width: 12%;
+} /* 요일 */
+.edit-table th:nth-child(3),
+.edit-table td:nth-child(3) {
+  width: 12%;
+} /* 날짜 */
+.edit-table th:nth-child(4),
+.edit-table td:nth-child(4) {
+  width: 12%;
+} /* 시간 */
+.edit-table th:nth-child(5),
+.edit-table td:nth-child(5) {
+  width: 30%;
+} /* 과목명 */
+.edit-table th:nth-child(6),
+.edit-table td:nth-child(6) {
+  width: 15%;
+} /* 조교명 */
+.edit-table th:nth-child(7),
+.edit-table td:nth-child(7) {
+  width: 11%;
+} /* 인원 */
+
+.edit-table thead {
+  background: #052940;
+}
+
+.edit-table thead th:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.edit-table thead th:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+/* 헤더 배경이 둥근 모서리에 맞게 잘리도록 */
+.edit-table thead {
+  overflow: hidden;
+}
+
+/* 테이블 본문 첫 번째 행의 모서리 설정 */
+.edit-table tbody tr:first-child td:first-child {
+  border-bottom-left-radius: 8px;
+}
+
+.edit-table tbody tr:first-child td:last-child {
+  border-bottom-right-radius: 8px;
+}
+
+.edit-table th {
+  padding: 15px 12px;
+  text-align: center;
+  font-weight: 600;
+  color: #fff;
+  font-size: 14px;
+  border: none;
+}
+
+.edit-table td {
+  padding: 12px;
+  text-align: center;
+  border: none;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.edit-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* 입력 공통 */
+.edit-table input,
+.edit-table select {
+  height: 40px;
+  padding: 0px 12px;
+  border: 1.4px solid #aeb7c2;
+  font-size: 15px;
+  color: #333;
+  outline: none;
+  background: #fff;
+  border-radius: 0;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center !important;
+}
+
+/* input이나 select가 포커스 되었을 때 (클릭하거나 Tab으로 커서가 들어갔을 때) 적용되는 스타일*/
+.edit-table input:focus,
+.edit-table select:focus {
+  border-color: #1c5fd4;
+  box-shadow: 0 0 0 2px rgba(28, 95, 212, 0.18);
+}
+
+/* 하단 버튼 */
+.edit-actions:hover {
+  opacity: 0.75;
+}
+
+.edit-actions .btn-cancel,
+.edit-actions .btn-submit {
+  min-width: 110px;
+  height: 40px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.edit-actions .btn-cancel {
+  background: #6b7785;
+  color: #fff;
+}
+
+.edit-actions .btn-submit {
+  background: #052940;
+  color: #fff;
+}
+
+/* EditModal footer 버튼 스타일 */
+.edit-actions .btn-submit {
+  background-color: #052940;
+  color: white;
+  border: none;
+  padding: 6px 22px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: normal;
+  font-size: 15px;
+}
+
+.edit-actions .btn-submit:hover {
+  opacity: 0.75;
+}
+
+/* 반응형: 좁은 화면에서는 2줄로 자연스럽게 떨어지게 */
+@media (max-width: 980px) {
+  .edit-grid-head,
+  .edit-grid-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .edit-grid-head,
+  .edit-grid-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
 }

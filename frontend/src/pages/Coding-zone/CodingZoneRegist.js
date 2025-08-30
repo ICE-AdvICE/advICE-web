@@ -14,9 +14,10 @@ import { getczauthtypetRequest } from "../../shared/api/AuthApi";
 import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네이게이션 바 컴포넌트
 import Banner from "../../shared/ui/Banner/Banner"; // ✅ 추가(juhui): 공통 배너 컴포넌트 적용
 import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js"; //코딩존 보드 바(버튼 네개) 컴포넌트
+import AlertModal from "../../shared/components/Modal/AlertModal.js";
 
 const CodingZoneRegist = () => {
-  const [boxes, setBoxes] = useState(() => [getDefaultRow()]);
+  const [boxes, setBoxes] = useState([]);
   const [groupId, setGroupId] = useState("A");
   const [cookies, setCookie] = useCookies(["accessToken"]);
   const [activeCategory, setActiveCategory] = useState("registerClass");
@@ -29,14 +30,36 @@ const CodingZoneRegist = () => {
   const [subjects, setSubjects] = useState([]);
   const [assistantOptionsMap, setAssistantOptionsMap] = useState({});
   const [assistantLoading, setAssistantLoading] = useState({});
+  const [alertModalOpen, setAlertModalOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+
+  // MM-DD → 요일 자동 계산 함수
+  const weekDayFromDate = (mmdd) => {
+    if (!mmdd || !/^\d{2}-\d{2}$/.test(mmdd)) return "";
+    const currentYear = new Date().getFullYear();
+    const [month, day] = mmdd.split("-");
+    const date = new Date(`${currentYear}-${month}-${day}T00:00:00`);
+    const ko = [
+      "일요일",
+      "월요일",
+      "화요일",
+      "수요일",
+      "목요일",
+      "금요일",
+      "토요일",
+    ];
+    return ko[date.getDay()];
+  };
 
   function getDefaultRow() {
     const today = new Date();
     const month = String(today.getMonth() + 1).padStart(2, "0");
     const day = String(today.getDate()).padStart(2, "0");
     const formattedDate = `${month}-${day}`; // MM-DD
+    const weekDay = weekDayFromDate(formattedDate); // 요일 자동 계산
+
     return {
-      day: "",
+      day: weekDay, // 날짜에 맞는 요일 자동 설정
       date: formattedDate,
       time: "",
       className: "",
@@ -121,6 +144,13 @@ const CodingZoneRegist = () => {
       setAssistantLoading((prev) => ({ ...prev, [rowIndex]: false }));
     }
   };
+
+  // 컴포넌트 마운트 시 초기 행 추가
+  useEffect(() => {
+    if (boxes.length === 0) {
+      setBoxes([getDefaultRow()]);
+    }
+  }, []);
 
   useEffect(() => {
     if (!cookies.accessToken) return; // 토큰 준비 전 호출 방지
@@ -217,7 +247,11 @@ const CodingZoneRegist = () => {
     const { code, message } = response;
     switch (code) {
       case "SU":
-        alert("성공적으로 등록되었습니다.");
+        // 커스텀 모달로 성공 메시지 표시
+        setAlertMessage(
+          "입력하신 정보가 성공적으로 등록되었습니다.<br style={{ marginBottom: '8px' }}/>등록 현황은 코딩존 예약 페이지에서 확인하실 수 있습니다."
+        );
+        setAlertModalOpen(true);
         break;
       case "AF":
         alert("권한이 없습니다.");
@@ -274,10 +308,12 @@ const CodingZoneRegist = () => {
     const month = String(today.getMonth() + 1).padStart(2, "0");
     const day = String(today.getDate()).padStart(2, "0");
     const formattedDate = `${month}-${day}`; // MM-DD 형식
+    const weekDay = weekDayFromDate(formattedDate); // 요일 자동 계산
+
     setBoxes([
       ...boxes,
       {
-        day: "",
+        day: weekDay, // 날짜에 맞는 요일 자동 설정
         date: formattedDate,
         time: "",
         className: "",
@@ -291,6 +327,13 @@ const CodingZoneRegist = () => {
   const handleChange = (index, field, value) => {
     const newBoxes = [...boxes];
     newBoxes[index][field] = value;
+
+    // 날짜가 변경되면 요일도 자동으로 업데이트
+    if (field === "date" && value) {
+      const weekDay = weekDayFromDate(value);
+      newBoxes[index].day = weekDay;
+    }
+
     setBoxes(newBoxes);
   };
 
@@ -422,30 +465,24 @@ const CodingZoneRegist = () => {
                 {boxes.map((box, index) => (
                   <tr key={index}>
                     <td>
-                      <select
+                      <input
                         className="Day-input"
+                        type="text"
+                        placeholder="요일"
                         value={box.day}
                         onChange={(e) =>
                           handleChange(index, "day", e.target.value)
                         }
                         style={{
                           width: "90%",
-                          padding: "12px 8px",
+                          padding: "11px 8px",
                           border: "1px solid #cfd8e3",
                           borderRadius: "5px",
                           fontSize: "14px",
-                          paddingLeft: "9px",
-                          paddingRight: "9px",
                           textAlign: "center",
                         }}
-                      >
-                        <option value="">요일 선택</option>
-                        <option value="월요일">MON</option>
-                        <option value="화요일">TUE</option>
-                        <option value="수요일">WED</option>
-                        <option value="목요일">THU</option>
-                        <option value="금요일">FRI</option>
-                      </select>
+                        readOnly // 자동 계산되므로 읽기 전용
+                      />
                     </td>
                     <td>
                       <input
@@ -631,6 +668,16 @@ const CodingZoneRegist = () => {
           {renderActiveSection()}
         </div>
       </div>
+
+      {/* AlertModal 추가 */}
+      {alertModalOpen && (
+        <AlertModal
+          isOpen={alertModalOpen}
+          onClose={() => setAlertModalOpen(false)}
+        >
+          {alertMessage}
+        </AlertModal>
+      )}
     </div>
   );
 };
