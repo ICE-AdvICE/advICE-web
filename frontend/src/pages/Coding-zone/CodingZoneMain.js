@@ -1402,7 +1402,14 @@ const CodingMain = () => {
                   subjectOptions={allSubjects}
                   onEmptyAfterDelete={handleEmptyAfterDelete}
                   onDateChanged={(nextYMD, nextSubjectId, seed) => {
-                    // 날짜가 바뀌면 새 날짜로 즉시 이동 + 필요 시 과목도 동기화
+                    console.log("🚀 onDateChanged 호출:", {
+                      nextYMD,
+                      nextSubjectId,
+                      seed,
+                    });
+                    // 시드 데이터는 이미 SubjectClassesTable에서 설정됨, 여기서는 상태만 변경
+
+                    // 상태 변경
                     try {
                       const d = new Date(nextYMD);
                       if (!Number.isNaN(d.getTime())) setSelectedDate(d);
@@ -1438,41 +1445,8 @@ const CodingMain = () => {
                         setSelectedSubjectName(nameToUse);
                       }
                     }
-                    // 서버가 아직 비어 있어도 사용자에게 변경이 보이도록 시드 1건 전달
-                    if (seed) {
-                      // 시드는 해당 테이블로 내려보낸다: SubjectClassesTable props에 seedRows 추가 필요
-                      // 현재 SubjectClassesTable 인스턴스는 key로 재마운트되므로 seedRows 전달 포함
-                      // 이 콜백에서는 상태만 준비하면 됨
-                      // 상태 보관은 간단히 sessionStorage를 사용해 전달
-                      try {
-                        sessionStorage.setItem(
-                          "cz_admin_seed",
-                          JSON.stringify({
-                            k: `${String(
-                              nextSubjectId || selectedSubjectId
-                            )}-${nextYMD}`,
-                            row: seed,
-                          })
-                        );
-                      } catch {}
-                    }
                   }}
-                  seedRows={(() => {
-                    try {
-                      const raw = sessionStorage.getItem("cz_admin_seed");
-                      if (!raw) return [];
-                      const obj = JSON.parse(raw);
-                      const expectedKey = `${String(
-                        selectedSubjectId
-                      )}-${selectedDateYMD}`;
-                      if (obj?.k === expectedKey && obj?.row) {
-                        // 일회성으로 소비하고 제거
-                        sessionStorage.removeItem("cz_admin_seed");
-                        return [obj.row];
-                      }
-                    } catch {}
-                    return [];
-                  })()}
+                  seedRows={[]}
                 />
               </div>
             </div>
