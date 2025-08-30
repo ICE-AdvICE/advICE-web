@@ -17,6 +17,7 @@ import {
   getCodingZoneColor,
 } from "./subjectColors";
 import { useRef } from "react";
+import AlertModal from "../../shared/components/Modal/AlertModal.js";
 
 const ClassSetting = () => {
   const [cookies, setCookie] = useCookies(["accessToken"]);
@@ -51,6 +52,12 @@ const ClassSetting = () => {
     setDeletingId(null);
 
     if (result?.ok) {
+      // 커스텀 모달로 삭제 성공 메시지 표시
+      setAlertMessage(
+        `[${m.subjectId}] [${m.subjectName}]가 성공적으로 삭제되었습니다.<br style={{ marginBottom: '8px' }}/>해당 과목의 조교 등록도 함께 삭제되었습니다.`
+      );
+      setAlertModalOpen(true);
+
       // 즉시 UI 반영 (새로고침 필요 없음)
       setExistingMappings((prev) =>
         prev
@@ -80,6 +87,8 @@ const ClassSetting = () => {
 
   const [rows, setRows] = useState(() => []);
   const [mappingsLoaded, setMappingsLoaded] = useState(false);
+  const [alertModalOpen, setAlertModalOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   // 깊은 곳에 숨어있는 첫 번째 배열을 찾아서 반환
   const findFirstArray = (v) => {
@@ -339,7 +348,19 @@ const ClassSetting = () => {
     );
 
     if (result.success) {
-      alert("등록 완료!");
+      // 커스텀 모달로 성공 메시지 표시
+      setAlertMessage(
+        "입력하신 정보가 성공적으로 등록되었습니다.<br style={{ marginBottom: '8px' }}/>등록 현황은 코딩존 예약 페이지에서 확인하실 수 있습니다."
+      );
+      setAlertModalOpen(true);
+
+      // 디버깅을 위한 로그
+      console.log("AlertModal 상태 설정 완료:");
+      console.log(
+        "alertMessage:",
+        "입력하신 정보가 성공적으로 등록되었습니다.<br style={{ marginBottom: '8px' }}/>등록 현황은 코딩존 예약 페이지에서 확인하실 수 있습니다."
+      );
+      console.log("alertModalOpen:", true);
 
       // 1) existing/원본 동기 갱신
       const nextExisting = (() => {
@@ -458,11 +479,7 @@ const ClassSetting = () => {
                           onClick={() => handleDeleteExisting(m)}
                           disabled={String(deletingId) === String(m.subjectId)}
                         >
-                          {deletingId === m.subjectId ? (
-                            "삭제중…"
-                          ) : (
-                            <span className="delete-icon">X</span>
-                          )}
+                          <span className="delete-icon">X</span>
                         </button>
                       </td>
                       <td style={{ textAlign: "center" }}></td>
@@ -554,6 +571,16 @@ const ClassSetting = () => {
           </div>
         </div>
       </div>
+
+      {/* AlertModal 추가 */}
+      {alertModalOpen && (
+        <AlertModal
+          isOpen={alertModalOpen}
+          onClose={() => setAlertModalOpen(false)}
+        >
+          {alertMessage}
+        </AlertModal>
+      )}
     </div>
   );
 };

@@ -14,6 +14,7 @@ import { getczauthtypetRequest } from "../../shared/api/AuthApi";
 import CodingZoneNavigation from "../../shared/ui/navigation/CodingZoneNavigation.js"; //코딩존 네이게이션 바 컴포넌트
 import Banner from "../../shared/ui/Banner/Banner"; // ✅ 추가(juhui): 공통 배너 컴포넌트 적용
 import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js"; //코딩존 보드 바(버튼 네개) 컴포넌트
+import AlertModal from "../../shared/components/Modal/AlertModal.js";
 
 const CodingZoneRegist = () => {
   const [boxes, setBoxes] = useState(() => [getDefaultRow()]);
@@ -29,6 +30,8 @@ const CodingZoneRegist = () => {
   const [subjects, setSubjects] = useState([]);
   const [assistantOptionsMap, setAssistantOptionsMap] = useState({});
   const [assistantLoading, setAssistantLoading] = useState({});
+  const [alertModalOpen, setAlertModalOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   function getDefaultRow() {
     const today = new Date();
@@ -217,7 +220,11 @@ const CodingZoneRegist = () => {
     const { code, message } = response;
     switch (code) {
       case "SU":
-        alert("성공적으로 등록되었습니다.");
+        // 커스텀 모달로 성공 메시지 표시
+        setAlertMessage(
+          "입력하신 정보가 성공적으로 등록되었습니다.<br style={{ marginBottom: '8px' }}/>등록 현황은 코딩존 예약 페이지에서 확인하실 수 있습니다."
+        );
+        setAlertModalOpen(true);
         break;
       case "AF":
         alert("권한이 없습니다.");
@@ -631,6 +638,14 @@ const CodingZoneRegist = () => {
           {renderActiveSection()}
         </div>
       </div>
+
+      {/* AlertModal 추가 */}
+      {alertModalOpen && (
+        <AlertModal
+          message={alertMessage}
+          onClose={() => setAlertModalOpen(false)}
+        />
+      )}
     </div>
   );
 };
