@@ -400,27 +400,12 @@ function EditModal({
 
                     {/* 요일 (표시 전용: 날짜로부터 자동 계산됨) */}
                     <td>
-                      <select
+                      <input
+                        type="text"
                         value={form.weekDay}
-                        disabled
-                        aria-readonly="true"
+                        readOnly
                         title="날짜에 따라 자동으로 결정됩니다"
-                      >
-                        <option value="" disabled>
-                          요일 선택
-                        </option>
-                        {form.weekDay &&
-                          !WEEK_OPTIONS.includes(form.weekDay) && (
-                            <option value={form.weekDay}>
-                              {form.weekDay} (현재값)
-                            </option>
-                          )}
-                        {WEEK_OPTIONS.map((w) => (
-                          <option key={w} value={w}>
-                            {w}
-                          </option>
-                        ))}
-                      </select>
+                      />
                     </td>
 
                     {/* 날짜 (MM-DD) */}
