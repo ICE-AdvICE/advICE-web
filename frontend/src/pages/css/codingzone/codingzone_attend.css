@@ -1346,3 +1346,169 @@
     padding: 8px !important;
   }
 }
+
+/* ===== 학생 조교 출결 관리 페이지 회색 박스 반응형 스타일 ===== */
+
+/* 학생 조교 출결 관리 페이지의 회색 박스만 대상으로 하는 반응형 */
+/* 더 확실한 선택자를 사용하여 반응형이 제대로 작동하도록 함 */
+.cz-table-shell ~ .panel-gray,
+.cz-table-shell ~ .panel-white,
+.cz-table-shell + .panel-gray,
+.cz-table-shell + .panel-white,
+.panel-gray,
+.panel-white {
+  /* 기본 스타일은 기존 CSS에서 상속 */
+}
+
+/* 1200px 이하에서 회색 박스 반응형 */
+@media (max-width: 1200px) {
+  .cz-table-shell ~ .panel-gray,
+  .cz-table-shell ~ .panel-white,
+  .cz-table-shell + .panel-gray,
+  .cz-table-shell + .panel-white,
+  .panel-gray,
+  .panel-white {
+    width: 60rem !important; /* 960px */
+    max-width: 960px !important;
+    min-width: 960px !important;
+    height: 28rem !important; /* 400px */
+    padding: 6rem 4rem !important; /* 상하 96px, 좌우 64px */
+  }
+
+  .cz-table-shell ~ .panel-gray .panel-empty,
+  .cz-table-shell ~ .panel-white .panel-empty,
+  .cz-table-shell + .panel-gray .panel-empty,
+  .cz-table-shell + .panel-white .panel-empty,
+  .panel-gray .panel-empty,
+  .panel-white .panel-empty {
+    font-size: 20px !important;
+  }
+}
+
+/* 1024px 이하에서 회색 박스 반응형 */
+@media (max-width: 1024px) {
+  .cz-table-shell ~ .panel-gray,
+  .cz-table-shell ~ .panel-white,
+  .cz-table-shell + .panel-gray,
+  .cz-table-shell + .panel-white,
+  .panel-gray,
+  .panel-white {
+    width: 50rem !important; /* 800px */
+    max-width: 50rem !important;
+    min-width: 50rem !important;
+    height: 28rem !important; /* 448px */
+    padding: 5rem 3rem !important; /* 상하 80px, 좌우 48px */
+  }
+
+  .cz-table-shell ~ .panel-gray .panel-empty,
+  .cz-table-shell ~ .panel-white .panel-empty,
+  .cz-table-shell + .panel-gray .panel-empty,
+  .cz-table-shell + .panel-white .panel-empty,
+  .panel-gray .panel-empty,
+  .panel-white .panel-empty {
+    font-size: 18px !important;
+  }
+}
+
+/* 768px 이하에서 회색 박스 반응형 */
+@media (max-width: 768px) {
+  .cz-table-shell ~ .panel-gray,
+  .cz-table-shell ~ .panel-white,
+  .cz-table-shell + .panel-gray,
+  .cz-table-shell + .panel-white,
+  .panel-gray,
+  .panel-white {
+    width: 42rem !important; /* 672px */
+    max-width: 42rem !important;
+    min-width: 42rem !important;
+    height: 24rem !important; /* 512px */
+    padding: 4rem 2rem !important; /* 상하 64px, 좌우 32px */
+  }
+
+  .cz-table-shell ~ .panel-gray .panel-empty,
+  .cz-table-shell ~ .panel-white .panel-empty,
+  .cz-table-shell + .panel-gray .panel-empty,
+  .cz-table-shell + .panel-white .panel-empty,
+  .panel-gray .panel-empty,
+  .panel-white .panel-empty {
+    font-size: 15px !important;
+  }
+}
+
+/* 480px 이하에서 회색 박스 반응형 */
+@media (max-width: 480px) {
+  .cz-table-shell ~ .panel-gray,
+  .cz-table-shell ~ .panel-white,
+  .cz-table-shell + .panel-gray,
+  .cz-table-shell + .panel-white,
+  .panel-gray,
+  .panel-white {
+    width: 25rem !important; /* 400px */
+    max-width: 25rem !important;
+    min-width: 25rem !important;
+    height: 21rem !important; /* 560px */
+    padding: 3rem 1.5rem !important; /* 상하 48px, 좌우 24px */
+    margin-bottom: 65px !important;
+  }
+
+  .cz-table-shell ~ .panel-gray .panel-empty,
+  .cz-table-shell ~ .panel-white .panel-empty,
+  .cz-table-shell + .panel-gray .panel-empty,
+  .cz-table-shell + .panel-white .panel-empty,
+  .panel-gray .panel-empty,
+  .panel-white .panel-empty {
+    font-size: 12px !important;
+  }
+}
+
+/* 390px 이하에서 회색 박스 반응형 */
+@media (max-width: 390px) {
+  .cz-table-shell ~ .panel-gray,
+  .cz-table-shell ~ .panel-white,
+  .cz-table-shell + .panel-gray,
+  .cz-table-shell + .panel-white,
+  .panel-gray,
+  .panel-white {
+    width: 22rem !important; /* 352px */
+    max-width: 22rem !important;
+    min-width: 22rem !important;
+    height: 18rem !important; /* 608px */
+    padding: 2.5rem 1rem !important; /* 상하 40px, 좌우 16px */
+    margin-bottom: 60px !important;
+  }
+
+  .cz-table-shell ~ .panel-gray .panel-empty,
+  .cz-table-shell ~ .panel-white .panel-empty,
+  .cz-table-shell + .panel-gray .panel-empty,
+  .cz-table-shell + .panel-white .panel-empty,
+  .panel-gray .panel-empty,
+  .panel-white .panel-empty {
+    font-size: 11px !important;
+  }
+}
+
+/* 375px 이하에서 회색 박스 반응형 */
+@media (max-width: 375px) {
+  .cz-table-shell ~ .panel-gray,
+  .cz-table-shell ~ .panel-white,
+  .cz-table-shell + .panel-gray,
+  .cz-table-shell + .panel-white,
+  .panel-gray,
+  .panel-white {
+    width: 20rem !important; /* 320px */
+    max-width: 20rem !important;
+    min-width: 20rem !important;
+    height: 15rem !important; /* 640px */
+    padding: 2rem 0.8rem !important; /* 상하 32px, 좌우 12.8px */
+    margin-bottom: 55px !important;
+  }
+
+  .cz-table-shell ~ .panel-gray .panel-empty,
+  .cz-table-shell ~ .panel-white .panel-empty,
+  .cz-table-shell + .panel-gray .panel-empty,
+  .cz-table-shell + .panel-white .panel-empty,
+  .panel-gray .panel-empty,
+  .panel-white .panel-empty {
+    font-size: 11px !important;
+  }
+}
