@@ -2274,3 +2274,251 @@
     transform-origin: top center !important;
   }
 }
+
+/* ===== 일반 학생 출결 관리 페이지 반응형 스타일 ===== */
+
+/* 일반 학생 출결 관리 페이지의 표에 학생조교와 동일한 반응형 로직 적용 */
+@media (max-width: 1200px) {
+  .manager-table {
+    width: 1150px !important;
+    min-width: 1150px !important;
+    max-width: 100% !important;
+    margin-top: 8px !important;
+    transform: scale(0.84);
+    transform-origin: top center;
+    margin-bottom: -30px !important;
+  }
+
+  .manager-table-card {
+    width: 95%;
+    margin: 0 auto;
+    margin-bottom: 100px !important;
+  }
+
+  .manager-table thead th {
+    padding: 18px 20px !important;
+    font-size: 18px !important;
+  }
+
+  .manager-table tbody td {
+    padding: 40px 0px !important;
+    font-size: 16px !important;
+  }
+
+  /* 1200px에서 출결 버튼 반응형 */
+  .manager-table tbody td span {
+    font-size: 15px !important;
+    padding: 13px 26px !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .manager-table {
+    width: 1010px !important;
+    min-width: 1010px !important;
+    max-width: 100% !important;
+    margin-top: 10px !important;
+    transform: scale(0.8);
+    transform-origin: top center;
+    margin-bottom: -30px !important;
+  }
+
+  .manager-table thead th {
+    padding: 18px 16px !important;
+    font-size: 17px !important;
+  }
+
+  .manager-table tbody td {
+    padding: 36px 0px !important;
+    font-size: 16px !important;
+  }
+
+  .manager-table-card {
+    margin-bottom: 80px !important;
+  }
+
+  /* 1024px에서 출결 버튼 반응형 */
+  .manager-table tbody td span {
+    font-size: 15px !important;
+    padding: 12px 26px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .manager-table {
+    width: 755px !important;
+    min-width: 755px !important;
+    max-width: 100% !important;
+    margin-top: 13px !important;
+    transform: scale(0.89);
+    transform-origin: top center;
+    margin-bottom: 0px !important;
+  }
+
+  .manager-table thead th {
+    padding: 14px 6px !important;
+    font-size: 14px !important;
+  }
+
+  .manager-table tbody td {
+    padding: 32px 0px !important;
+    font-size: 13px !important;
+  }
+
+  .manager-table-card {
+    margin-bottom: 40px !important;
+  }
+
+  /* 768px에서 출결 버튼 반응형 */
+  .manager-table tbody td span {
+    font-size: 12px !important;
+    padding: 10px 20px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .manager-table {
+    width: 470px !important;
+    min-width: 470px !important;
+    max-width: 100% !important;
+    margin-top: 13px !important;
+    transform: scale(0.885);
+    transform-origin: top center;
+    margin-bottom: 0px !important;
+  }
+
+  .manager-table thead th {
+    padding: 11px 6px !important;
+    font-size: 11px !important;
+  }
+
+  .manager-table tbody td {
+    padding: 13px 0px !important;
+    font-size: 10px !important;
+  }
+
+  /* 480px에서 과목명 셀을 두 줄로 표시 가능하게 설정 */
+  .manager-table tbody td:nth-child(3) {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    word-break: break-word !important;
+    line-height: 1.3 !important;
+    max-width: 120px !important;
+    padding: 10px 5px !important;
+  }
+
+  .manager-table-card {
+    margin-bottom: 40px !important;
+  }
+
+  /* 480px에서 출결 버튼 반응형 - 세로 배치 강제 적용 */
+  .manager-table tbody td span {
+    font-size: 10px !important;
+    min-width: 55px !important;
+    max-width: 55px !important;
+    height: 27.5px !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 5px auto !important;
+    text-align: center !important;
+    line-height: 30px !important;
+  }
+}
+
+/* 390px 이하에서 표 크기 조정 */
+@media (max-width: 390px) {
+  .manager-table {
+    width: 380px !important; /* 390px 안쪽 고정 너비 */
+    min-width: 380px !important;
+    max-width: 100%;
+    transform: scale(0.97) !important;
+    transform-origin: top center !important;
+    margin-bottom: 0px !important;
+  }
+
+  .manager-table thead th {
+    padding: 10px 6px !important;
+    font-size: 10px !important;
+  }
+
+  .manager-table tbody td {
+    padding: 10px 0px !important;
+    font-size: 9px !important;
+  }
+
+  .manager-table-card {
+    margin-bottom: 40px !important;
+  }
+
+  /* 390px에서 과목명 셀을 두 줄로 표시 가능하게 설정 */
+  .manager-table tbody td:nth-child(3) {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    word-break: break-word !important;
+    line-height: 1.3 !important;
+    max-width: 100px !important;
+    padding: 8px 4px !important;
+  }
+
+  /* 390px에서 출결 버튼 반응형 - 세로 배치 강제 적용 */
+  .manager-table tbody td span {
+    font-size: 9px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+    height: 24px !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 4px auto !important;
+    text-align: center !important;
+    line-height: 22px !important;
+  }
+}
+
+/* 375px 이하에서 출결 버튼 반응형 - 세로 배치 강제 적용 */
+@media (max-width: 375px) {
+  .manager-table {
+    width: 360px !important; /* 375px 안쪽 */
+    min-width: 360px !important;
+    max-width: 100% !important;
+    transform: scale(0.97) !important;
+    transform-origin: top center !important;
+    margin-bottom: 0px !important;
+  }
+
+  .manager-table thead th {
+    padding: 10px 6px !important;
+    font-size: 10px !important;
+  }
+
+  .manager-table tbody td {
+    padding: 10px 0px !important;
+    font-size: 9px !important;
+  }
+
+  .manager-table-card {
+    margin-bottom: 40px !important;
+  }
+
+  /* 375px에서 과목명 셀을 두 줄로 표시 가능하게 설정 */
+  .manager-table tbody td:nth-child(3) {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    word-break: break-word !important;
+    line-height: 1.3 !important;
+    max-width: 90px !important;
+    padding: 8px 3px !important;
+  }
+
+  /* 375px에서 출결 버튼 반응형 - 세로 배치 강제 적용 */
+  .manager-table tbody td span {
+    font-size: 8px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+    height: 22px !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 4px auto !important;
+    text-align: center !important;
+    line-height: 22px !important;
+  }
+}
