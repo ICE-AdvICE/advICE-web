@@ -461,6 +461,27 @@ export default function SubjectClassesTable({
               payload?.subjectId &&
               String(payload.subjectId) !== String(selectedSubjectId);
 
+            // 프론트엔드에서 중복 검사 (조, 날짜, 시간, 과목명, 조교명만 - 인원수 제외)
+            const isDuplicate = rows.some(
+              (row) =>
+                row.classNum !== editTarget.classNum && // 자기 자신 제외
+                row.groupId === payload.groupId &&
+                row.classDate === payload.classDate &&
+                row.classTime === payload.classTime &&
+                row.subjectId === payload.subjectId &&
+                row.assistantName === payload.assistantName
+            );
+
+            // 중복이면 바로 alert 표시하고 종료
+            if (isDuplicate) {
+              setTimeout(() => {
+                alert("이미 등록된 수업입니다.");
+                // alert 닫힌 후 리스트 새로고침
+                setTimeout(() => reloadRows({ silent: true }), 100);
+              }, 100);
+              return;
+            }
+
             // 서버 응답을 먼저 확인
             setEditSubmitting(true);
             let res = null;
@@ -522,10 +543,16 @@ export default function SubjectClassesTable({
                 setTimeout(() => {
                   if (res?.code === "NOT_MODIFIED_INFO") {
                     alert("변경사항이 없습니다.");
+                    // alert 닫힌 후 리스트 새로고침
+                    setTimeout(() => reloadRows({ silent: true }), 100);
                   } else if (res?.code === "ALREADY_EXISTED_CLASS") {
                     alert("이미 등록된 수업입니다.");
+                    // alert 닫힌 후 리스트 새로고침
+                    setTimeout(() => reloadRows({ silent: true }), 100);
                   } else {
                     alert(res?.message || "수정에 실패했습니다.");
+                    // alert 닫힌 후 리스트 새로고침
+                    setTimeout(() => reloadRows({ silent: true }), 100);
                   }
                 }, 100);
               }
