@@ -19,11 +19,27 @@ import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js";
 import CalendarInput from "../../widgets/Calendar/CalendarInput"; // 캘린더 입력 컴포넌트
 
 const CodingZoneAttendanceAssistant = () => {
+  // 로딩 스피너 애니메이션 CSS 추가
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.textContent = `
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
   const [attendList, setAttendList] = useState([]);
   const [reservedList, setReservedList] = useState([]);
   const [showAdminButton, setShowAdminButton] = useState(false);
   const [cookies, setCookie] = useCookies(["accessToken"]);
   const [activeButton, setActiveButton] = useState("manage");
+
   const token = cookies.accessToken;
   const navigate = useNavigate();
 
@@ -35,16 +51,6 @@ const CodingZoneAttendanceAssistant = () => {
     return `${y}-${m}-${day}`;
   };
   const [selectedDateYMD, setSelectedDateYMD] = useState(null);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const now = new Date();
-      const currentDate = new Date(selectedDateYMD);
-      console.log("Checking date:", now, currentDate); // Debugging log
-    }, 10000); // Check every 10 seconds for debugging
-
-    return () => clearInterval(timer); // Clear the timer when the component unmounts
-  }, [selectedDateYMD]);
 
   useEffect(() => {
     fetchAuthType();
@@ -96,20 +102,22 @@ const CodingZoneAttendanceAssistant = () => {
   };
 
   const fetchReservedList = async () => {
-    const formattedDate = selectedDateYMD;
+    console.log("📡 데이터 요청 중:", selectedDateYMD);
+
     const response = await getCodingzoneReservedListByDate(
       token,
       selectedDateYMD,
       setCookie,
       navigate
     );
+
     if (response && response.code === "SU") {
-      // response.data가 배열인지 확인
       const data = response.data;
       if (Array.isArray(data)) {
-        setReservedList(
-          data.sort((a, b) => a.classTime.localeCompare(b.classTime))
+        const sortedData = data.sort((a, b) =>
+          a.classTime.localeCompare(b.classTime)
         );
+        setReservedList(sortedData);
       } else {
         console.error("response.data is not an array:", data);
         setReservedList([]);
@@ -126,16 +134,6 @@ const CodingZoneAttendanceAssistant = () => {
     const current = String(student.attendance ?? "");
     if (current === target) return; // 이미 같은 상태면 무시
 
-    // 낙관적 업데이트: UI를 먼저 업데이트
-    const previousAttendance = student.attendance;
-    setReservedList((prevList) =>
-      prevList.map((s) =>
-        s.registrationId === student.registrationId
-          ? { ...s, attendance: target }
-          : s
-      )
-    );
-
     try {
       const res = await toggleAttendanceByRegistNum(
         student.registrationId,
@@ -145,28 +143,21 @@ const CodingZoneAttendanceAssistant = () => {
       );
 
       if (res?.code !== "SU") {
-        // API 실패 시 원래 상태로 되돌리기
-        setReservedList((prevList) =>
-          prevList.map((s) =>
-            s.registrationId === student.registrationId
-              ? { ...s, attendance: previousAttendance }
-              : s
-          )
-        );
-
         if (res?.message) {
           alert(res.message);
         }
+      } else {
+        // 성공 시 즉시 UI 업데이트 (깜빡임 방지)
+        setReservedList((prevList) =>
+          prevList.map((s) =>
+            s.registrationId === student.registrationId
+              ? { ...s, attendance: target }
+              : s
+          )
+        );
+        console.log("✅ 출결 변경 성공!");
       }
     } catch (error) {
-      // 에러 발생 시 원래 상태로 되돌리기
-      setReservedList((prevList) =>
-        prevList.map((s) =>
-          s.registrationId === student.registrationId
-            ? { ...s, attendance: previousAttendance }
-            : s
-        )
-      );
       alert("출결 처리 중 오류가 발생했습니다.");
     }
   };
@@ -177,6 +168,7 @@ const CodingZoneAttendanceAssistant = () => {
   };
 
   // 과거 날짜와 오늘은 활성화, 미래 날짜만 비활성화
+  // 날짜 기준으로만 비교 (시간은 무시)
   const canUpdateAttendance = (classDate) => {
     if (!classDate) {
       console.log("canUpdateAttendance: classDate가 null/undefined입니다.");
@@ -184,39 +176,56 @@ const CodingZoneAttendanceAssistant = () => {
     }
 
     const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // 오늘 자정
 
-    // 날짜를 YYYY-MM-DD 형식의 문자열로 변환하여 비교
-    const classDateStr = classDate;
-    const todayStr = today.toISOString().split("T")[0];
+    // 오늘 자정 (00:00:00)을 기준점으로 설정
+    const todayStart = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      0,
+      0,
+      0
+    );
+
+    // 선택된 날짜를 Date 객체로 변환
+    const selectedDate = new Date(classDate + "T00:00:00");
+
+    // 날짜 비교 (시간은 무시하고 날짜만 비교)
+    const isFutureDate = selectedDate > todayStart;
+    const isPastDate = selectedDate < todayStart;
+    const isToday = selectedDate.getTime() === todayStart.getTime();
 
     console.log("canUpdateAttendance 디버깅:", {
-      classDate: classDateStr,
-      today: todayStr,
-      classDateType: typeof classDateStr,
-      todayType: typeof todayStr,
-      now: now.toISOString(),
-      todayDate: today.toISOString(),
+      classDate: classDate,
+      currentTime: now.toLocaleString(),
+      todayStart: todayStart.toLocaleString(),
+      selectedDate: selectedDate.toLocaleDateString(),
+      isFutureDate: isFutureDate,
+      isPastDate: isPastDate,
+      isToday: isToday,
+      selectedDateMs: selectedDate.getTime(),
+      todayStartMs: todayStart.getTime(),
     });
 
-    // 미래 날짜만 비활성화 (과거 날짜와 오늘은 활성화)
-    const isFutureDate = classDateStr > todayStr;
-
-    console.log("날짜 비교 결과:", {
-      classDate: classDateStr,
-      today: todayStr,
-      isFuture: isFutureDate,
-      comparison: `${classDateStr} > ${todayStr} = ${isFutureDate}`,
-    });
-
-    // 과거와 현재 날짜는 항상 활성화
+    // 미래 날짜인 경우 비활성화
     if (isFutureDate) {
-      console.log("미래 날짜 감지 - 출석/결석 버튼 비활성화:", classDateStr);
+      console.log("미래 날짜 감지 - 출석/결석 버튼 비활성화:", classDate);
       return false;
     }
 
-    console.log("과거/오늘 날짜 - 출석/결석 버튼 활성화:", classDateStr);
-    return true;
+    // 과거 날짜인 경우 활성화
+    if (isPastDate) {
+      console.log("과거 날짜 - 출석/결석 버튼 활성화:", classDate);
+      return true;
+    }
+
+    // 오늘 날짜인 경우: 항상 활성화
+    if (isToday) {
+      console.log("오늘 날짜 - 출석/결석 버튼 활성화:", classDate);
+      return true;
+    }
+
+    return false;
   };
 
   const isWeekendYMD = (dateYMD) => {
