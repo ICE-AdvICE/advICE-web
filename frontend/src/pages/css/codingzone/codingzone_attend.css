@@ -1512,3 +1512,437 @@
     font-size: 11px !important;
   }
 }
+
+/* ===== 캘린더 인풋 박스 및 달력 팝업창 반응형 스타일 ===== */
+
+/* 768px 이하에서 캘린더 인풋 박스 반응형 */
+@media (max-width: 768px) {
+  /* 캘린더 인풋 박스 크기 조정 */
+  .calendar-input-wrap,
+  .cz-date-picker,
+  .custom_manager_datepicker {
+    width: 250px !important;
+    max-width: 250px !important;
+    min-width: 250px !important;
+    margin-top: 5px !important;
+  }
+
+  /* 캘린더 인풋 필드 크기 조정 */
+  .calendar-input-wrap input,
+  .cz-date-picker input,
+  .custom_manager_datepicker input,
+  .cal-input__field {
+    padding: 13px 15px !important;
+    height: 47px !important;
+    border-radius: 10px !important;
+  }
+
+  /* "Select a day" 글씨 크기 조정 */
+  .cal-input__label {
+    font-size: 11px !important;
+  }
+
+  /* "YYYY / MM / DD" 글씨 크기 조정 */
+  .cal-input__date {
+    font-size: 13px !important;
+  }
+
+  /* 왼쪽 아이콘 크기 조정 */
+  .cal-input__left-icon img {
+    width: 19px !important;
+    height: 19px !important;
+  }
+
+  /* 오른쪽 화살표 아이콘 크기 조정 */
+  .cal-input__icon-right img {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  /* 달력 팝업창 크기 조정 - 강제 적용 */
+  .cal-popover {
+    font-size: 13px !important;
+    width: 250px !important;
+    max-width: 250px !important;
+    min-width: 250px !important;
+    left: 0 !important;
+    right: auto !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    border-radius: 10px !important;
+  }
+
+  /* 달력 팝업창 내부 요소 크기 조정 - 강제 적용 */
+  .cal-popover .cal {
+    width: 250px !important;
+    max-width: 250px !important;
+    min-width: 250px !important;
+    padding: 13px !important;
+  }
+
+  /* 달력 그리드 크기 조정 */
+  .cal-popover .cal__grid {
+    gap: 4px !important;
+    padding: 0 !important;
+  }
+
+  /* 달력 셀 크기 조정 */
+  .cal-popover .cal__cell,
+  .cal-popover .cal__dow {
+    width: 24px !important;
+    height: 24px !important;
+    line-height: 24px !important;
+    font-size: 11px !important;
+    padding: 0 !important;
+  }
+
+  /* 달력 헤더 크기 조정 */
+  .cal-popover .cal__head {
+    padding: 0 4px 15px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+  }
+
+  .cal-popover .cal__title {
+    font-size: 14px !important;
+  }
+
+  /* 달력 네비게이션 버튼 크기 조정 */
+  .cal-popover .cal__nav {
+    width: 24px !important;
+    height: 24px !important;
+    line-height: 24px !important;
+    font-size: 20px !important;
+    top: 6px !important;
+    left: -6px !important;
+  }
+
+  .cal-popover .cal__nav img {
+    width: 12px !important;
+    height: 12px !important;
+  }
+}
+
+/* 480px 이하에서 캘린더 인풋 박스 반응형 */
+@media (max-width: 480px) {
+  /* 캘린더 인풋 박스 크기 조정 */
+  .calendar-input-wrap,
+  .cz-date-picker,
+  .custom_manager_datepicker {
+    width: 200px !important;
+    max-width: 200px !important;
+    min-width: 200px !important;
+    margin-top: 7px !important;
+  }
+
+  /* 캘린더 인풋 필드 크기 조정 */
+  .calendar-input-wrap input,
+  .cz-date-picker input,
+  .custom_manager_datepicker input,
+  .cal-input__field {
+    padding: 6px 12px !important;
+    height: 40px !important;
+    border-radius: 10px !important;
+  }
+
+  /* "Select a day" 글씨 크기 조정 */
+  .cal-input__label {
+    font-size: 10px !important;
+  }
+
+  /* "YYYY / MM / DD" 글씨 크기 조정 */
+  .cal-input__date {
+    font-size: 11px !important;
+  }
+
+  /* 왼쪽 아이콘 크기 조정 */
+  .cal-input__left-icon img {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  /* 오른쪽 화살표 아이콘 크기 조정 */
+  .cal-input__icon-right img {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  /* 달력 팝업창 크기 조정 - 강제 적용 */
+  .cal-popover {
+    font-size: 12px !important;
+    width: 200px !important;
+    max-width: 200px !important;
+    min-width: 200px !important;
+    left: 0 !important;
+    right: auto !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    border-radius: 10px !important;
+  }
+
+  /* 달력 팝업창 내부 요소 크기 조정 - 강제 적용 */
+  .cal-popover .cal {
+    width: 200px !important;
+    max-width: 200px !important;
+    min-width: 200px !important;
+    padding: 13px !important;
+  }
+
+  /* 달력 그리드 크기 조정 */
+  .cal-popover .cal__grid {
+    gap: 3px !important;
+    padding: 0 !important;
+  }
+
+  /* 달력 셀 크기 조정 */
+  .cal-popover .cal__cell,
+  .cal-popover .cal__dow {
+    width: 22px !important;
+    height: 22px !important;
+    line-height: 22px !important;
+    font-size: 10px !important;
+    padding: 0 !important;
+  }
+
+  /* 달력 헤더 크기 조정 */
+  .cal-popover .cal__head {
+    padding: 0 3px 12px !important;
+  }
+
+  .cal-popover .cal__title {
+    font-size: 12px !important;
+  }
+
+  /* 달력 네비게이션 버튼 크기 조정 */
+  .cal-popover .cal__nav {
+    width: 22px !important;
+    height: 22px !important;
+    line-height: 22px !important;
+    font-size: 18px !important;
+    top: 5px !important;
+    left: 3px !important;
+  }
+
+  .cal-popover .cal__nav img {
+    width: 11px !important;
+    height: 11px !important;
+  }
+}
+
+/* 390px 이하에서 캘린더 인풋 박스 반응형 */
+@media (max-width: 390px) {
+  /* 캘린더 인풋 박스 크기 조정 */
+  .calendar-input-wrap,
+  .cz-date-picker,
+  .custom_manager_datepicker {
+    width: 180px !important;
+    max-width: 180px !important;
+    min-width: 180px !important;
+    margin-top: 5px !important;
+  }
+
+  /* 캘린더 인풋 필드 크기 조정 */
+  .calendar-input-wrap input,
+  .cz-date-picker input,
+  .custom_manager_datepicker input,
+  .cal-input__field {
+    padding: 6px 13px !important;
+    height: 35px !important;
+    border-radius: 10px !important;
+  }
+
+  /* "Select a day" 글씨 크기 조정 */
+  .cal-input__label {
+    font-size: 9px !important;
+  }
+
+  /* "YYYY / MM / DD" 글씨 크기 조정 */
+  .cal-input__date {
+    font-size: 10px !important;
+  }
+
+  /* 왼쪽 아이콘 크기 조정 */
+  .cal-input__left-icon img {
+    width: 15px !important;
+    height: 15px !important;
+  }
+
+  /* 오른쪽 화살표 아이콘 크기 조정 */
+  .cal-input__icon-right img {
+    width: 12px !important;
+    height: 12px !important;
+  }
+
+  /* 달력 팝업창 크기 조정 - 강제 적용 */
+  .cal-popover {
+    font-size: 10px !important;
+    width: 180px !important;
+    max-width: 180px !important;
+    min-width: 180px !important;
+    left: 0 !important;
+    right: auto !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    border-radius: 10px !important;
+  }
+
+  /* 달력 팝업창 내부 요소 크기 조정 - 강제 적용 */
+  .cal-popover .cal {
+    width: 180px !important;
+    max-width: 180px !important;
+    min-width: 180px !important;
+    padding: 15px !important;
+  }
+
+  /* 달력 그리드 크기 조정 */
+  .cal-popover .cal__grid {
+    gap: 3px !important;
+    padding: 0 !important;
+  }
+
+  /* 달력 셀 크기 조정 */
+  .cal-popover .cal__cell,
+  .cal-popover .cal__dow {
+    width: 19px !important;
+    height: 19px !important;
+    line-height: 19px !important;
+    font-size: 9px !important;
+    padding: 0 !important;
+  }
+
+  /* 달력 헤더 크기 조정 */
+  .cal-popover .cal__head {
+    padding: 0 3px 12px !important;
+  }
+
+  .cal-popover .cal__title {
+    font-size: 11px !important;
+  }
+
+  /* 달력 네비게이션 버튼 크기 조정 */
+  .cal-popover .cal__nav {
+    width: 20px !important;
+    height: 20px !important;
+    line-height: 20px !important;
+    font-size: 18px !important;
+    top: 5px !important;
+    left: 3px !important;
+  }
+
+  .cal-popover .cal__nav img {
+    width: 10px !important;
+    height: 10px !important;
+  }
+}
+
+/* 375px 이하에서 캘린더 인풋 박스 반응형 */
+@media (max-width: 375px) {
+  /* 캘린더 인풋 박스 크기 조정 */
+  .calendar-input-wrap,
+  .cz-date-picker,
+  .custom_manager_datepicker {
+    width: 180px !important;
+    max-width: 180px !important;
+    min-width: 180px !important;
+    margin-top: 5px !important;
+  }
+
+  /* 캘린더 인풋 필드 크기 조정 */
+  .calendar-input-wrap input,
+  .cz-date-picker input,
+  .custom_manager_datepicker input,
+  .cal-input__field {
+    padding: 6px 13px !important;
+    height: 35px !important;
+    border-radius: 10px !important;
+  }
+
+  /* "Select a day" 글씨 크기 조정 */
+  .cal-input__label {
+    font-size: 9px !important;
+  }
+
+  /* "YYYY / MM / DD" 글씨 크기 조정 */
+  .cal-input__date {
+    font-size: 10px !important;
+  }
+
+  /* 왼쪽 아이콘 크기 조정 */
+  .cal-input__left-icon img {
+    width: 15px !important;
+    height: 15px !important;
+  }
+
+  /* 오른쪽 화살표 아이콘 크기 조정 */
+  .cal-input__icon-right img {
+    width: 12px !important;
+    height: 12px !important;
+  }
+
+  /* 달력 팝업창 크기 조정 - 강제 적용 */
+  .cal-popover {
+    font-size: 10px !important;
+    width: 180px !important;
+    max-width: 180px !important;
+    min-width: 180px !important;
+    left: 0 !important;
+    right: auto !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    border-radius: 10px !important;
+  }
+
+  /* 달력 팝업창 내부 요소 크기 조정 - 강제 적용 */
+  .cal-popover .cal {
+    width: 180px !important;
+    max-width: 180px !important;
+    min-width: 180px !important;
+    padding: 15px !important;
+  }
+
+  /* 달력 그리드 크기 조정 */
+  .cal-popover .cal__grid {
+    gap: 3px !important;
+    padding: 0 !important;
+  }
+
+  /* 달력 셀 크기 조정 */
+  .cal-popover .cal__cell,
+  .cal-popover .cal__dow {
+    width: 19px !important;
+    height: 19px !important;
+    line-height: 19px !important;
+    font-size: 9px !important;
+    padding: 0 !important;
+  }
+
+  /* 달력 헤더 크기 조정 */
+  .cal-popover .cal__head {
+    padding: 0 3px 12px !important;
+  }
+
+  .cal-popover .cal__title {
+    font-size: 11px !important;
+  }
+
+  /* 달력 네비게이션 버튼 크기 조정 */
+  .cal-popover .cal__nav {
+    width: 20px !important;
+    height: 20px !important;
+    line-height: 20px !important;
+    font-size: 18px !important;
+    top: 5px !important;
+    left: 3px !important;
+  }
+
+  .cal-popover .cal__nav img {
+    width: 10px !important;
+    height: 10px !important;
+  }
+}
