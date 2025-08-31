@@ -1529,9 +1529,7 @@ const CodingMain = () => {
               !bannerPub &&
               classListPub.length > 0 && (
                 <section className="czp-table-wrap">
-                  <div className="czp-table-shell">
-                    <div className="czp-table-scroll">
-                      <table className="czp-table" style={{ width: "1100px" }}>
+                      <table className="czp-table" >
                         <thead>
                           <tr
                             style={{
@@ -1665,8 +1663,6 @@ const CodingMain = () => {
                           })}
                         </tbody>
                       </table>
-                    </div>
-                  </div>
                 </section>
               )}
           </>

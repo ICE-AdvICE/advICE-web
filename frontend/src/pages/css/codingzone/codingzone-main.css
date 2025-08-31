@@ -74,7 +74,7 @@ body {
 }
 
 .codingzone-body-container {
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 37.5px auto;
   padding: 0 10px 10px 10px;
   margin-bottom: 100px;
@@ -330,40 +330,17 @@ body {
 /* ####3=== 학생용 표 기본 컨테이너: 회색 패널과 동일 가로폭(부모 100%) === ####*/
 .czp-table-wrap {
   width: 100%;
-  background: #fff;
-  border-radius: 12px;
-  /* 툴팁이 테이블 밖으로 나올 수 있게 */
-  overflow: visible;
-  /* 가로 스크롤 완전 차단 */
-  overflow-x: hidden;
-  /* 테이블 중앙 정렬 */
-  display: flex;
-  justify-content: center;
+  padding: 0 10px;      /* 좌우 10px 여백 */
+  box-sizing: border-box;
+  
 }
 
-/* 스크롤 박스(헤더/바디 한 테이블이므로 가로/세로 스크롤만) */
-.czp-table-shell {
-  border-radius: 12px;
-  /* 툴팁 클리핑 방지 */
-  overflow: visible;
-  background: #fff;
-  /* 가로 스크롤 완전 차단 */
-  overflow-x: hidden;
-}
-.czp-table-scroll {
-  /* 툴팁이 어느 방향으로도 잘리지 않게 */
-  overflow: visible;
-  /* 가로 스크롤 제거 */
-  overflow-x: hidden;
-}
-
-/* 표 레이아웃 */
 .czp-table {
-  width: 1100px;
-  border-collapse: separate !important;
-  /* 헤더와 바디가 맞닿도록 간격 제거 */
-  border-spacing: 0 !important;
-  table-layout: fixed; /* 컬럼 너비 고정 */
+  width: 100%;
+  min-width: 1100px;    /* 테이블 기본 크기 보장 */
+  max-width: 95%;       /* 화면보다 너무 커지지 않게 */
+  margin: 0 auto;       /* 항상 가운데 정렬 */
+  border-collapse: collapse;
 }
 
 /* 헤더 셀 */
@@ -432,30 +409,17 @@ body {
 }
 /* 컬럼 너비(헤더/바디 동일하게 nth-child로 고정) */
 .czp-table th:nth-child(1),
-.czp-table td:nth-child(1) {
-  width: 120px;
-} /* 요일 */
-
+.czp-table td:nth-child(1) { width: 120px; } /* 요일 */
 .czp-table th:nth-child(2),
-.czp-table td:nth-child(2) {
-  width: 200px;
-} /* 시간 */
+.czp-table td:nth-child(2) { width: 200px; } /* 시간 */
 .czp-table th:nth-child(3),
-.czp-table td:nth-child(3) {
-  width: 250px;
-} /* 수업명(유동) */
+.czp-table td:nth-child(3) { width: 250px; } /* 수업명 */
 .czp-table th:nth-child(4),
-.czp-table td:nth-child(4) {
-  width: 160px;
-} /* 조교 */
+.czp-table td:nth-child(4) { width: 160px; } /* 조교 */
 .czp-table th:nth-child(5),
-.czp-table td:nth-child(5) {
-  width: 140px;
-} /* 인원 */
+.czp-table td:nth-child(5) { width: 140px; } /* 인원 */
 .czp-table th:nth-child(6),
-.czp-table td:nth-child(6) {
-  width: 120px;
-} /* 상태 */
+.czp-table td:nth-child(6) { width: 120px; } /* 상태 */
 
 /* 상태 태그 */
 .czp-tag {
@@ -591,13 +555,6 @@ body {
   height: "auto";
 }
 
-.codingzone-owl {
-  width: 800px;
-  height: "auto";
-  display: "block";
-  margin: "40px auto";
-}
-
 @media (max-width: 1280px) {
   .czp-guide-image {
     width: 850px;
@@ -605,11 +562,6 @@ body {
   }
   .czp-subject-bar {
     transform: scale(0.9);
-  }
-
-  .codingzone-owl {
-    width: 650px;
-    height: auto;
   }
 }
 
@@ -661,11 +613,6 @@ body {
     transform: scale(0.7);
     margin-bottom: -60px;
     margin-right: 90px;
-  }
-
-  .codingzone-owl {
-    width: 550px;
-    height: auto;
   }
 }
 
@@ -721,11 +668,6 @@ body {
     transform: scale(0.6);
     justify-self: center;
   }
-
-  .codingzone-owl {
-    width: 500px;
-    height: auto;
-  }
 }
 
 @media (max-width: 600px) {
@@ -744,10 +686,6 @@ body {
     transform: scale(0.6);
     margin-bottom: -55px;
     margin-right: 40%;
-  }
-  .codingzone-owl {
-    width: 450px;
-    height: auto;
   }
 }
 
@@ -804,6 +742,10 @@ body {
     gap: 40px;
     transform: scale(0.55);
   }
+   .czp-table-wrap {
+    margin: 0;
+    padding: 0;
+  }
   .czp-table {
     flex-wrap: nowrap;
     white-space: nowrap;
@@ -816,14 +758,9 @@ body {
     margin-bottom: -55px;
     margin-right: 39%;
   }
-
-  .codingzone-owl {
-    width: 360px;
-    height: auto;
-  }
 }
 
-@media (max-width: 390px) {
+@media (max-width: 395px) {
   .czcard p,
   .codingzone-title p,
   .codingzone-date button {
@@ -849,16 +786,5 @@ body {
     transform: scale(0.35);
     justify-self: center;
   }
-
-  .codingzone-owl {
-    width: 270px;
-    height: auto;
-  }
 }
 
-@media (max-width: 375px) {
-  .codingzone-owl {
-    width: 255px;
-    height: auto;
-  }
-}

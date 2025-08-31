@@ -9,8 +9,6 @@
   position: relative; /* 팝오버 absolute 기준점 */
 }
 
-/* 팝오버 패널(컨테이너) */
-
 .cal-input {
   position: relative; /* ✅ 기준점 */
   display: inline-block; /* 버튼 크기만큼만 차지 */
