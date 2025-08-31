@@ -313,6 +313,13 @@ const CodingZoneAttendanceAssistant = () => {
                           const canUpdate =
                             canUpdateAttendance(selectedDateYMD);
 
+                          console.log("버튼 렌더링 디버깅:", {
+                            selectedDateYMD,
+                            canUpdate,
+                            studentName: student.userName,
+                            studentTime: student.classTime,
+                          });
+
                           if (student.attendance === "1") {
                             return (
                               <>
