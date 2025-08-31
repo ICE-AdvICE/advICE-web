@@ -9,6 +9,17 @@
   position: relative; /* 팝오버 absolute 기준점 */
 }
 
+/* transform: scale() 사용 시 캘린더 팝업 간격 조정 */
+.calendar-input-wrap .react-datepicker {
+  margin-top: 15px !important;
+}
+
+.calendar-input-wrap .react-datepicker-popper {
+  margin-top: 15px !important;
+}
+
+/* 팝오버 패널(컨테이너) */
+
 .cal-input {
   position: relative; /* ✅ 기준점 */
   display: inline-block; /* 버튼 크기만큼만 차지 */
