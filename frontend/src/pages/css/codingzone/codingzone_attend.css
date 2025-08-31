@@ -683,28 +683,6 @@
 }
 
 @media (max-width: 375px) {
-  /* 표 크기 조정 - 375px에 맞게 transform으로 축소 */
-  .cz-table {
-    margin-top: 13px !important;
-    transform: scale(0.9) !important;
-    transform-origin: top center !important;
-    margin-bottom: 0px !important;
-  }
-
-  .cz-table thead th {
-    padding: 14px 6px !important;
-    font-size: 14px !important;
-  }
-
-  .cz-table tbody td {
-    padding: 17px 0px !important;
-    font-size: 13px !important;
-  }
-
-  .cz-table-shell {
-    margin-bottom: 40px !important;
-  }
-
   .manager-table {
     width: 350px !important;
     max-width: 100%;
@@ -1710,5 +1688,11 @@
   .panel-gray .panel-empty,
   .panel-white .panel-empty {
     font-size: 11px !important;
+  }
+}
+
+@media (max-width: 375px) {
+  .cz-table {
+    transform: scale(0.81) !important;
   }
 }
