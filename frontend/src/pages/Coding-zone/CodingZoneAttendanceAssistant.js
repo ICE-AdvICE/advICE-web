@@ -178,6 +178,11 @@ const CodingZoneAttendanceAssistant = () => {
 
   // 과거 날짜와 오늘은 활성화, 미래 날짜만 비활성화
   const canUpdateAttendance = (classDate) => {
+    if (!classDate) {
+      console.log("canUpdateAttendance: classDate가 null/undefined입니다.");
+      return false;
+    }
+
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // 오늘 자정
 
@@ -190,6 +195,8 @@ const CodingZoneAttendanceAssistant = () => {
       today: todayStr,
       classDateType: typeof classDateStr,
       todayType: typeof todayStr,
+      now: now.toISOString(),
+      todayDate: today.toISOString(),
     });
 
     // 미래 날짜만 비활성화 (과거 날짜와 오늘은 활성화)
@@ -199,6 +206,7 @@ const CodingZoneAttendanceAssistant = () => {
       classDate: classDateStr,
       today: todayStr,
       isFuture: isFutureDate,
+      comparison: `${classDateStr} > ${todayStr} = ${isFutureDate}`,
     });
 
     // 과거와 현재 날짜는 항상 활성화
@@ -286,6 +294,13 @@ const CodingZoneAttendanceAssistant = () => {
                         {(() => {
                           const canUpdate =
                             canUpdateAttendance(selectedDateYMD);
+
+                          console.log("버튼 렌더링 디버깅:", {
+                            selectedDateYMD,
+                            canUpdate,
+                            studentName: student.userName,
+                            studentTime: student.classTime,
+                          });
 
                           if (student.attendance === "1") {
                             return (
