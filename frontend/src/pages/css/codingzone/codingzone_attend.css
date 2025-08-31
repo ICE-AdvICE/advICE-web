@@ -2574,7 +2574,7 @@
     padding: 4rem 1.5rem !important; /* 상하 64px, 좌우 24px */
     transform: scale(0.97) !important; /* 학생 출결 관리 표와 동일 */
     transform-origin: top center !important; /* 학생 출결 관리 표와 동일 */
-    margin-bottom: 10px !important;
+    margin-bottom: 30px !important;
   }
 
   .manager-table-card ~ .panel-gray .panel-empty,
@@ -2646,6 +2646,270 @@
   /* 직접 선택자도 추가 */
   .panel-gray .panel-empty,
   .panel-white .panel-empty {
+    font-size: 11px !important;
+  }
+}
+
+/* ===== 학생조교 출결 관리 페이지 회색 박스 반응형 스타일 ===== */
+
+/* 학생조교 출결 관리 페이지의 회색 박스만 대상으로 하는 반응형 */
+.panel-block.panel-gray {
+  /* 기본 스타일은 기존 CSS에서 상속 */
+}
+
+/* 1200px 이하에서 회색 박스 반응형 */
+@media (max-width: 1200px) {
+  .panel-block.panel-gray {
+    width: 960px !important; /* 학생 출결 관리 표와 동일 */
+    max-width: 100% !important;
+    min-width: 960px !important;
+    height: 350px !important; /* 비율 계산: 432px * 0.9 = 388.8px → 350px */
+    padding: 8rem 5rem !important; /* 상하 128px, 좌우 80px */
+    transform: scale(0.84); /* 학생 출결 관리 표와 동일 */
+    transform-origin: top center; /* 학생 출결 관리 표와 동일 */
+  }
+
+  .panel-block.panel-gray .panel-empty {
+    font-size: 22px !important;
+  }
+}
+
+/* 1024px 이하에서 회색 박스 반응형 */
+@media (max-width: 1024px) {
+  .panel-block.panel-gray {
+    width: 795px !important; /* 학생 출결 관리 표와 동일 */
+    max-width: 100% !important;
+    min-width: 795px !important;
+    height: 400px !important; /* 비율 계산: 480px * 0.85 = 408px → 400px */
+    padding: 6rem 3rem !important; /* 상하 96px, 좌우 48px */
+    transform: scale(0.77); /* 학생 출결 관리 표와 동일 */
+    transform-origin: top center; /* 학생 출결 관리 표와 동일 */
+    margin-bottom: 20px !important;
+  }
+
+  .panel-block.panel-gray .panel-empty {
+    font-size: 20px !important;
+  }
+}
+
+/* 768px 이하에서 회색 박스 반응형 */
+@media (max-width: 768px) {
+  .panel-block.panel-gray {
+    width: 671px !important; /* 학생 출결 관리 표와 동일 */
+    max-width: 100% !important;
+    min-width: 671px !important;
+    height: 450px !important; /* 비율 계산: 512px * 0.8 = 409.6px → 450px */
+    padding: 5rem 2rem !important; /* 상하 80px, 좌우 32px */
+    transform: scale(0.87); /* 학생 출결 관리 표와 동일 */
+    transform-origin: top center; /* 학생 출결 관리 표와 동일 */
+    margin-bottom: 10px !important;
+  }
+
+  .panel-block.panel-gray .panel-empty {
+    font-size: 19px !important;
+  }
+}
+
+/* 480px 이하에서 회색 박스 반응형 - 최고 우선순위로 강제 적용 */
+@media (max-width: 480px) {
+  /* 더 구체적인 선택자로 우선순위 높임 */
+  .panel-block.panel-gray {
+    width: 423px !important; /* 학생 출결 관리 표와 동일 */
+    max-width: 100% !important;
+    min-width: 423px !important;
+    height: 380px !important;
+    padding: 4rem 1.5rem !important; /* 상하 64px, 좌우 24px */
+    transform: scale(0.97) !important; /* 학생 출결 관리 표와 동일 */
+    transform-origin: top center !important; /* 학생 출결 관리 표와 동일 */
+    margin-bottom: 40px !important;
+  }
+
+  .panel-block.panel-gray .panel-empty {
+    font-size: 12px !important;
+  }
+}
+
+/* 390px 이하에서 회색 박스 반응형 - 최고 우선순위로 강제 적용 */
+@media (max-width: 390px) {
+  /* 더 구체적인 선택자로 우선순위 높임 */
+  .panel-block.panel-gray,
+  /* 직접 선택자도 추가 */
+  .panel-gray {
+    width: 380px !important; /* 학생 출결 관리 표와 동일 */
+    max-width: 100% !important;
+    min-width: 380px !important;
+    height: 300px !important;
+    padding: 3rem 1rem !important; /* 상하 48px, 좌우 16px */
+    transform: scale(0.965) !important; /* 학생 출결 관리 표와 동일 */
+    transform-origin: top center !important; /* 학생 출결 관리 표와 동일 */
+    margin-bottom: 20px !important;
+  }
+
+  .panel-block.panel-gray .panel-empty,
+  /* 직접 선택자도 추가 */
+  .panel-gray .panel-empty {
+    font-size: 11px !important;
+  }
+}
+
+/* ===== 1200px 반응형 강제 적용 (최고 우선순위) ===== */
+@media (max-width: 1200px) {
+  /* 모든 회색 박스에 대한 강제 적용 */
+  .panel-gray,
+  .panel-white,
+  .cz-table-shell ~ .panel-gray,
+  .cz-table-shell ~ .panel-white,
+  .cz-table-shell + .panel-gray,
+  .cz-table-shell + .panel-white,
+  .manager-table-card ~ .panel-gray,
+  .manager-table-card ~ .panel-white,
+  .manager-table-card + .panel-gray,
+  .manager-table-card + .panel-white,
+  .panel-block.panel-gray {
+    margin-bottom: 160px !important;
+  }
+
+  /* 모든 회색 박스 내부 텍스트에 대한 강제 적용 */
+  .panel-gray .panel-empty,
+  .panel-white .panel-empty,
+  .cz-table-shell ~ .panel-gray .panel-empty,
+  .cz-table-shell ~ .panel-white .panel-empty,
+  .cz-table-shell + .panel-gray .panel-empty,
+  .cz-table-shell + .panel-white .panel-empty,
+  .manager-table-card ~ .panel-gray .panel-empty,
+  .manager-table-card ~ .panel-white .panel-empty,
+  .manager-table-card + .panel-gray .panel-empty,
+  .manager-table-card + .panel-white .panel-empty,
+  .panel-block.panel-gray .panel-empty {
+    font-size: 22px !important;
+  }
+}
+
+/* ===== 1024px 반응형 강제 적용 (최고 우선순위) ===== */
+@media (max-width: 1024px) {
+  /* 모든 회색 박스에 대한 강제 적용 */
+  .panel-gray,
+  .panel-white,
+  .cz-table-shell ~ .panel-gray,
+  .cz-table-shell ~ .panel-white,
+  .cz-table-shell + .panel-gray,
+  .cz-table-shell + .panel-white,
+  .manager-table-card ~ .panel-gray,
+  .manager-table-card ~ .panel-white,
+  .manager-table-card + .panel-gray,
+  .manager-table-card + .panel-white,
+  .panel-block.panel-gray {
+    margin-bottom: 150px !important;
+  }
+
+  /* 모든 회색 박스 내부 텍스트에 대한 강제 적용 */
+  .panel-gray .panel-empty,
+  .panel-white .panel-empty,
+  .cz-table-shell ~ .panel-gray .panel-empty,
+  .cz-table-shell ~ .panel-white .panel-empty,
+  .cz-table-shell + .panel-gray .panel-empty,
+  .cz-table-shell + .panel-white .panel-empty,
+  .manager-table-card ~ .panel-gray .panel-empty,
+  .manager-table-card ~ .panel-white .panel-empty,
+  .manager-table-card + .panel-gray .panel-empty,
+  .manager-table-card + .panel-white .panel-empty,
+  .panel-block.panel-gray .panel-empty {
+    font-size: 20px !important;
+  }
+}
+
+/* ===== 768px 반응형 강제 적용 (최고 우선순위) ===== */
+@media (max-width: 768px) {
+  /* 모든 회색 박스에 대한 강제 적용 */
+  .panel-gray,
+  .panel-white,
+  .cz-table-shell ~ .panel-gray,
+  .cz-table-shell ~ .panel-white,
+  .cz-table-shell + .panel-gray,
+  .cz-table-shell + .panel-white,
+  .manager-table-card ~ .panel-gray,
+  .manager-table-card ~ .panel-white,
+  .manager-table-card + .panel-gray,
+  .manager-table-card + .panel-white,
+  .panel-block.panel-gray {
+    margin-bottom: 130px !important;
+  }
+
+  /* 모든 회색 박스 내부 텍스트에 대한 강제 적용 */
+  .panel-gray .panel-empty,
+  .panel-white .panel-empty,
+  .cz-table-shell ~ .panel-gray .panel-empty,
+  .cz-table-shell ~ .panel-white .panel-empty,
+  .cz-table-shell + .panel-gray .panel-empty,
+  .cz-table-shell + .panel-white .panel-empty,
+  .manager-table-card ~ .panel-gray .panel-empty,
+  .manager-table-card ~ .panel-white .panel-empty,
+  .manager-table-card + .panel-gray .panel-empty,
+  .manager-table-card + .panel-white .panel-empty,
+  .panel-block.panel-gray .panel-empty {
+    font-size: 16px !important;
+  }
+}
+
+/* ===== 390px 반응형 강제 적용 (최고 우선순위) ===== */
+@media (max-width: 390px) {
+  /* 모든 회색 박스에 대한 강제 적용 */
+  .panel-gray,
+  .panel-white,
+  .cz-table-shell ~ .panel-gray,
+  .cz-table-shell ~ .panel-white,
+  .cz-table-shell + .panel-gray,
+  .cz-table-shell + .panel-white,
+  .manager-table-card ~ .panel-gray,
+  .manager-table-card ~ .panel-white,
+  .manager-table-card + .panel-gray,
+  .manager-table-card + .panel-white,
+  .panel-block.panel-gray {
+    width: 380px !important;
+    max-width: 100% !important;
+    min-width: 380px !important;
+    height: 300px !important;
+    padding: 3rem 1rem !important;
+    transform: scale(0.965) !important;
+    transform-origin: top center !important;
+    margin-bottom: 60px !important;
+  }
+
+  /* 모든 회색 박스 내부 텍스트에 대한 강제 적용 */
+  .panel-gray .panel-empty,
+  .panel-white .panel-empty,
+  .cz-table-shell ~ .panel-gray .panel-empty,
+  .cz-table-shell ~ .panel-white .panel-empty,
+  .cz-table-shell + .panel-gray .panel-empty,
+  .cz-table-shell + .panel-white .panel-empty,
+  .manager-table-card ~ .panel-gray .panel-empty,
+  .manager-table-card ~ .panel-white .panel-empty,
+  .manager-table-card + .panel-gray .panel-empty,
+  .manager-table-card + .panel-white .panel-empty,
+  .panel-block.panel-gray .panel-empty {
+    font-size: 11px !important;
+  }
+}
+
+/* 375px 이하에서 회색 박스 반응형 - 최고 우선순위로 강제 적용 */
+@media (max-width: 375px) {
+  /* 더 구체적인 선택자로 우선순위 높임 */
+  .panel-block.panel-gray,
+  /* 직접 선택자도 추가 */
+  .panel-gray {
+    width: 360px !important; /* 학생 출결 관리 표와 동일 */
+    max-width: 100% !important;
+    min-width: 360px !important;
+    height: 280px !important;
+    padding: 2.5rem 0.8rem !important; /* 상하 40px, 좌우 12.8px */
+    transform: scale(0.97) !important; /* 학생 출결 관리 표와 동일 */
+    transform-origin: top center !important; /* 학생 출결 관리 표와 동일 */
+    margin-bottom: 60px !important;
+  }
+
+  .panel-block.panel-gray .panel-empty,
+  /* 직접 선택자도 추가 */
+  .panel-gray .panel-empty {
     font-size: 11px !important;
   }
 }
