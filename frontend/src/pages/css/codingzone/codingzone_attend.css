@@ -2500,36 +2500,11 @@
   .manager-table-card ~ .panel-white,
   .manager-table-card + .panel-gray,
   .manager-table-card + .panel-white {
-    width: 960px !important; /* 학생 출결 관리 표와 동일 */
-    max-width: 100% !important;
+    width: 60rem !important; /* 960px */
+    max-width: 960px !important;
     min-width: 960px !important;
-    height: 350px !important; /* 비율 계산: 432px * 0.9 = 388.8px → 350px */
-    padding: 8rem 5rem !important; /* 상하 128px, 좌우 80px */
-    transform: scale(0.84); /* 학생 출결 관리 표와 동일 */
-    transform-origin: top center; /* 학생 출결 관리 표와 동일 */
-  }
-
-  .manager-table-card ~ .panel-gray .panel-empty,
-  .manager-table-card ~ .panel-white .panel-empty,
-  .manager-table-card + .panel-gray .panel-empty,
-  .manager-table-card + .panel-white .panel-empty {
-    font-size: 22px !important;
-  }
-}
-
-/* 1024px 이하에서 회색 박스 반응형 */
-@media (max-width: 1024px) {
-  .manager-table-card ~ .panel-gray,
-  .manager-table-card ~ .panel-white,
-  .manager-table-card + .panel-gray,
-  .manager-table-card + .panel-white {
-    width: 795px !important; /* 학생 출결 관리 표와 동일 */
-    max-width: 100% !important;
-    min-width: 795px !important;
-    height: 400px !important; /* 비율 계산: 480px * 0.85 = 408px → 400px */
-    padding: 6rem 3rem !important; /* 상하 96px, 좌우 48px */
-    transform: scale(0.77); /* 학생 출결 관리 표와 동일 */
-    transform-origin: top center; /* 학생 출결 관리 표와 동일 */
+    height: 28rem !important; /* 400px */
+    padding: 6rem 4rem !important; /* 상하 96px, 좌우 64px */
   }
 
   .manager-table-card ~ .panel-gray .panel-empty,
@@ -2540,26 +2515,45 @@
   }
 }
 
-/* 768px 이하에서 회색 박스 반응형 */
-@media (max-width: 768px) {
+/* 1024px 이하에서 회색 박스 반응형 */
+@media (max-width: 1024px) {
   .manager-table-card ~ .panel-gray,
   .manager-table-card ~ .panel-white,
   .manager-table-card + .panel-gray,
   .manager-table-card + .panel-white {
-    width: 671px !important; /* 학생 출결 관리 표와 동일 */
-    max-width: 100% !important;
-    min-width: 671px !important;
-    height: 450px !important; /* 비율 계산: 512px * 0.8 = 409.6px → 450px */
-    padding: 5rem 2rem !important; /* 상하 80px, 좌우 32px */
-    transform: scale(0.87); /* 학생 출결 관리 표와 동일 */
-    transform-origin: top center; /* 학생 출결 관리 표와 동일 */
+    width: 50rem !important; /* 800px */
+    max-width: 50rem !important;
+    min-width: 50rem !important;
+    height: 28rem !important; /* 448px */
+    padding: 5rem 3rem !important; /* 상하 80px, 좌우 48px */
   }
 
   .manager-table-card ~ .panel-gray .panel-empty,
   .manager-table-card ~ .panel-white .panel-empty,
   .manager-table-card + .panel-gray .panel-empty,
   .manager-table-card + .panel-white .panel-empty {
-    font-size: 19px !important;
+    font-size: 18px !important;
+  }
+}
+
+/* 768px 이하에서 회색 박스 반응형 */
+@media (max-width: 768px) {
+  .manager-table-card ~ .panel-gray,
+  .manager-table-card ~ .panel-white,
+  .manager-table-card + .panel-gray,
+  .manager-table-card + .panel-white {
+    width: 42rem !important; /* 672px */
+    max-width: 42rem !important;
+    min-width: 42rem !important;
+    height: 24rem !important; /* 512px */
+    padding: 4rem 2rem !important; /* 상하 64px, 좌우 32px */
+  }
+
+  .manager-table-card ~ .panel-gray .panel-empty,
+  .manager-table-card ~ .panel-white .panel-empty,
+  .manager-table-card + .panel-gray .panel-empty,
+  .manager-table-card + .panel-white .panel-empty {
+    font-size: 15px !important;
   }
 }
 
@@ -2576,9 +2570,9 @@
     width: 423px !important; /* 학생 출결 관리 표와 동일 */
     max-width: 100% !important;
     min-width: 423px !important;
-    height: 380px !important; /* 비율 계산: 560px * 0.75 = 420px → 500px */
+    height: 380px !important;
     padding: 4rem 1.5rem !important; /* 상하 64px, 좌우 24px */
-    transform: scale(0.98) !important; /* 학생 출결 관리 표와 동일 */
+    transform: scale(0.97) !important; /* 학생 출결 관리 표와 동일 */
     transform-origin: top center !important; /* 학생 출결 관리 표와 동일 */
     margin-bottom: 10px !important;
   }
@@ -2590,7 +2584,7 @@
   /* 직접 선택자도 추가 */
   .panel-gray .panel-empty,
   .panel-white .panel-empty {
-    font-size: 13px !important;
+    font-size: 12px !important;
   }
 }
 
@@ -2607,11 +2601,11 @@
     width: 380px !important; /* 학생 출결 관리 표와 동일 */
     max-width: 100% !important;
     min-width: 380px !important;
-    height: 300px !important; /* 비율 계산: 608px * 0.7 = 425.6px → 550px */
+    height: 300px !important;
     padding: 3rem 1rem !important; /* 상하 48px, 좌우 16px */
-    transform: scale(0.95) !important; /* 학생 출결 관리 표와 동일 */
+    transform: scale(0.965) !important; /* 학생 출결 관리 표와 동일 */
     transform-origin: top center !important; /* 학생 출결 관리 표와 동일 */
-    margin-bottom: 0px !important;
+    margin-bottom: 20px !important;
   }
 
   .manager-table-card ~ .panel-gray .panel-empty,
@@ -2621,7 +2615,7 @@
   /* 직접 선택자도 추가 */
   .panel-gray .panel-empty,
   .panel-white .panel-empty {
-    font-size: 12px !important;
+    font-size: 11px !important;
   }
 }
 
@@ -2638,7 +2632,7 @@
     width: 360px !important; /* 학생 출결 관리 표와 동일 */
     max-width: 100% !important;
     min-width: 360px !important;
-    height: 280px !important; /* 비율 계산: 640px * 0.97 = 620.8px → 600px */
+    height: 280px !important;
     padding: 2.5rem 0.8rem !important; /* 상하 40px, 좌우 12.8px */
     transform: scale(0.97) !important; /* 학생 출결 관리 표와 동일 */
     transform-origin: top center !important; /* 학생 출결 관리 표와 동일 */
@@ -2652,6 +2646,6 @@
   /* 직접 선택자도 추가 */
   .panel-gray .panel-empty,
   .panel-white .panel-empty {
-    font-size: 12px !important;
+    font-size: 11px !important;
   }
 }
