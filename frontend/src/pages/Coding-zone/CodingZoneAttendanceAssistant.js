@@ -177,7 +177,7 @@ const CodingZoneAttendanceAssistant = () => {
   };
 
   // 과거 날짜와 오늘은 활성화, 미래 날짜만 비활성화
-  // 오늘 날짜는 오후 9시(PM 9:00)까지만 활성화 (더 늦은 시간까지 허용)
+  // 날짜 기준으로만 비교 (시간은 무시)
   const canUpdateAttendance = (classDate) => {
     if (!classDate) {
       console.log("canUpdateAttendance: classDate가 null/undefined입니다.");
@@ -185,63 +185,56 @@ const CodingZoneAttendanceAssistant = () => {
     }
 
     const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // 오늘 자정
-    const todayNight = new Date(
+
+    // 오늘 자정 (00:00:00)을 기준점으로 설정
+    const todayStart = new Date(
       now.getFullYear(),
       now.getMonth(),
       now.getDate(),
-      21,
+      0,
       0,
       0
-    ); // 오늘 오후 9시
+    );
 
-    // 날짜를 YYYY-MM-DD 형식의 문자열로 변환하여 비교 (한국 시간 기준)
-    const classDateStr = classDate;
-    const todayStr = today
-      .toLocaleDateString("ko-KR")
-      .replace(/\. /g, "-")
-      .replace(".", "");
+    // 선택된 날짜를 Date 객체로 변환
+    const selectedDate = new Date(classDate + "T00:00:00");
+
+    // 날짜 비교 (시간은 무시하고 날짜만 비교)
+    const isFutureDate = selectedDate > todayStart;
+    const isPastDate = selectedDate < todayStart;
+    const isToday = selectedDate.getTime() === todayStart.getTime();
 
     console.log("canUpdateAttendance 디버깅:", {
-      classDate: classDateStr,
-      today: todayStr,
-      now: now.toISOString(),
-      currentTime: now.toLocaleTimeString(),
-      todayNight: todayNight.toLocaleTimeString(),
-      currentHour: now.getHours(),
-      currentMinute: now.getMinutes(),
-      isToday: classDateStr === todayStr,
-      isPast: classDateStr < todayStr,
-      isFuture: classDateStr > todayStr,
+      classDate: classDate,
+      currentTime: now.toLocaleString(),
+      todayStart: todayStart.toLocaleString(),
+      selectedDate: selectedDate.toLocaleDateString(),
+      isFutureDate: isFutureDate,
+      isPastDate: isPastDate,
+      isToday: isToday,
+      selectedDateMs: selectedDate.getTime(),
+      todayStartMs: todayStart.getTime(),
     });
 
     // 미래 날짜인 경우 비활성화
-    if (classDateStr > todayStr) {
-      console.log("미래 날짜 감지 - 출석/결석 버튼 비활성화:", classDateStr);
+    if (isFutureDate) {
+      console.log("미래 날짜 감지 - 출석/결석 버튼 비활성화:", classDate);
       return false;
     }
 
     // 과거 날짜인 경우 활성화
-    if (classDateStr < todayStr) {
-      console.log("과거 날짜 - 출석/결석 버튼 활성화:", classDateStr);
+    if (isPastDate) {
+      console.log("과거 날짜 - 출석/결석 버튼 활성화:", classDate);
       return true;
     }
 
-    // 오늘 날짜인 경우: 오후 9시까지는 활성화, 그 이후는 비활성화
-    if (classDateStr === todayStr) {
-      const isBeforeNight = now < todayNight;
-      console.log("오늘 날짜 - 시간 체크:", {
-        isBeforeNight,
-        currentTime: now.toLocaleTimeString(),
-        nightTime: todayNight.toLocaleTimeString(),
-        result: isBeforeNight
-          ? "활성화 (오후 9시 이전)"
-          : "비활성화 (오후 9시 이후)",
-      });
-      return isBeforeNight;
+    // 오늘 날짜인 경우: 항상 활성화
+    if (isToday) {
+      console.log("오늘 날짜 - 출석/결석 버튼 활성화:", classDate);
+      return true;
     }
 
-    return false; // 기본값
+    return false;
   };
 
   const isWeekendYMD = (dateYMD) => {
