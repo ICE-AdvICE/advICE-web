@@ -19,11 +19,27 @@ import CodingZoneBoardbar from "../../shared/ui/boardbar/CodingZoneBoardbar.js";
 import CalendarInput from "../../widgets/Calendar/CalendarInput"; // 캘린더 입력 컴포넌트
 
 const CodingZoneAttendanceAssistant = () => {
+  // 로딩 스피너 애니메이션 CSS 추가
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.textContent = `
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
   const [attendList, setAttendList] = useState([]);
   const [reservedList, setReservedList] = useState([]);
   const [showAdminButton, setShowAdminButton] = useState(false);
   const [cookies, setCookie] = useCookies(["accessToken"]);
   const [activeButton, setActiveButton] = useState("manage");
+
   const token = cookies.accessToken;
   const navigate = useNavigate();
 
@@ -35,16 +51,6 @@ const CodingZoneAttendanceAssistant = () => {
     return `${y}-${m}-${day}`;
   };
   const [selectedDateYMD, setSelectedDateYMD] = useState(null);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const now = new Date();
-      const currentDate = new Date(selectedDateYMD);
-      console.log("Checking date:", now, currentDate); // Debugging log
-    }, 10000); // Check every 10 seconds for debugging
-
-    return () => clearInterval(timer); // Clear the timer when the component unmounts
-  }, [selectedDateYMD]);
 
   useEffect(() => {
     fetchAuthType();
@@ -96,20 +102,22 @@ const CodingZoneAttendanceAssistant = () => {
   };
 
   const fetchReservedList = async () => {
-    const formattedDate = selectedDateYMD;
+    console.log("📡 데이터 요청 중:", selectedDateYMD);
+
     const response = await getCodingzoneReservedListByDate(
       token,
       selectedDateYMD,
       setCookie,
       navigate
     );
+
     if (response && response.code === "SU") {
-      // response.data가 배열인지 확인
       const data = response.data;
       if (Array.isArray(data)) {
-        setReservedList(
-          data.sort((a, b) => a.classTime.localeCompare(b.classTime))
+        const sortedData = data.sort((a, b) =>
+          a.classTime.localeCompare(b.classTime)
         );
+        setReservedList(sortedData);
       } else {
         console.error("response.data is not an array:", data);
         setReservedList([]);
@@ -126,16 +134,6 @@ const CodingZoneAttendanceAssistant = () => {
     const current = String(student.attendance ?? "");
     if (current === target) return; // 이미 같은 상태면 무시
 
-    // 낙관적 업데이트: UI를 먼저 업데이트
-    const previousAttendance = student.attendance;
-    setReservedList((prevList) =>
-      prevList.map((s) =>
-        s.registrationId === student.registrationId
-          ? { ...s, attendance: target }
-          : s
-      )
-    );
-
     try {
       const res = await toggleAttendanceByRegistNum(
         student.registrationId,
@@ -145,28 +143,21 @@ const CodingZoneAttendanceAssistant = () => {
       );
 
       if (res?.code !== "SU") {
-        // API 실패 시 원래 상태로 되돌리기
-        setReservedList((prevList) =>
-          prevList.map((s) =>
-            s.registrationId === student.registrationId
-              ? { ...s, attendance: previousAttendance }
-              : s
-          )
-        );
-
         if (res?.message) {
           alert(res.message);
         }
+      } else {
+        // 성공 시 즉시 UI 업데이트 (깜빡임 방지)
+        setReservedList((prevList) =>
+          prevList.map((s) =>
+            s.registrationId === student.registrationId
+              ? { ...s, attendance: target }
+              : s
+          )
+        );
+        console.log("✅ 출결 변경 성공!");
       }
     } catch (error) {
-      // 에러 발생 시 원래 상태로 되돌리기
-      setReservedList((prevList) =>
-        prevList.map((s) =>
-          s.registrationId === student.registrationId
-            ? { ...s, attendance: previousAttendance }
-            : s
-        )
-      );
       alert("출결 처리 중 오류가 발생했습니다.");
     }
   };
