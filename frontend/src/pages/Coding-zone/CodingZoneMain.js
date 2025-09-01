@@ -1506,15 +1506,17 @@ const CodingMain = () => {
               </div>
             )}
 
-            {/* ③ 선택했지만 조회 불가/없음: 회색 패널로 메시지 */}
+            {/* ③ 선택했지만 조회 불가/없음: 부엉이 이미지 표시 */}
             {selectedSubjectIdPub &&
               !loadingPub &&
               bannerPub === "UNAVAILABLE" && (
-                <div className="panel-block panel-gray">
-                  <div className="panel-empty">현재 예약 시간이 아닙니다.</div>
-                </div>
+                <img
+                  src="/Codingzone-noregist.png"
+                  alt="현재 예약 시간이 아닙니다"
+                  className="codingzone-owl"
+                />
               )}
-            {/* ④ 코딩존 수업이 없을 때: 이미지 표시 */}
+            {/* ④ 코딩존 수업이 없을 때: 부엉이 이미지 표시 */}
             {selectedSubjectIdPub && !loadingPub && bannerPub === "EMPTY" && (
               <img
                 src="/Codingzone-noregist.png"
@@ -1529,140 +1531,127 @@ const CodingMain = () => {
               !bannerPub &&
               classListPub.length > 0 && (
                 <section className="czp-table-wrap">
-                      <table className="czp-table" >
-                        <thead>
-                          <tr
-                            style={{
-                              backgroundColor: getColorById(
-                                selectedSubjectIdPub,
-                                "#475569"
-                              ),
-                              color: "#FFFFFF",
-                            }}
-                          >
-                            <th>요일</th>
-                            <th>시간</th>
-                            <th>수업명</th>
-                            <th>조교</th>
-                            <th>인원</th>
-                            <th>상태</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {sortedClassListPub.map((cls) => {
-                            // '내 예약'은: (1) 내가 예약한 classNum과 동일하고 (2) subjectId가 확실히 일치할 때만 표시
-                            const myRow = Array.isArray(classListPub)
-                              ? classListPub.find(
-                                  (r) => r.classNum === myReservedPub
-                                )
-                              : undefined;
-                            // 복수 예약: reservedMetas에 해당 classNum이 있으면 모두 "내 예약"
-                            // 또는 서버 registedClassNum과 일치하면 "내 예약"
-                            const mine =
-                              reservedMetas.some(
-                                (m) =>
-                                  Number(m.classNum) === Number(cls.classNum)
-                              ) ||
-                              (typeof myReservedPub === "number" &&
-                                myReservedPub === cls.classNum);
-                            // 비활성화 규칙:
-                            // - 다른 과목이면서 (요일 AND 시간) 둘 다 같으면 비활성화
-                            // - 같은 과목이면 기존 로직(같은 주) 유지
-                            const disabledBySameSubject =
-                              !mine &&
-                              (reservedMetas.length > 0 || !!myReservedPub) &&
-                              (() => {
-                                const rowSubject = String(
-                                  cls.subjectId ?? cls.subject_id ?? ""
-                                );
-                                const metas = reservedMetas.length
-                                  ? reservedMetas
-                                  : (() => {
-                                      const m = readReservedMeta();
-                                      if (m) return [m];
-                                      const r = Array.isArray(classListPub)
-                                        ? classListPub.find(
-                                            (r) => r.classNum === myReservedPub
-                                          )
-                                        : undefined;
-                                      if (r)
-                                        return [
-                                          {
-                                            classNum: r.classNum,
-                                            subjectId:
-                                              r.subjectId ?? r.subject_id,
-                                            classDate: String(
-                                              r.classDate || ""
-                                            ),
-                                            classTime: String(
-                                              r.classTime || ""
-                                            ),
-                                            weekDay: String(r.weekDay || ""),
-                                          },
-                                        ];
-                                      return [];
-                                    })();
-                                if (!rowSubject || metas.length === 0)
-                                  return false;
-                                for (const m of metas) {
-                                  const mSubject = String(m.subjectId || "");
-                                  if (!mSubject) continue;
-                                  if (mSubject !== rowSubject) {
-                                    const sameDay =
-                                      String(m.weekDay || "").toLowerCase() ===
-                                      String(cls.weekDay || "").toLowerCase();
-                                    const sameTime =
-                                      String(m.classTime || "") ===
-                                      String(cls.classTime || "");
-                                    if (sameDay && sameTime) return true;
-                                  } else {
-                                    const mWeek = getIsoWeekKey(m.classDate);
-                                    const rWeek = getIsoWeekKey(cls.classDate);
-                                    if (
-                                      mWeek &&
-                                      rWeek &&
-                                      mWeek === rWeek &&
-                                      Number(m.classNum || -1) !==
-                                        Number(cls.classNum)
-                                    )
-                                      return true;
-                                  }
-                                }
-                                return false;
-                              })();
-                            return (
-                              <tr
-                                key={`${cls.classNum}-${
-                                  cls.subjectId ?? cls.subject_id ?? ""
-                                }-${cls.classDate ?? ""}-${
-                                  cls.classTime ?? ""
-                                }`}
-                              >
-                                <td>{cls.weekDay}</td>
-                                <td>
-                                  {formatHHmmRangeFromStart(cls.classTime)}
-                                </td>
-                                <td>{cls.className}</td>
-                                <td>{cls.assistantName}</td>
-                                <td>
-                                  {cls.currentNumber} / {cls.maximumNumber}
-                                </td>
-                                <td>
-                                  <ReserveCell
-                                    cls={cls}
-                                    mine={mine}
-                                    onToggle={handleToggleReservation}
-                                    loggedIn={!!cookies.accessToken}
-                                    disabledBySameSubject={
-                                      disabledBySameSubject
-                                    }
-                                  />
-                                </td>
-                              </tr>
+                  <table className="czp-table">
+                    <thead>
+                      <tr
+                        style={{
+                          backgroundColor: getColorById(
+                            selectedSubjectIdPub,
+                            "#475569"
+                          ),
+                          color: "#FFFFFF",
+                        }}
+                      >
+                        <th>요일</th>
+                        <th>시간</th>
+                        <th>수업명</th>
+                        <th>조교</th>
+                        <th>인원</th>
+                        <th>상태</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sortedClassListPub.map((cls) => {
+                        // '내 예약'은: (1) 내가 예약한 classNum과 동일하고 (2) subjectId가 확실히 일치할 때만 표시
+                        const myRow = Array.isArray(classListPub)
+                          ? classListPub.find(
+                              (r) => r.classNum === myReservedPub
+                            )
+                          : undefined;
+                        // 복수 예약: reservedMetas에 해당 classNum이 있으면 모두 "내 예약"
+                        // 또는 서버 registedClassNum과 일치하면 "내 예약"
+                        const mine =
+                          reservedMetas.some(
+                            (m) => Number(m.classNum) === Number(cls.classNum)
+                          ) ||
+                          (typeof myReservedPub === "number" &&
+                            myReservedPub === cls.classNum);
+                        // 비활성화 규칙:
+                        // - 다른 과목이면서 (요일 AND 시간) 둘 다 같으면 비활성화
+                        // - 같은 과목이면 기존 로직(같은 주) 유지
+                        const disabledBySameSubject =
+                          !mine &&
+                          (reservedMetas.length > 0 || !!myReservedPub) &&
+                          (() => {
+                            const rowSubject = String(
+                              cls.subjectId ?? cls.subject_id ?? ""
                             );
-                          })}
-                        </tbody>
-                      </table>
+                            const metas = reservedMetas.length
+                              ? reservedMetas
+                              : (() => {
+                                  const m = readReservedMeta();
+                                  if (m) return [m];
+                                  const r = Array.isArray(classListPub)
+                                    ? classListPub.find(
+                                        (r) => r.classNum === myReservedPub
+                                      )
+                                    : undefined;
+                                  if (r)
+                                    return [
+                                      {
+                                        classNum: r.classNum,
+                                        subjectId: r.subjectId ?? r.subject_id,
+                                        classDate: String(r.classDate || ""),
+                                        classTime: String(r.classTime || ""),
+                                        weekDay: String(r.weekDay || ""),
+                                      },
+                                    ];
+                                  return [];
+                                })();
+                            if (!rowSubject || metas.length === 0) return false;
+                            for (const m of metas) {
+                              const mSubject = String(m.subjectId || "");
+                              if (!mSubject) continue;
+                              if (mSubject !== rowSubject) {
+                                const sameDay =
+                                  String(m.weekDay || "").toLowerCase() ===
+                                  String(cls.weekDay || "").toLowerCase();
+                                const sameTime =
+                                  String(m.classTime || "") ===
+                                  String(cls.classTime || "");
+                                if (sameDay && sameTime) return true;
+                              } else {
+                                const mWeek = getIsoWeekKey(m.classDate);
+                                const rWeek = getIsoWeekKey(cls.classDate);
+                                if (
+                                  mWeek &&
+                                  rWeek &&
+                                  mWeek === rWeek &&
+                                  Number(m.classNum || -1) !==
+                                    Number(cls.classNum)
+                                )
+                                  return true;
+                              }
+                            }
+                            return false;
+                          })();
+                        return (
+                          <tr
+                            key={`${cls.classNum}-${
+                              cls.subjectId ?? cls.subject_id ?? ""
+                            }-${cls.classDate ?? ""}-${cls.classTime ?? ""}`}
+                          >
+                            <td>{cls.weekDay}</td>
+                            <td>{formatHHmmRangeFromStart(cls.classTime)}</td>
+                            <td>{cls.className}</td>
+                            <td>{cls.assistantName}</td>
+                            <td>
+                              {cls.currentNumber} / {cls.maximumNumber}
+                            </td>
+                            <td>
+                              <ReserveCell
+                                cls={cls}
+                                mine={mine}
+                                onToggle={handleToggleReservation}
+                                loggedIn={!!cookies.accessToken}
+                                disabledBySameSubject={disabledBySameSubject}
+                              />
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
                 </section>
               )}
           </>
