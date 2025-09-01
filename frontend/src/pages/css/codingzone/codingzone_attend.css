@@ -3289,6 +3289,7 @@
   }
 }
 
+
   .manager-table tbody td {
     padding: 10px 0px !important;
     font-size: 9px !important;
@@ -3298,8 +3299,6 @@
     margin-bottom: 40px !important;
   }
 }
-
-
 
   /* 375px에서 과목명 셀을 두 줄로 표시 가능하게 설정 */
   .manager-table tbody td:nth-child(3) {
@@ -3351,6 +3350,7 @@
 
 
 
+
   .manager-table-card ~ .panel-gray .panel-empty,
   .manager-table-card ~ .panel-white .panel-empty,
   .manager-table-card + .panel-gray .panel-empty,
@@ -3372,6 +3372,7 @@
     padding: 5rem 3rem !important; /* 상하 80px, 좌우 48px */
   }
 }
+
 
 
 
@@ -3516,6 +3517,7 @@
     transform-origin: top center; /* 학생 출결 관리 표와 동일 */
   }
 }
+
 
 
 
