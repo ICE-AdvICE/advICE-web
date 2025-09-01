@@ -155,7 +155,7 @@ const CodingZoneMyAttendance = () => {
                         style={{
                           backgroundColor: "#f0f0f0",
                           color: "#052940",
-                          padding: "10px 21px",
+                          padding: "10px 29px",
                           borderRadius: "10px",
                           fontSize: "15px",
                           fontWeight: "600",
@@ -168,10 +168,10 @@ const CodingZoneMyAttendance = () => {
                         style={{
                           backgroundColor: "#1CFF8A",
                           color: "#052940",
-                          padding: "10px 21px",
+                          padding: "10px 29px",
                           borderRadius: "10px",
                           fontSize: "15px",
-                          fontWeight: "500",
+                          fontWeight: "600",
                         }}
                       >
                         출석
@@ -181,7 +181,7 @@ const CodingZoneMyAttendance = () => {
                         style={{
                           backgroundColor: "#FF6969",
                           color: "#ffffff",
-                          padding: "10px 21px",
+                          padding: "10px 29px",
                           borderRadius: "10px",
                           fontSize: "15px",
                           fontWeight: "600",

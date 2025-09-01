@@ -519,8 +519,7 @@
     padding: 16px;
   }
 }
-
-/* 일반 학생 출결 표 반응형 */
+/*
 @media (max-width: 1200px) {
   .manager-table {
     width: 960px !important;
@@ -530,10 +529,10 @@
   .manager-table-card {
     width: 95%;
     margin: 0 auto;
-    margin-top: -10px !important; /* 출결 확인 버튼과 표 사이 간격 줄이기 */
+    margin-top: -10px !important; 
   }
 
-  /* 헤더와 바디 높이 조정 */
+
   .manager-table thead th {
     padding: 17px 20px !important;
     font-size: 15px !important;
@@ -544,7 +543,7 @@
     font-size: 14px !important;
   }
 
-  /* 출결 버튼 반응형 (진행중, 출석, 결석 모두 포함) */
+
   .manager-table tbody td span {
     padding: 9px 20px !important;
     font-size: 14px !important;
@@ -561,7 +560,7 @@
     max-width: 100%;
   }
 
-  /* 헤더와 바디 높이 조정 */
+
   .manager-table thead th {
     padding: 14px 16px !important;
     font-size: 14px !important;
@@ -572,7 +571,7 @@
     font-size: 13px !important;
   }
 
-  /* 출결 버튼 반응형 (진행중, 출석, 결석 모두 포함) */
+
   .manager-table tbody td span {
     padding: 9px 16px !important;
     font-size: 12px !important;
@@ -599,7 +598,7 @@
     font-size: 12px !important;
   }
 
-  /* 출결 버튼 반응형 (진행중, 출석, 결석 모두 포함) */
+  
   .manager-table tbody td span {
     padding: 8px 15px !important;
     font-size: 11px !important;
@@ -626,7 +625,7 @@
     font-size: 9px !important;
   }
 
-  /* 480px 이하에서 출석/결석 버튼 반응형 - 세로 배치 및 회색 박스 중앙 정렬 */
+
   .cz-table .btn_manager_attendance,
   .cz-table .btn_manager_absence,
   .cz-table .btn_manager_attendance-disabled,
@@ -650,7 +649,7 @@
     line-height: 30px !important;
   }
 
-  /* 출석/결석 버튼들이 들어있는 td 셀을 중앙 정렬 */
+
   .cz-table tbody td {
     text-align: center !important;
     vertical-align: middle !important;
@@ -698,7 +697,6 @@
     font-size: 9px !important;
   }
 
-  /* 출결 버튼 반응형 (진행중, 출석, 결석 모두 포함) */
   .btn_manager_attendance,
   .btn_manager_attendance-disabled,
   .btn_manager_absence,
@@ -725,7 +723,7 @@
     margin-bottom: 40px !important;
   }
 }
-
+*/
 @media (max-width: 1920px) {
   .banner_img_container .banner,
   .banner_img_container_icebreaker .banner,
@@ -746,7 +744,7 @@
   .panel-inner {
     max-width: 760px;
   }
-  /* 4개도 2열 유지 */
+
   .subject-grid.cols-2x2 .subject-grid-inner {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -761,15 +759,15 @@
 
 @media (max-width: 768px) {
   .main-body-container {
-    padding: 0 10%; /* 더 작은 padding으로 외부 공간 최소화 */
+    padding: 0 10%;
   }
   .main-category-bar button,
   .category-bar button {
-    font-size: 12px; /* 모바일에서의 폰트 크기 조정 */
+    font-size: 12px;
   }
   .class-input-box > select,
   .class-input-box > input {
-    flex-grow: 1; /* 플렉스 아이템이 확장하여 사용 가능한 공간을 채움 */
+    flex-grow: 1;
   }
 
   .panel-gray {
@@ -779,7 +777,7 @@
   .panel-empty {
     font-size: 19px;
   }
-  /* 모바일 */
+
   .panel-inner {
     max-width: 92%;
   }
@@ -817,14 +815,13 @@
   }
 }
 
-/* 헤더 모서리 라운드 수정 */
 .cz-table thead th:first-child {
   border-top-left-radius: 10px;
 }
 
 .cz-table thead th:last-child {
   border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px !important; /* 헤더 하단 모서리도 둥글게 */
+  border-bottom-right-radius: 10px !important;
 }
 
 .cz-table thead {
@@ -841,7 +838,6 @@
   border: none;
 }
 
-/* 테이블 컨트롤 버튼들을 위한 스타일 (코딩존 등록 현황과 동일) */
 .table-controls {
   display: flex;
   justify-content: space-between;
@@ -851,12 +847,10 @@
   padding: 0 20px;
 }
 
-/* cz-table 바디 부분 스타일 */
 .cz-table tbody td {
   padding: 30px 0px !important;
 }
 
-/* cz-classes 컨테이너 푸터 간격 조정 */
 .cz-classes {
   margin-bottom: 100px !important;
 }
@@ -3142,6 +3136,361 @@
     padding: 10px 20px !important;
   }
 }
+@media (max-width: 650px) {
+  .manager-table {
+    width: 640px !important;
+    min-width: 640px !important;
+    max-width: 100% !important;
+    margin-top: 13px !important;
+    transform: scale(0.99);
+    transform-origin: top center;
+    margin-bottom: 0px !important;
+  }
+
+  .manager-table thead th {
+    padding: 13px 6px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+  }
+
+  .manager-table tbody td {
+    padding: 22px 0px !important;
+    font-size: 12px !important;
+  }
+
+  /* 480px에서 과목명 셀을 두 줄로 표시 가능하게 설정 */
+  .manager-table tbody td:nth-child(3) {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    word-break: break-word !important;
+    line-height: 1.3 !important;
+    max-width: 120px !important;
+    padding: 10px 5px !important;
+  }
+
+  .manager-table-card {
+    margin-bottom: 90px !important;
+    margin-top: -23px !important;
+  }
+
+  /* 480px에서 출결 버튼 반응형 - 세로 배치 강제 적용 */
+  .manager-table tbody td span {
+    font-size: 11px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+    height: 28.5px !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 5px auto !important;
+    text-align: center !important;
+    line-height: 30px !important;
+  }
+}
+@media (max-width: 620px) {
+  .manager-table {
+    width: 610px !important;
+    min-width: 610px !important;
+    max-width: 100% !important;
+    margin-top: 13px !important;
+    transform: scale(0.99);
+    transform-origin: top center;
+    margin-bottom: 0px !important;
+  }
+
+  .manager-table thead th {
+    padding: 13px 6px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+  }
+
+  .manager-table tbody td {
+    padding: 22px 0px !important;
+    font-size: 12px !important;
+  }
+
+  /* 480px에서 과목명 셀을 두 줄로 표시 가능하게 설정 */
+  .manager-table tbody td:nth-child(3) {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    word-break: break-word !important;
+    line-height: 1.3 !important;
+    max-width: 120px !important;
+    padding: 10px 5px !important;
+  }
+
+  .manager-table-card {
+    margin-bottom: 90px !important;
+    margin-top: -23px !important;
+  }
+
+  /* 480px에서 출결 버튼 반응형 - 세로 배치 강제 적용 */
+  .manager-table tbody td span {
+    font-size: 11px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+    height: 28.5px !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 5px auto !important;
+    text-align: center !important;
+    line-height: 30px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .manager-table {
+    width: 590px !important;
+    min-width: 590px !important;
+    max-width: 100% !important;
+    margin-top: 13px !important;
+    transform: scale(0.99);
+    transform-origin: top center;
+    margin-bottom: 0px !important;
+  }
+
+  .manager-table thead th {
+    padding: 13px 6px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+  }
+
+  .manager-table tbody td {
+    padding: 20px 0px !important;
+    font-size: 12px !important;
+  }
+
+  /* 480px에서 과목명 셀을 두 줄로 표시 가능하게 설정 */
+  .manager-table tbody td:nth-child(3) {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    word-break: break-word !important;
+    line-height: 1.3 !important;
+    max-width: 120px !important;
+    padding: 10px 5px !important;
+  }
+
+  .manager-table-card {
+    margin-bottom: 85px !important;
+    margin-top: -23px !important;
+  }
+
+  /* 480px에서 출결 버튼 반응형 - 세로 배치 강제 적용 */
+  .manager-table tbody td span {
+    font-size: 11px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+    height: 28.5px !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 5px auto !important;
+    text-align: center !important;
+    line-height: 30px !important;
+  }
+}
+
+@media (max-width: 570px) {
+  .manager-table {
+    width: 560px !important;
+    min-width: 560px !important;
+    max-width: 100% !important;
+    margin-top: 13px !important;
+    transform: scale(0.98);
+    transform-origin: top center;
+    margin-bottom: 0px !important;
+  }
+
+  .manager-table thead th {
+    padding: 13px 6px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+  }
+
+  .manager-table tbody td {
+    padding: 17px 0px !important;
+    font-size: 12px !important;
+  }
+
+  /* 480px에서 과목명 셀을 두 줄로 표시 가능하게 설정 */
+  .manager-table tbody td:nth-child(3) {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    word-break: break-word !important;
+    line-height: 1.3 !important;
+    max-width: 120px !important;
+    padding: 10px 5px !important;
+  }
+
+  .manager-table-card {
+    margin-bottom: 75px !important;
+    margin-top: -23px !important;
+  }
+
+  /* 480px에서 출결 버튼 반응형 - 세로 배치 강제 적용 */
+  .manager-table tbody td span {
+    font-size: 11px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+    height: 28.5px !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 5px auto !important;
+    text-align: center !important;
+    line-height: 30px !important;
+  }
+}
+
+@media (max-width: 550px) {
+  .manager-table {
+    width: 540px !important;
+    min-width: 540px !important;
+    max-width: 100% !important;
+    margin-top: 13px !important;
+    transform: scale(0.98);
+    transform-origin: top center;
+    margin-bottom: 0px !important;
+  }
+
+  .manager-table thead th {
+    padding: 13px 6px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+  }
+
+  .manager-table tbody td {
+    padding: 16px 0px !important;
+    font-size: 12px !important;
+  }
+
+  /* 480px에서 과목명 셀을 두 줄로 표시 가능하게 설정 */
+  .manager-table tbody td:nth-child(3) {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    word-break: break-word !important;
+    line-height: 1.3 !important;
+    max-width: 120px !important;
+    padding: 10px 5px !important;
+  }
+
+  .manager-table-card {
+    margin-bottom: 70px !important;
+    margin-top: -23px !important;
+  }
+
+  /* 480px에서 출결 버튼 반응형 - 세로 배치 강제 적용 */
+  .manager-table tbody td span {
+    font-size: 11px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+    height: 28.5px !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 5px auto !important;
+    text-align: center !important;
+    line-height: 30px !important;
+  }
+}
+
+@media (max-width: 525px) {
+  .manager-table {
+    width: 515px !important;
+    min-width: 515px !important;
+    max-width: 100% !important;
+    margin-top: 13px !important;
+    transform: scale(0.97);
+    transform-origin: top center;
+    margin-bottom: 0px !important;
+  }
+
+  .manager-table thead th {
+    padding: 13px 6px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+  }
+
+  .manager-table tbody td {
+    padding: 16px 0px !important;
+    font-size: 12px !important;
+  }
+
+  /* 480px에서 과목명 셀을 두 줄로 표시 가능하게 설정 */
+  .manager-table tbody td:nth-child(3) {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    word-break: break-word !important;
+    line-height: 1.3 !important;
+    max-width: 120px !important;
+    padding: 10px 5px !important;
+  }
+
+  .manager-table-card {
+    margin-bottom: 65px !important;
+    margin-top: -23px !important;
+  }
+
+  /* 480px에서 출결 버튼 반응형 - 세로 배치 강제 적용 */
+  .manager-table tbody td span {
+    font-size: 11px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+    height: 28.5px !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 5px auto !important;
+    text-align: center !important;
+    line-height: 30px !important;
+  }
+}
+
+@media (max-width: 500px) {
+  .manager-table {
+    width: 490px !important;
+    min-width: 490px !important;
+    max-width: 100% !important;
+    margin-top: 13px !important;
+    transform: scale(0.98);
+    transform-origin: top center;
+    margin-bottom: 0px !important;
+  }
+
+  .manager-table thead th {
+    padding: 12px 6px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+  }
+
+  .manager-table tbody td {
+    padding: 16px 0px !important;
+    font-size: 11px !important;
+  }
+
+  /* 480px에서 과목명 셀을 두 줄로 표시 가능하게 설정 */
+  .manager-table tbody td:nth-child(3) {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    word-break: break-word !important;
+    line-height: 1.3 !important;
+    max-width: 120px !important;
+    padding: 10px 5px !important;
+  }
+
+  .manager-table-card {
+    margin-bottom: 55px !important;
+    margin-top: -23px !important;
+  }
+
+  /* 480px에서 출결 버튼 반응형 - 세로 배치 강제 적용 */
+  .manager-table tbody td span {
+    font-size: 11px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+    height: 28.5px !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 5px auto !important;
+    text-align: center !important;
+    line-height: 30px !important;
+  }
+}
 
 @media (max-width: 480px) {
   .manager-table {
@@ -3149,7 +3498,7 @@
     min-width: 470px !important;
     max-width: 100% !important;
     margin-top: 13px !important;
-    transform: scale(0.885);
+    transform: scale(0.9);
     transform-origin: top center;
     margin-bottom: 0px !important;
   }
@@ -3157,10 +3506,11 @@
   .manager-table thead th {
     padding: 11px 6px !important;
     font-size: 11px !important;
+    font-weight: 600 !important;
   }
 
   .manager-table tbody td {
-    padding: 13px 0px !important;
+    padding: 15px 0px !important;
     font-size: 10px !important;
   }
 
@@ -3175,7 +3525,8 @@
   }
 
   .manager-table-card {
-    margin-bottom: 40px !important;
+    margin-bottom: 50px !important;
+    margin-top: -23px !important;
   }
 
   /* 480px에서 출결 버튼 반응형 - 세로 배치 강제 적용 */
@@ -3189,6 +3540,172 @@
     margin: 5px auto !important;
     text-align: center !important;
     line-height: 30px !important;
+  }
+}
+
+@media (max-width: 440px) {
+  .manager-table {
+    width: 470px !important;
+    min-width: 470px !important;
+    max-width: 100% !important;
+    margin-top: 13px !important;
+    transform: scale(0.9);
+    transform-origin: top center;
+    margin-bottom: 0px !important;
+  }
+
+  .manager-table thead th {
+    padding: 12px 6px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+  }
+
+  .manager-table tbody td {
+    padding: 14px 0px !important;
+    font-size: 10px !important;
+  }
+
+  /* 480px에서 과목명 셀을 두 줄로 표시 가능하게 설정 */
+  .manager-table tbody td:nth-child(3) {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    word-break: break-word !important;
+    line-height: 1.3 !important;
+    max-width: 120px !important;
+    padding: 10px 5px !important;
+  }
+
+  .manager-table-card {
+    margin-bottom: 50px !important;
+    margin-top: -23px !important;
+  }
+
+  /* 480px에서 출결 버튼 반응형 - 세로 배치 강제 적용 */
+  .manager-table tbody td span {
+    font-size: 10px !important;
+    min-width: 55px !important;
+    max-width: 55px !important;
+    height: 27.5px !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 5px auto !important;
+    text-align: center !important;
+    line-height: 30px !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .manager-table {
+    transform: scale(0.88);
+  }
+  .manager-table tbody td span {
+    font-size: 10px !important;
+    min-width: 55px !important;
+    max-width: 55px !important;
+    height: 28px !important;
+  }
+}
+
+@media (max-width: 402px) {
+  .manager-table {
+    transform: scale(0.82);
+  }
+  .manager-table tbody td span {
+    font-size: 11px !important;
+    min-width: 56px !important;
+    max-width: 56px !important;
+    height: 29px !important;
+  }
+  .manager-table thead th {
+    padding: 12px 6px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+  }
+
+  .manager-table tbody td {
+    padding: 13px 0px !important;
+    font-size: 11px !important;
+  }
+}
+
+@media (max-width: 393px) {
+  .manager-table {
+    width: 380px !important; /* 390px 안쪽 고정 너비 */
+    min-width: 380px !important;
+    max-width: 100%;
+    transform: scale(0.97) !important;
+    transform-origin: top center !important;
+    margin-bottom: 0px !important;
+  }
+
+  .manager-table-card {
+    margin-bottom: 40px !important;
+    margin-top: -20px !important;
+  }
+
+  .manager-table tbody td:nth-child(3) {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    word-break: break-word !important;
+    line-height: 1.3 !important;
+    max-width: 100px !important;
+    padding: 8px 4px !important;
+  }
+  .manager-table tbody td span {
+    font-size: 9px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+    height: 22px !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 4px auto !important;
+    text-align: center !important;
+    line-height: 22px !important;
+  }
+}
+
+@media (max-width: 393px) {
+  .manager-table {
+    width: 380px !important; /* 390px 안쪽 고정 너비 */
+    min-width: 380px !important;
+    max-width: 100%;
+    transform: scale(0.97) !important;
+    transform-origin: top center !important;
+    margin-bottom: 0px !important;
+  }
+
+  .manager-table-card {
+    margin-bottom: 40px !important;
+    margin-top: -20px !important;
+  }
+
+  .manager-table tbody td:nth-child(3) {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    word-break: break-word !important;
+    line-height: 1.3 !important;
+    max-width: 100px !important;
+    padding: 8px 4px !important;
+  }
+  .manager-table tbody td span {
+    font-size: 9px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+    height: 22px !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 4px auto !important;
+    text-align: center !important;
+    line-height: 22px !important;
+  }
+  .manager-table thead th {
+    padding: 10px 6px !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+  }
+  .manager-table tbody td {
+    padding: 12px 0px !important;
+    font-size: 9px !important;
   }
 }
 
@@ -3206,15 +3723,17 @@
   .manager-table thead th {
     padding: 10px 6px !important;
     font-size: 10px !important;
+    font-weight: 600 !important;
   }
 
   .manager-table tbody td {
-    padding: 10px 0px !important;
+    padding: 12px 0px !important;
     font-size: 9px !important;
   }
 
   .manager-table-card {
-    margin-bottom: 40px !important;
+    margin-bottom: 50px !important;
+    margin-top: -20px !important;
   }
 
   /* 390px에서 과목명 셀을 두 줄로 표시 가능하게 설정 */
@@ -3232,7 +3751,7 @@
     font-size: 9px !important;
     min-width: 50px !important;
     max-width: 50px !important;
-    height: 24px !important;
+    height: 22px !important;
     display: block !important;
     padding: 0 !important;
     margin: 4px auto !important;
@@ -3247,14 +3766,15 @@
     width: 360px !important; /* 375px 안쪽 */
     min-width: 360px !important;
     max-width: 100% !important;
-    transform: scale(0.97) !important;
+    transform: scale(0.98) !important;
     transform-origin: top center !important;
     margin-bottom: 0px !important;
   }
 
   .manager-table thead th {
-    padding: 10px 6px !important;
+    padding: 9px 6px !important;
     font-size: 10px !important;
+    font-weight: 600 !important;
   }
 
   .manager-table tbody td {
@@ -3279,8 +3799,8 @@
   /* 375px에서 출결 버튼 반응형 - 세로 배치 강제 적용 */
   .manager-table tbody td span {
     font-size: 8px !important;
-    min-width: 50px !important;
-    max-width: 50px !important;
+    min-width: 48px !important;
+    max-width: 48px !important;
     height: 22px !important;
     display: block !important;
     padding: 0 !important;
