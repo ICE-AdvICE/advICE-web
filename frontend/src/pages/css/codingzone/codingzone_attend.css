@@ -1278,13 +1278,14 @@
   }
 
   .cz-table thead th {
-    padding: 14px 6px !important;
-    font-size: 14px !important;
+    padding: 20px 6px !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
   }
 
   .cz-table tbody td {
-    padding: 32px 0px !important;
-    font-size: 13px !important;
+    padding: 47px 0px !important;
+    font-size: 19px !important;
   }
 
   .cz-table-shell {
@@ -1487,10 +1488,10 @@
   .cz-table-shell .cz-table tbody td .btn_manager_absence,
   .cz-table-shell .cz-table tbody td .btn_manager_attendance-disabled,
   .cz-table-shell .cz-table tbody td .btn_manager_absence-disabled {
-    font-size: 12px !important;
-    min-width: 70px !important;
-    max-width: 70px !important;
-    height: 30px !important;
+    font-size: 18px !important;
+    min-width: 110px !important;
+    max-width: 110px !important;
+    height: 45px !important;
     display: inline-block !important;
     padding: 0 !important;
     margin: 0 3px !important;
