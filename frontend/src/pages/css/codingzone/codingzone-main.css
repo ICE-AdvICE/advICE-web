@@ -640,10 +640,10 @@ body {
 
 .codingzone-owl {
   width: 100%;
-  max-width: 600px; /* 최대 600px까지만 */
+  max-width: 840px; /* 최대 600px까지만 */
   height: auto; /* 비율 유지 */
   display: block;
-  margin: 0 auto; /* 가운데 정렬 */
+  margin: 70px 0 10px 0; /* 가운데 정렬 */
 }
 
 @media (max-width: 768px) {
