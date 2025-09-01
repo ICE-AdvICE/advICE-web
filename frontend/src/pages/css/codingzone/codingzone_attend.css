@@ -3170,7 +3170,7 @@
 
   .manager-table-card {
     margin-bottom: 90px !important;
-    margin-top: -23px !important;
+    margin-top: 0px !important;
   }
 
   /* 480px에서 출결 버튼 반응형 - 세로 배치 강제 적용 */
@@ -3220,7 +3220,7 @@
 
   .manager-table-card {
     margin-bottom: 90px !important;
-    margin-top: -23px !important;
+    margin-top: 0px !important;
   }
 
   /* 480px에서 출결 버튼 반응형 - 세로 배치 강제 적용 */
@@ -3271,7 +3271,7 @@
 
   .manager-table-card {
     margin-bottom: 85px !important;
-    margin-top: -23px !important;
+    margin-top: 0px !important;
   }
 
   /* 480px에서 출결 버튼 반응형 - 세로 배치 강제 적용 */
@@ -3322,7 +3322,7 @@
 
   .manager-table-card {
     margin-bottom: 75px !important;
-    margin-top: -23px !important;
+    margin-top: 0px !important;
   }
 
   /* 480px에서 출결 버튼 반응형 - 세로 배치 강제 적용 */
@@ -3373,7 +3373,7 @@
 
   .manager-table-card {
     margin-bottom: 70px !important;
-    margin-top: -23px !important;
+    margin-top: 0px !important;
   }
 
   /* 480px에서 출결 버튼 반응형 - 세로 배치 강제 적용 */
@@ -3424,7 +3424,7 @@
 
   .manager-table-card {
     margin-bottom: 65px !important;
-    margin-top: -23px !important;
+    margin-top: 0px !important;
   }
 
   /* 480px에서 출결 버튼 반응형 - 세로 배치 강제 적용 */
@@ -3475,7 +3475,7 @@
 
   .manager-table-card {
     margin-bottom: 55px !important;
-    margin-top: -23px !important;
+    margin-top: 0px !important;
   }
 
   /* 480px에서 출결 버튼 반응형 - 세로 배치 강제 적용 */
@@ -3526,7 +3526,7 @@
 
   .manager-table-card {
     margin-bottom: 50px !important;
-    margin-top: -23px !important;
+    margin-top: 0px !important;
   }
 
   /* 480px에서 출결 버튼 반응형 - 세로 배치 강제 적용 */
@@ -3577,7 +3577,7 @@
 
   .manager-table-card {
     margin-bottom: 50px !important;
-    margin-top: -23px !important;
+    margin-top: 0px !important;
   }
 
   /* 480px에서 출결 버튼 반응형 - 세로 배치 강제 적용 */
@@ -3626,6 +3626,10 @@
     padding: 13px 0px !important;
     font-size: 11px !important;
   }
+  .manager-table-card {
+    margin-bottom: 50px !important;
+    margin-top: 0px !important;
+  }
 }
 
 @media (max-width: 393px) {
@@ -3640,7 +3644,7 @@
 
   .manager-table-card {
     margin-bottom: 40px !important;
-    margin-top: -20px !important;
+    margin-top: 0px !important;
   }
 
   .manager-table tbody td:nth-child(3) {
@@ -3664,7 +3668,7 @@
   }
 }
 
-@media (max-width: 393px) {
+@media (max-width: 390px) {
   .manager-table {
     width: 380px !important; /* 390px 안쪽 고정 너비 */
     min-width: 380px !important;
@@ -3676,7 +3680,7 @@
 
   .manager-table-card {
     margin-bottom: 40px !important;
-    margin-top: -20px !important;
+    margin-top: 0px !important;
   }
 
   .manager-table tbody td:nth-child(3) {
@@ -3733,7 +3737,7 @@
 
   .manager-table-card {
     margin-bottom: 50px !important;
-    margin-top: -20px !important;
+    margin-top: 0px !important;
   }
 
   /* 390px에서 과목명 셀을 두 줄로 표시 가능하게 설정 */
@@ -3784,6 +3788,7 @@
 
   .manager-table-card {
     margin-bottom: 40px !important;
+    margin-top: 0px !important;
   }
 
   /* 375px에서 과목명 셀을 두 줄로 표시 가능하게 설정 */
