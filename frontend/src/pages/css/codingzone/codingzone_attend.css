@@ -3289,6 +3289,7 @@
   }
 
 
+
   .manager-table tbody td {
     padding: 10px 0px !important;
     font-size: 9px !important;
@@ -3349,6 +3350,7 @@
 
 
 
+
   .manager-table-card ~ .panel-gray .panel-empty,
   .manager-table-card ~ .panel-white .panel-empty,
   .manager-table-card + .panel-gray .panel-empty,
@@ -3369,6 +3371,7 @@
     height: 28rem !important; /* 448px */
     padding: 5rem 3rem !important; /* 상하 80px, 좌우 48px */
   }
+
 
 
 
@@ -3513,6 +3516,7 @@
     transform: scale(0.84); /* 학생 출결 관리 표와 동일 */
     transform-origin: top center; /* 학생 출결 관리 표와 동일 */
   }
+
 
 
 
