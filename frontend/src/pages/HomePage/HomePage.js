@@ -68,7 +68,7 @@ const HomePage = () => {
           <button onClick={handleMoreClick} className="btn icebreaker">ICEbreaker</button>
         </div>
         <div className="service-box study-box">
-          <p>AdvICE 학회<br />활동 및 소개</p>
+          <p>정보통신공학과 AdvICE 학회<br />활동 및 소개</p>
           <button onClick={handlereservationClick} className="btn study">
   &nbsp; AdvICE &nbsp;
 </button>
