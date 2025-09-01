@@ -16,7 +16,7 @@ const HomePage = () => {
     navigate('/article-main');
   };
   const handlereservationClick = () => {
-    window.location.href = '/';
+    window.location.href = 'https://rift-hallway-098.notion.site/AdvICE-25f673f5ff3c80fe8428e3c33d33e0a6?source=copy_link';
   };
   const handlefeedbackClick = () => {
     window.location.href = 'https://open.kakao.com/o/swnIYgKg';
@@ -68,8 +68,10 @@ const HomePage = () => {
           <button onClick={handleMoreClick} className="btn icebreaker">ICEbreaker</button>
         </div>
         <div className="service-box study-box">
-          <p>준비중...<br />잠시만 기다려주세요!</p>
-          <button onClick={handlereservationClick} className="btn study">COMING SOON</button>
+          <p>AdvICE 학회<br />활동 및 소개</p>
+          <button onClick={handlereservationClick} className="btn study">
+  &nbsp; AdvICE &nbsp;
+</button>
         </div>
       </div>
       <div className='feedback-container'>
