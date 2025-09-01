@@ -1126,6 +1126,7 @@
     height: 52px !important;
     border-radius: 10px !important;
   }
+
   /* "Select a day" 글씨 크기 조정 - 768px과 동일 */
   .cal-input__label {
     font-size: 14px !important;
@@ -1299,6 +1300,7 @@
   .reservation_text {
     font-size: 17px !important;
   }
+}
 
 @media (max-width: 768px) {
   .cz-table {
@@ -1322,11 +1324,8 @@
     font-size: 19px !important;
   }
 
-  /* 요일과 숫자 사이 간격 - 768px과 동일 */
-  .cal-popover * .cal__grid,
-  .cal-popover .cal * .cal__grid,
-  .cal-popover .cal__grid {
-    margin-top: 20px !important;
+  .cz-table-shell {
+    margin-bottom: 40px !important;
   }
 
   /* 캘린더 인풋 박스 크기 조정 */
@@ -1553,6 +1552,460 @@
   .reservation_text {
     font-size: 15px !important;
   }
+}
+@media (max-width: 650px) {
+  .cz-table {
+    width: 1100px !important;
+    min-width: 1100px !important;
+    max-width: 100% !important;
+    margin-top: 13px !important;
+    transform: scale(0.57);
+    transform-origin: top center;
+    margin-bottom: -90px !important;
+  }
+
+  .cz-table thead th {
+    padding: 20px 6px !important;
+    font-size: 23px !important;
+    font-weight: 600 !important;
+  }
+
+  .cz-table tbody td {
+    padding: 22px 0px !important;
+    font-size: 22px !important;
+  }
+
+  .cz-table-shell {
+    margin-bottom: 40px !important;
+  }
+  /* 480px에서 출석/결석 버튼 반응형 - 세로 배치 강제 적용 */
+  .btn_manager_attendance,
+  .btn_manager_absence,
+  .btn_manager_attendance-disabled,
+  .btn_manager_absence-disabled,
+  .cz-table .btn_manager_attendance,
+  .cz-table .btn_manager_absence,
+  .cz-table .btn_manager_attendance-disabled,
+  .cz-table .btn_manager_absence-disabled,
+  .cz-table tbody td .btn_manager_attendance,
+  .cz-table tbody td .btn_manager_absence,
+  .cz-table tbody td .btn_manager_attendance-disabled,
+  .cz-table tbody td .btn_manager_absence-disabled,
+  /* 더 구체적인 선택자로 우선순위 높임 */
+  .cz-table-shell .cz-table .btn_manager_attendance,
+  .cz-table-shell .cz-table .btn_manager_absence,
+  .cz-table-shell .cz-table .btn_manager_attendance-disabled,
+  .cz-table-shell .cz-table .btn_manager_absence-disabled,
+  .cz-table-shell .cz-table tbody td .btn_manager_attendance,
+  .cz-table-shell .cz-table tbody td .btn_manager_absence,
+  .cz-table-shell .cz-table tbody td .btn_manager_attendance-disabled,
+  .cz-table-shell .cz-table tbody td .btn_manager_absence-disabled {
+    font-size: 21px !important;
+    min-width: 120px !important;
+    max-width: 120px !important;
+    height: 50px !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 10px auto !important;
+    text-align: center !important;
+    line-height: 30px !important;
+  }
+
+  /* 출석/결석 버튼들이 들어있는 td 셀을 중앙 정렬 */
+  .cz-table tbody td {
+    text-align: center !important;
+    vertical-align: middle !important;
+  }
+}
+
+@media (max-width: 620px) {
+  .cz-table {
+    width: 1100px !important;
+    min-width: 1100px !important;
+    max-width: 100% !important;
+    margin-top: 13px !important;
+    transform: scale(0.55);
+    transform-origin: top center;
+    margin-bottom: -120px !important;
+  }
+
+  .cz-table thead th {
+    padding: 23px 6px !important;
+    font-size: 26px !important;
+    font-weight: 600 !important;
+  }
+
+  .cz-table tbody td {
+    padding: 22px 0px !important;
+    font-size: 25px !important;
+  }
+
+  .cz-table-shell {
+    margin-bottom: 40px !important;
+  }
+  /* 480px에서 출석/결석 버튼 반응형 - 세로 배치 강제 적용 */
+  .btn_manager_attendance,
+  .btn_manager_absence,
+  .btn_manager_attendance-disabled,
+  .btn_manager_absence-disabled,
+  .cz-table .btn_manager_attendance,
+  .cz-table .btn_manager_absence,
+  .cz-table .btn_manager_attendance-disabled,
+  .cz-table .btn_manager_absence-disabled,
+  .cz-table tbody td .btn_manager_attendance,
+  .cz-table tbody td .btn_manager_absence,
+  .cz-table tbody td .btn_manager_attendance-disabled,
+  .cz-table tbody td .btn_manager_absence-disabled,
+  /* 더 구체적인 선택자로 우선순위 높임 */
+  .cz-table-shell .cz-table .btn_manager_attendance,
+  .cz-table-shell .cz-table .btn_manager_absence,
+  .cz-table-shell .cz-table .btn_manager_attendance-disabled,
+  .cz-table-shell .cz-table .btn_manager_absence-disabled,
+  .cz-table-shell .cz-table tbody td .btn_manager_attendance,
+  .cz-table-shell .cz-table tbody td .btn_manager_absence,
+  .cz-table-shell .cz-table tbody td .btn_manager_attendance-disabled,
+  .cz-table-shell .cz-table tbody td .btn_manager_absence-disabled {
+    font-size: 23px !important;
+    min-width: 140px !important;
+    max-width: 140px !important;
+    height: 55px !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 10px auto !important;
+    text-align: center !important;
+    line-height: 30px !important;
+  }
+
+  /* 출석/결석 버튼들이 들어있는 td 셀을 중앙 정렬 */
+  .cz-table tbody td {
+    text-align: center !important;
+    vertical-align: middle !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .cz-table {
+    width: 1100px !important;
+    min-width: 1100px !important;
+    max-width: 100% !important;
+    margin-top: 13px !important;
+    transform: scale(0.52);
+    transform-origin: top center;
+    margin-bottom: -120px !important;
+  }
+
+  .cz-table thead th {
+    padding: 23px 6px !important;
+    font-size: 26px !important;
+    font-weight: 600 !important;
+  }
+
+  .cz-table tbody td {
+    padding: 22px 0px !important;
+    font-size: 25px !important;
+  }
+
+  .cz-table-shell {
+    margin-bottom: 40px !important;
+  }
+  /* 480px에서 출석/결석 버튼 반응형 - 세로 배치 강제 적용 */
+  .btn_manager_attendance,
+  .btn_manager_absence,
+  .btn_manager_attendance-disabled,
+  .btn_manager_absence-disabled,
+  .cz-table .btn_manager_attendance,
+  .cz-table .btn_manager_absence,
+  .cz-table .btn_manager_attendance-disabled,
+  .cz-table .btn_manager_absence-disabled,
+  .cz-table tbody td .btn_manager_attendance,
+  .cz-table tbody td .btn_manager_absence,
+  .cz-table tbody td .btn_manager_attendance-disabled,
+  .cz-table tbody td .btn_manager_absence-disabled,
+  /* 더 구체적인 선택자로 우선순위 높임 */
+  .cz-table-shell .cz-table .btn_manager_attendance,
+  .cz-table-shell .cz-table .btn_manager_absence,
+  .cz-table-shell .cz-table .btn_manager_attendance-disabled,
+  .cz-table-shell .cz-table .btn_manager_absence-disabled,
+  .cz-table-shell .cz-table tbody td .btn_manager_attendance,
+  .cz-table-shell .cz-table tbody td .btn_manager_absence,
+  .cz-table-shell .cz-table tbody td .btn_manager_attendance-disabled,
+  .cz-table-shell .cz-table tbody td .btn_manager_absence-disabled {
+    font-size: 23px !important;
+    min-width: 140px !important;
+    max-width: 140px !important;
+    height: 55px !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 10px auto !important;
+    text-align: center !important;
+    line-height: 30px !important;
+  }
+
+  /* 출석/결석 버튼들이 들어있는 td 셀을 중앙 정렬 */
+  .cz-table tbody td {
+    text-align: center !important;
+    vertical-align: middle !important;
+  }
+}
+
+@media (max-width: 570px) {
+  .cz-table {
+    width: 1100px !important;
+    min-width: 1100px !important;
+    max-width: 100% !important;
+    margin-top: 13px !important;
+    transform: scale(0.5);
+    transform-origin: top center;
+    margin-bottom: -120px !important;
+  }
+
+  .cz-table thead th {
+    padding: 23px 6px !important;
+    font-size: 26px !important;
+    font-weight: 600 !important;
+  }
+
+  .cz-table tbody td {
+    padding: 22px 0px !important;
+    font-size: 25px !important;
+  }
+
+  .cz-table-shell {
+    margin-bottom: 40px !important;
+  }
+  /* 480px에서 출석/결석 버튼 반응형 - 세로 배치 강제 적용 */
+  .btn_manager_attendance,
+  .btn_manager_absence,
+  .btn_manager_attendance-disabled,
+  .btn_manager_absence-disabled,
+  .cz-table .btn_manager_attendance,
+  .cz-table .btn_manager_absence,
+  .cz-table .btn_manager_attendance-disabled,
+  .cz-table .btn_manager_absence-disabled,
+  .cz-table tbody td .btn_manager_attendance,
+  .cz-table tbody td .btn_manager_absence,
+  .cz-table tbody td .btn_manager_attendance-disabled,
+  .cz-table tbody td .btn_manager_absence-disabled,
+  /* 더 구체적인 선택자로 우선순위 높임 */
+  .cz-table-shell .cz-table .btn_manager_attendance,
+  .cz-table-shell .cz-table .btn_manager_absence,
+  .cz-table-shell .cz-table .btn_manager_attendance-disabled,
+  .cz-table-shell .cz-table .btn_manager_absence-disabled,
+  .cz-table-shell .cz-table tbody td .btn_manager_attendance,
+  .cz-table-shell .cz-table tbody td .btn_manager_absence,
+  .cz-table-shell .cz-table tbody td .btn_manager_attendance-disabled,
+  .cz-table-shell .cz-table tbody td .btn_manager_absence-disabled {
+    font-size: 23px !important;
+    min-width: 140px !important;
+    max-width: 140px !important;
+    height: 55px !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 10px auto !important;
+    text-align: center !important;
+    line-height: 30px !important;
+  }
+
+  /* 출석/결석 버튼들이 들어있는 td 셀을 중앙 정렬 */
+  .cz-table tbody td {
+    text-align: center !important;
+    vertical-align: middle !important;
+  }
+}
+
+@media (max-width: 550px) {
+  .cz-table {
+    width: 1100px !important;
+    min-width: 1100px !important;
+    max-width: 100% !important;
+    margin-top: 13px !important;
+    transform: scale(0.485);
+    transform-origin: top center;
+    margin-bottom: -120px !important;
+  }
+
+  .cz-table thead th {
+    padding: 23px 6px !important;
+    font-size: 26px !important;
+    font-weight: 600 !important;
+  }
+
+  .cz-table tbody td {
+    padding: 22px 0px !important;
+    font-size: 25px !important;
+  }
+
+  .cz-table-shell {
+    margin-bottom: 40px !important;
+  }
+  /* 480px에서 출석/결석 버튼 반응형 - 세로 배치 강제 적용 */
+  .btn_manager_attendance,
+  .btn_manager_absence,
+  .btn_manager_attendance-disabled,
+  .btn_manager_absence-disabled,
+  .cz-table .btn_manager_attendance,
+  .cz-table .btn_manager_absence,
+  .cz-table .btn_manager_attendance-disabled,
+  .cz-table .btn_manager_absence-disabled,
+  .cz-table tbody td .btn_manager_attendance,
+  .cz-table tbody td .btn_manager_absence,
+  .cz-table tbody td .btn_manager_attendance-disabled,
+  .cz-table tbody td .btn_manager_absence-disabled,
+  /* 더 구체적인 선택자로 우선순위 높임 */
+  .cz-table-shell .cz-table .btn_manager_attendance,
+  .cz-table-shell .cz-table .btn_manager_absence,
+  .cz-table-shell .cz-table .btn_manager_attendance-disabled,
+  .cz-table-shell .cz-table .btn_manager_absence-disabled,
+  .cz-table-shell .cz-table tbody td .btn_manager_attendance,
+  .cz-table-shell .cz-table tbody td .btn_manager_absence,
+  .cz-table-shell .cz-table tbody td .btn_manager_attendance-disabled,
+  .cz-table-shell .cz-table tbody td .btn_manager_absence-disabled {
+    font-size: 23px !important;
+    min-width: 140px !important;
+    max-width: 140px !important;
+    height: 55px !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 10px auto !important;
+    text-align: center !important;
+    line-height: 30px !important;
+  }
+
+  /* 출석/결석 버튼들이 들어있는 td 셀을 중앙 정렬 */
+  .cz-table tbody td {
+    text-align: center !important;
+    vertical-align: middle !important;
+  }
+}
+
+@media (max-width: 525px) {
+  .cz-table {
+    width: 1100px !important;
+    min-width: 1100px !important;
+    max-width: 100% !important;
+    margin-top: 13px !important;
+    transform: scale(0.46);
+    transform-origin: top center;
+    margin-bottom: -120px !important;
+  }
+
+  .cz-table thead th {
+    padding: 23px 6px !important;
+    font-size: 26px !important;
+    font-weight: 600 !important;
+  }
+
+  .cz-table tbody td {
+    padding: 22px 0px !important;
+    font-size: 25px !important;
+  }
+
+  .cz-table-shell {
+    margin-bottom: 40px !important;
+  }
+  /* 480px에서 출석/결석 버튼 반응형 - 세로 배치 강제 적용 */
+  .btn_manager_attendance,
+  .btn_manager_absence,
+  .btn_manager_attendance-disabled,
+  .btn_manager_absence-disabled,
+  .cz-table .btn_manager_attendance,
+  .cz-table .btn_manager_absence,
+  .cz-table .btn_manager_attendance-disabled,
+  .cz-table .btn_manager_absence-disabled,
+  .cz-table tbody td .btn_manager_attendance,
+  .cz-table tbody td .btn_manager_absence,
+  .cz-table tbody td .btn_manager_attendance-disabled,
+  .cz-table tbody td .btn_manager_absence-disabled,
+  /* 더 구체적인 선택자로 우선순위 높임 */
+  .cz-table-shell .cz-table .btn_manager_attendance,
+  .cz-table-shell .cz-table .btn_manager_absence,
+  .cz-table-shell .cz-table .btn_manager_attendance-disabled,
+  .cz-table-shell .cz-table .btn_manager_absence-disabled,
+  .cz-table-shell .cz-table tbody td .btn_manager_attendance,
+  .cz-table-shell .cz-table tbody td .btn_manager_absence,
+  .cz-table-shell .cz-table tbody td .btn_manager_attendance-disabled,
+  .cz-table-shell .cz-table tbody td .btn_manager_absence-disabled {
+    font-size: 23px !important;
+    min-width: 140px !important;
+    max-width: 140px !important;
+    height: 55px !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 10px auto !important;
+    text-align: center !important;
+    line-height: 30px !important;
+  }
+
+  /* 출석/결석 버튼들이 들어있는 td 셀을 중앙 정렬 */
+  .cz-table tbody td {
+    text-align: center !important;
+    vertical-align: middle !important;
+  }
+}
+@media (max-width: 500px) {
+  .cz-table {
+    width: 1100px !important;
+    min-width: 1100px !important;
+    max-width: 100% !important;
+    margin-top: 13px !important;
+    transform: scale(0.44);
+    transform-origin: top center;
+    margin-bottom: -120px !important;
+  }
+
+  .cz-table thead th {
+    padding: 23px 6px !important;
+    font-size: 26px !important;
+    font-weight: 600 !important;
+  }
+
+  .cz-table tbody td {
+    padding: 22px 0px !important;
+    font-size: 25px !important;
+  }
+
+  .cz-table-shell {
+    margin-bottom: 40px !important;
+  }
+  /* 480px에서 출석/결석 버튼 반응형 - 세로 배치 강제 적용 */
+  .btn_manager_attendance,
+  .btn_manager_absence,
+  .btn_manager_attendance-disabled,
+  .btn_manager_absence-disabled,
+  .cz-table .btn_manager_attendance,
+  .cz-table .btn_manager_absence,
+  .cz-table .btn_manager_attendance-disabled,
+  .cz-table .btn_manager_absence-disabled,
+  .cz-table tbody td .btn_manager_attendance,
+  .cz-table tbody td .btn_manager_absence,
+  .cz-table tbody td .btn_manager_attendance-disabled,
+  .cz-table tbody td .btn_manager_absence-disabled,
+  /* 더 구체적인 선택자로 우선순위 높임 */
+  .cz-table-shell .cz-table .btn_manager_attendance,
+  .cz-table-shell .cz-table .btn_manager_absence,
+  .cz-table-shell .cz-table .btn_manager_attendance-disabled,
+  .cz-table-shell .cz-table .btn_manager_absence-disabled,
+  .cz-table-shell .cz-table tbody td .btn_manager_attendance,
+  .cz-table-shell .cz-table tbody td .btn_manager_absence,
+  .cz-table-shell .cz-table tbody td .btn_manager_attendance-disabled,
+  .cz-table-shell .cz-table tbody td .btn_manager_absence-disabled {
+    font-size: 23px !important;
+    min-width: 140px !important;
+    max-width: 140px !important;
+    height: 55px !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 10px auto !important;
+    text-align: center !important;
+    line-height: 30px !important;
+  }
+
+  /* 출석/결석 버튼들이 들어있는 td 셀을 중앙 정렬 */
+  .cz-table tbody td {
+    text-align: center !important;
+    vertical-align: middle !important;
+  }
+}
 
 @media (max-width: 480px) {
   .cz-table {
@@ -1878,6 +2331,7 @@
     vertical-align: middle !important;
   }
 }
+
 @media (max-width: 430px) {
   .cz-table {
     width: 1100px !important;
@@ -2070,6 +2524,7 @@
     text-align: center !important;
     vertical-align: middle !important;
   }
+}
 
 /* 390px 이하에서 캘린더 인풋 박스 반응형 */
 @media (max-width: 390px) {
@@ -2311,488 +2766,6 @@
     display: block !important;
     padding: 0 !important;
     margin: 10px auto !important;
-    text-align: center !important;
-    line-height: 22px !important;
-  }
-
-  /* 출석/결석 버튼들이 들어있는 td 셀을 중앙 정렬 */
-  .cz-table tbody td {
-    text-align: center !important;
-    vertical-align: middle !important;
-  }
-
-/* 375px 이하에서 출석/결석 버튼 반응형 - 세로 배치 강제 적용 */
-@media (max-width: 375px) {
-  .btn_manager_attendance,
-  .btn_manager_absence,
-  .btn_manager_attendance-disabled,
-  .btn_manager_absence-disabled,
-  .cz-table .btn_manager_attendance,
-  .cz-table .btn_manager_absence,
-  .cz-table .btn_manager_attendance-disabled,
-  .cz-table .btn_manager_absence-disabled,
-  .cz-table tbody td .btn_manager_attendance,
-  .cz-table tbody td .btn_manager_absence,
-  .cz-table tbody td .btn_manager_attendance-disabled,
-  .cz-table tbody td .btn_manager_absence-disabled,
-  /* 더 구체적인 선택자로 우선순위 높임 */
-  .cz-table-shell .cz-table .btn_manager_attendance,
-  .cz-table-shell .cz-table .btn_manager_absence,
-  .cz-table-shell .cz-table .btn_manager_attendance-disabled,
-  .cz-table-shell .cz-table .btn_manager_absence-disabled,
-  .cz-table-shell .cz-table tbody td .btn_manager_attendance,
-  .cz-table-shell .cz-table tbody td .btn_manager_absence,
-  .cz-table-shell .cz-table tbody td .btn_manager_attendance-disabled,
-  .cz-table-shell .cz-table tbody td .btn_manager_absence-disabled {
-    font-size: 10px !important;
-    min-width: 57px !important;
-    max-width: 57px !important;
-    height: 26px !important;
-    display: block !important;
-    padding: 0 !important;
-    margin: 4px auto !important;
-    text-align: center !important;
-    line-height: 22px !important;
-  }
-
-  /* 출석/결석 버튼들이 들어있는 td 셀을 중앙 정렬 */
-  .cz-table tbody td {
-    text-align: center !important;
-    vertical-align: middle !important;
-  }
-
-  /* 달력 팝업창 크기 조정 - 강제 적용 */
-  .cal-popover {
-    font-size: 12px !important;
-    width: 220px !important;
-    max-width: 220px !important;
-    min-width: 220px !important;
-    left: 50% !important;
-    right: auto !important;
-    transform: translateX(-50%) !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    border-radius: 10px !important;
-  }
-
-  /* 달력 팝업창 내부 요소 크기 조정 - 강제 적용 */
-  .cal-popover .cal {
-    width: 220px !important;
-    max-width: 220px !important;
-    min-width: 220px !important;
-    padding: 15px 17px !important;
-  }
-
-  /* 달력 그리드 크기 조정 */
-  .cal-popover .cal__grid {
-    gap: 6px !important;
-    padding: 0 !important;
-  }
-
-  /* 달력 셀 크기 조정 - 더 구체적인 선택자로 우선순위 높임 */
-  .cal-popover .cal__cell,
-  .cal-popover .cal__dow,
-  .custom_manager_datepicker .cal-popover .cal__cell,
-  .custom_manager_datepicker .cal-popover .cal__dow,
-  .calendar-input-wrap .cal-popover .cal__cell,
-  .calendar-input-wrap .cal-popover .cal__dow {
-    width: 22px !important;
-    height: 22px !important;
-    line-height: 30px !important;
-    font-size: 14px !important;
-    padding: 0 !important;
-    text-align: center !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  /* 선택된 날짜 스타일 개선 - 더 구체적인 선택자로 우선순위 높임 */
-  .cal-popover .cal__cell.is-selected,
-  .custom_manager_datepicker .cal-popover .cal__cell.is-selected,
-  .calendar-input-wrap .cal-popover .cal__cell.is-selected {
-    background-color: #052940 !important;
-    color: #ffffff !important;
-    border-radius: 50% !important;
-    font-weight: 600 !important;
-    font-size: 14px !important;
-    line-height: 30px !important;
-    text-align: center !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  /* 달력 헤더 크기 조정 */
-  .cal-popover .cal__head {
-    padding: 0 3px 12px !important;
-  }
-
-  .cal-popover .cal__title {
-    font-size: 13px !important;
-  }
-
-  /* 달력 네비게이션 버튼 크기 조정 */
-  .cal-popover .cal__nav {
-    width: 22px !important;
-    height: 22px !important;
-    line-height: 22px !important;
-    font-size: 18px !important;
-    top: 5px !important;
-    left: 3px !important;
-  }
-
-  .cal-popover .cal__nav img {
-    width: 11px !important;
-    height: 11px !important;
-  }
-
-  /* 요일과 숫자 사이 간격 늘리기 */
-  .cal-popover .cal__head {
-    padding: 0 2px 0px !important;
-  }
-
-  /* 숫자 크기 강제 적용 - 최고 우선순위 */
-  .cal-popover * .cal__cell,
-  .cal-popover .cal * .cal__cell,
-  .cal-popover .cal__grid * .cal__cell,
-  .cal-popover .cal__grid .cal__cell,
-  .cal-popover .cal__cell,
-  .cal-popover button[class*="cal__cell"],
-  .cal-popover .cal button[class*="cal__cell"] {
-    font-size: 11px !important;
-    height: 16px !important;
-    line-height: 16px !important;
-    width: 16px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  /* 달력 팝업창 위치 조정 - 왼쪽 정렬로 수정 */
-  .cal-popover {
-    left: 0 !important;
-    transform: none !important;
-  }
-
-  /* 요일 크기 강제 적용 - 최고 우선순위 */
-  .cal-popover * .cal__dow,
-  .cal-popover .cal * .cal__dow,
-  .cal-popover .cal__grid * .cal__dow,
-  .cal-popover .cal__grid .cal__dow,
-  .cal-popover .cal__dow,
-  .cal-popover div[class*="cal__dow"],
-  .cal-popover .cal div[class*="cal__dow"] {
-    font-size: 12px !important;
-    height: 16px !important;
-    line-height: 16px !important;
-    width: 16px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  /* 요일과 숫자 사이 간격 늘리기 - 최고 우선순위 */
-  .cal-popover * .cal__grid,
-  .cal-popover .cal * .cal__grid,
-  .cal-popover .cal__grid {
-    margin-top: 20px !important;
-  }
-
-  .date_manager_title {
-    margin-top: 30px !important;
-    margin-bottom: 8px !important;
-  }
-
-  /* 날짜와 예약리스트 타이틀 크기 조정 */
-  .date_numbers {
-    font-size: 14px !important;
-  }
-
-  .reservation_text {
-    font-size: 12px !important;
-  }
-
-  /* 480px에서 출석/결석 버튼 반응형 - 세로 배치 강제 적용 */
-  .btn_manager_attendance,
-  .btn_manager_absence,
-  .btn_manager_attendance-disabled,
-  .btn_manager_absence-disabled,
-  .cz-table .btn_manager_attendance,
-  .cz-table .btn_manager_absence,
-  .cz-table .btn_manager_attendance-disabled,
-  .cz-table .btn_manager_absence-disabled,
-  .cz-table tbody td .btn_manager_attendance,
-  .cz-table tbody td .btn_manager_absence,
-  .cz-table tbody td .btn_manager_attendance-disabled,
-  .cz-table tbody td .btn_manager_absence-disabled,
-  /* 더 구체적인 선택자로 우선순위 높임 */
-  .cz-table-shell .cz-table .btn_manager_attendance,
-  .cz-table-shell .cz-table .btn_manager_absence,
-  .cz-table-shell .cz-table .btn_manager_attendance-disabled,
-  .cz-table-shell .cz-table .btn_manager_absence-disabled,
-  .cz-table-shell .cz-table tbody td .btn_manager_attendance,
-  .cz-table-shell .cz-table tbody td .btn_manager_absence,
-  .cz-table-shell .cz-table tbody td .btn_manager_attendance-disabled,
-  .cz-table-shell .cz-table tbody td .btn_manager_absence-disabled {
-    font-size: 11px !important;
-    min-width: 60px !important;
-    max-width: 60px !important;
-    height: 28px !important;
-    display: block !important;
-    padding: 0 !important;
-    margin: 5px auto !important;
-    text-align: center !important;
-    line-height: 30px !important;
-  }
-
-  /* 출석/결석 버튼들이 들어있는 td 셀을 중앙 정렬 */
-  .cz-table tbody td {
-    text-align: center !important;
-    vertical-align: middle !important;
-  }
-}
-
-/* 390px 이하에서 캘린더 인풋 박스 반응형 */
-@media (max-width: 390px) {
-  /* 표 크기 조정 - 390px에 맞게 transform으로 축소 */
-  .cz-table {
-    width: 380px !important; /* 390px 안쪽 고정 너비 */
-    min-width: 380px !important;
-    max-width: 100%;
-    transform: scale(0.92) !important;
-    transform-origin: top center !important;
-    margin-bottom: -35px !important;
-  }
-
-  .cz-table thead th {
-    padding: 10px 6px !important;
-    font-size: 12px !important;
-  }
-
-  .cz-table tbody td {
-    padding: 10px 0px !important;
-    font-size: 11px !important;
-  }
-
-  .cz-table-shell {
-    margin-bottom: 40px !important;
-  }
-
-  .date_manager_title {
-    margin-top: 20px !important;
-    margin-bottom: 7px !important;
-  }
-
-  /* 날짜와 예약리스트 타이틀 크기 조정 */
-  .date_numbers {
-    font-size: 13px !important;
-  }
-
-  .reservation_text {
-    font-size: 11px !important;
-  }
-
-  /* 캘린더 인풋 박스 크기 조정 */
-  .calendar-input-wrap,
-  .cz-date-picker,
-  .custom_manager_datepicker {
-    width: 190px !important;
-    max-width: 190px !important;
-    min-width: 190px !important;
-    height: auto;
-  }
-
-  /* 캘린더 인풋 필드 크기 조정 */
-  .calendar-input-wrap input,
-  .cz-date-picker input,
-  .custom_manager_datepicker input,
-  .cal-input__field {
-    padding: 7px 15px !important;
-    height: 37px !important;
-  }
-
-  /* "Select a day" 글씨 크기 조정 */
-  .cal-input__label {
-    font-size: 10px !important;
-  }
-
-  /* "YYYY / MM / DD" 글씨 크기 조정 */
-  .cal-input__date {
-    font-size: 11px !important;
-  }
-
-  /* 왼쪽 아이콘 크기 조정 */
-  .cal-input__left-icon img {
-    width: 14px !important;
-    height: 14px !important;
-  }
-
-  /* 오른쪽 화살표 아이콘 크기 조정 */
-  .cal-input__icon-right img {
-    width: 10px !important;
-    height: 10px !important;
-  }
-
-  /* 달력 팝업창 크기 조정 - 강제 적용 */
-  .cal-popover {
-    font-size: 10px !important;
-    width: 190px !important;
-    max-width: 190px !important;
-    min-width: 190px !important;
-    left: 50% !important;
-    right: auto !important;
-    transform: translateX(-50%) !important;
-  }
-
-  /* 달력 팝업창 내부 요소 크기 조정 - 강제 적용 */
-  .cal-popover .cal {
-    width: 190px !important;
-    max-width: 190px !important;
-    min-width: 190px !important;
-    padding: 13px 13px !important;
-  }
-
-  /* 달력 그리드 크기 조정 */
-  .cal-popover .cal__grid {
-    gap: 5px !important;
-    padding: 0 !important;
-  }
-
-  /* 달력 셀 크기 조정 */
-  .cal-popover .cal__cell,
-  .cal-popover .cal__dow {
-    width: 16px !important;
-    height: 16px !important;
-    line-height: 22px !important;
-    font-size: 10px !important;
-    padding: 0 !important;
-    text-align: center !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  /* 선택된 날짜 스타일 개선 */
-  .cal-popover .cal__cell.is-selected {
-    background-color: #052940 !important;
-    color: #ffffff !important;
-    border-radius: 50% !important;
-    font-weight: 600 !important;
-    font-size: 10px !important;
-    line-height: 20px !important;
-    text-align: center !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  /* 달력 헤더 크기 조정 */
-  .cal-popover .cal__head {
-    padding: 0 2px 10px !important;
-  }
-
-  .cal-popover .cal__title {
-    font-size: 12px !important;
-  }
-
-  /* 달력 네비게이션 버튼 크기 조정 */
-  .cal-popover .cal__nav {
-    width: 18px !important;
-    height: 18px !important;
-    line-height: 18px !important;
-    font-size: 14px !important;
-    top: 3px !important;
-    left: 1px !important;
-  }
-
-  .cal-popover .cal__nav img {
-    width: 9px !important;
-    height: 9px !important;
-  }
-
-  /* 요일과 숫자 사이 간격 늘리기 */
-  .cal-popover .cal__head {
-    padding: 0 2px 0px !important;
-  }
-
-  /* 숫자 크기 강제 적용 - 최고 우선순위 */
-  .cal-popover * .cal__cell,
-  .cal-popover .cal * .cal__cell,
-  .cal-popover .cal__grid * .cal__cell,
-  .cal-popover .cal__grid .cal__cell,
-  .cal-popover .cal__cell,
-  .cal-popover button[class*="cal__cell"],
-  .cal-popover .cal button[class*="cal__cell"] {
-    font-size: 10px !important;
-    height: 16px !important;
-    line-height: 16px !important;
-    width: 16px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  /* 달력 팝업창 위치 조정 - 왼쪽 정렬로 수정 */
-  .cal-popover {
-    left: 0 !important;
-    transform: none !important;
-  }
-
-  /* 요일 크기 강제 적용 - 최고 우선순위 */
-  .cal-popover * .cal__dow,
-  .cal-popover .cal * .cal__dow,
-  .cal-popover .cal__grid * .cal__dow,
-  .cal-popover .cal__grid .cal__dow,
-  .cal-popover .cal__dow,
-  .cal-popover div[class*="cal__dow"],
-  .cal-popover .cal div[class*="cal__dow"] {
-    font-size: 11px !important;
-    height: 16px !important;
-    line-height: 16px !important;
-    width: 16px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  /* 요일과 숫자 사이 간격 늘리기 - 최고 우선순위 */
-  .cal-popover * .cal__grid,
-  .cal-popover .cal * .cal__grid,
-  .cal-popover .cal__grid {
-    margin-top: 20px !important;
-  }
-
-  /* 390px에서 출석/결석 버튼 반응형 - 세로 배치 강제 적용 */
-  .btn_manager_attendance,
-  .btn_manager_absence,
-  .btn_manager_attendance-disabled,
-  .btn_manager_absence-disabled,
-  .cz-table .btn_manager_attendance,
-  .cz-table .btn_manager_absence,
-  .cz-table .btn_manager_attendance-disabled,
-  .cz-table .btn_manager_absence-disabled,
-  .cz-table tbody td .btn_manager_attendance,
-  .cz-table tbody td .btn_manager_absence,
-  .cz-table tbody td .btn_manager_attendance-disabled,
-  .cz-table tbody td .btn_manager_absence-disabled,
-  /* 더 구체적인 선택자로 우선순위 높임 */
-  .cz-table-shell .cz-table .btn_manager_attendance,
-  .cz-table-shell .cz-table .btn_manager_absence,
-  .cz-table-shell .cz-table .btn_manager_attendance-disabled,
-  .cz-table-shell .cz-table .btn_manager_absence-disabled,
-  .cz-table-shell .cz-table tbody td .btn_manager_attendance,
-  .cz-table-shell .cz-table tbody td .btn_manager_absence,
-  .cz-table-shell .cz-table tbody td .btn_manager_attendance-disabled,
-  .cz-table-shell .cz-table tbody td .btn_manager_absence-disabled {
-    font-size: 10px !important;
-    min-width: 57px !important;
-    max-width: 57px !important;
-    height: 26px !important;
-    display: block !important;
-    padding: 0 !important;
-    margin: 4px auto !important;
     text-align: center !important;
     line-height: 22px !important;
   }
@@ -3082,7 +3055,6 @@
     transform-origin: top center;
     margin-bottom: -30px !important;
   }
-}
 
   .manager-table-card {
     width: 95%;
@@ -3117,7 +3089,6 @@
     transform-origin: top center;
     margin-bottom: -30px !important;
   }
-}
 
   .manager-table thead th {
     padding: 18px 16px !important;
@@ -3202,7 +3173,6 @@
     max-width: 120px !important;
     padding: 10px 5px !important;
   }
-}
 
   .manager-table-card {
     margin-bottom: 40px !important;
@@ -3256,7 +3226,6 @@
     max-width: 100px !important;
     padding: 8px 4px !important;
   }
-}
 
   /* 390px에서 출결 버튼 반응형 - 세로 배치 강제 적용 */
   .manager-table tbody td span {
@@ -3288,8 +3257,6 @@
     font-size: 10px !important;
   }
 
-
-
   .manager-table tbody td {
     padding: 10px 0px !important;
     font-size: 9px !important;
@@ -3298,7 +3265,6 @@
   .manager-table-card {
     margin-bottom: 40px !important;
   }
-}
 
   /* 375px에서 과목명 셀을 두 줄로 표시 가능하게 설정 */
   .manager-table tbody td:nth-child(3) {
@@ -3322,7 +3288,7 @@
     text-align: center !important;
     line-height: 22px !important;
   }
-
+}
 
 /* ===== 일반 학생 출결 관리 페이지 회색 박스 반응형 스타일 ===== */
 
@@ -3347,10 +3313,6 @@
     padding: 6rem 4rem !important; /* 상하 96px, 좌우 64px */
   }
 
-
-
-
-
   .manager-table-card ~ .panel-gray .panel-empty,
   .manager-table-card ~ .panel-white .panel-empty,
   .manager-table-card + .panel-gray .panel-empty,
@@ -3371,10 +3333,6 @@
     height: 28rem !important; /* 448px */
     padding: 5rem 3rem !important; /* 상하 80px, 좌우 48px */
   }
-
-
-
-
 
   .manager-table-card ~ .panel-gray .panel-empty,
   .manager-table-card ~ .panel-white .panel-empty,
@@ -3517,10 +3475,6 @@
     transform-origin: top center; /* 학생 출결 관리 표와 동일 */
   }
 
-
-
-
-
   .panel-block.panel-gray .panel-empty {
     font-size: 22px !important;
   }
@@ -3612,7 +3566,6 @@
     transform: scale(0.97) !important; /* 학생 출결 관리 표와 동일 */
     transform-origin: top center !important; /* 학생 출결 관리 표와 동일 */
     margin-bottom: 30px !important;
-
   }
 
   .panel-block.panel-gray .panel-empty,
