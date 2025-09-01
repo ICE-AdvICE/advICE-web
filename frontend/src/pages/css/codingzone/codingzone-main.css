@@ -337,7 +337,7 @@ body {
 
 .czp-table {
   width: 100%;
-  min-width: 1100px;    /* 테이블 기본 크기 보장 */
+  min-width: 950px;    /* 테이블 기본 크기 보장 */
   max-width: 95%;       /* 화면보다 너무 커지지 않게 */
   margin: 0 auto;       /* 항상 가운데 정렬 */
   border-collapse: collapse;
