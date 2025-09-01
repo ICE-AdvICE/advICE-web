@@ -306,7 +306,11 @@ export default function SubjectClassesTable({
   // 모달 관련 함수들을 useCallback으로 최적화
   const handleCloseAlertModal = useCallback(() => {
     setAlertModalOpen(false);
-  }, []);
+    // 성공 모달이었다면 리스트만 새로고침
+    if (alertMessage.includes("수정이 완료되었습니다")) {
+      reloadRows();
+    }
+  }, [alertMessage, reloadRows]);
 
   if (!selectedSubjectId || !selectedDateYMD) return null;
 
@@ -399,6 +403,7 @@ export default function SubjectClassesTable({
                               : "수정하기"
                           }
                           onClick={() => {
+                            console.log("=== 수정하기 버튼 클릭됨! ===");
                             console.log(
                               "수정하기 버튼 클릭됨! r._raw:",
                               r._raw
@@ -446,7 +451,8 @@ export default function SubjectClassesTable({
           }}
           initialValues={editTarget}
           onSubmit={async (payload) => {
-            // 낙관적 업데이트: 서버 성공 여부와 무관하게 즉시 UI 반영
+            console.log("=== onSubmit 함수 시작! ===");
+            console.log("payload:", payload);
             if (!editTarget?.classNum) return;
 
             const newDate = payload?.classDate || selectedDateYMD;
@@ -455,75 +461,117 @@ export default function SubjectClassesTable({
               payload?.subjectId &&
               String(payload.subjectId) !== String(selectedSubjectId);
 
-            if (dateChanged || subjectChanged) {
-              // 날짜나 과목이 변경된 경우: 현재 페이지에 머물러 있음
-              // 1. UI 정리
-              setRows((prev) =>
-                prev.filter((it) => it.classNum !== editTarget.classNum)
-              );
+            // 프론트엔드에서 중복 검사 (조, 날짜, 시간, 과목명, 조교명만 - 인원수 제외)
+            const isDuplicate = rows.some(
+              (row) =>
+                row.classNum !== editTarget.classNum && // 자기 자신 제외
+                row.groupId === payload.groupId &&
+                row.classDate === payload.classDate &&
+                row.classTime === payload.classTime &&
+                row.subjectId === payload.subjectId &&
+                row.assistantName === payload.assistantName
+            );
 
-              // 2. 수정 모달 먼저 닫기
-              setEditOpen(false);
-              setEditTarget(null);
-
-              // 3. 약간의 지연 후 AlertModal 표시 (수정 모달이 완전히 닫힌 후)
+            // 중복이면 바로 alert 표시하고 종료
+            if (isDuplicate) {
               setTimeout(() => {
-                setAlertMessage(
-                  "수정이 완료되었습니다.<br style={{ marginBottom: '8px' }}/>변경사항을 확인하고 싶으시다면 변경된 날짜/과목으로 이동해주세요."
-                );
-                setAlertModalOpen(true);
+                alert("이미 등록된 수업입니다.");
+                // alert 닫힌 후 리스트 새로고침
+                setTimeout(() => reloadRows({ silent: true }), 100);
               }, 100);
-            } else {
-              // 동일 날짜/과목: 현재 리스트 항목만 즉시 갱신
-              setRows((prev) =>
-                prev.map((it) =>
-                  it.classNum === editTarget.classNum
-                    ? {
-                        ...it,
-                        classDate: payload.classDate,
-                        classTime: payload.classTime,
-                        assistantName: payload.assistantName,
-                        maximumNumber: payload.maximumNumber,
-                        groupId: payload.groupId,
-                        className: payload.className,
-                      }
-                    : it
-                )
-              );
-
-              // 2. 수정 모달 먼저 닫기
-              setEditOpen(false);
-              setEditTarget(null);
-
-              // 3. 약간의 지연 후 AlertModal 표시 (수정 모달이 완전히 닫힌 후)
-              setTimeout(() => {
-                setAlertMessage("수정이 완료되었습니다.");
-                setAlertModalOpen(true);
-              }, 100);
+              return;
             }
 
-            // 백그라운드 동기화: 실패해도 롤백하지 않음
+            // 서버 응답을 먼저 확인
             setEditSubmitting(true);
-            adminUpdateCodingzoneClassByClassNum(
-              editTarget.classNum,
-              payload,
-              accessToken,
-              setCookie,
-              navigate
-            )
-              .then((res) => {
-                if (!res?.ok) {
-                  console.warn("[Edit] 서버 동기화 실패", res);
+            let res = null;
+            try {
+              res = await adminUpdateCodingzoneClassByClassNum(
+                editTarget.classNum,
+                payload,
+                accessToken,
+                setCookie,
+                navigate
+              );
+
+              // 수정 모달 먼저 닫기
+              setEditOpen(false);
+              setEditTarget(null);
+
+              // 서버 응답에 따라 적절한 처리
+              if (res?.ok) {
+                // 성공한 경우에만 UI 업데이트 및 성공 모달 표시
+                if (dateChanged || subjectChanged) {
+                  // 날짜나 과목이 변경된 경우: 현재 페이지에서 제거
+                  setRows((prev) =>
+                    prev.filter((it) => it.classNum !== editTarget.classNum)
+                  );
+
+                  // 약간의 지연 후 성공 모달 표시
+                  setTimeout(() => {
+                    setAlertMessage(
+                      "수정이 완료되었습니다.<br style={{ marginBottom: '8px' }}/>변경사항을 확인하고 싶으시다면 변경된 날짜/과목으로 이동해주세요."
+                    );
+                    setAlertModalOpen(true);
+                  }, 100);
+                } else {
+                  // 동일 날짜/과목: 현재 리스트 항목만 갱신
+                  setRows((prev) =>
+                    prev.map((it) =>
+                      it.classNum === editTarget.classNum
+                        ? {
+                            ...it,
+                            classDate: payload.classDate,
+                            classTime: payload.classTime,
+                            assistantName: payload.assistantName,
+                            maximumNumber: payload.maximumNumber,
+                            groupId: payload.groupId,
+                            className: payload.className,
+                          }
+                        : it
+                    )
+                  );
+
+                  // 약간의 지연 후 성공 모달 표시
+                  setTimeout(() => {
+                    setAlertMessage("수정이 완료되었습니다.");
+                    setAlertModalOpen(true);
+                  }, 100);
                 }
-              })
-              .catch((e) => {
-                console.warn("[Edit] 네트워크/서버 오류", e);
-              })
-              .finally(() => {
-                setEditSubmitting(false);
-                // 조용한 재조회로 서버 상태와 맞춤
+              } else {
+                // 실패한 경우: JavaScript 내장 alert만 사용 (모달은 표시하지 않음)
+                setTimeout(() => {
+                  if (res?.code === "NOT_MODIFIED_INFO") {
+                    alert("변경사항이 없습니다.");
+                    // alert 닫힌 후 리스트 새로고침
+                    setTimeout(() => reloadRows({ silent: true }), 100);
+                  } else if (res?.code === "ALREADY_EXISTED_CLASS") {
+                    alert("이미 등록된 수업입니다.");
+                    // alert 닫힌 후 리스트 새로고침
+                    setTimeout(() => reloadRows({ silent: true }), 100);
+                  } else {
+                    alert(res?.message || "수정에 실패했습니다.");
+                    // alert 닫힌 후 리스트 새로고침
+                    setTimeout(() => reloadRows({ silent: true }), 100);
+                  }
+                }, 100);
+              }
+            } catch (error) {
+              console.warn("[Edit] 네트워크/서버 오류", error);
+
+              // 수정 모달 먼저 닫기
+              setEditOpen(false);
+              setEditTarget(null);
+
+              // JavaScript 내장 alert 사용
+              alert("수정 중 오류가 발생했습니다.");
+            } finally {
+              setEditSubmitting(false);
+              // 성공한 경우에만 조용한 재조회로 서버 상태와 맞춤
+              if (res?.ok) {
                 setTimeout(() => reloadRows({ silent: true }), 300);
-              });
+              }
+            }
           }}
           subjectOptions={subjectOptions}
           accessToken={accessToken}

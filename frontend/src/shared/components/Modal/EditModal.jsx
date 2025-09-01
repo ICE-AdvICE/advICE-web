@@ -3,6 +3,7 @@ import "./EditModal.css";
 import {
   fetchAssistantsBySubjectId,
   fetchAllSubjects,
+  adminUpdateCodingzoneClassByClassNum,
 } from "../../../entities/api/CodingZone/AdminApi";
 
 function EditModal({
@@ -326,8 +327,29 @@ function EditModal({
     // ✅ 모든 유효성 검증 통과 후에만 바운스 가드 활성화
     busyRef.current = true;
     try {
-      if (onSubmit) {
-        await onSubmit(payload);
+      // 서버 응답을 먼저 확인
+      const res = await adminUpdateCodingzoneClassByClassNum(
+        initialValues.classNum,
+        payload,
+        accessToken,
+        () => {},
+        undefined
+      );
+
+      if (res?.ok) {
+        // 성공한 경우에만 onSubmit 호출
+        if (onSubmit) {
+          await onSubmit(payload);
+        }
+      } else {
+        // 실패한 경우: 적절한 메시지 표시
+        if (res?.code === "NOT_MODIFIED_INFO") {
+          alert("변경사항이 없습니다.");
+        } else if (res?.code === "ALREADY_EXISTED_CLASS") {
+          alert("이미 등록된 수업입니다.");
+        } else {
+          alert(res?.message || "수정에 실패했습니다.");
+        }
       }
     } finally {
       busyRef.current = false;
