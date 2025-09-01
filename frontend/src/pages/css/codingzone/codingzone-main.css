@@ -616,6 +616,14 @@ body {
   }
 }
 
+.codingzone-owl {
+  width: 100%;
+  max-width: 600px;  /* 최대 600px까지만 */
+  height: auto;      /* 비율 유지 */
+  display: block;
+  margin: 0 auto;    /* 가운데 정렬 */
+}
+
 @media (max-width: 768px) {
   .cz-category-top {
     padding: 0 10px;
@@ -667,6 +675,10 @@ body {
     white-space: nowrap;
     transform: scale(0.6);
     justify-self: center;
+  }
+
+   .codingzone-owl {
+    max-width: 600px;
   }
 }
 
@@ -758,6 +770,10 @@ body {
     margin-bottom: -55px;
     margin-right: 39%;
   }
+
+  .codingzone-owl {
+    max-width: 500px;
+  }
 }
 
 @media (max-width: 395px) {
@@ -785,6 +801,10 @@ body {
     white-space: nowrap;
     transform: scale(0.35);
     justify-self: center;
+  }
+
+   .codingzone-owl {
+    max-width: 400px;
   }
 }
 
