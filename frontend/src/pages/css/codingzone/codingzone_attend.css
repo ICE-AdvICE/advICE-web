@@ -3287,6 +3287,7 @@
     padding: 10px 6px !important;
     font-size: 10px !important;
   }
+}
 
 
   .manager-table tbody td {
@@ -3298,7 +3299,6 @@
     margin-bottom: 40px !important;
   }
 }
-
 
   /* 375px에서 과목명 셀을 두 줄로 표시 가능하게 설정 */
   .manager-table tbody td:nth-child(3) {
@@ -3346,6 +3346,9 @@
     height: 28rem !important; /* 400px */
     padding: 6rem 4rem !important; /* 상하 96px, 좌우 64px */
   }
+}
+
+
 
 
   .manager-table-card ~ .panel-gray .panel-empty,
@@ -3368,6 +3371,9 @@
     height: 28rem !important; /* 448px */
     padding: 5rem 3rem !important; /* 상하 80px, 좌우 48px */
   }
+}
+
+
 
 
   .manager-table-card ~ .panel-gray .panel-empty,
@@ -3510,6 +3516,9 @@
     transform: scale(0.84); /* 학생 출결 관리 표와 동일 */
     transform-origin: top center; /* 학생 출결 관리 표와 동일 */
   }
+}
+
+
 
 
   .panel-block.panel-gray .panel-empty {
