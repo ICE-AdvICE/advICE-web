@@ -330,16 +330,15 @@ body {
 /* ####3=== 학생용 표 기본 컨테이너: 회색 패널과 동일 가로폭(부모 100%) === ####*/
 .czp-table-wrap {
   width: 100%;
-  padding: 0 10px;      /* 좌우 10px 여백 */
+  padding: 0 10px; /* 좌우 10px 여백 */
   box-sizing: border-box;
-  
 }
 
 .czp-table {
   width: 100%;
-  min-width: 950px;    /* 테이블 기본 크기 보장 */
-  max-width: 95%;       /* 화면보다 너무 커지지 않게 */
-  margin: 0 auto;       /* 항상 가운데 정렬 */
+  min-width: 1100px; /* 테이블 기본 크기 보장 */
+  max-width: 95%; /* 화면보다 너무 커지지 않게 */
+  margin: 0 auto; /* 항상 가운데 정렬 */
   border-collapse: collapse;
 }
 
@@ -409,17 +408,29 @@ body {
 }
 /* 컬럼 너비(헤더/바디 동일하게 nth-child로 고정) */
 .czp-table th:nth-child(1),
-.czp-table td:nth-child(1) { width: 120px; } /* 요일 */
+.czp-table td:nth-child(1) {
+  width: 120px;
+} /* 요일 */
 .czp-table th:nth-child(2),
-.czp-table td:nth-child(2) { width: 200px; } /* 시간 */
+.czp-table td:nth-child(2) {
+  width: 200px;
+} /* 시간 */
 .czp-table th:nth-child(3),
-.czp-table td:nth-child(3) { width: 250px; } /* 수업명 */
+.czp-table td:nth-child(3) {
+  width: 250px;
+} /* 수업명 */
 .czp-table th:nth-child(4),
-.czp-table td:nth-child(4) { width: 160px; } /* 조교 */
+.czp-table td:nth-child(4) {
+  width: 160px;
+} /* 조교 */
 .czp-table th:nth-child(5),
-.czp-table td:nth-child(5) { width: 140px; } /* 인원 */
+.czp-table td:nth-child(5) {
+  width: 140px;
+} /* 인원 */
 .czp-table th:nth-child(6),
-.czp-table td:nth-child(6) { width: 120px; } /* 상태 */
+.czp-table td:nth-child(6) {
+  width: 120px;
+} /* 상태 */
 
 /* 상태 태그 */
 .czp-tag {
@@ -618,10 +629,10 @@ body {
 
 .codingzone-owl {
   width: 100%;
-  max-width: 600px;  /* 최대 600px까지만 */
-  height: auto;      /* 비율 유지 */
+  max-width: 600px; /* 최대 600px까지만 */
+  height: auto; /* 비율 유지 */
   display: block;
-  margin: 0 auto;    /* 가운데 정렬 */
+  margin: 0 auto; /* 가운데 정렬 */
 }
 
 @media (max-width: 768px) {
@@ -677,7 +688,7 @@ body {
     justify-self: center;
   }
 
-   .codingzone-owl {
+  .codingzone-owl {
     max-width: 600px;
   }
 }
@@ -754,7 +765,7 @@ body {
     gap: 40px;
     transform: scale(0.55);
   }
-   .czp-table-wrap {
+  .czp-table-wrap {
     margin: 0;
     padding: 0;
   }
@@ -803,8 +814,7 @@ body {
     justify-self: center;
   }
 
-   .codingzone-owl {
+  .codingzone-owl {
     max-width: 400px;
   }
 }
-
