@@ -88,3 +88,16 @@
     margin: -4.5px auto 1px auto;
   }
 }
+
+@media (max-width: 350px) {
+  .banner_img_container {
+    margin: 20px 0 0 0;
+  }
+  .banner_img_container .banner {
+    max-height: 130px;
+  }
+  .codingzonetop2-image {
+    max-width: 303px;
+    margin: -3px auto 1px auto;
+  }
+}
