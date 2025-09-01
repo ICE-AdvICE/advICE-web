@@ -1,7 +1,7 @@
 html,
 body {
   width: 100%;
-  overflow-x: hidden;
+  overflow-x: auto;
 }
 
 .cz-fixed-panel {
@@ -74,7 +74,7 @@ body {
 }
 
 .codingzone-body-container {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 37.5px auto;
   padding: 0 10px 10px 10px;
   margin-bottom: 100px;
@@ -332,6 +332,7 @@ body {
   width: 100%;
   padding: 0 10px; /* 좌우 10px 여백 */
   box-sizing: border-box;
+  overflow-x: auto;
 }
 
 .czp-table {
@@ -576,6 +577,16 @@ body {
   }
 }
 
+@media (max-width: 1100px) {
+  .czp-table {
+    width: 100%;
+    min-width: 950px; /* 테이블 기본 크기 보장 */
+    max-width: 95%; /* 화면보다 너무 커지지 않게 */
+    margin: 0 auto; /* 항상 가운데 정렬 */
+    border-collapse: collapse;
+  }
+}
+
 @media (max-width: 1024px) {
   .card-hidden-space {
     flex: 1 4 0;
@@ -787,6 +798,16 @@ body {
   }
 }
 
+@media (max-width: 430px) {
+  .czp-table {
+    width: 100%;
+    min-width: 850px; /* 테이블 기본 크기 보장 */
+    max-width: 95%; /* 화면보다 너무 커지지 않게 */
+    margin: 0 auto; /* 항상 가운데 정렬 */
+    border-collapse: collapse;
+  }
+}
+
 @media (max-width: 395px) {
   .czcard p,
   .codingzone-title p,
@@ -812,9 +833,55 @@ body {
     white-space: nowrap;
     transform: scale(0.35);
     justify-self: center;
+    align-items: center;
+    min-width: 890px;
   }
 
   .codingzone-owl {
     max-width: 400px;
+  }
+}
+
+@media (max-width: 350px) {
+  .czp-weekbar {
+    gap: 15px;
+    white-space: nowrap;
+    transform: scale(0.65);
+  }
+  .czp-table {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    transform: scale(0.35);
+    justify-self: center;
+  }
+}
+
+@media (max-width: 330px) {
+  .czp-weekbar {
+    gap: 15px;
+    white-space: nowrap;
+    transform: scale(0.55);
+  }
+  .czp-table {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    transform: scale(0.35);
+    min-width: 700px;
+    justify-self: center;
+  }
+}
+
+@media (max-width: 270px) {
+  .czp-weekbar {
+    gap: 15px;
+    white-space: nowrap;
+    transform: scale(0.45);
+  }
+  .czp-table {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    transform: scale(0.35);
+    min-width: 650px;
+    justify-self: center;
   }
 }
