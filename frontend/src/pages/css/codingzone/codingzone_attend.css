@@ -875,6 +875,10 @@
   border-radius: 10px;
   background: #fff;
   margin-bottom: 100px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
 }
 
 .cz-table thead {
@@ -960,8 +964,8 @@
   }
 
   .cz-table {
-    width: 1150px !important;
-    min-width: 1150px !important;
+    width: 1100px !important;
+    min-width: 1100px !important;
     max-width: 100% !important;
     margin-top: 8px !important;
     transform: scale(0.84);
@@ -970,9 +974,13 @@
   }
 
   .cz-table-shell {
-    width: 95%;
+    width: 100%;
+    max-width: 100vw;
     margin: 0 auto;
     margin-bottom: 100px !important;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
   }
 
   .cz-table thead th {
@@ -1040,8 +1048,8 @@
 
 @media (max-width: 1024px) {
   .cz-table {
-    width: 1010px !important;
-    min-width: 1010px !important;
+    width: 1100px !important;
+    min-width: 1100px !important;
     max-width: 100% !important;
     margin-top: 10px !important;
     transform: scale(0.77);
@@ -1260,11 +1268,11 @@
 
 @media (max-width: 768px) {
   .cz-table {
-    width: 755px !important;
-    min-width: 755px !important;
+    width: 1100px !important;
+    min-width: 1100px !important;
     max-width: 100% !important;
     margin-top: 13px !important;
-    transform: scale(0.87);
+    transform: scale(0.6);
     transform-origin: top center;
     margin-bottom: 0px !important;
   }
@@ -1511,11 +1519,11 @@
 
 @media (max-width: 480px) {
   .cz-table {
-    width: 470px !important;
-    min-width: 470px !important;
+    width: 1100px !important;
+    min-width: 1100px !important;
     max-width: 100% !important;
     margin-top: 13px !important;
-    transform: scale(0.87);
+    transform: scale(0.4);
     transform-origin: top center;
     margin-bottom: 0px !important;
   }
@@ -1773,10 +1781,10 @@
 @media (max-width: 390px) {
   /* 표 크기 조정 - 390px에 맞게 transform으로 축소 */
   .cz-table {
-    width: 380px !important; /* 390px 안쪽 고정 너비 */
-    min-width: 380px !important;
+    width: 1100px !important; /* 기본 너비 유지 */
+    min-width: 1100px !important;
     max-width: 100%;
-    transform: scale(0.92) !important;
+    transform: scale(0.35) !important;
     transform-origin: top center !important;
     margin-bottom: -35px !important;
   }
@@ -2228,11 +2236,59 @@
 
 @media (max-width: 375px) {
   .cz-table {
-    width: 360px !important; /* 375px 안쪽 */
-    min-width: 360px !important;
+    width: 1100px !important; /* 기본 너비 유지 */
+    min-width: 1100px !important;
     max-width: 100% !important;
-    transform: scale(0.93) !important;
+    transform: scale(0.32) !important;
     transform-origin: top center !important;
+    margin-bottom: -150px !important;
+  }
+
+  /* 헤더 크기와 글씨 조절 */
+  .cz-table thead th {
+    padding: 20px 4px !important;
+    font-size: 24px !important;
+    font-weight: 600 !important;
+  }
+
+  /* 바디 글씨와 패딩 조절 */
+  .cz-table tbody td {
+    padding: 22px 0px !important;
+    font-size: 23px !important;
+  }
+
+  /* 출석/결석 버튼 조절 */
+  .cz-table .btn_manager_attendance,
+  .cz-table .btn_manager_absence,
+  .cz-table .btn_manager_attendance-disabled,
+  .cz-table .btn_manager_absence-disabled,
+  .cz-table tbody td .btn_manager_attendance,
+  .cz-table tbody td .btn_manager_absence,
+  .cz-table tbody td .btn_manager_attendance-disabled,
+  .cz-table tbody td .btn_manager_absence-disabled,
+  .cz-table-shell .cz-table .btn_manager_attendance,
+  .cz-table-shell .cz-table .btn_manager_absence,
+  .cz-table-shell .cz-table .btn_manager_attendance-disabled,
+  .cz-table-shell .cz-table .btn_manager_absence-disabled,
+  .cz-table-shell .cz-table tbody td .btn_manager_attendance,
+  .cz-table-shell .cz-table tbody td .btn_manager_absence,
+  .cz-table-shell .cz-table tbody td .btn_manager_attendance-disabled,
+  .cz-table-shell .cz-table tbody td .btn_manager_absence-disabled {
+    font-size: 21px !important;
+    min-width: 110px !important;
+    max-width: 110px !important;
+    height: 48px !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 10px auto !important;
+    text-align: center !important;
+    line-height: 18px !important;
+  }
+
+  /* 출석/결석 버튼들이 들어있는 td 셀을 중앙 정렬 */
+  .cz-table tbody td {
+    text-align: center !important;
+    vertical-align: middle !important;
   }
 }
 
@@ -2574,7 +2630,7 @@
     padding: 4rem 1.5rem !important; /* 상하 64px, 좌우 24px */
     transform: scale(0.97) !important; /* 학생 출결 관리 표와 동일 */
     transform-origin: top center !important; /* 학생 출결 관리 표와 동일 */
-    margin-bottom: 30px !important;
+    margin-bottom: 10px !important;
   }
 
   .manager-table-card ~ .panel-gray .panel-empty,
@@ -2684,7 +2740,6 @@
     padding: 6rem 3rem !important; /* 상하 96px, 좌우 48px */
     transform: scale(0.77); /* 학생 출결 관리 표와 동일 */
     transform-origin: top center; /* 학생 출결 관리 표와 동일 */
-    margin-bottom: 20px !important;
   }
 
   .panel-block.panel-gray .panel-empty {
@@ -2702,7 +2757,6 @@
     padding: 5rem 2rem !important; /* 상하 80px, 좌우 32px */
     transform: scale(0.87); /* 학생 출결 관리 표와 동일 */
     transform-origin: top center; /* 학생 출결 관리 표와 동일 */
-    margin-bottom: 10px !important;
   }
 
   .panel-block.panel-gray .panel-empty {
@@ -2721,7 +2775,7 @@
     padding: 4rem 1.5rem !important; /* 상하 64px, 좌우 24px */
     transform: scale(0.97) !important; /* 학생 출결 관리 표와 동일 */
     transform-origin: top center !important; /* 학생 출결 관리 표와 동일 */
-    margin-bottom: 40px !important;
+    margin-bottom: 10px !important;
   }
 
   .panel-block.panel-gray .panel-empty {
@@ -2732,9 +2786,7 @@
 /* 390px 이하에서 회색 박스 반응형 - 최고 우선순위로 강제 적용 */
 @media (max-width: 390px) {
   /* 더 구체적인 선택자로 우선순위 높임 */
-  .panel-block.panel-gray,
-  /* 직접 선택자도 추가 */
-  .panel-gray {
+  .panel-block.panel-gray {
     width: 380px !important; /* 학생 출결 관리 표와 동일 */
     max-width: 100% !important;
     min-width: 380px !important;
@@ -2745,147 +2797,6 @@
     margin-bottom: 20px !important;
   }
 
-  .panel-block.panel-gray .panel-empty,
-  /* 직접 선택자도 추가 */
-  .panel-gray .panel-empty {
-    font-size: 11px !important;
-  }
-}
-
-/* ===== 1200px 반응형 강제 적용 (최고 우선순위) ===== */
-@media (max-width: 1200px) {
-  /* 모든 회색 박스에 대한 강제 적용 */
-  .panel-gray,
-  .panel-white,
-  .cz-table-shell ~ .panel-gray,
-  .cz-table-shell ~ .panel-white,
-  .cz-table-shell + .panel-gray,
-  .cz-table-shell + .panel-white,
-  .manager-table-card ~ .panel-gray,
-  .manager-table-card ~ .panel-white,
-  .manager-table-card + .panel-gray,
-  .manager-table-card + .panel-white,
-  .panel-block.panel-gray {
-    margin-bottom: 160px !important;
-  }
-
-  /* 모든 회색 박스 내부 텍스트에 대한 강제 적용 */
-  .panel-gray .panel-empty,
-  .panel-white .panel-empty,
-  .cz-table-shell ~ .panel-gray .panel-empty,
-  .cz-table-shell ~ .panel-white .panel-empty,
-  .cz-table-shell + .panel-gray .panel-empty,
-  .cz-table-shell + .panel-white .panel-empty,
-  .manager-table-card ~ .panel-gray .panel-empty,
-  .manager-table-card ~ .panel-white .panel-empty,
-  .manager-table-card + .panel-gray .panel-empty,
-  .manager-table-card + .panel-white .panel-empty,
-  .panel-block.panel-gray .panel-empty {
-    font-size: 22px !important;
-  }
-}
-
-/* ===== 1024px 반응형 강제 적용 (최고 우선순위) ===== */
-@media (max-width: 1024px) {
-  /* 모든 회색 박스에 대한 강제 적용 */
-  .panel-gray,
-  .panel-white,
-  .cz-table-shell ~ .panel-gray,
-  .cz-table-shell ~ .panel-white,
-  .cz-table-shell + .panel-gray,
-  .cz-table-shell + .panel-white,
-  .manager-table-card ~ .panel-gray,
-  .manager-table-card ~ .panel-white,
-  .manager-table-card + .panel-gray,
-  .manager-table-card + .panel-white,
-  .panel-block.panel-gray {
-    margin-bottom: 150px !important;
-  }
-
-  /* 모든 회색 박스 내부 텍스트에 대한 강제 적용 */
-  .panel-gray .panel-empty,
-  .panel-white .panel-empty,
-  .cz-table-shell ~ .panel-gray .panel-empty,
-  .cz-table-shell ~ .panel-white .panel-empty,
-  .cz-table-shell + .panel-gray .panel-empty,
-  .cz-table-shell + .panel-white .panel-empty,
-  .manager-table-card ~ .panel-gray .panel-empty,
-  .manager-table-card ~ .panel-white .panel-empty,
-  .manager-table-card + .panel-gray .panel-empty,
-  .manager-table-card + .panel-white .panel-empty,
-  .panel-block.panel-gray .panel-empty {
-    font-size: 20px !important;
-  }
-}
-
-/* ===== 768px 반응형 강제 적용 (최고 우선순위) ===== */
-@media (max-width: 768px) {
-  /* 모든 회색 박스에 대한 강제 적용 */
-  .panel-gray,
-  .panel-white,
-  .cz-table-shell ~ .panel-gray,
-  .cz-table-shell ~ .panel-white,
-  .cz-table-shell + .panel-gray,
-  .cz-table-shell + .panel-white,
-  .manager-table-card ~ .panel-gray,
-  .manager-table-card ~ .panel-white,
-  .manager-table-card + .panel-gray,
-  .manager-table-card + .panel-white,
-  .panel-block.panel-gray {
-    margin-bottom: 130px !important;
-  }
-
-  /* 모든 회색 박스 내부 텍스트에 대한 강제 적용 */
-  .panel-gray .panel-empty,
-  .panel-white .panel-empty,
-  .cz-table-shell ~ .panel-gray .panel-empty,
-  .cz-table-shell ~ .panel-white .panel-empty,
-  .cz-table-shell + .panel-gray .panel-empty,
-  .cz-table-shell + .panel-white .panel-empty,
-  .manager-table-card ~ .panel-gray .panel-empty,
-  .manager-table-card ~ .panel-white .panel-empty,
-  .manager-table-card + .panel-gray .panel-empty,
-  .manager-table-card + .panel-white .panel-empty,
-  .panel-block.panel-gray .panel-empty {
-    font-size: 16px !important;
-  }
-}
-
-/* ===== 390px 반응형 강제 적용 (최고 우선순위) ===== */
-@media (max-width: 390px) {
-  /* 모든 회색 박스에 대한 강제 적용 */
-  .panel-gray,
-  .panel-white,
-  .cz-table-shell ~ .panel-gray,
-  .cz-table-shell ~ .panel-white,
-  .cz-table-shell + .panel-gray,
-  .cz-table-shell + .panel-white,
-  .manager-table-card ~ .panel-gray,
-  .manager-table-card ~ .panel-white,
-  .manager-table-card + .panel-gray,
-  .manager-table-card + .panel-white,
-  .panel-block.panel-gray {
-    width: 380px !important;
-    max-width: 100% !important;
-    min-width: 380px !important;
-    height: 300px !important;
-    padding: 3rem 1rem !important;
-    transform: scale(0.965) !important;
-    transform-origin: top center !important;
-    margin-bottom: 60px !important;
-  }
-
-  /* 모든 회색 박스 내부 텍스트에 대한 강제 적용 */
-  .panel-gray .panel-empty,
-  .panel-white .panel-empty,
-  .cz-table-shell ~ .panel-gray .panel-empty,
-  .cz-table-shell ~ .panel-white .panel-empty,
-  .cz-table-shell + .panel-gray .panel-empty,
-  .cz-table-shell + .panel-white .panel-empty,
-  .manager-table-card ~ .panel-gray .panel-empty,
-  .manager-table-card ~ .panel-white .panel-empty,
-  .manager-table-card + .panel-gray .panel-empty,
-  .manager-table-card + .panel-white .panel-empty,
   .panel-block.panel-gray .panel-empty {
     font-size: 11px !important;
   }
@@ -2904,7 +2815,7 @@
     padding: 2.5rem 0.8rem !important; /* 상하 40px, 좌우 12.8px */
     transform: scale(0.97) !important; /* 학생 출결 관리 표와 동일 */
     transform-origin: top center !important; /* 학생 출결 관리 표와 동일 */
-    margin-bottom: 60px !important;
+    margin-bottom: 30px !important;
   }
 
   .panel-block.panel-gray .panel-empty,
